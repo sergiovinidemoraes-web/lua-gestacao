@@ -686,13 +686,6 @@ tr:hover td { background:var(--rose-pale); }
 </style>
 </head>
 <body>
-<div id="debug-bar" style="position:fixed;top:0;left:0;right:0;background:#C9897A;color:white;font-size:12px;padding:4px 10px;z-index:99999;text-align:center;">
-  JS: carregando...
-</div>
-<script>
-  document.getElementById('debug-bar').textContent = 'JS: Script 1 OK ✅';
-</script>
-
 <!-- LOGIN SCREEN -->
 <div id="login-screen">
   <canvas id="loginMoonCanvas" width="70" height="70" style="margin-bottom:12px;"></canvas>
@@ -1621,7 +1614,6 @@ const frases = [
 /* enterApp: see auth script */
 
 // backToSplash handled by auth script
-}
 function dNav(el, panelId) {
   document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('active'));
   document.querySelectorAll('.d-panel').forEach(p => p.classList.remove('active'));
@@ -2076,13 +2068,11 @@ window.addEventListener('load', function() {
   try {
     db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     console.log('✅ Supabase OK');
-    document.getElementById('debug-bar').textContent = 'Supabase ✅ conectado!';
-    setTimeout(function(){ document.getElementById('debug-bar').style.display='none'; }, 3000);
+
     verificarSessao();
   } catch(e) {
     console.error('❌ Supabase erro:', e.message);
-    document.getElementById('debug-bar').style.background = '#c0392b';
-    document.getElementById('debug-bar').textContent = '❌ Erro Supabase: ' + e.message;
+
   }
   try { adminSenha = localStorage.getItem('lua_admin_senha') || 'lua_admin_2026'; } catch(e) {}
 });
