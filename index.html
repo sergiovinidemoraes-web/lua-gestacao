@@ -2384,9 +2384,16 @@ function limparArquivo() {
 }
 
 function getYoutubeId(url) {
-  var match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&
-?#]+)/);
-  return match ? match[1] : null;
+  if (!url) return null;
+  var ytMatch = null;
+  if (url.indexOf('youtube.com/watch?v=') > -1) {
+    ytMatch = url.split('v=')[1];
+    if (ytMatch) ytMatch = ytMatch.split('&')[0];
+  } else if (url.indexOf('youtu.be/') > -1) {
+    ytMatch = url.split('youtu.be/')[1];
+    if (ytMatch) ytMatch = ytMatch.split('?')[0];
+  }
+  return ytMatch || null;
 }
 
 document.addEventListener('input', function(e) {
