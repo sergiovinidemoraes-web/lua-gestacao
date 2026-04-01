@@ -1754,7 +1754,57 @@ const faqRespostas = {
   '⏱️ Como saber se é trabalho de parto?': 'Use a regra 5-1-1: contrações a cada **5 minutos**, durando **1 minuto**, por pelo menos **1 hora**. As contrações de trabalho de parto são regulares, aumentam em intensidade e não somem com mudança de posição. Quer abrir o timer de contrações agora? Vou avisar a Juliana se os intervalos estiverem regulares! ⏱️',
 };
 
-// ─── Chat gestante com FAQ automático ───
+// ── Chat IA (OpenAI) ──
+var OPENAI_KEY = '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';
+var chatHistory = [];
+var nomeDoula = 'Lua';
+var SYSTEM_PROMPT = 'Voce e ' + nomeDoula + ', uma doula virtual acolhedora, empatica e especialista em gestacao, parto e pos-parto. Responda sempre em portugues brasileiro, com tom caloroso e gentil. Suas respostas devem ser curtas (maximo 3 paragrafos), praticas e tranquilizadoras. Se a pergunta for urgente ou emergencia medica, oriente a gestante a contatar sua doula ou ir ao hospital. Nunca substitua um medico.';
+
+async function enviarMensagemIA(mensagem) {
+  var msgs = document.getElementById('g-chat-messages');
+  var typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg recv';
+  typingDiv.id = 'typing-indicator';
+  typingDiv.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  chatHistory.push({ role: 'user', content: mensagem });
+  try {
+    var response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(chatHistory),
+        max_tokens: 300,
+        temperature: 0.7
+      })
+    });
+    var data = await response.json();
+    if (!response.ok) throw new Error((data.error && data.error.message) || 'Erro HTTP ' + response.status);
+    var reply = (data.choices && data.choices[0]) ? data.choices[0].message.content : 'Desculpe, tente novamente!';
+    chatHistory.push({ role: 'assistant', content: reply });
+    var typing = document.getElementById('typing-indicator');
+    if (typing) typing.remove();
+    var hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    var respDiv = document.createElement('div');
+    respDiv.className = 'chat-msg recv';
+    respDiv.innerHTML = '<div class="chat-bubble">' + reply + '</div><div class="chat-time">' + nomeDoula + ' - ' + hora + '</div>';
+    msgs.appendChild(respDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  } catch(e) {
+    var t = document.getElementById('typing-indicator');
+    if (t) t.remove();
+    var errDiv = document.createElement('div');
+    errDiv.className = 'chat-msg recv';
+    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + '</div>';
+    msgs.appendChild(errDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+    console.error('OpenAI error:', e);
+  }
+}
+
+// ─── Chat gestante com FAQ automatico ───
 function sendFAQ(btn) {
   var msg = btn.textContent;
   var msgs = document.getElementById('g-chat-messages');
