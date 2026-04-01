@@ -2061,7 +2061,6 @@ function sendDMsg() {
 <!-- SUPABASE CONNECTION -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-// ── Supabase config ──
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
 var db = null;
@@ -2071,19 +2070,15 @@ var adminSenha = 'lua_admin_2026';
 window.addEventListener('load', function() {
   try {
     db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-    console.log('Supabase OK');
+    console.log('✅ Supabase OK');
     verificarSessao();
   } catch(e) {
-    console.error('Supabase erro:', e.message);
+    console.error('❌ Supabase erro:', e.message);
   }
-  // Admin localStorage seguro
   try { adminSenha = localStorage.getItem('lua_admin_senha') || 'lua_admin_2026'; } catch(e) {}
-  // Admin render seguro
-  try { renderConteudosAdmin(); } catch(e) {}
-  try { renderFAQAdmin(); } catch(e) {}
 });
 
-// ── Login tabs ──
+// ── Tabs ──
 function loginTab(tab) {
   document.getElementById('tab-entrar').classList.toggle('active', tab === 'entrar');
   document.getElementById('tab-cadastrar').classList.toggle('active', tab === 'cadastrar');
@@ -2091,8 +2086,6 @@ function loginTab(tab) {
   document.getElementById('form-cadastrar').style.display = tab === 'cadastrar' ? 'flex' : 'none';
   var conf = document.getElementById('form-confirmacao');
   if (conf) conf.style.display = 'none';
-  try { document.getElementById('login-erro').classList.remove('visible'); } catch(e) {}
-  try { document.getElementById('cad-erro').classList.remove('visible'); } catch(e) {}
 }
 
 function selecionarTipo(tipo) {
@@ -2101,51 +2094,56 @@ function selecionarTipo(tipo) {
   document.getElementById('tipo-doula').classList.toggle('selected', tipo === 'doula');
 }
 
-function mostrarErroLogin(msg) {
-  var el = document.getElementById('login-erro');
-  el.textContent = msg; el.classList.add('visible');
-}
-function mostrarErroCad(msg) {
-  var el = document.getElementById('cad-erro');
-  el.textContent = msg; el.classList.add('visible');
-}
-
 // ── ENTRAR ──
 async function fazerLogin() {
-  try { document.getElementById('login-erro').classList.remove('visible'); } catch(e) {}
-  if (!db) return mostrarErroLogin('Conectando... tente novamente em instantes.');
+  var erroEl = document.getElementById('login-erro');
+  if (erroEl) erroEl.classList.remove('visible');
+  if (!db) {
+    if (erroEl) { erroEl.textContent = 'Conectando... tente novamente.'; erroEl.classList.add('visible'); }
+    return;
+  }
   var email = document.getElementById('login-email').value.trim();
   var senha = document.getElementById('login-senha').value;
-  if (!email || !senha) return mostrarErroLogin('Preencha e-mail e senha.');
+  if (!email || !senha) {
+    if (erroEl) { erroEl.textContent = 'Preencha e-mail e senha.'; erroEl.classList.add('visible'); }
+    return;
+  }
   var btn = document.getElementById('btn-login');
   btn.textContent = 'Entrando...'; btn.disabled = true;
   try {
     var res = await db.auth.signInWithPassword({ email: email, password: senha });
     btn.textContent = 'Entrar'; btn.disabled = false;
     if (res.error) {
-      if (res.error.message.indexOf('Email not confirmed') > -1) return mostrarErroLogin('Confirme seu e-mail antes de entrar 📬');
-      if (res.error.message.indexOf('Invalid') > -1 || res.error.message.indexOf('invalid') > -1) return mostrarErroLogin('E-mail ou senha incorretos.');
-      return mostrarErroLogin('Erro: ' + res.error.message);
+      var msg = 'Erro ao entrar.';
+      if (res.error.message.indexOf('not confirmed') > -1) msg = 'Confirme seu e-mail antes de entrar 📬';
+      else if (res.error.message.indexOf('nvalid') > -1) msg = 'E-mail ou senha incorretos.';
+      if (erroEl) { erroEl.textContent = msg; erroEl.classList.add('visible'); }
+      return;
     }
     carregarUsuario(res.data.user);
   } catch(e) {
     btn.textContent = 'Entrar'; btn.disabled = false;
-    mostrarErroLogin('Erro de conexão.');
+    if (erroEl) { erroEl.textContent = 'Erro de conexão.'; erroEl.classList.add('visible'); }
   }
 }
 
 // ── CRIAR CONTA ──
 async function fazerCadastro() {
-  try { document.getElementById('cad-erro').classList.remove('visible'); } catch(e) {}
-  if (!db) return mostrarErroCad('Conectando... tente novamente em instantes.');
+  var erroEl = document.getElementById('cad-erro');
+  if (erroEl) erroEl.classList.remove('visible');
+  if (!db) {
+    if (erroEl) { erroEl.textContent = 'Conectando... tente novamente.'; erroEl.classList.add('visible'); }
+    return;
+  }
   var nome = document.getElementById('cad-nome').value.trim();
   var email = document.getElementById('cad-email').value.trim();
   var senha = document.getElementById('cad-senha').value;
-  if (!nome) return mostrarErroCad('Informe seu nome.');
-  if (!email) return mostrarErroCad('Informe seu e-mail.');
-  if (!senha || senha.length < 6) return mostrarErroCad('Senha precisa ter pelo menos 6 caracteres.');
+  if (!nome || !email || !senha || senha.length < 6) {
+    if (erroEl) { erroEl.textContent = !nome ? 'Informe seu nome.' : !email ? 'Informe seu e-mail.' : 'Senha: mínimo 6 caracteres.'; erroEl.classList.add('visible'); }
+    return;
+  }
   var btn = document.getElementById('btn-cadastrar');
-  btn.textContent = 'Criando conta...'; btn.disabled = true;
+  btn.textContent = 'Criando...'; btn.disabled = true;
   try {
     var res = await db.auth.signUp({
       email: email, password: senha,
@@ -2153,21 +2151,22 @@ async function fazerCadastro() {
     });
     btn.textContent = 'Criar conta'; btn.disabled = false;
     if (res.error) {
-      if (res.error.message.indexOf('already') > -1) return mostrarErroCad('E-mail já cadastrado. Tente entrar.');
-      return mostrarErroCad('Erro: ' + res.error.message);
+      var msg = res.error.message.indexOf('already') > -1 ? 'E-mail já cadastrado. Tente entrar.' : 'Erro: ' + res.error.message;
+      if (erroEl) { erroEl.textContent = msg; erroEl.classList.add('visible'); }
+      return;
     }
     if (res.data.user) {
       try { await db.from('usuarios').insert({ id: res.data.user.id, nome: nome, email: email, tipo: tipoSelecionado }); } catch(e) {}
     }
     document.getElementById('form-cadastrar').style.display = 'none';
     var conf = document.getElementById('form-confirmacao');
-    if (conf) { conf.style.display = 'block'; }
+    if (conf) conf.style.display = 'block';
     var confEmail = document.getElementById('confirmacao-email');
     if (confEmail) confEmail.textContent = email;
     document.getElementById('tab-cadastrar').classList.remove('active');
   } catch(e) {
     btn.textContent = 'Criar conta'; btn.disabled = false;
-    mostrarErroCad('Erro de conexão.');
+    if (erroEl) { erroEl.textContent = 'Erro de conexão.'; erroEl.classList.add('visible'); }
   }
 }
 
@@ -2189,12 +2188,7 @@ async function verificarConfirmacao() {
     if (res.data.session && res.data.session.user.email_confirmed_at) {
       carregarUsuario(res.data.session.user);
     } else {
-      var ref = await db.auth.refreshSession();
-      if (ref.data.session && ref.data.session.user.email_confirmed_at) {
-        carregarUsuario(ref.data.session.user);
-      } else {
-        mostrarToast('⚠️ E-mail ainda não confirmado. Verifique sua caixa de entrada 📬');
-      }
+      mostrarToast('⚠️ E-mail ainda não confirmado. Verifique sua caixa de entrada 📬');
     }
   } catch(e) {
     if (btn) { btn.textContent = 'Já confirmei — Entrar'; btn.disabled = false; }
@@ -2207,8 +2201,8 @@ async function carregarUsuario(user) {
     var res = await db.from('usuarios').select('*').eq('id', user.id).single();
     if (res.data) { entrarNoApp(res.data.tipo, res.data.nome); return; }
   } catch(e) {}
-  var tipo = (user.user_metadata && user.user_metadata.tipo) ? user.user_metadata.tipo : 'gestante';
-  var nome = (user.user_metadata && user.user_metadata.nome) ? user.user_metadata.nome : user.email;
+  var tipo = (user.user_metadata && user.user_metadata.tipo) || 'gestante';
+  var nome = (user.user_metadata && user.user_metadata.nome) || user.email;
   entrarNoApp(tipo, nome);
 }
 
@@ -2227,7 +2221,7 @@ function entrarNoApp(tipo, nome) {
   var hora = new Date().getHours();
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
   if (tipo === 'gestante') {
-    var frases = ['"Você está indo muito bem, mamãe 💛"', '"Falta pouco para conhecer seu bebê ✨"', '"Seu corpo foi feito para isso. Confie nele 🌙"'];
+    var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
     var g = document.getElementById('gestante-greeting');
@@ -2257,6 +2251,15 @@ async function verificarSessao() {
     var res = await db.auth.getSession();
     if (res.data.session) carregarUsuario(res.data.session.user);
   } catch(e) {}
+}
+
+// ── TOAST ──
+function mostrarToast(msg) {
+  var toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:52px;left:50%;transform:translateX(-50%);background:#2D1F1A;color:white;padding:12px 24px;border-radius:30px;font-size:13px;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,0.3);border:1px solid rgba(201,137,122,0.3);font-family:sans-serif;white-space:nowrap;';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(function() { try { document.body.removeChild(toast); } catch(e) {} }, 3000);
 }
 
 // ══════════════════════════════
@@ -2547,6 +2550,7 @@ function mostrarToast(msg) {
   document.body.appendChild(toast);
   setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
 }
+
 </script>
 
 <!-- ══════ ADMIN PANEL ══════ -->
