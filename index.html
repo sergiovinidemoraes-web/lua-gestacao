@@ -831,7 +831,15 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-title" id="gestante-greeting">Olá! 🌸</div>
           <div class="panel-sub" id="gestante-dash-sub">Bem-vinda ao Lua</div>
 
-          <div class="frases-do-dia">
+          <div id="onboarding-card" style="background:linear-gradient(135deg,#8A9E8C,#6a8a6c);border-radius:20px;padding:24px;color:white;margin-bottom:20px;display:none;">
+          <div style="font-size:20px;margin-bottom:8px;">🌱 Configure sua gestação</div>
+          <div style="font-size:14px;opacity:0.85;margin-bottom:16px;">Informe sua data provável do parto para acompanharmos sua jornada</div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <input type="date" id="dpp-input" style="padding:8px 14px;border-radius:10px;border:none;font-size:14px;font-family:inherit;background:rgba(255,255,255,0.2);color:white;outline:none;">
+            <button onclick="salvarDPP()" style="background:white;color:#6a8a6c;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Salvar</button>
+          </div>
+        </div>
+        <div class="frases-do-dia">
             <div class="frase-texto" id="frase-texto">"Você está indo muito bem, mamãe 💛"</div>
             <div class="frase-sub">Frase do dia • Semana 18</div>
           </div>
@@ -882,16 +890,16 @@ tr:hover td { background:var(--rose-pale); }
         <!-- ACOMPANHAMENTO -->
         <div class="g-panel" id="g-acomp">
           <div class="panel-title">Minha Gestação</div>
-          <div class="panel-sub">Você está na semana 18 — segundo trimestre 🌸</div>
+          <div class="panel-sub" id="g-acomp-sub">Configure sua gestação no Dashboard 🌸</div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
               <div>
-                <div class="preg-weeks">18 <span>semanas</span></div>
-                <div style="font-size:13px;color:var(--earth-light);margin-top:6px;">Faltam 22 semanas para o parto</div>
+                <div class="preg-weeks" id="g-semanas-num">— <span>semanas</span></div>
+                <div style="font-size:13px;color:var(--earth-light);margin-top:6px;" id="g-semanas-faltam">Cadastre sua DPP para calcular</div>
               </div>
-              <div style="background:var(--sage-light);color:var(--sage);padding:4px 12px;border-radius:20px;font-size:12px;letter-spacing:1px;text-transform:uppercase;">2º Trimestre</div>
+              <div style="background:var(--sage-light);color:var(--sage);padding:4px 12px;border-radius:20px;font-size:12px;letter-spacing:1px;text-transform:uppercase;" id="g-trimestre">—</div>
             </div>
-            <div class="preg-bar"><div class="preg-bar-fill"></div></div>
+            <div class="preg-bar"><div class="preg-bar-fill" id="g-prog-bar" style="width:0%"></div></div>
             <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span>Início</span><span>Semana 40</span></div>
             <div class="preg-info-grid">
               <div class="preg-info-item"><div class="preg-info-val">22/08</div><div class="preg-info-label">DPP estimada</div></div>
@@ -1005,16 +1013,16 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub">Acompanhe suas contrações e acione sua doula quando precisar</div>
 
           <button class="btn-emergencia">
-            🚨 Estou com contrações — Acionar Juliana
+            🚨 Estou em trabalho de parto — Acionar minha Doula
           </button>
 
           <div class="emergencia-acoes">
-            <div class="emergencia-acao" onclick="alert('Abrindo WhatsApp da Juliana...')">
+            <div class="emergencia-acao" onclick="abrirWhatsAppDoula()">
               <div class="ea-icon">📱</div>
               <div class="ea-label">WhatsApp da Doula</div>
               <div class="ea-sub">Contato direto com Juliana</div>
             </div>
-            <div class="emergencia-acao" onclick="alert('Ligando para Juliana...')">
+            <div class="emergencia-acao" onclick="ligarParaDoula()">
               <div class="ea-icon">📞</div>
               <div class="ea-label">Ligar para Doula</div>
               <div class="ea-sub">Para situações urgentes</div>
@@ -1257,7 +1265,7 @@ tr:hover td { background:var(--rose-pale); }
         <!-- CHAT GESTANTE -->
         <div class="g-panel" id="g-chat">
           <div class="panel-title">Chat com Juliana</div>
-          <div class="panel-sub">Dúvidas frequentes respondidas na hora • Perguntas importantes encaminhadas para sua doula</div>
+          <div class="panel-sub">Converse com Lua, sua assistente de gestação powered by IA 🌙</div>
           <div class="chat-faq-sugestoes">
             <button class="chat-faq-btn" onclick="sendFAQ(this)">🤱 Como melhorar a pega?</button>
             <button class="chat-faq-btn" onclick="sendFAQ(this)">😴 Não consigo dormir</button>
@@ -1314,8 +1322,8 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="doula-dash-sub">Bem-vinda ao seu painel</div>
 
           <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon">👩‍👶</div><div class="stat-val">8</div><div class="stat-label">Clientes ativas</div></div>
-            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val">3</div><div class="stat-label">Partos este mês</div></div>
+            <div class="stat-card"><div class="stat-icon">👩‍👶</div><div class="stat-val" id="stat-clientes">0</div><div class="stat-label">Clientes ativas</div></div>
+            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label">Partos este mês</div></div>
             <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">2</div><div class="stat-label">Consultas hoje</div></div>
             <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val">2</div><div class="stat-label">Msgs não lidas</div></div>
           </div>
@@ -1482,13 +1490,12 @@ tr:hover td { background:var(--rose-pale); }
             <button class="bib-cat" onclick="setBibCat(this)">Materiais educativos</button>
           </div>
 
-          <div class="biblioteca-grid">
-            <div class="bib-item"><div class="bib-item-icon">📄</div><div class="bib-item-title">Guia de Fisiologia do Parto</div><div class="bib-item-meta">PDF • 24 páginas</div><div class="bib-item-type bib-pdf">PDF</div></div>
-            <div class="bib-item"><div class="bib-item-icon">🎬</div><div class="bib-item-title">Posições Verticalizadas no Parto</div><div class="bib-item-meta">Vídeo • 12 min</div><div class="bib-item-type bib-video">Vídeo</div></div>
-            <div class="bib-item"><div class="bib-item-icon">📊</div><div class="bib-item-title">Slides: Plano de Parto</div><div class="bib-item-meta">Apresentação • 18 slides</div><div class="bib-item-type bib-slide">Slides</div></div>
-            <div class="bib-item"><div class="bib-item-icon">📄</div><div class="bib-item-title">Protocolo Pós-Parto Imediato</div><div class="bib-item-meta">PDF • 8 páginas</div><div class="bib-item-type bib-pdf">PDF</div></div>
-            <div class="bib-item"><div class="bib-item-icon">🎬</div><div class="bib-item-title">Técnicas de Respiração</div><div class="bib-item-meta">Vídeo • 8 min</div><div class="bib-item-type bib-video">Vídeo</div></div>
-            <div class="bib-item"><div class="bib-item-icon">📚</div><div class="bib-item-title">Sinais de Trabalho de Parto</div><div class="bib-item-meta">Material educativo</div><div class="bib-item-type bib-slide">Educativo</div></div>
+          <div class="biblioteca-grid" id="bib-grid-doula">
+            <div class="empty-state" style="grid-column:1/-1;">
+              <div class="empty-icon">📚</div>
+              <div class="empty-title">Nenhum material ainda</div>
+              <div class="empty-sub">Adicione materiais pelo painel Admin</div>
+            </div>
           </div>
 
           <div class="card" style="margin-top:24px;">
@@ -1748,59 +1755,30 @@ const faqRespostas = {
 
 // ─── Chat gestante com FAQ automático ───
 function sendFAQ(btn) {
-  const msg = btn.textContent;
-  const msgs = document.getElementById('g-chat-messages');
-  const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  const div = document.createElement('div');
+  var msg = btn.textContent;
+  var msgs = document.getElementById('g-chat-messages');
+  var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = `<div class="chat-bubble">${msg}</div><div class="chat-time">${now}</div>`;
+  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
-
-  // Mostrar typing
-  const typing = document.createElement('div');
-  typing.className = 'chat-msg recv';
-  typing.innerHTML = `<div class="chat-typing"><span></span><span></span><span></span></div>`;
-  msgs.appendChild(typing);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  setTimeout(() => {
-    typing.remove();
-    const resp = document.createElement('div');
-    resp.className = 'chat-msg recv';
-    const resposta = faqRespostas[msg] || 'Entendido! Vou verificar com a Juliana e ela te responde em breve. 💛';
-    resp.innerHTML = `<div class="chat-bubble">${resposta}</div><div class="chat-time">Lua • ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>`;
-    msgs.appendChild(resp);
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1500);
+  enviarMensagemIA(msg);
 }
 
 function sendGMsg() {
-  const inp = document.getElementById('g-chat-input');
+  var inp = document.getElementById('g-chat-input');
   if (!inp.value.trim()) return;
-  const msgs = document.getElementById('g-chat-messages');
-  const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  const div = document.createElement('div');
+  var msgs = document.getElementById('g-chat-messages');
+  var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = `<div class="chat-bubble">${inp.value}</div><div class="chat-time">${now}</div>`;
+  div.innerHTML = '<div class="chat-bubble">' + inp.value + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
+  var mensagem = inp.value;
   inp.value = '';
   msgs.scrollTop = msgs.scrollHeight;
-
-  const typing = document.createElement('div');
-  typing.className = 'chat-msg recv';
-  typing.innerHTML = `<div class="chat-typing"><span></span><span></span><span></span></div>`;
-  msgs.appendChild(typing);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  setTimeout(() => {
-    typing.remove();
-    const resp = document.createElement('div');
-    resp.className = 'chat-msg recv';
-    resp.innerHTML = `<div class="chat-bubble">Entendido! Sua mensagem foi encaminhada para a Juliana. Ela responde em breve. 💛🌙</div><div class="chat-time">Lua • ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>`;
-    msgs.appendChild(resp);
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1400);
+  enviarMensagemIA(mensagem);
 }
 
 // ─── Chat doula ───
@@ -2247,6 +2225,7 @@ function entrarNoApp(tipo, nome) {
   var hora = new Date().getHours();
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
   if (tipo === 'gestante') {
+    setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
@@ -2269,6 +2248,68 @@ async function fazerLogout() {
 
 function backToSplash() { fazerLogout(); }
 function enterApp(role) { entrarNoApp(role, role === 'gestante' ? 'Visitante' : 'Doula'); }
+
+// ── DPP e semana gestacional ──
+function calcularSemana(dpp) {
+  var hoje = new Date();
+  var dataParto = new Date(dpp);
+  var diffMs = dataParto - hoje;
+  var diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  var semanasRestantes = Math.round(diffDias / 7);
+  var semanasGestacao = 40 - semanasRestantes;
+  if (semanasGestacao < 0) semanasGestacao = 0;
+  if (semanasGestacao > 40) semanasGestacao = 40;
+  return { semana: semanasGestacao, faltam: semanasRestantes, dias: diffDias, progresso: Math.round((semanasGestacao/40)*100) };
+}
+
+function atualizarDashboardGestante(dpp) {
+  if (!dpp) {
+    document.getElementById('onboarding-card').style.display = 'block';
+    return;
+  }
+  document.getElementById('onboarding-card').style.display = 'none';
+  var info = calcularSemana(dpp);
+  var dataParto = new Date(dpp);
+  var dppFormatada = dataParto.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  
+  // Update dashboard
+  try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
+  try { document.getElementById('g-semanas-faltam').textContent = 'Faltam ' + (info.faltam > 0 ? info.faltam : 0) + ' semanas para o parto'; } catch(e) {}
+  try { document.getElementById('g-prog-bar').style.width = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('g-dpp').textContent = dppFormatada; } catch(e) {}
+  try { document.getElementById('g-progresso').textContent = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('g-dias').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
+  
+  // Trimestre
+  var tri = info.semana <= 13 ? '1º Trimestre' : info.semana <= 27 ? '2º Trimestre' : '3º Trimestre';
+  try { document.getElementById('g-trimestre').textContent = tri; } catch(e) {}
+  try { document.getElementById('g-acomp-sub').textContent = 'Você está na semana ' + info.semana + ' — ' + tri + ' 🌸'; } catch(e) {}
+  
+  // Gestante greeting sub
+  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — você está indo muito bem! 💛'; } catch(e) {}
+}
+
+function salvarDPP() {
+  var dpp = document.getElementById('dpp-input').value;
+  if (!dpp) return mostrarToast('Informe a data provável do parto');
+  try { localStorage.setItem('lua_dpp', dpp); } catch(e) {}
+  atualizarDashboardGestante(dpp);
+  mostrarToast('✅ Data salva! Semana calculada 🌸');
+}
+
+function carregarDPP() {
+  var dpp = null;
+  try { dpp = localStorage.getItem('lua_dpp'); } catch(e) {}
+  atualizarDashboardGestante(dpp);
+}
+
+// ── Contato com doula ──
+function abrirWhatsAppDoula() {
+  mostrarToast('Em breve: WhatsApp da sua doula 📱');
+}
+function ligarParaDoula() {
+  mostrarToast('Em breve: Ligue para sua doula 📞');
+}
 
 // ── VERIFICAR SESSÃO ──
 async function verificarSessao() {
