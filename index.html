@@ -1754,8 +1754,7 @@ const faqRespostas = {
   '⏱️ Como saber se é trabalho de parto?': 'Use a regra 5-1-1: contrações a cada **5 minutos**, durando **1 minuto**, por pelo menos **1 hora**. As contrações de trabalho de parto são regulares, aumentam em intensidade e não somem com mudança de posição. Quer abrir o timer de contrações agora? Vou avisar a Juliana se os intervalos estiverem regulares! ⏱️',
 };
 
-// ── Chat IA (OpenAI) ──
-var OPENAI_KEY = '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';
+// ── Chat IA (via /api/chat — chave segura no Vercel) ──
 var chatHistory = [];
 var nomeDoula = 'Lua';
 var SYSTEM_PROMPT = 'Voce e ' + nomeDoula + ', uma doula virtual acolhedora, empatica e especialista em gestacao, parto e pos-parto. Responda sempre em portugues brasileiro, com tom caloroso e gentil. Suas respostas devem ser curtas (maximo 3 paragrafos), praticas e tranquilizadoras. Se a pergunta for urgente ou emergencia medica, oriente a gestante a contatar sua doula ou ir ao hospital. Nunca substitua um medico.';
@@ -1770,19 +1769,17 @@ async function enviarMensagemIA(mensagem) {
   msgs.scrollTop = msgs.scrollHeight;
   chatHistory.push({ role: 'user', content: mensagem });
   try {
-    var response = await fetch('https://api.openai.com/v1/chat/completions', {
+    var response = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(chatHistory),
-        max_tokens: 300,
-        temperature: 0.7
+        messages: chatHistory,
+        systemPrompt: SYSTEM_PROMPT
       })
     });
     var data = await response.json();
-    if (!response.ok) throw new Error((data.error && data.error.message) || 'Erro HTTP ' + response.status);
-    var reply = (data.choices && data.choices[0]) ? data.choices[0].message.content : 'Desculpe, tente novamente!';
+    if (!response.ok) throw new Error(data.error || 'Erro HTTP ' + response.status);
+    var reply = data.reply || 'Desculpe, tente novamente!';
     chatHistory.push({ role: 'assistant', content: reply });
     var typing = document.getElementById('typing-indicator');
     if (typing) typing.remove();
@@ -1797,10 +1794,10 @@ async function enviarMensagemIA(mensagem) {
     if (t) t.remove();
     var errDiv = document.createElement('div');
     errDiv.className = 'chat-msg recv';
-    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + '</div>';
+    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + ' 💛</div>';
     msgs.appendChild(errDiv);
     msgs.scrollTop = msgs.scrollHeight;
-    console.error('OpenAI error:', e);
+    console.error('Chat error:', e);
   }
 }
 
