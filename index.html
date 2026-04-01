@@ -800,8 +800,8 @@ tr:hover td { background:var(--rose-pale); }
       <aside class="g-sidebar">
         <div class="g-profile">
           <div class="g-avatar">A</div>
-          <div class="g-name">Ana Clara</div>
-          <div class="g-week">Semana <span>18</span> de gravidez</div>
+          <div class="g-name" id="g-profile-name">—</div>
+          <div class="g-week" id="g-semana-info">Bem-vinda ao Lua 🌙</div>
         </div>
         <nav class="g-nav">
           <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span>Início</div>
@@ -818,8 +818,8 @@ tr:hover td { background:var(--rose-pale); }
         </nav>
         <div class="g-doula-card">
           <div class="g-doula-card-title">Sua Doula</div>
-          <div class="g-doula-card-name">Juliana Ferreira</div>
-          <div class="g-doula-card-sub">📍 São Paulo, SP</div>
+          <div class="g-doula-card-name" id="g-doula-nome">Sua Doula</div>
+          <div class="g-doula-card-sub">Conectada ao app</div>
           <button class="g-doula-card-btn" onclick="gNavById('g-chat')">Enviar mensagem</button>
         </div>
       </aside>
@@ -837,7 +837,7 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <button class="btn-falar-doula" onclick="gNavById('g-chat')">
-            💬 Falar com minha Doula — Juliana
+            💬 Falar com minha Doula
           </button>
 
           <div class="proxima-consulta-card" id="proxima-consulta-card">
@@ -1296,7 +1296,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span>Biblioteca</div>
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span>Guia Prático</div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span>Financeiro</div>
-          <div class="d-nav-item" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span>Mensagens <span style="background:var(--rose);color:white;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px;">2</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span>Mensagens</div>
         </nav>
         <div class="d-sidebar-clients">
           <div class="d-clients-title">Clientes Ativas</div>
@@ -1396,7 +1396,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:20px;">
             <div class="card-title">➕ Novo agendamento</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option>Ana Clara</option><option>Mariana Silva</option><option>Paula Mendes</option><option>Renata Costa</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data e hora</label><input class="form-input" type="datetime-local"></div>
               <div class="form-group"><label class="form-label">Tipo de atendimento</label><select class="form-input form-select"><option>Consulta pré-natal</option><option>Preparação para o parto</option><option>Visita pós-parto</option><option>Reunião inicial</option><option>Outro</option></select></div>
               <div class="form-group"><label class="form-label">Observações</label><input class="form-input" type="text" placeholder="Tema ou observações da consulta"></div>
@@ -1421,7 +1421,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo registro</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option>Ana Clara</option><option>Mariana Silva</option><option>Paula Mendes</option><option>Renata Costa</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date"></div>
               <div class="form-group"><label class="form-label">Tipo de atendimento</label><select class="form-input form-select"><option>Consulta pré-natal</option><option>Preparação para o parto</option><option>Acompanhamento do parto</option><option>Visita pós-parto</option></select></div>
             </div>
@@ -1447,7 +1447,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo registro pós-parto</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option>Renata Costa</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data da visita</label><input class="form-input" type="date"></div>
               <div class="form-group"><label class="form-label">Dias pós-parto</label><input class="form-input" type="number" placeholder="Ex: 3"></div>
             </div>
@@ -1622,6 +1622,30 @@ function dNav(el, panelId) {
   el.classList.add('active');
   document.getElementById(panelId).classList.add('active');
 }
+
+function gNav(el, panelId) {
+  document.querySelectorAll('.g-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('.g-panel').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+function gNavById(panelId) {
+  var items = document.querySelectorAll('.g-nav-item');
+  for (var i = 0; i < items.length; i++) {
+    var onclick = items[i].getAttribute('onclick') || '';
+    if (onclick.indexOf(panelId) > -1) {
+      gNav(items[i], panelId);
+      return;
+    }
+  }
+  document.querySelectorAll('.g-panel').forEach(function(p) { p.classList.remove('active'); });
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+
 
 // ─── Toggles ───
 function togglePlan(btn) { btn.classList.toggle('selected'); }
@@ -2217,6 +2241,7 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-' + tipo).classList.add('active');
   document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : '🌙 Doula';
   document.getElementById('header-user-name').textContent = nome;
+  try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
   var primeiroNome = nome.split(' ')[0];
   var hora = new Date().getHours();
