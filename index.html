@@ -2149,7 +2149,7 @@ async function fazerCadastro() {
   try {
     var res = await db.auth.signUp({
       email: email, password: senha,
-      options: { data: { nome: nome, tipo: tipoSelecionado }, emailRedirectTo: 'https://appluagestacao.netlify.app' }
+      options: { data: { nome: nome, tipo: tipoSelecionado }, emailRedirectTo: 'https://lua-gestacao.vercel.app' }
     });
     btn.textContent = 'Criar conta'; btn.disabled = false;
     if (res.error) {
@@ -2806,7 +2806,7 @@ function mostrarToast(msg) {
           <div style="display:flex;flex-direction:column;gap:10px;">
             <a href="https://supabase.com/dashboard" target="_blank" style="color:#C9897A;font-size:13px;text-decoration:none;">🗄️ Painel Supabase →</a>
             <a href="https://app.netlify.com" target="_blank" style="color:#C9897A;font-size:13px;text-decoration:none;">🌐 Painel Netlify →</a>
-            <a href="https://appluagestacao.netlify.app" target="_blank" style="color:#C9897A;font-size:13px;text-decoration:none;">🔗 Ver app ao vivo →</a>
+            <a href="https://lua-gestacao.vercel.app" target="_blank" style="color:#C9897A;font-size:13px;text-decoration:none;">🔗 Ver app ao vivo →</a>
           </div>
         </div>
       </div>
