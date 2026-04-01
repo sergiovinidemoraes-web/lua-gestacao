@@ -2463,16 +2463,30 @@ async function adicionarBiblioteca() {
 
 async function carregarBibliotecaAdmin() {
   if (!db) return;
+  var el = document.getElementById('admin-bib-lista');
+  if (!el) return;
   try {
     var res = await db.from('biblioteca').select('*').order('criado_em', { ascending: false });
-    var el = document.getElementById('admin-bib-lista');
-    if (!el) return;
-    if (res.error || !res.data.length) { el.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum material ainda</div>'; return; }
-    var icons = { pdf:'📄', video:'🎬', slide:'📊', link:'🔗', imagem:'🖼️', arquivo:'📎' };
-    el.innerHTML = res.data.map(function(m) {
-      return '<div class="admin-item-row"><div><div style="font-size:14px;color:#E8C5BC;">' + (icons[m.tipo]||'📎') + ' ' + m.titulo + '</div><div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:2px;">' + (m.descricao||'') + ' • ' + m.destino + '</div><a href="' + m.url + '" target="_blank" style="font-size:11px;color:#C9897A;text-decoration:none;">Ver →</a></div><button class="admin-del-btn" onclick="deletarBiblioteca('' + m.id + '')">Remover</button></div>';
-    }).join('');
-  } catch(e) {}
+    if (res.error || !res.data || !res.data.length) {
+      el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum material ainda</div>';
+      return;
+    }
+    var html = '';
+    var data = res.data;
+    for (var i = 0; i < data.length; i++) {
+      var m = data[i];
+      var icon = m.tipo === 'pdf' ? 'PDF' : m.tipo === 'video' ? 'Video' : m.tipo === 'imagem' ? 'Img' : 'Link';
+      html += '<div class="admin-item-row">';
+      html += '<div>';
+      html += '<div style="font-size:14px;color:#E8C5BC;">' + icon + ' - ' + m.titulo + '</div>';
+      html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (m.descricao || '') + ' - ' + m.destino + '</div>';
+      html += '<a href="' + m.url + '" target="_blank" style="font-size:11px;color:#C9897A;text-decoration:none;">Ver link</a>';
+      html += '</div>';
+      html += '<button class="admin-del-btn" onclick="deletarBiblioteca(' + JSON.stringify(m.id) + ')">Remover</button>';
+      html += '</div>';
+    }
+    el.innerHTML = html;
+  } catch(e) { console.error(e); }
 }
 
 async function deletarBiblioteca(id) {
@@ -2500,11 +2514,23 @@ function adicionarConteudo() {
 function renderConteudosAdmin() {
   var el = document.getElementById('admin-cont-lista');
   if (!el) return;
-  if (!conteudosLocais.length) { el.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum conteúdo ainda</div>'; return; }
-  var fases = { inicio:'🤰 Início', meio:'🌿 Meio', final:'🔥 Final', posparto:'👶 Pós-parto' };
-  el.innerHTML = conteudosLocais.map(function(c) {
-    return '<div class="admin-item-row"><div><div style="font-size:14px;color:#E8C5BC;">' + c.icone + ' ' + c.titulo + '</div><div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:2px;">' + (fases[c.fase]||c.fase) + '</div></div><button class="admin-del-btn" onclick="deletarConteudo(' + c.id + ')">Remover</button></div>';
-  }).join('');
+  if (!conteudosLocais.length) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum conteudo ainda</div>';
+    return;
+  }
+  var fases = { inicio:'Inicio', meio:'Meio', final:'Final', posparto:'Pos-parto' };
+  var html = '';
+  for (var i = 0; i < conteudosLocais.length; i++) {
+    var c = conteudosLocais[i];
+    html += '<div class="admin-item-row">';
+    html += '<div>';
+    html += '<div style="font-size:14px;color:#E8C5BC;">' + c.icone + ' ' + c.titulo + '</div>';
+    html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (fases[c.fase] || c.fase) + '</div>';
+    html += '</div>';
+    html += '<button class="admin-del-btn" onclick="deletarConteudo(' + c.id + ')">Remover</button>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
 }
 
 function deletarConteudo(id) {
@@ -2533,10 +2559,23 @@ function adicionarFAQ() {
 function renderFAQAdmin() {
   var el = document.getElementById('admin-faq-lista');
   if (!el) return;
-  if (!faqLocais.length) { el.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhuma pergunta ainda</div>'; return; }
-  el.innerHTML = faqLocais.map(function(f) {
-    return '<div class="admin-item-row"><div style="flex:1;margin-right:12px;"><div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + f.pergunta + '</div><div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:4px;">' + f.resposta.substring(0,80) + '...</div></div><button class="admin-del-btn" onclick="deletarFAQ(' + f.id + ')">Remover</button></div>';
-  }).join('');
+  if (!faqLocais.length) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhuma pergunta ainda</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < faqLocais.length; i++) {
+    var f = faqLocais[i];
+    var preview = f.resposta.length > 80 ? f.resposta.substring(0, 80) + '...' : f.resposta;
+    html += '<div class="admin-item-row">';
+    html += '<div style="flex:1;margin-right:12px;">';
+    html += '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + f.pergunta + '</div>';
+    html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:4px;">' + preview + '</div>';
+    html += '</div>';
+    html += '<button class="admin-del-btn" onclick="deletarFAQ(' + f.id + ')">Remover</button>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
 }
 
 function deletarFAQ(id) {
