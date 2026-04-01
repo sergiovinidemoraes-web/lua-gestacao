@@ -710,6 +710,7 @@ tr:hover td { background:var(--rose-pale); }
       <div class="login-erro" id="login-erro"></div>
       <button class="login-btn" id="btn-login" onclick="fazerLogin()">Entrar</button>
       
+      
       <div class="login-divider">ou</div>
       <button class="login-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);" onclick="loginTab('cadastrar')">Criar nova conta</button>
     </div>
@@ -2308,9 +2309,9 @@ async function carregarUsuariosAdmin() {
     var data = res.data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante'; });
-    document.getElementById('total-usuarios').textContent = data.length;
-    document.getElementById('total-doulas').textContent = doulas.length;
-    document.getElementById('total-gestantes').textContent = gestantes.length;
+    try { document.getElementById('total-usuarios').textContent = data.length; } catch(e) {}
+    try { document.getElementById('total-doulas').textContent = doulas.length; } catch(e) {}
+    try { document.getElementById('total-gestantes').textContent = gestantes.length; } catch(e) {}
     try { document.getElementById('stat-total-cad').textContent = data.length; } catch(e) {}
     try { document.getElementById('stat-doulas-total').textContent = doulas.length; } catch(e) {}
     try { document.getElementById('stat-gest-total').textContent = gestantes.length; } catch(e) {}
@@ -2319,11 +2320,24 @@ async function carregarUsuariosAdmin() {
     try { document.getElementById('stat-hoje').textContent = hojeCount; } catch(e) {}
     var lista = document.getElementById('admin-usuarios-lista');
     if (!lista) return;
-    if (!data.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum usuário ainda</div>'; return; }
-    lista.innerHTML = data.map(function(u) {
-      return '<div class="admin-item-row"><div><div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + u.nome + '</div><div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:2px;">' + u.email + ' • ' + (u.tipo === 'doula' ? '🌙 Doula' : '🤰 Gestante') + '</div></div><button class="admin-del-btn" onclick="deletarUsuario('' + u.id + '','' + u.nome + '')">Remover</button></div>';
-    }).join('');
-  } catch(e) {}
+    if (!data.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum usuario ainda</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < data.length; i++) {
+      var u = data[i];
+      var tipo = u.tipo === 'doula' ? 'Doula' : 'Gestante';
+      html += '<div class="admin-item-row">';
+      html += '<div>';
+      html += '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + u.nome + '</div>';
+      html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + u.email + ' - ' + tipo + '</div>';
+      html += '</div>';
+      html += '<button class="admin-del-btn" onclick="deletarUsuario(' + JSON.stringify(u.id) + ',' + JSON.stringify(u.nome) + ')">Remover</button>';
+      html += '</div>';
+    }
+    lista.innerHTML = html;
+  } catch(e) { console.error('carregarUsuariosAdmin:', e); }
 }
 
 async function deletarUsuario(id, nome) {
