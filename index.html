@@ -686,7 +686,12 @@ tr:hover td { background:var(--rose-pale); }
 </style>
 </head>
 <body>
-
+<div id="debug-bar" style="position:fixed;top:0;left:0;right:0;background:#C9897A;color:white;font-size:12px;padding:4px 10px;z-index:99999;text-align:center;">
+  JS: carregando...
+</div>
+<script>
+  document.getElementById('debug-bar').textContent = 'JS: Script 1 OK ✅';
+</script>
 
 <!-- LOGIN SCREEN -->
 <div id="login-screen">
@@ -2071,9 +2076,13 @@ window.addEventListener('load', function() {
   try {
     db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     console.log('✅ Supabase OK');
+    document.getElementById('debug-bar').textContent = 'Supabase ✅ conectado!';
+    setTimeout(function(){ document.getElementById('debug-bar').style.display='none'; }, 3000);
     verificarSessao();
   } catch(e) {
     console.error('❌ Supabase erro:', e.message);
+    document.getElementById('debug-bar').style.background = '#c0392b';
+    document.getElementById('debug-bar').textContent = '❌ Erro Supabase: ' + e.message;
   }
   try { adminSenha = localStorage.getItem('lua_admin_senha') || 'lua_admin_2026'; } catch(e) {}
 });
