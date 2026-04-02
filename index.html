@@ -1069,8 +1069,8 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-title">Conteúdo por Fases</div>
           <div class="panel-sub">Materiais selecionados para cada momento da sua gestação</div>
 
-          <div class="content-phases">
-            <div class="phase-block open">
+          <div class="content-phases" id="content-phases-container">
+            <div class="phase-block open" id="phase-inicio">
               <div class="phase-block-header" onclick="togglePhaseBlock(this)">
                 <div>
                   <div class="phase-block-title">🤰 Início da gestação</div>
@@ -1078,29 +1078,25 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
                 <div class="phase-block-toggle">▼</div>
               </div>
-              <div class="phase-block-body">
-                <div class="content-item"><div class="content-icon">🫐</div><div><div class="content-label">Como aliviar enjoos e azia</div><div class="content-sub">Dicas práticas para o 1º trimestre</div></div></div>
-                <div class="content-item"><div class="content-icon">🥗</div><div><div class="content-label">Alimentação saudável na gestação</div><div class="content-sub">O que comer e o que evitar</div></div></div>
-                <div class="content-item"><div class="content-icon">💊</div><div><div class="content-label">Suplementos essenciais</div><div class="content-sub">Ácido fólico, ferro e vitaminas</div></div></div>
+              <div class="phase-block-body" id="content-gestante-inicio">
+                <div class="empty-state-small">Nenhum conteúdo ainda. Em breve! 💛</div>
               </div>
             </div>
 
-            <div class="phase-block open">
+            <div class="phase-block open" id="phase-meio">
               <div class="phase-block-header" onclick="togglePhaseBlock(this)">
                 <div>
                   <div class="phase-block-title">🌿 Meio da gestação</div>
-                  <div class="phase-block-badge">Semanas 14–27 • Você está aqui!</div>
+                  <div class="phase-block-badge">Semanas 14–27</div>
                 </div>
                 <div class="phase-block-toggle">▼</div>
               </div>
-              <div class="phase-block-body">
-                <div class="content-item"><div class="content-icon">🧘</div><div><div class="content-label">Exercícios respiratórios</div><div class="content-sub">Técnicas para relaxamento e parto</div></div></div>
-                <div class="content-item"><div class="content-icon">💆</div><div><div class="content-label">Preparação emocional</div><div class="content-sub">Lidando com ansiedade e medos</div></div></div>
-                <div class="content-item"><div class="content-icon">🎵</div><div><div class="content-label">Conexão com o bebê</div><div class="content-sub">Falar, cantar e tocar a barriga</div></div></div>
+              <div class="phase-block-body" id="content-gestante-meio">
+                <div class="empty-state-small">Nenhum conteúdo ainda. Em breve! 💛</div>
               </div>
             </div>
 
-            <div class="phase-block">
+            <div class="phase-block" id="phase-final">
               <div class="phase-block-header" onclick="togglePhaseBlock(this)">
                 <div>
                   <div class="phase-block-title">🔥 Final da gestação</div>
@@ -1108,10 +1104,21 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
                 <div class="phase-block-toggle">▼</div>
               </div>
-              <div class="phase-block-body">
-                <div class="content-item"><div class="content-icon">🏥</div><div><div class="content-label">Como saber se é trabalho de parto</div><div class="content-sub">Sinais reais x pródromos</div></div></div>
-                <div class="content-item"><div class="content-icon">🎵</div><div><div class="content-label">Playlist para o parto</div><div class="content-sub">Músicas para cada fase do trabalho de parto</div></div></div>
-                <div class="content-item"><div class="content-icon">🧳</div><div><div class="content-label">Preparação prática para o parto</div><div class="content-sub">Mala, documentos e o que esperar</div></div></div>
+              <div class="phase-block-body" id="content-gestante-final">
+                <div class="empty-state-small">Nenhum conteúdo ainda. Em breve! 💛</div>
+              </div>
+            </div>
+
+            <div class="phase-block" id="phase-posparto">
+              <div class="phase-block-header" onclick="togglePhaseBlock(this)">
+                <div>
+                  <div class="phase-block-title">👶 Pós-parto</div>
+                  <div class="phase-block-badge">Após o nascimento</div>
+                </div>
+                <div class="phase-block-toggle">▼</div>
+              </div>
+              <div class="phase-block-body" id="content-gestante-posparto">
+                <div class="empty-state-small">Nenhum conteúdo ainda. Em breve! 💛</div>
               </div>
             </div>
 
@@ -1218,11 +1225,52 @@ tr:hover td { background:var(--rose-pale); }
             <div class="pos-hero-title">Bem-vinda ao pós-parto</div>
             <div class="pos-hero-sub">Você acabou de fazer algo extraordinário. Agora vamos cuidar de você e do seu bebê.</div>
           </div>
-          <div class="pos-grid">
-            <div class="pos-item"><div class="pos-item-icon">🤱</div><div class="pos-item-title">Amamentação</div><div class="pos-item-text">Pega correta, posições, fissuras e como aumentar a produção de leite</div></div>
-            <div class="pos-item"><div class="pos-item-icon">😴</div><div class="pos-item-title">Rotina de sono</div><div class="pos-item-text">Como organizar o sono do bebê e descansar mais</div></div>
-            <div class="pos-item"><div class="pos-item-icon">💆‍♀️</div><div class="pos-item-title">Autocuidado materno</div><div class="pos-item-text">Recuperação física, alimentação e bem-estar emocional</div></div>
-            <div class="pos-item"><div class="pos-item-icon">🍎</div><div class="pos-item-title">Introdução alimentar</div><div class="pos-item-text">Quando começar e como fazer a introdução alimentar</div></div>
+          <div class="content-phases">
+
+            <div class="phase-block open">
+              <div class="phase-block-header" onclick="togglePhaseBlock(this)">
+                <div><div class="phase-block-title">🤱 Amamentação</div>
+                <div class="phase-block-badge">Pega correta, posições, produção de leite</div></div>
+                <div class="phase-block-toggle">▼</div>
+              </div>
+              <div class="phase-block-body" id="content-gestante-posparto-amamentacao">
+                <div class="empty-state-small">Nenhum material ainda. Em breve! 💛</div>
+              </div>
+            </div>
+
+            <div class="phase-block open">
+              <div class="phase-block-header" onclick="togglePhaseBlock(this)">
+                <div><div class="phase-block-title">😴 Rotina de sono</div>
+                <div class="phase-block-badge">Como organizar o sono do bebê</div></div>
+                <div class="phase-block-toggle">▼</div>
+              </div>
+              <div class="phase-block-body" id="content-gestante-posparto-sono">
+                <div class="empty-state-small">Nenhum material ainda. Em breve! 💛</div>
+              </div>
+            </div>
+
+            <div class="phase-block open">
+              <div class="phase-block-header" onclick="togglePhaseBlock(this)">
+                <div><div class="phase-block-title">💆 Autocuidado materno</div>
+                <div class="phase-block-badge">Recuperação física e bem-estar emocional</div></div>
+                <div class="phase-block-toggle">▼</div>
+              </div>
+              <div class="phase-block-body" id="content-gestante-posparto-autocuidado">
+                <div class="empty-state-small">Nenhum material ainda. Em breve! 💛</div>
+              </div>
+            </div>
+
+            <div class="phase-block open">
+              <div class="phase-block-header" onclick="togglePhaseBlock(this)">
+                <div><div class="phase-block-title">🍎 Introdução alimentar</div>
+                <div class="phase-block-badge">Quando começar e como fazer</div></div>
+                <div class="phase-block-toggle">▼</div>
+              </div>
+              <div class="phase-block-body" id="content-gestante-posparto-alimentacao">
+                <div class="empty-state-small">Nenhum material ainda. Em breve! 💛</div>
+              </div>
+            </div>
+
           </div>
           <div class="pos-alerta">
             <div class="pos-alerta-title">⚠️ Sinais de alerta — procure ajuda imediatamente se tiver:</div>
@@ -2274,12 +2322,14 @@ function entrarNoApp(tipo, nome) {
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
   if (tipo === 'gestante') {
     setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
+    setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
     var g = document.getElementById('gestante-greeting');
     if (g) g.textContent = saudacao + ', ' + primeiroNome + '! 🌸';
   } else {
+    setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     var g2 = document.getElementById('doula-greeting');
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
   }
@@ -2296,6 +2346,78 @@ async function fazerLogout() {
 
 function backToSplash() { fazerLogout(); }
 function enterApp(role) { entrarNoApp(role, role === 'gestante' ? 'Visitante' : 'Doula'); }
+
+// ── Carregar conteudos do banco ──
+async function carregarConteudos() {
+  if (!db) return;
+  try {
+    var res = await db.from('biblioteca').select('*').order('criado_em', { ascending: true });
+    if (res.error || !res.data) return;
+    var data = res.data;
+
+    // Limpar areas
+    var areas = ['gestante-inicio', 'gestante-meio', 'gestante-final', 'gestante-posparto', 'bib-grid-doula'];
+    areas.forEach(function(area) {
+      var el = document.getElementById('content-' + area) || document.getElementById(area);
+      if (el) el.innerHTML = '<div class="empty-state-small">Nenhum conteudo ainda 💛</div>';
+    });
+
+    // Distribuir conteudos
+    data.forEach(function(item) {
+      var elId = item.destino === 'doula' ? 'bib-grid-doula' : 'content-' + item.destino;
+      var el = document.getElementById(elId);
+      if (!el) return;
+
+      // Remove empty state
+      var empty = el.querySelector('.empty-state-small');
+      if (empty) empty.remove();
+
+      var icon = item.tipo === 'video' ? '🎬' : item.tipo === 'pdf' ? '📄' : '🔗';
+      var itemHtml = '';
+
+      if (item.destino === 'doula') {
+        // Biblioteca da doula
+        itemHtml = '<div class="bib-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
+          '<div class="bib-item-icon">' + icon + '</div>' +
+          '<div class="bib-item-title">' + item.titulo + '</div>' +
+          '<div class="bib-item-meta">' + (item.descricao || '') + '</div>' +
+          '<div class="bib-item-type ' + (item.tipo === 'pdf' ? 'bib-pdf' : item.tipo === 'video' ? 'bib-video' : 'bib-slide') + '">' + item.tipo.toUpperCase() + '</div>' +
+          '</div>';
+      } else {
+        // Conteudo da gestante
+        if (item.tipo === 'video') {
+          var ytId = getYoutubeId(item.url);
+          itemHtml = '<div class="content-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
+            '<div class="content-icon">' + icon + '</div>' +
+            '<div><div class="content-label">' + item.titulo + '</div>' +
+            '<div class="content-sub">' + (item.descricao || 'Video') + '</div></div>' +
+            '</div>';
+          if (ytId) {
+            itemHtml += '<div style="border-radius:10px;overflow:hidden;margin-bottom:10px;">' +
+              '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" style="width:100%;display:block;border-radius:10px;cursor:pointer;" onclick="abrirMaterial('' + item.url + '','video')">' +
+              '</div>';
+          }
+        } else {
+          itemHtml = '<div class="content-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
+            '<div class="content-icon">' + icon + '</div>' +
+            '<div><div class="content-label">' + item.titulo + '</div>' +
+            '<div class="content-sub">' + (item.descricao || '') + '</div></div>' +
+            '</div>';
+        }
+      }
+
+      var div = document.createElement('div');
+      div.innerHTML = itemHtml;
+      el.appendChild(div);
+    });
+
+  } catch(e) { console.error('carregarConteudos:', e); }
+}
+
+function abrirMaterial(url, tipo) {
+  if (!url) return;
+  window.open(url, '_blank');
+}
 
 // ── DPP e semana gestacional ──
 function calcularSemana(dpp) {
@@ -2585,26 +2707,44 @@ async function carregarBibliotecaAdmin() {
       el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum material ainda</div>';
       return;
     }
-    var html = '';
+    el.innerHTML = '';
     var data = res.data;
     for (var i = 0; i < data.length; i++) {
       var m = data[i];
-      var icon = m.tipo === 'pdf' ? 'PDF' : m.tipo === 'video' ? 'Video' : m.tipo === 'imagem' ? 'Img' : 'Link';
-      html += '<div class="admin-item-row">';
-      html += '<div>';
-      html += '<div style="font-size:14px;color:#E8C5BC;">' + icon + ' - ' + m.titulo + '</div>';
-      html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (m.descricao || '') + ' - ' + m.destino + '</div>';
-      html += '<a href="' + m.url + '" target="_blank" style="font-size:11px;color:#C9897A;text-decoration:none;">Ver link</a>';
-      html += '</div>';
-      html += '<button class="admin-del-btn" onclick="deletarBiblioteca(' + JSON.stringify(m.id) + ')">Remover</button>';
-      html += '</div>';
+      var icon = m.tipo === 'pdf' ? '📄' : m.tipo === 'video' ? '🎬' : m.tipo === 'imagem' ? '🖼️' : '🔗';
+      var row = document.createElement('div');
+      row.className = 'admin-item-row';
+      row.innerHTML = '<div>' +
+        '<div style="font-size:14px;color:#E8C5BC;">' + icon + ' ' + m.titulo + '</div>' +
+        '<div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:2px;">' + (m.descricao || '') + ' — ' + m.destino + '</div>' +
+        '<a href="' + m.url + '" target="_blank" style="font-size:11px;color:#C9897A;text-decoration:none;">Ver →</a>' +
+        '</div>';
+      var btn = document.createElement('button');
+      btn.className = 'admin-del-btn';
+      btn.textContent = 'Remover';
+      btn.setAttribute('data-id', m.id);
+      btn.onclick = function() {
+        var id = this.getAttribute('data-id');
+        deletarBiblioteca(id);
+      };
+      row.appendChild(btn);
+      el.appendChild(row);
     }
-    el.innerHTML = html;
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error('carregarBibliotecaAdmin:', e); }
 }
 
 async function deletarBiblioteca(id) {
-  try { await db.from('biblioteca').delete().eq('id', id); mostrarToast('✅ Removido'); carregarBibliotecaAdmin(); } catch(e) {}
+  if (!confirm('Remover este material?')) return;
+  try {
+    var res = await db.from('biblioteca').delete().eq('id', id);
+    if (res.error) throw res.error;
+    mostrarToast('✅ Material removido!');
+    carregarBibliotecaAdmin();
+    carregarConteudos();
+  } catch(e) {
+    mostrarToast('Erro ao remover: ' + e.message);
+    console.error(e);
+  }
 }
 
 // ── Conteúdos (localStorage) ──
@@ -2818,11 +2958,16 @@ function mostrarToast(msg) {
               <input class="admin-input" type="text" id="bib-titulo" placeholder="Ex: Guia de respiração">
             </div>
             <div>
-              <label class="admin-label">Destinado a</label>
+              <label class="admin-label">Onde vai aparecer?</label>
               <select class="admin-input" id="bib-destino">
-                <option value="ambos">Doulas e gestantes</option>
-                <option value="doula">Apenas doulas</option>
-                <option value="gestante">Apenas gestantes</option>
+                <option value="doula">📚 Biblioteca da Doula</option>
+                <option value="gestante-inicio">🤰 Gestante — Início (1-13 sem)</option>
+                <option value="gestante-meio">🌿 Gestante — Meio (14-27 sem)</option>
+                <option value="gestante-final">🔥 Gestante — Final (28-40 sem)</option>
+                <option value="gestante-posparto-amamentacao">🤱 Pós-parto — Amamentação</option>
+                <option value="gestante-posparto-sono">😴 Pós-parto — Rotina de sono</option>
+                <option value="gestante-posparto-autocuidado">💆 Pós-parto — Autocuidado materno</option>
+                <option value="gestante-posparto-alimentacao">🍎 Pós-parto — Introdução alimentar</option>
               </select>
             </div>
           </div>
