@@ -135,6 +135,17 @@ header { padding-top: env(safe-area-inset-top, 0); }
   #admin-panel > div:last-child > div:first-child { display:none; }
 }
 
+
+.lua-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99998; align-items:center; justify-content:center; }
+.lua-modal-overlay.show { display:flex; }
+.lua-modal { background:var(--white); border-radius:20px; padding:28px; max-width:340px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.lua-modal-icon { font-size:36px; margin-bottom:12px; }
+.lua-modal-title { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--dark); margin-bottom:8px; }
+.lua-modal-sub { font-size:14px; color:var(--earth-light); margin-bottom:24px; line-height:1.5; }
+.lua-modal-btns { display:flex; gap:10px; justify-content:center; }
+.lua-modal-cancel { background:var(--rose-pale); color:var(--rose); border:none; padding:10px 24px; border-radius:20px; font-size:14px; cursor:pointer; font-family:inherit; }
+.lua-modal-confirm { background:var(--rose); color:white; border:none; padding:10px 24px; border-radius:20px; font-size:14px; cursor:pointer; font-family:inherit; }
+
 /* ─── HEADER ─── */
 #app { display:none; min-height:100vh; }
 #app.visible { display:flex; flex-direction:column; }
@@ -2456,15 +2467,22 @@ function abrirMaterial(url, tipo) {
 
 // ── DPP e semana gestacional ──
 function calcularSemana(dpp) {
+  // Parse date manually to avoid timezone issues
+  var partes = dpp.split('-');
+  var ano = parseInt(partes[0]);
+  var mes = parseInt(partes[1]) - 1;
+  var dia = parseInt(partes[2]);
   var hoje = new Date();
-  var dataParto = new Date(dpp);
+  hoje.setHours(0, 0, 0, 0);
+  var dataParto = new Date(ano, mes, dia);
+  dataParto.setHours(0, 0, 0, 0);
   var diffMs = dataParto - hoje;
   var diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
   var semanasRestantes = Math.round(diffDias / 7);
   var semanasGestacao = 40 - semanasRestantes;
   if (semanasGestacao < 0) semanasGestacao = 0;
   if (semanasGestacao > 40) semanasGestacao = 40;
-  return { semana: semanasGestacao, faltam: semanasRestantes, dias: diffDias, progresso: Math.round((semanasGestacao/40)*100) };
+  return { semana: semanasGestacao, faltam: Math.max(0, semanasRestantes), dias: Math.max(0, diffDias), progresso: Math.round((semanasGestacao/40)*100) };
 }
 
 function atualizarDashboardGestante(dpp) {
@@ -2612,8 +2630,9 @@ async function carregarUsuariosAdmin() {
 }
 
 async function deletarUsuario(id, nome) {
-  if (!confirm('Remover ' + nome + '?')) return;
-  try { await db.from('usuarios').delete().eq('id', id); mostrarToast('✅ Removido'); carregarUsuariosAdmin(); } catch(e) {}
+  abrirModal('Remover usuario?', nome + ' sera removido do app.', async function() {
+    try { await db.from('usuarios').delete().eq('id', id); mostrarToast('Removido!'); carregarUsuariosAdmin(); } catch(e) {}
+  });
 }
 
 // ── Tipo de material ──
@@ -2769,17 +2788,17 @@ async function carregarBibliotecaAdmin() {
 }
 
 async function deletarBiblioteca(id) {
-  if (!confirm('Remover este material?')) return;
-  try {
-    var res = await db.from('biblioteca').delete().eq('id', id);
-    if (res.error) throw res.error;
-    mostrarToast('✅ Material removido!');
-    carregarBibliotecaAdmin();
-    carregarConteudos();
-  } catch(e) {
-    mostrarToast('Erro ao remover: ' + e.message);
-    console.error(e);
-  }
+  abrirModal('Remover material?', 'Esta acao nao pode ser desfeita.', async function() {
+    try {
+      var res = await db.from('biblioteca').delete().eq('id', id);
+      if (res.error) throw res.error;
+      mostrarToast('Material removido!');
+      carregarBibliotecaAdmin();
+      carregarConteudos();
+    } catch(e) {
+      mostrarToast('Erro ao remover: ' + e.message);
+    }
+  });
 }
 
 // ── Conteúdos (localStorage) ──
@@ -2889,6 +2908,23 @@ function alterarSenhaAdmin() {
   document.getElementById('nova-senha-admin').value='';
   document.getElementById('conf-senha-admin').value='';
   mostrarToast('✅ Senha alterada!');
+}
+
+// ── Modal de confirmacao ──
+var modalCallback = null;
+function abrirModal(titulo, sub, callback) {
+  modalCallback = callback;
+  document.getElementById('modal-title').textContent = titulo;
+  document.getElementById('modal-sub').textContent = sub;
+  document.getElementById('modal-confirm-btn').onclick = function() {
+    fecharModal();
+    if (modalCallback) modalCallback();
+  };
+  document.getElementById('lua-modal').classList.add('show');
+}
+function fecharModal() {
+  document.getElementById('lua-modal').classList.remove('show');
+  modalCallback = null;
 }
 
 // ── Toast ──
@@ -3169,6 +3205,20 @@ function mostrarToast(msg) {
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL DE CONFIRMAÇÃO -->
+<div class="lua-modal-overlay" id="lua-modal">
+  <div class="lua-modal">
+    <div class="lua-modal-icon">🗑️</div>
+    <div class="lua-modal-title" id="modal-title">Remover material?</div>
+    <div class="lua-modal-sub" id="modal-sub">Esta ação não pode ser desfeita.</div>
+    <div class="lua-modal-btns">
+      <button class="lua-modal-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="lua-modal-confirm" id="modal-confirm-btn">Remover</button>
     </div>
   </div>
 </div>
