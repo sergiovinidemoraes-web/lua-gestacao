@@ -811,7 +811,8 @@ tr:hover td { background:var(--rose-pale); }
     <div class="gestante-layout">
       <aside class="g-sidebar">
         <div class="g-profile">
-          <div class="g-avatar">A</div>
+          <div class="g-avatar" id="g-avatar-img" onclick="trocarFotoPerfil()" style="cursor:pointer;overflow:hidden;" title="Clique para alterar foto">A</div>
+        <input type="file" id="foto-perfil-input" accept="image/*" style="display:none" onchange="salvarFotoPerfil(this)">
           <div class="g-name" id="g-profile-name">—</div>
           <div class="g-week" id="g-semana-info">Bem-vinda ao Lua 🌙</div>
         </div>
@@ -1064,11 +1065,9 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div class="card">
-            <div class="card-title">🎥 Aprenda a cronometrar corretamente</div>
-            <div style="background:var(--dark);border-radius:14px;padding:20px;text-align:center;color:white;">
-              <div style="font-size:40px;margin-bottom:10px;">▶️</div>
-              <div style="font-size:14px;opacity:0.8;">Vídeo: Como cronometrar contrações e quando ir para o hospital</div>
-              <div style="font-size:12px;opacity:0.5;margin-top:6px;">por Juliana Ferreira • 8 min</div>
+            <div class="card-title">Aprenda a cronometrar corretamente</div>
+            <div id="video-contracoes-area" style="background:var(--dark);border-radius:14px;padding:20px;text-align:center;color:white;">
+              <div style="font-size:14px;opacity:0.8;">Vídeo será adicionado em breve pelo admin</div>
             </div>
             <div style="margin-top:16px;padding:14px;background:var(--gold-pale);border-radius:12px;font-size:13px;color:#6a5020;line-height:1.7;">
               <strong>⏱ Regra 5-1-1:</strong> Vá para o hospital quando as contrações durarem <strong>1 minuto</strong>, a cada <strong>5 minutos</strong>, por pelo menos <strong>1 hora</strong>.
@@ -1609,7 +1608,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo contrato</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option>Ana Clara</option><option>Mariana Silva</option><option>Paula Mendes</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Valor total do serviço</label><input class="form-input" type="text" placeholder="R$ 0,00"></div>
               <div class="form-group"><label class="form-label">Número de parcelas</label><input class="form-input" type="number" placeholder="Ex: 3"></div>
               <div class="form-group"><label class="form-label">Status</label><select class="form-input form-select"><option>Pendente</option><option>Parcialmente pago</option><option>Pago</option></select></div>
@@ -1722,7 +1721,27 @@ function toggleTarefa(el) { el.classList.toggle('done'); el.querySelector('.tare
 function toggleFaseTask(el) { el.classList.toggle('done'); el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : ''; }
 function toggleChecklist(el) { el.classList.toggle('done'); el.querySelector('.checklist-box').textContent = el.classList.contains('done') ? '✓' : ''; }
 function togglePhaseBlock(header) { header.parentElement.classList.toggle('open'); }
-function setBibCat(btn) { document.querySelectorAll('.bib-cat').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function setBibCat(btn) {
+  document.querySelectorAll('.bib-cat').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var filtro = btn.textContent.trim().toLowerCase();
+  filtrarBiblioteca(filtro);
+}
+
+function filtrarBiblioteca(filtro) {
+  var items = document.querySelectorAll('#bib-grid-doula .bib-item');
+  items.forEach(function(item) {
+    if (filtro === 'todos') {
+      item.style.display = 'block';
+    } else {
+      var badge = item.querySelector('.bib-item-type');
+      var tipo = badge ? badge.textContent.trim().toLowerCase() : '';
+      var map = { 'pdfs': 'pdf', 'vídeos': 'video', 'videos': 'video', 'slides': 'slide', 'materiais educativos': 'educativo' };
+      var filtroMapeado = map[filtro] || filtro;
+      item.style.display = tipo.indexOf(filtroMapeado) > -1 ? 'block' : 'none';
+    }
+  });
+}
 function toggleFaq(questionEl) { questionEl.parentElement.classList.toggle('open'); }
 
 // ─── Diary ───
@@ -1815,6 +1834,56 @@ const faqRespostas = {
 };
 
 // ── Chat IA (via /api/chat — chave segura no Vercel) ──
+// ── Frases por semana gestacional ──
+var frasesPorSemana = {
+  1:  'Sua jornada começa agora. Que momento especial! 💛',
+  2:  'Seu corpo já está trabalhando, mesmo que você ainda não sinta. Confie nele.',
+  3:  'Pequenas células se multiplicam com um propósito imenso. Você é incrível.',
+  4:  'O bebê está se implantando. Um novo capítulo começa.',
+  5:  'Mudanças sutis, mas reais. Seu corpo está se adaptando com sabedoria.',
+  6:  'O coração do bebê já bate. Que milagre você carrega!',
+  7:  'Enjoos podem aparecer — são sinais de que tudo está funcionando.',
+  8:  'O bebê tem o tamanho de um feijão e já tem bracinhos e perninhas.',
+  9:  'Você está quase no fim do primeiro trimestre. Está indo muito bem!',
+  10: 'O bebê já pode fazer movimentos, mesmo que você não sinta ainda.',
+  11: 'Falta pouco para o segundo trimestre. Você chegou longe!',
+  12: 'Ultrassom do primeiro trimestre — um momento inesquecível te espera.',
+  13: 'Primeiro trimestre concluído! Você foi incrível até aqui.',
+  14: 'Bem-vinda ao segundo trimestre! A energia tende a voltar.',
+  15: 'O bebê já pode ouvir sua voz. Fale com ele!',
+  16: 'Você pode começar a sentir os primeiros movimentos. Que emoção!',
+  17: 'Seu bebê está crescendo rapidamente. E você também, mamãe.',
+  18: 'Os movimentos estão ficando mais perceptíveis. Aproveite cada um.',
+  19: 'O bebê já tem impressões digitais únicas — assim como você.',
+  20: 'Metade do caminho! Você está arrasando nessa gestação.',
+  21: 'O bebê engole líquido amniótico e pratica para o mundo lá fora.',
+  22: 'Já dá para sentir chutes mais fortes. Que conexão linda!',
+  23: 'O bebê reconhece sua voz. Continue conversando com ele.',
+  24: 'Viabilidade fetal — mais um marco importante alcançado.',
+  25: 'O bebê responde a sons e luz. Que mundo rico ele já descobre!',
+  26: 'Faltam apenas 14 semanas. Você está indo muito bem!',
+  27: 'Último mês do segundo trimestre. Que jornada linda tem sido essa.',
+  28: 'Bem-vinda ao terceiro trimestre! A reta final começa.',
+  29: 'O bebê está acumulando gordura e ficando cada vez mais redondinho.',
+  30: 'Dez semanas para o grande dia. Respira fundo — você consegue!',
+  31: 'O bebê já fica em posição com a cabeça para baixo na maioria das vezes.',
+  32: 'Hora de preparar a mala da maternidade. Que animação!',
+  33: 'Cada contração de Braxton Hicks é seu corpo se preparando.',
+  34: 'O bebê já tem todos os órgãos formados. Só falta ganhar peso.',
+  35: 'Cinco semanas! O bebê está quase pronto para o mundo.',
+  36: 'Período de maturação final. Você está quase lá, mamãe!',
+  37: 'A termo precoce! O bebê pode nascer a qualquer momento.',
+  38: 'Cada dia agora é um presente. Aproveite esses últimos momentos a sós.',
+  39: 'O bebê está pronto. Seu corpo sabe a hora certa.',
+  40: 'A hora chegou ou está chegando. Você foi incrível em cada semana!'
+};
+
+function getFraseSemana(semana) {
+  if (!semana || semana <= 0) return '"Bem-vinda ao Lua! Configure sua DPP para começar. 💛"';
+  var s = Math.min(Math.max(Math.round(semana), 1), 40);
+  return frasesPorSemana[s] ? '"' + frasesPorSemana[s] + '"' : '"Você está indo muito bem, mamãe! 💛"';
+}
+
 var chatHistory = [];
 var nomeDoula = 'Lua';
 var SYSTEM_PROMPT = 'Voce e ' + nomeDoula + ', uma doula virtual acolhedora, empatica e especialista em gestacao, parto e pos-parto. Responda sempre em portugues brasileiro, com tom caloroso e gentil. Suas respostas devem ser curtas (maximo 3 paragrafos), praticas e tranquilizadoras. Se a pergunta for urgente ou emergencia medica, oriente a gestante a contatar sua doula ou ir ao hospital. Nunca substitua um medico.';
@@ -2334,6 +2403,7 @@ function entrarNoApp(tipo, nome) {
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
   if (tipo === 'gestante') {
     setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
+    setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
@@ -2370,7 +2440,7 @@ async function carregarConteudos() {
       'gestante-inicio', 'gestante-meio', 'gestante-final',
       'gestante-posparto-amamentacao', 'gestante-posparto-sono',
       'gestante-posparto-autocuidado', 'gestante-posparto-alimentacao',
-      'bib-grid-doula'
+      'bib-grid-doula', 'gestante-contracoes'
     ];
 
     // Clear all areas
@@ -2391,7 +2461,18 @@ async function carregarConteudos() {
 
       var div = document.createElement('div');
 
-      if (item.destino === 'doula') {
+      if (item.destino === 'gestante-contracoes') {
+        // Video de contrações - update the dedicated area
+        var vcArea = document.getElementById('video-contracoes-area');
+        if (vcArea && item.tipo === 'video') {
+          var ytId = getYoutubeId(item.url);
+          if (ytId) {
+            vcArea.innerHTML = '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" style="width:100%;border-radius:10px;cursor:pointer;" onclick="window.open('' + item.url + '','_blank')">' +
+              '<div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;text-align:center;">' + item.titulo + '</div>';
+          }
+        }
+        return;
+      } else if (item.destino === 'doula') {
         div.className = 'bib-item';
         div.style.cursor = 'pointer';
         div.onclick = (function(url) { return function() { window.open(url, '_blank'); }; })(item.url);
@@ -2514,7 +2595,14 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-acomp-sub').textContent = 'Você está na semana ' + info.semana + ' — ' + tri + ' 🌸'; } catch(e) {}
   
   // Gestante greeting sub
-  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — você está indo muito bem! 💛'; } catch(e) {}
+  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — você está indo muito bem!'; } catch(e) {}
+  // Update frase do dia
+  try { document.getElementById('frase-texto').textContent = getFraseSemana(info.semana); } catch(e) {}
+  // Update frase sub
+  try {
+    var fraseSub = document.querySelector('.frase-sub');
+    if (fraseSub) fraseSub.textContent = 'Semana ' + info.semana;
+  } catch(e) {}
 }
 
 function salvarDPP() {
@@ -2529,6 +2617,41 @@ function carregarDPP() {
   var dpp = null;
   try { dpp = localStorage.getItem('lua_dpp'); } catch(e) {}
   atualizarDashboardGestante(dpp);
+}
+
+// ── Foto de perfil ──
+function trocarFotoPerfil() {
+  document.getElementById('foto-perfil-input').click();
+}
+
+function salvarFotoPerfil(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    try { localStorage.setItem('lua_foto_perfil', dataUrl); } catch(err) {}
+    aplicarFotoPerfil(dataUrl);
+    mostrarToast('Foto atualizada!');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function aplicarFotoPerfil(dataUrl) {
+  var avatar = document.getElementById('g-avatar-img');
+  if (!avatar) return;
+  if (dataUrl) {
+    avatar.style.backgroundImage = 'url(' + dataUrl + ')';
+    avatar.style.backgroundSize = 'cover';
+    avatar.style.backgroundPosition = 'center';
+    avatar.textContent = '';
+  }
+}
+
+function carregarFotoPerfil() {
+  try {
+    var foto = localStorage.getItem('lua_foto_perfil');
+    if (foto) aplicarFotoPerfil(foto);
+  } catch(e) {}
 }
 
 // ── Contato com doula ──
@@ -3044,6 +3167,7 @@ function mostrarToast(msg) {
                 <option value="gestante-posparto-sono">😴 Pós-parto — Rotina de sono</option>
                 <option value="gestante-posparto-autocuidado">💆 Pós-parto — Autocuidado materno</option>
                 <option value="gestante-posparto-alimentacao">🍎 Pós-parto — Introdução alimentar</option>
+                <option value="gestante-contracoes">⏱ Gestante — Vídeo de Contrações</option>
               </select>
             </div>
           </div>
