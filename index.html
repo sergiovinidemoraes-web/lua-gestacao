@@ -1836,7 +1836,7 @@ const faqRespostas = {
 // ── Chat IA (via /api/chat — chave segura no Vercel) ──
 // ── Frases por semana gestacional ──
 var frasesPorSemana = {
-  1:  'Sua jornada começa agora. Que momento especial! 💛',
+  1:  'Sua jornada comeca agora. Que momento especial!',
   2:  'Seu corpo já está trabalhando, mesmo que você ainda não sinta. Confie nele.',
   3:  'Pequenas células se multiplicam com um propósito imenso. Você é incrível.',
   4:  'O bebê está se implantando. Um novo capítulo começa.',
@@ -2466,9 +2466,24 @@ async function carregarConteudos() {
         var vcArea = document.getElementById('video-contracoes-area');
         if (vcArea && item.tipo === 'video') {
           var ytId = getYoutubeId(item.url);
+          vcArea.innerHTML = '';
           if (ytId) {
-            vcArea.innerHTML = '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" style="width:100%;border-radius:10px;cursor:pointer;" onclick="window.open('' + item.url + '','_blank')">' +
-              '<div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;text-align:center;">' + item.titulo + '</div>';
+            var img = document.createElement('img');
+            img.src = 'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg';
+            img.style.cssText = 'width:100%;border-radius:10px;cursor:pointer;';
+            img.onclick = (function(u){ return function(){ window.open(u,'_blank'); }; })(item.url);
+            var lbl = document.createElement('div');
+            lbl.style.cssText = 'font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;text-align:center;';
+            lbl.textContent = item.titulo;
+            vcArea.appendChild(img);
+            vcArea.appendChild(lbl);
+          } else {
+            var lnk = document.createElement('a');
+            lnk.href = item.url;
+            lnk.target = '_blank';
+            lnk.style.cssText = 'color:#C9897A;font-size:14px;';
+            lnk.textContent = item.titulo;
+            vcArea.appendChild(lnk);
           }
         }
         return;
