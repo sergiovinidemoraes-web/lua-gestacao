@@ -844,8 +844,8 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="gestante-dash-sub">Bem-vinda ao Lua</div>
 
           <div id="onboarding-card" style="background:linear-gradient(135deg,#8A9E8C,#6a8a6c);border-radius:20px;padding:24px;color:white;margin-bottom:20px;display:none;">
-          <div style="font-size:20px;margin-bottom:8px;">🌱 Configure sua gestação</div>
-          <div style="font-size:14px;opacity:0.85;margin-bottom:16px;">Informe sua data provável do parto para acompanharmos sua jornada</div>
+          <div style="font-size:16px;font-weight:500;margin-bottom:6px;" id="onboard-titulo">Configure sua gestação</div>
+          <div style="font-size:13px;opacity:0.85;margin-bottom:16px;" id="onboard-sub">Informe sua data provável do parto para acompanharmos sua jornada</div>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <input type="date" id="dpp-input" style="padding:8px 14px;border-radius:10px;border:none;font-size:14px;font-family:inherit;background:rgba(255,255,255,0.2);color:white;outline:none;">
             <button onclick="salvarDPP()" style="background:white;color:#6a8a6c;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Salvar</button>
@@ -857,38 +857,38 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <button class="btn-falar-doula" onclick="gNavById('g-chat')">
-            💬 Falar com minha Doula
+            Falar com minha Doula
           </button>
 
           <div class="proxima-consulta-card" id="proxima-consulta-card">
-            <div class="consulta-data">📅 PRÓXIMA CONSULTA</div>
+            <div class="consulta-data">PRÓXIMA CONSULTA</div>
             <div class="consulta-tema" id="proxima-consulta-tema">Nenhuma consulta agendada ainda</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:12px;">Sua doula irá agendar em breve</div>
             <button class="btn-ver-detalhes" onclick="gNavById('g-agenda')">Ver agenda</button>
           </div>
 
-          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:14px;">✅ Tarefas do dia</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:14px;">Tarefas do dia</div>
           <div class="tarefas-grid" id="tarefas-dia">
             <div class="tarefa-item" onclick="toggleTarefa(this)">
               <div class="tarefa-check"></div>
-              <div class="tarefa-text">👶 Contar movimentos do bebê</div>
+              <div class="tarefa-text">Contar movimentos do bebê</div>
             </div>
             <div class="tarefa-item" onclick="toggleTarefa(this)">
               <div class="tarefa-check"></div>
-              <div class="tarefa-text">💧 Beber 2L de água</div>
+              <div class="tarefa-text">Beber 2L de água</div>
             </div>
             <div class="tarefa-item" onclick="toggleTarefa(this)">
               <div class="tarefa-check"></div>
-              <div class="tarefa-text">🧘 Exercícios de respiração</div>
+              <div class="tarefa-text">Exercícios de respiração</div>
             </div>
             <div class="tarefa-item" onclick="toggleTarefa(this)">
               <div class="tarefa-check"></div>
-              <div class="tarefa-text">🌿 Tomar suplemento</div>
+              <div class="tarefa-text">Tomar suplemento</div>
             </div>
           </div>
 
           <div class="card" id="bebe-card" style="display:none;">
-            <div class="card-title">Seu bebê hoje 🥭</div>
+            <div class="card-title">Desenvolvimento do bebê</div>
             <div style="display:flex;gap:20px;align-items:center;">
               <div style="font-size:56px;" id="bebe-emoji">🥭</div>
               <div>
@@ -922,10 +922,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card">
             <div class="card-title">Esta semana você pode sentir...</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">🤸 <strong>Movimentos do bebê</strong><br>Sinta os primeiros chutes!</div>
-              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">💤 <strong>Mais energia</strong><br>O 2º tri costuma ser mais tranquilo</div>
-              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">💛 <strong>Dor de cabeça</strong><br>Hidrate-se bastante</div>
-              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">🌙 <strong>Sonhos vívidos</strong><br>Normal nessa fase!</div>
+              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Movimentos do bebê</strong><br>Sinta os primeiros chutes!</div>
+              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Mais energia</strong><br>O 2º tri costuma ser mais tranquilo</div>
+              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Dor de cabeça</strong><br>Hidrate-se bastante</div>
+              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Sonhos vívidos</strong><br>Normal nessa fase!</div>
             </div>
           </div>
         </div>
@@ -1025,17 +1025,17 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub">Acompanhe suas contrações e acione sua doula quando precisar</div>
 
           <button class="btn-emergencia">
-            🚨 Estou em trabalho de parto — Acionar minha Doula
+            Estou em trabalho de parto — Acionar minha Doula
           </button>
 
           <div class="emergencia-acoes">
             <div class="emergencia-acao" onclick="abrirWhatsAppDoula()">
-              <div class="ea-icon">📱</div>
+              
               <div class="ea-label">WhatsApp da Doula</div>
               <div class="ea-sub">Contato direto com Juliana</div>
             </div>
             <div class="emergencia-acao" onclick="ligarParaDoula()">
-              <div class="ea-icon">📞</div>
+              
               <div class="ea-label">Ligar para Doula</div>
               <div class="ea-sub">Para situações urgentes</div>
             </div>
@@ -1389,7 +1389,7 @@ tr:hover td { background:var(--rose-pale); }
             <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val">2</div><div class="stat-label">Msgs não lidas</div></div>
           </div>
 
-          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:16px;">🚨 Alertas automáticos</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:16px;">Alertas automáticos</div>
           <div id="alertas-container">
             <div class="empty-state">
               <div class="empty-icon">🔔</div>
@@ -1562,7 +1562,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-top:24px;">
             <div class="card-title">📤 Adicionar novo material</div>
             <div class="upload-area" onclick="alert('Upload de arquivo')">
-              <div class="upload-icon">☁️</div>
+              <div class="upload-icon"></div>
               <div class="upload-text">Clique para fazer upload de PDF, vídeo ou apresentação</div>
             </div>
           </div>
@@ -2486,11 +2486,16 @@ function calcularSemana(dpp) {
 }
 
 function atualizarDashboardGestante(dpp) {
+  var card = document.getElementById('onboarding-card');
+  card.style.display = 'block';
   if (!dpp) {
-    document.getElementById('onboarding-card').style.display = 'block';
+    document.getElementById('onboard-titulo').textContent = 'Configure sua gestacao';
+    document.getElementById('onboard-sub').textContent = 'Informe sua data provavel do parto para acompanharmos sua jornada';
     return;
   }
-  document.getElementById('onboarding-card').style.display = 'none';
+  document.getElementById('onboard-titulo').textContent = 'Data prevista do parto';
+  document.getElementById('onboard-sub').textContent = 'Altere a data se necessario';
+  document.getElementById('dpp-input').value = dpp;
   var info = calcularSemana(dpp);
   var dataParto = new Date(dpp);
   var dppFormatada = dataParto.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
@@ -2630,7 +2635,7 @@ async function carregarUsuariosAdmin() {
 }
 
 async function deletarUsuario(id, nome) {
-  abrirModal('Remover usuario?', nome + ' sera removido do app.', async function() {
+  abrirModal('Remover usuário?', nome + ' será removido do app.', async function() {
     try { await db.from('usuarios').delete().eq('id', id); mostrarToast('Removido!'); carregarUsuariosAdmin(); } catch(e) {}
   });
 }
@@ -2788,7 +2793,7 @@ async function carregarBibliotecaAdmin() {
 }
 
 async function deletarBiblioteca(id) {
-  abrirModal('Remover material?', 'Esta acao nao pode ser desfeita.', async function() {
+  abrirModal('Remover material?', 'Esta ação não pode ser desfeita.', async function() {
     try {
       var res = await db.from('biblioteca').delete().eq('id', id);
       if (res.error) throw res.error;
@@ -3051,7 +3056,7 @@ function mostrarToast(msg) {
               ondragover="event.preventDefault();this.style.borderColor='#C9897A'"
               ondragleave="this.style.borderColor='rgba(201,137,122,0.3)'"
               ondrop="handleDrop(event)">
-              <div style="font-size:32px;margin-bottom:8px;">☁️</div>
+              <div style="font-size:32px;margin-bottom:8px;"></div>
               <div style="font-size:14px;color:#E8C5BC;">Clique ou arraste o arquivo aqui</div>
               <div style="font-size:12px;color:rgba(176,154,140,0.4);margin-top:4px;">PDF, PNG, JPG, DOCX — máx. 50MB</div>
             </div>
