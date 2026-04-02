@@ -2354,17 +2354,22 @@ async function carregarConteudos() {
   try {
     var res = await db.from('biblioteca').select('*').order('criado_em', { ascending: true });
     if (res.error || !res.data) return;
-    var data = res.data;
 
-    // Limpar areas
-    var areas = ['gestante-inicio', 'gestante-meio', 'gestante-final', 'gestante-posparto', 'bib-grid-doula'];
-    areas.forEach(function(area) {
-      var el = document.getElementById('content-' + area) || document.getElementById(area);
+    var destinos = [
+      'gestante-inicio', 'gestante-meio', 'gestante-final',
+      'gestante-posparto-amamentacao', 'gestante-posparto-sono',
+      'gestante-posparto-autocuidado', 'gestante-posparto-alimentacao',
+      'bib-grid-doula'
+    ];
+
+    // Clear all areas
+    destinos.forEach(function(d) {
+      var el = document.getElementById('content-' + d) || document.getElementById(d);
       if (el) el.innerHTML = '<div class="empty-state-small">Nenhum conteudo ainda 💛</div>';
     });
 
-    // Distribuir conteudos
-    data.forEach(function(item) {
+    // Fill with content
+    res.data.forEach(function(item) {
       var elId = item.destino === 'doula' ? 'bib-grid-doula' : 'content-' + item.destino;
       var el = document.getElementById(elId);
       if (!el) return;
@@ -2373,42 +2378,71 @@ async function carregarConteudos() {
       var empty = el.querySelector('.empty-state-small');
       if (empty) empty.remove();
 
-      var icon = item.tipo === 'video' ? '🎬' : item.tipo === 'pdf' ? '📄' : '🔗';
-      var itemHtml = '';
+      var div = document.createElement('div');
 
       if (item.destino === 'doula') {
-        // Biblioteca da doula
-        itemHtml = '<div class="bib-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
-          '<div class="bib-item-icon">' + icon + '</div>' +
-          '<div class="bib-item-title">' + item.titulo + '</div>' +
-          '<div class="bib-item-meta">' + (item.descricao || '') + '</div>' +
-          '<div class="bib-item-type ' + (item.tipo === 'pdf' ? 'bib-pdf' : item.tipo === 'video' ? 'bib-video' : 'bib-slide') + '">' + item.tipo.toUpperCase() + '</div>' +
-          '</div>';
+        div.className = 'bib-item';
+        div.style.cursor = 'pointer';
+        div.onclick = (function(url) { return function() { window.open(url, '_blank'); }; })(item.url);
+
+        var icon = document.createElement('div');
+        icon.className = 'bib-item-icon';
+        icon.textContent = item.tipo === 'video' ? '🎬' : item.tipo === 'pdf' ? '📄' : '🔗';
+
+        var title = document.createElement('div');
+        title.className = 'bib-item-title';
+        title.textContent = item.titulo;
+
+        var meta = document.createElement('div');
+        meta.className = 'bib-item-meta';
+        meta.textContent = item.descricao || '';
+
+        var badge = document.createElement('div');
+        badge.className = 'bib-item-type ' + (item.tipo === 'pdf' ? 'bib-pdf' : item.tipo === 'video' ? 'bib-video' : 'bib-slide');
+        badge.textContent = item.tipo.toUpperCase();
+
+        div.appendChild(icon);
+        div.appendChild(title);
+        div.appendChild(meta);
+        div.appendChild(badge);
+
       } else {
-        // Conteudo da gestante
+        div.className = 'content-item';
+        div.style.cursor = 'pointer';
+        div.onclick = (function(url) { return function() { window.open(url, '_blank'); }; })(item.url);
+
+        var iconEl = document.createElement('div');
+        iconEl.className = 'content-icon';
+        iconEl.textContent = item.tipo === 'video' ? '🎬' : item.tipo === 'pdf' ? '📄' : '🔗';
+
+        var infoEl = document.createElement('div');
+
+        var labelEl = document.createElement('div');
+        labelEl.className = 'content-label';
+        labelEl.textContent = item.titulo;
+
+        var subEl = document.createElement('div');
+        subEl.className = 'content-sub';
+        subEl.textContent = item.descricao || '';
+
+        infoEl.appendChild(labelEl);
+        infoEl.appendChild(subEl);
+        div.appendChild(iconEl);
+        div.appendChild(infoEl);
+
+        // YouTube thumbnail
         if (item.tipo === 'video') {
           var ytId = getYoutubeId(item.url);
-          itemHtml = '<div class="content-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
-            '<div class="content-icon">' + icon + '</div>' +
-            '<div><div class="content-label">' + item.titulo + '</div>' +
-            '<div class="content-sub">' + (item.descricao || 'Video') + '</div></div>' +
-            '</div>';
           if (ytId) {
-            itemHtml += '<div style="border-radius:10px;overflow:hidden;margin-bottom:10px;">' +
-              '<img src="https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg" style="width:100%;display:block;border-radius:10px;cursor:pointer;" onclick="abrirMaterial('' + item.url + '','video')">' +
-              '</div>';
+            var thumb = document.createElement('img');
+            thumb.src = 'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg';
+            thumb.style.cssText = 'width:100%;border-radius:10px;display:block;margin-top:8px;cursor:pointer;';
+            thumb.onclick = (function(url) { return function() { window.open(url, '_blank'); }; })(item.url);
+            div.appendChild(thumb);
           }
-        } else {
-          itemHtml = '<div class="content-item" onclick="abrirMaterial('' + item.url + '','' + item.tipo + '')">' +
-            '<div class="content-icon">' + icon + '</div>' +
-            '<div><div class="content-label">' + item.titulo + '</div>' +
-            '<div class="content-sub">' + (item.descricao || '') + '</div></div>' +
-            '</div>';
         }
       }
 
-      var div = document.createElement('div');
-      div.innerHTML = itemHtml;
       el.appendChild(div);
     });
 
