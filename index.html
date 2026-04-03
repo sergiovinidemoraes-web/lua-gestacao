@@ -1190,38 +1190,10 @@ tr:hover td { background:var(--rose-pale); }
             <input type="text" placeholder="🔍 Buscar por cidade ou especialidade...">
           </div>
 
-          <div class="doulas-grid">
-            <div class="doula-card-mkt">
-              <div class="doula-card-top">
-                <div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--rose),#a8685a)">J</div>
-                <div><div class="doula-mkt-name">Juliana Ferreira</div><div class="doula-mkt-local">📍 São Paulo, SP</div><div class="doula-mkt-rating">⭐⭐⭐⭐⭐ (48 avaliações)</div></div>
-              </div>
-              <div class="doula-mkt-tags"><span class="doula-tag">Parto humanizado</span><span class="doula-tag">Pós-parto</span><span class="doula-tag">Amamentação</span></div>
-              <button class="doula-mkt-btn">Ver perfil completo</button>
-            </div>
-            <div class="doula-card-mkt">
-              <div class="doula-card-top">
-                <div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--sage),#6a8a6c)">C</div>
-                <div><div class="doula-mkt-name">Camila Ramos</div><div class="doula-mkt-local">📍 São Paulo, SP</div><div class="doula-mkt-rating">⭐⭐⭐⭐⭐ (32 avaliações)</div></div>
-              </div>
-              <div class="doula-mkt-tags"><span class="doula-tag">Parto na água</span><span class="doula-tag">Gestação de alto risco</span></div>
-              <button class="doula-mkt-btn">Ver perfil completo</button>
-            </div>
-            <div class="doula-card-mkt">
-              <div class="doula-card-top">
-                <div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--gold),#a07a3a)">P</div>
-                <div><div class="doula-mkt-name">Patricia Lima</div><div class="doula-mkt-local">📍 Campinas, SP</div><div class="doula-mkt-rating">⭐⭐⭐⭐ (19 avaliações)</div></div>
-              </div>
-              <div class="doula-mkt-tags"><span class="doula-tag">Parto domiciliar</span><span class="doula-tag">Hipnoparto</span></div>
-              <button class="doula-mkt-btn">Ver perfil completo</button>
-            </div>
-            <div class="doula-card-mkt">
-              <div class="doula-card-top">
-                <div class="doula-avatar-mkt" style="background:linear-gradient(135deg,#9a7ab0,#7a5a90)">F</div>
-                <div><div class="doula-mkt-name">Fernanda Souza</div><div class="doula-mkt-local">📍 Rio de Janeiro, RJ</div><div class="doula-mkt-rating">⭐⭐⭐⭐⭐ (61 avaliações)</div></div>
-              </div>
-              <div class="doula-mkt-tags"><span class="doula-tag">Parto cesárea humanizada</span><span class="doula-tag">Gêmeos</span></div>
-              <button class="doula-mkt-btn">Ver perfil completo</button>
+          <div class="doulas-grid" id="doulas-grid-lista">
+            <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);">
+              <div style="font-size:32px;margin-bottom:12px;">🌙</div>
+              <div style="font-size:14px;">Carregando doulas...</div>
             </div>
           </div>
         </div>
@@ -2437,6 +2409,7 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
     setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
+    setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
@@ -2676,6 +2649,123 @@ function carregarDPP() {
   var dpp = null;
   try { dpp = localStorage.getItem('lua_dpp'); } catch(e) {}
   atualizarDashboardGestante(dpp);
+}
+
+// ── Marketplace de doulas ──
+var todasDoulas = [];
+
+async function carregarMarketplace() {
+  if (!db) return;
+  var grid = document.getElementById('doulas-grid-lista');
+  if (!grid) return;
+  try {
+    var res = await db.from('usuarios').select('*').eq('tipo', 'doula');
+    if (res.error) return;
+    todasDoulas = (res.data || []).filter(function(d) { return d.nome; });
+    renderDoulas(todasDoulas);
+  } catch(e) { console.error('carregarMarketplace:', e); }
+}
+
+function renderDoulas(doulas) {
+  var grid = document.getElementById('doulas-grid-lista');
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (!doulas.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Nenhuma doula encontrada.</div>';
+    return;
+  }
+  doulas.forEach(function(d) {
+    var inicial = (d.nome || 'D')[0].toUpperCase();
+    var espec = d.especialidades ? d.especialidades.split(',') : ['Parto humanizado'];
+    var card = document.createElement('div');
+    card.className = 'doula-card-mkt';
+    var tags = espec.slice(0,3).map(function(e) {
+      return '<span class="doula-tag">' + e.trim() + '</span>';
+    }).join('');
+    var bioText = d.bio ? (d.bio.length > 80 ? d.bio.substring(0,80) + '...' : d.bio) : 'Doula certificada';
+    var loc = d.cidade ? '📍 ' + d.cidade : 'Localização não informada';
+    card.innerHTML =
+      '<div class="doula-card-top">' +
+        '<div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--rose),#a8685a)">' + inicial + '</div>' +
+        '<div><div class="doula-mkt-name">' + d.nome + '</div>' +
+        '<div class="doula-mkt-local">' + loc + '</div></div>' +
+      '</div>' +
+      '<div class="doula-mkt-tags">' + tags + '</div>' +
+      '<div style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">' + bioText + '</div>';
+    var btn = document.createElement('button');
+    btn.className = 'doula-mkt-btn';
+    btn.textContent = 'Ver perfil';
+    btn.onclick = (function(doula) {
+      return function() { verPerfilDoula(doula); };
+    })(d);
+    card.appendChild(btn);
+    grid.appendChild(card);
+  });
+}
+
+function filtrarDoulas(termo) {
+  if (!termo.trim()) { renderDoulas(todasDoulas); return; }
+  var t = termo.toLowerCase();
+  var filtradas = todasDoulas.filter(function(d) {
+    return (d.nome && d.nome.toLowerCase().indexOf(t) > -1) ||
+           (d.cidade && d.cidade.toLowerCase().indexOf(t) > -1) ||
+           (d.especialidades && d.especialidades.toLowerCase().indexOf(t) > -1);
+  });
+  renderDoulas(filtradas);
+}
+
+function verPerfilDoula(d) {
+  var whats = d.whatsapp || '';
+  var bio = d.bio || 'Doula certificada.';
+  var esp = d.especialidades || 'Parto humanizado';
+  var sub = (d.cidade ? d.cidade + ' — ' : '') + bio + ' | Especialidades: ' + esp;
+  abrirModal(d.nome, sub, function() {
+    if (whats) {
+      var num = whats.replace(/[^0-9]/g, '');
+      window.open('https://wa.me/55' + num + '?text=Ola%2C+te+encontrei+no+app+Lua!', '_blank');
+    } else {
+      mostrarToast('Doula nao informou WhatsApp ainda');
+    }
+  });
+  var confirmBtn = document.getElementById('modal-confirm-btn');
+  if (confirmBtn) confirmBtn.textContent = whats ? 'Falar no WhatsApp' : 'Fechar';
+}
+
+// ── Perfil da Doula ──
+async function salvarPerfilDoula() {
+  if (!db) return;
+  var whatsapp = document.getElementById('doula-whatsapp') ? document.getElementById('doula-whatsapp').value.trim() : '';
+  var cidade = document.getElementById('doula-cidade') ? document.getElementById('doula-cidade').value.trim() : '';
+  var especialidades = document.getElementById('doula-especialidades') ? document.getElementById('doula-especialidades').value.trim() : '';
+  var bio = document.getElementById('doula-bio') ? document.getElementById('doula-bio').value.trim() : '';
+  if (!cidade && !especialidades) { mostrarToast('Preencha pelo menos cidade e especialidades'); return; }
+  try {
+    var session = await db.auth.getSession();
+    if (!session.data.session) return;
+    var uid = session.data.session.user.id;
+    var res = await db.from('usuarios').update({ whatsapp: whatsapp, cidade: cidade, especialidades: especialidades, bio: bio }).eq('id', uid);
+    if (res.error) throw res.error;
+    mostrarToast('Perfil salvo! Voce aparece no marketplace 🌙');
+    var card = document.getElementById('card-perfil-doula');
+    if (card) { card.style.background = 'var(--white)'; card.style.border = 'none'; }
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function carregarPerfilDoula() {
+  if (!db) return;
+  try {
+    var session = await db.auth.getSession();
+    if (!session.data.session) return;
+    var uid = session.data.session.user.id;
+    var res = await db.from('usuarios').select('*').eq('id', uid).single();
+    if (res.data) {
+      var d = res.data;
+      if (d.whatsapp && document.getElementById('doula-whatsapp')) document.getElementById('doula-whatsapp').value = d.whatsapp;
+      if (d.cidade && document.getElementById('doula-cidade')) document.getElementById('doula-cidade').value = d.cidade;
+      if (d.especialidades && document.getElementById('doula-especialidades')) document.getElementById('doula-especialidades').value = d.especialidades;
+      if (d.bio && document.getElementById('doula-bio')) document.getElementById('doula-bio').value = d.bio;
+    }
+  } catch(e) {}
 }
 
 // ── Foto de perfil ──
@@ -2964,10 +3054,9 @@ async function carregarBibliotecaAdmin() {
       btn.className = 'admin-del-btn';
       btn.textContent = 'Remover';
       btn.setAttribute('data-id', m.id);
-      btn.onclick = function() {
-        var id = this.getAttribute('data-id');
-        deletarBiblioteca(id);
-      };
+      btn.onclick = (function(bid) {
+        return function() { deletarBiblioteca(bid); };
+      })(m.id);
       row.appendChild(btn);
       el.appendChild(row);
     }
