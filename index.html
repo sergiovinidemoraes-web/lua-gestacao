@@ -1366,6 +1366,18 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
+          <div id="card-perfil-doula" class="card" style="margin-top:24px;background:linear-gradient(135deg,var(--rose-pale),var(--sage-light));border:1.5px dashed var(--rose-light);">
+            <div class="card-title">Complete seu perfil</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Preencha para aparecer no marketplace do Lua e receber gestantes</div>
+            <div style="display:grid;gap:10px;">
+              <input id="doula-whatsapp" class="form-input" type="tel" placeholder="WhatsApp com DDD (ex: 11999999999)">
+              <input id="doula-cidade" class="form-input" type="text" placeholder="Cidade e Estado (ex: Sao Paulo, SP)">
+              <input id="doula-especialidades" class="form-input" type="text" placeholder="Especialidades separadas por virgula">
+              <textarea id="doula-bio" class="form-input form-textarea" placeholder="Sua bio curta — quem voce e e como trabalha..." style="height:80px;resize:none;"></textarea>
+              <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;">Salvar e aparecer no marketplace</button>
+            </div>
+          </div>
+
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;">
             <div class="card"><div class="card-title">Próximas consultas</div>
               <div id="proximas-consultas-doula">
