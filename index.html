@@ -2421,6 +2421,7 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
     setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
+    setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
@@ -2429,6 +2430,7 @@ function entrarNoApp(tipo, nome) {
     if (g) g.textContent = saudacao + ', ' + primeiroNome + '! 🌸';
   } else {
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
+    setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     var g2 = document.getElementById('doula-greeting');
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
   }
@@ -2667,15 +2669,27 @@ function carregarDPP() {
 var todasDoulas = [];
 
 async function carregarMarketplace() {
-  if (!db) return;
   var grid = document.getElementById('doulas-grid-lista');
   if (!grid) return;
+  if (!db) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Conectando...</div>';
+    setTimeout(carregarMarketplace, 1000);
+    return;
+  }
   try {
     var res = await db.from('usuarios').select('*').eq('tipo', 'doula');
-    if (res.error) return;
+    if (res.error) {
+      console.error('Marketplace error:', res.error);
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Erro ao carregar. Tente novamente.</div>';
+      return;
+    }
     todasDoulas = (res.data || []).filter(function(d) { return d.nome; });
+    console.log('Doulas encontradas:', todasDoulas.length);
     renderDoulas(todasDoulas);
-  } catch(e) { console.error('carregarMarketplace:', e); }
+  } catch(e) {
+    console.error('carregarMarketplace:', e);
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Erro: ' + e.message + '</div>';
+  }
 }
 
 function renderDoulas(doulas) {
