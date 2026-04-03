@@ -920,13 +920,10 @@ tr:hover td { background:var(--rose-pale); }
               <div class="preg-info-item"><div class="preg-info-val">154</div><div class="preg-info-label">Dias restantes</div></div>
             </div>
           </div>
-          <div class="card">
+          <div class="card" id="card-sentir">
             <div class="card-title">Esta semana você pode sentir...</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Movimentos do bebê</strong><br>Sinta os primeiros chutes!</div>
-              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Mais energia</strong><br>O 2º tri costuma ser mais tranquilo</div>
-              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Dor de cabeça</strong><br>Hidrate-se bastante</div>
-              <div style="background:var(--sage-light);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);"><strong>Sonhos vívidos</strong><br>Normal nessa fase!</div>
+            <div id="sentir-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">Configure sua DPP para ver os sintomas da sua semana</div>
             </div>
           </div>
         </div>
@@ -938,15 +935,15 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="fase-section">
             <div class="fase-badge tri1">1º Trimestre — Semanas 1 a 13</div>
-            <div class="fase-task done" onclick="toggleFaseTask(this)"><div class="fase-task-check">✓</div><div class="fase-task-text">Confirmar a gestação com médico</div><div class="fase-task-week">Sem. 4–6</div></div>
-            <div class="fase-task done" onclick="toggleFaseTask(this)"><div class="fase-task-check">✓</div><div class="fase-task-text">Iniciar suplementação de ácido fólico</div><div class="fase-task-week">Sem. 4</div></div>
-            <div class="fase-task done" onclick="toggleFaseTask(this)"><div class="fase-task-check">✓</div><div class="fase-task-text">Contatar uma doula</div><div class="fase-task-week">Sem. 8–12</div></div>
-            <div class="fase-task done" onclick="toggleFaseTask(this)"><div class="fase-task-check">✓</div><div class="fase-task-text">Fazer ultrassom morfológico do 1º tri</div><div class="fase-task-week">Sem. 11–13</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Confirmar a gestação com médico</div><div class="fase-task-week">Sem. 4–6</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Iniciar suplementação de ácido fólico</div><div class="fase-task-week">Sem. 4</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Contatar uma doula</div><div class="fase-task-week">Sem. 8–12</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Fazer ultrassom morfológico do 1º tri</div><div class="fase-task-week">Sem. 11–13</div></div>
           </div>
 
           <div class="fase-section">
             <div class="fase-badge tri2">2º Trimestre — Semanas 14 a 27 (você está aqui!)</div>
-            <div class="fase-task done" onclick="toggleFaseTask(this)"><div class="fase-task-check">✓</div><div class="fase-task-text">Ultrassom morfológico do 2º tri</div><div class="fase-task-week">Sem. 18–20</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Ultrassom morfológico do 2º tri</div><div class="fase-task-week">Sem. 18–20</div></div>
             <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Iniciar plano de parto</div><div class="fase-task-week">Sem. 20</div></div>
             <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Fazer tour pela maternidade</div><div class="fase-task-week">Sem. 22</div></div>
             <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Começar aulas de preparação para o parto</div><div class="fase-task-week">Sem. 24</div></div>
@@ -1384,8 +1381,8 @@ tr:hover td { background:var(--rose-pale); }
           <div class="stats-grid">
             <div class="stat-card"><div class="stat-icon">👩‍👶</div><div class="stat-val" id="stat-clientes">0</div><div class="stat-label">Clientes ativas</div></div>
             <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label">Partos este mês</div></div>
-            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">2</div><div class="stat-label">Consultas hoje</div></div>
-            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val">2</div><div class="stat-label">Msgs não lidas</div></div>
+            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-consultas">0</div><div class="stat-label">Consultas hoje</div></div>
+            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val" id="stat-msgs">0</div><div class="stat-label">Msgs não lidas</div></div>
           </div>
 
           <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:16px;">Alertas automáticos</div>
@@ -1445,12 +1442,11 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <table>
               <thead><tr><th>Nome</th><th>Semana</th><th>DPP</th><th>Hospital</th><th>Fase</th><th>Última consulta</th><th></th></tr></thead>
-              <tbody>
-                <tr><td class="td-name">Ana Clara</td><td class="td-week"><span class="pill">Sem. 18</span></td><td>22/08/2026</td><td style="font-size:13px;color:var(--earth-light);">Albert Einstein</td><td class="td-status"><span class="status prenatal">Pré-natal</span></td><td>20/03/2026</td><td class="td-action">Ver perfil</td></tr>
-                <tr><td class="td-name">Mariana Silva</td><td class="td-week"><span class="pill">Sem. 32</span></td><td>15/05/2026</td><td style="font-size:13px;color:var(--earth-light);">São Luiz</td><td class="td-status"><span class="status prenatal">Pré-natal</span></td><td>22/03/2026</td><td class="td-action">Ver perfil</td></tr>
-                <tr><td class="td-name">Paula Mendes</td><td class="td-week"><span class="pill">Sem. 6</span></td><td>05/11/2026</td><td style="font-size:13px;color:var(--earth-light);">Santa Joana</td><td class="td-status"><span class="status prenatal">Pré-natal</span></td><td>18/03/2026</td><td class="td-action">Ver perfil</td></tr>
-                <tr><td class="td-name">Renata Costa</td><td class="td-week"><span class="pill">Pós-parto</span></td><td>—</td><td style="font-size:13px;color:var(--earth-light);">—</td><td class="td-status"><span class="status pos">Pós-parto</span></td><td>10/03/2026</td><td class="td-action">Ver perfil</td></tr>
-                <tr><td class="td-name">Fernanda Lima</td><td class="td-week"><span class="pill">Parto</span></td><td>28/03/2026</td><td style="font-size:13px;color:var(--earth-light);">BP Mirante</td><td class="td-status"><span class="status parto">Em trabalho de parto</span></td><td>25/03/2026</td><td class="td-action" style="color:var(--rose);font-weight:600;">⚡ Acompanhar</td></tr>
+              <tbody id="clientes-tbody">
+                <tr><td colspan="7" style="text-align:center;padding:32px;">
+                  <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma cliente cadastrada ainda</div>
+                  <div style="font-size:13px;color:var(--earth-light);">Clique em + Nova cliente para começar</div>
+                </td></tr>
               </tbody>
             </table>
           </div>
@@ -1643,13 +1639,13 @@ tr:hover td { background:var(--rose-pale); }
             <div class="msg-chat-area">
               <div class="msg-chat-header">
                 <div id="d-chat-avatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9897A,#a8685a);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:white;">A</div>
-                <div><div style="font-size:15px;font-weight:500;" id="d-chat-name">Ana Clara</div><div style="font-size:12px;color:var(--earth-light);">Semana 18</div></div>
+                <div><div style="font-size:15px;font-weight:500;" id="d-chat-name">Selecione uma conversa</div><div style="font-size:12px;color:var(--earth-light);"></div></div>
               </div>
               <div class="msg-chat-messages" id="d-chat-messages">
                 <div class="empty-state-small" style="margin:auto;text-align:center;color:var(--earth-light);font-size:13px;padding:20px;">Selecione uma conversa</div>
               </div>
               <div class="msg-chat-input-wrap">
-                <input class="chat-input" id="d-chat-input" placeholder="Responder para Ana Clara..." onkeydown="if(event.key==='Enter')sendDMsg()">
+                <input class="chat-input" id="d-chat-input" placeholder="Selecione uma conversa..." onkeydown="if(event.key==='Enter')sendDMsg()">
                 <button class="chat-send" onclick="sendDMsg()">➤</button>
               </div>
             </div>
@@ -1882,6 +1878,42 @@ function getFraseSemana(semana) {
   if (!semana || semana <= 0) return '"Bem-vinda ao Lua! Configure sua DPP para começar. 💛"';
   var s = Math.min(Math.max(Math.round(semana), 1), 40);
   return frasesPorSemana[s] ? '"' + frasesPorSemana[s] + '"' : '"Você está indo muito bem, mamãe! 💛"';
+}
+
+// ── Sintomas por trimestre/semana ──
+var sintomasPorFase = {
+  tri1: [
+    { titulo: 'Enjoos e nauseas', desc: 'Muito comum nas primeiras semanas', bg: 'var(--rose-pale)' },
+    { titulo: 'Seios sensiveis', desc: 'Hormônios em acao', bg: 'var(--sage-light)' },
+    { titulo: 'Cansaco excessivo', desc: 'Seu corpo esta trabalhando muito', bg: 'var(--rose-pale)' },
+    { titulo: 'Vontade de urinar', desc: 'O utero esta crescendo', bg: 'var(--sage-light)' }
+  ],
+  tri2: [
+    { titulo: 'Movimentos do bebe', desc: 'Primeiros chutes aparecem!', bg: 'var(--rose-pale)' },
+    { titulo: 'Mais energia', desc: 'O 2 tri costuma ser mais tranquilo', bg: 'var(--sage-light)' },
+    { titulo: 'Dor de cabeca', desc: 'Hidrate-se bastante', bg: 'var(--rose-pale)' },
+    { titulo: 'Sonhos vividos', desc: 'Muito normal nessa fase', bg: 'var(--sage-light)' }
+  ],
+  tri3: [
+    { titulo: 'Contrações de Braxton Hicks', desc: 'Contrações de treino — normais', bg: 'var(--rose-pale)' },
+    { titulo: 'Dificuldade para dormir', desc: 'Use travesseiro de apoio', bg: 'var(--sage-light)' },
+    { titulo: 'Falta de ar', desc: 'O utero pressiona o diafragma', bg: 'var(--rose-pale)' },
+    { titulo: 'Inchaço nas pernas', desc: 'Eleve os pes e hidrate-se', bg: 'var(--sage-light)' }
+  ]
+};
+
+function atualizarSintomas(semana) {
+  var grid = document.getElementById('sentir-grid');
+  if (!grid) return;
+  var fase = semana <= 13 ? 'tri1' : semana <= 27 ? 'tri2' : 'tri3';
+  var sintomas = sintomasPorFase[fase];
+  grid.innerHTML = '';
+  sintomas.forEach(function(s) {
+    var div = document.createElement('div');
+    div.style.cssText = 'background:' + s.bg + ';border-radius:12px;padding:14px;font-size:13px;color:var(--mid);';
+    div.innerHTML = '<strong>' + s.titulo + '</strong><br>' + s.desc;
+    grid.appendChild(div);
+  });
 }
 
 var chatHistory = [];
@@ -2610,7 +2642,7 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-acomp-sub').textContent = 'Você está na semana ' + info.semana + ' — ' + tri + ' 🌸'; } catch(e) {}
   
   // Gestante greeting sub
-  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — você está indo muito bem!'; } catch(e) {}
+  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — voce esta indo muito bem!'; } catch(e) {}
   // Update frase do dia
   try { document.getElementById('frase-texto').textContent = getFraseSemana(info.semana); } catch(e) {}
   // Update frase sub
@@ -2618,6 +2650,17 @@ function atualizarDashboardGestante(dpp) {
     var fraseSub = document.querySelector('.frase-sub');
     if (fraseSub) fraseSub.textContent = 'Semana ' + info.semana;
   } catch(e) {}
+  // Update Minha Gestacao section
+  try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
+  try { document.getElementById('g-semanas-faltam').textContent = 'Faltam ' + info.faltam + ' semanas para o parto'; } catch(e) {}
+  try { document.getElementById('g-prog-bar').style.width = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('g-dpp').textContent = dppFormatada; } catch(e) {}
+  try { document.getElementById('g-progresso').textContent = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('g-dias').textContent = info.dias; } catch(e) {}
+  var tri = info.semana <= 13 ? '1 Trimestre' : info.semana <= 27 ? '2 Trimestre' : '3 Trimestre';
+  try { document.getElementById('g-trimestre').textContent = tri; } catch(e) {}
+  try { document.getElementById('g-acomp-sub').textContent = 'Voce esta na semana ' + info.semana + ' — ' + tri; } catch(e) {}
+  try { atualizarSintomas(info.semana); } catch(e) {}
 }
 
 function salvarDPP() {
