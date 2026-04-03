@@ -2900,6 +2900,7 @@ function verificarAdmin() {
     document.getElementById('admin-panel').style.display = 'block';
     document.getElementById('admin-senha-input').value = '';
     carregarUsuariosAdmin();
+    setTimeout(function() { try { carregarBibliotecaAdmin(); } catch(e) {} }, 300);
     setTimeout(function() {
       var c = document.getElementById('adminMoonCanvas');
       if (c && typeof drawMoon === 'function') drawMoon(c, 28, 0.5, 1, false);
