@@ -869,24 +869,7 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:14px;">Tarefas do dia</div>
-          <div class="tarefas-grid" id="tarefas-dia">
-            <div class="tarefa-item" onclick="toggleTarefa(this)">
-              <div class="tarefa-check"></div>
-              <div class="tarefa-text">Contar movimentos do bebê</div>
-            </div>
-            <div class="tarefa-item" onclick="toggleTarefa(this)">
-              <div class="tarefa-check"></div>
-              <div class="tarefa-text">Beber 2L de água</div>
-            </div>
-            <div class="tarefa-item" onclick="toggleTarefa(this)">
-              <div class="tarefa-check"></div>
-              <div class="tarefa-text">Exercícios de respiração</div>
-            </div>
-            <div class="tarefa-item" onclick="toggleTarefa(this)">
-              <div class="tarefa-check"></div>
-              <div class="tarefa-text">Tomar suplemento</div>
-            </div>
-          </div>
+          <div class="tarefas-grid" id="tarefas-dia"></div>
 
           <div class="card" id="bebe-card" style="display:none;">
             <div class="card-title">Desenvolvimento do bebê</div>
@@ -1886,6 +1869,44 @@ var sintomasPorFase = {
   ]
 };
 
+function atualizarTarefas(semana) {
+  var grid = document.getElementById('tarefas-dia');
+  if (!grid) return;
+  var tri1 = [
+    'Tomar acido folico e suplementos prescritos',
+    'Beber 2L de agua ao longo do dia',
+    'Fazer refeicoes pequenas e frequentes',
+    'Descansar sempre que possivel',
+    'Agendar primeira consulta pre-natal',
+    'Evitar alimentos de risco',
+  ];
+  var tri2 = [
+    'Contar movimentos do bebe',
+    'Beber 2L de agua ao longo do dia',
+    'Exercicios de respiracao (10 min)',
+    'Tomar suplementos prescritos',
+    'Hidratar a barriga com oleo ou creme',
+    'Fazer exercicio leve (caminhada, yoga)',
+  ];
+  var tri3 = [
+    'Contar movimentos do bebe (pelo menos 10 por dia)',
+    'Beber 2L de agua ao longo do dia',
+    'Exercicios de respiracao e Kegel',
+    'Verificar mala da maternidade',
+    'Tomar suplementos prescritos',
+    'Descansar com pernas elevadas',
+  ];
+  var tarefas = semana <= 13 ? tri1 : semana <= 27 ? tri2 : tri3;
+  grid.innerHTML = '';
+  tarefas.forEach(function(t) {
+    var div = document.createElement('div');
+    div.className = 'tarefa-item';
+    div.onclick = function() { toggleTarefa(this); };
+    div.innerHTML = '<div class="tarefa-check"></div><div class="tarefa-text">' + t + '</div>';
+    grid.appendChild(div);
+  });
+}
+
 function atualizarSintomas(semana) {
   var grid = document.getElementById('sentir-grid');
   if (!grid) return;
@@ -2418,7 +2439,10 @@ function entrarNoApp(tipo, nome) {
   var hora = new Date().getHours();
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
   if (tipo === 'gestante') {
-    setTimeout(function() { try { carregarDPP(); } catch(e) {} }, 300);
+    setTimeout(function() {
+      try { carregarDPP(); } catch(e) {}
+      setTimeout(function() { try { atualizarTarefas(0); } catch(e) {} }, 400);
+    }, 300);
     setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
@@ -2649,6 +2673,7 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-trimestre').textContent = tri; } catch(e) {}
   try { document.getElementById('g-acomp-sub').textContent = 'Voce esta na semana ' + info.semana + ' — ' + tri; } catch(e) {}
   try { atualizarSintomas(info.semana); } catch(e) {}
+  try { atualizarTarefas(info.semana); } catch(e) {}
 }
 
 function salvarDPP() {
@@ -2702,13 +2727,13 @@ function renderDoulas(doulas) {
   }
   doulas.forEach(function(d) {
     var inicial = (d.nome || 'D')[0].toUpperCase();
-    var espec = d.especialidades ? d.especialidades.split(',') : ['Parto humanizado'];
+    var espec = d.especialidades ? d.especialidades.split(',') : [];
     var card = document.createElement('div');
     card.className = 'doula-card-mkt';
     var tags = espec.slice(0,3).map(function(e) {
       return '<span class="doula-tag">' + e.trim() + '</span>';
     }).join('');
-    var bioText = d.bio ? (d.bio.length > 80 ? d.bio.substring(0,80) + '...' : d.bio) : 'Doula certificada';
+    var bioText = d.bio ? (d.bio.length > 80 ? d.bio.substring(0,80) + '...' : d.bio) : 'Perfil em preenchimento';
     var loc = d.cidade ? '📍 ' + d.cidade : 'Localização não informada';
     card.innerHTML =
       '<div class="doula-card-top">' +
@@ -2769,7 +2794,7 @@ async function salvarPerfilDoula() {
     var session = await db.auth.getSession();
     if (!session.data.session) return;
     var uid = session.data.session.user.id;
-    var res = await db.from('usuarios').update({ whatsapp: whatsapp, cidade: cidade, especialidades: especialidades, bio: bio }).eq('id', uid);
+    var res = await db.from('usuarios').update({ whatsapp: whatsapp, cidade: cidade, especialidades: especialidades, bio: bio }).eq('id', uid).eq('tipo', 'doula');
     if (res.error) throw res.error;
     mostrarToast('Perfil salvo! Voce aparece no marketplace 🌙');
     var card = document.getElementById('card-perfil-doula');
@@ -2783,7 +2808,7 @@ async function carregarPerfilDoula() {
     var session = await db.auth.getSession();
     if (!session.data.session) return;
     var uid = session.data.session.user.id;
-    var res = await db.from('usuarios').select('*').eq('id', uid).single();
+    var res = await db.from('usuarios').select('id,nome,whatsapp,cidade,especialidades,bio').eq('id', uid).single();
     if (res.data) {
       var d = res.data;
       if (d.whatsapp && document.getElementById('doula-whatsapp')) document.getElementById('doula-whatsapp').value = d.whatsapp;
