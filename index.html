@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- v20260403223000 -->
-<!-- Lua App v2.2.2 - 2026-04-03 - Fix: onclick UUID quebrado + initMobileNav tipo -->
+<!-- v20260403225000 -->
+<!-- Lua App v2.2.3 - 2026-04-03 - Fix: menu mobile via CSS puro #app.visible -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -185,7 +185,7 @@ header {
 
 /* ── Mobile Bottom Nav ── */
 .mobile-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--rose-pale); z-index:1000; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
-.mobile-bottom-nav.nav-ativa { display:block !important; }
+@media (max-width: 768px) { #app.visible .mobile-bottom-nav { display:block; } }
 .mobile-bottom-nav-inner { display:flex; justify-content:space-around; align-items:center; }
 .mob-nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 8px; cursor:pointer; color:var(--earth-light); min-width:48px; transition:color 0.2s; }
 .mob-nav-item.active { color:var(--rose); }
@@ -2502,8 +2502,6 @@ async function fazerLogout() {
   try { if (db) await db.auth.signOut(); } catch(e) {}
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
-  var nav = document.getElementById('mobile-bottom-nav');
-  if (nav) nav.classList.remove('nav-ativa');
   mostrarToast('Até logo! 🌙');
 }
 
@@ -3335,7 +3333,8 @@ function initMobileNav(tipo) {
   var nav = document.getElementById('mobile-bottom-nav');
   if (!nav) return;
   var role = tipo || currentRole;
-
+  // Menu já aparece via CSS (#app.visible .mobile-bottom-nav)
+  // Só precisa trocar conteúdo para doula
   if (role === 'doula') {
     nav.querySelector('.mobile-bottom-nav-inner').innerHTML = `
       <div class="mob-nav-item active" id="mob-d-dashboard" onclick="mobNavDoula('d-dashboard','mob-d-dashboard')">
@@ -3360,7 +3359,7 @@ function initMobileNav(tipo) {
       </div>
     `;
   }
-  nav.classList.add('nav-ativa');
+  // Para gestante, o HTML já está estático no DOM — não precisa fazer nada
 }
 
 function mobNavDoula(panelId, mobId) {
