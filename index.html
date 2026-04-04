@@ -185,7 +185,7 @@ header {
 
 /* ── Mobile Bottom Nav ── */
 .mobile-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--rose-pale); z-index:1000; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
-@media (max-width: 768px) { #app.visible .mobile-bottom-nav { display:block; } }
+@media (max-width: 768px) { .mobile-bottom-nav { display:block; } }
 .mobile-bottom-nav-inner { display:flex; justify-content:space-around; align-items:center; }
 .mob-nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 8px; cursor:pointer; color:var(--earth-light); min-width:48px; transition:color 0.2s; }
 .mob-nav-item.active { color:var(--rose); }
