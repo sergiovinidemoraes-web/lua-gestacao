@@ -200,12 +200,7 @@ header {
 .mob-more-overlay.open { display:block; }
 
 @media (max-width: 768px) {
-  .view-gestante { padding-bottom:80px !important; }
-  .view-doula { padding-bottom:80px !important; }
-  .g-sidebar { display:none !important; }
   .g-content { margin-left:0 !important; width:100% !important; }
-  .header { padding:12px 16px !important; }
-  .g-panel { padding:16px !important; }
 }
 .g-doula-card { margin:20px 16px 0; background:linear-gradient(135deg,var(--rose) 0%,#a8685a 100%); border-radius:14px; padding:16px; color:white; }
 .g-doula-card-title { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; opacity:0.8; margin-bottom:8px; }
@@ -580,95 +575,40 @@ tr:hover td { background:var(--rose-pale); }
    MOBILE RESPONSIVO
 ══════════════════════════════ */
 @media (max-width: 768px) {
+  /* Previne overflow horizontal */
+  body { overflow-x: hidden; }
 
   /* Header */
-  header { padding: 0 16px; height: 56px; }
+  header { padding: 0 16px; height: 52px; }
   .logo-text { font-size: 20px; letter-spacing: 2px; }
   #header-user-name { display: none; }
+  .header-role { display: none; }
 
   /* Login */
   #login-screen { padding: 24px 16px; justify-content: flex-start; padding-top: 60px; }
   .login-title { font-size: 32px; letter-spacing: 4px; }
   .login-box { padding: 24px 20px; }
 
-  /* Gestante layout — empilhar sidebar em cima */
-  .gestante-layout {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto 1fr;
-  }
-  .g-sidebar {
-    position: relative !important;
-    top: auto !important;
-    height: auto !important;
-    border-right: none !important;
-    border-bottom: 1px solid rgba(122,100,85,0.1);
-    padding: 16px 0 8px !important;
-    flex-direction: column;
-  }
-  .g-profile { padding: 0 16px 16px !important; }
-  .g-nav {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0 8px;
-    gap: 4px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .g-nav::-webkit-scrollbar { display: none; }
-  .g-nav-item {
-    flex-shrink: 0;
-    padding: 8px 14px !important;
-    border-left: none !important;
-    border-bottom: 3px solid transparent;
-    border-radius: 20px;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  .g-nav-item.active {
-    border-bottom-color: var(--rose) !important;
-    border-left-color: transparent !important;
-  }
-  .g-doula-card { display: none; }
-  .g-main { padding: 16px !important; }
+  /* ── Gestante: esconde sidebar, usa só bottom nav ── */
+  .gestante-layout { grid-template-columns: 1fr !important; }
+  .g-sidebar { display: none !important; }
+  .g-main { padding: 12px 14px 90px !important; }
 
-  /* Doula layout — empilhar */
-  .doula-layout {
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto 1fr;
+  /* ── Doula: esconde sidebar, usa só bottom nav ── */
+  .doula-layout { grid-template-columns: 1fr !important; }
+  .d-sidebar { display: none !important; }
+  .d-main { padding: 12px 14px 90px !important; }
+
+  /* Bottom nav — estilo Instagram */
+  .mobile-bottom-nav {
+    border-top: 1px solid rgba(122,100,85,0.12);
+    box-shadow: 0 -4px 20px rgba(45,31,26,0.06);
+    background: var(--white);
   }
-  .d-sidebar {
-    position: relative !important;
-    top: auto !important;
-    height: auto !important;
-    padding: 12px 0 8px !important;
-  }
-  .d-sidebar-title { padding: 0 16px 12px !important; font-size: 11px; }
-  .d-sidebar nav {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 0 8px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .d-sidebar nav::-webkit-scrollbar { display: none; }
-  .d-nav-item {
-    flex-shrink: 0;
-    padding: 8px 14px !important;
-    border-left: none !important;
-    border-bottom: 3px solid transparent;
-    border-radius: 20px;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  .d-nav-item.active {
-    border-bottom-color: var(--rose) !important;
-    border-left-color: transparent !important;
-  }
-  .d-nav-item span[style] { display: none; }
-  .d-sidebar-clients { display: none; }
-  .d-main { padding: 16px !important; }
+  .mob-nav-item { min-width: 0; flex: 1; padding: 6px 4px; }
+  .mob-nav-item svg { width: 24px; height: 24px; }
+  .mob-nav-item span { font-size: 10px; }
+  .mob-nav-item.active svg { stroke: var(--rose); }
 
   /* Cards e grids */
   .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
@@ -683,6 +623,11 @@ tr:hover td { background:var(--rose-pale); }
   .tarefas-grid { grid-template-columns: 1fr !important; }
   .biblioteca-grid { grid-template-columns: 1fr 1fr !important; }
 
+  /* Cards — mobile-friendly */
+  .card { padding: 16px; border-radius: 14px; }
+  .frases-do-dia { padding: 18px; border-radius: 16px; }
+  .frase-texto { font-size: 18px !important; }
+
   /* Tabela clientes — scroll horizontal */
   .clients-table { overflow-x: auto; }
   table { min-width: 600px; }
@@ -696,11 +641,13 @@ tr:hover td { background:var(--rose-pale); }
   .dev-card { flex-direction: column !important; text-align: center; }
   .dev-emoji { width: 100% !important; }
 
-  /* Panel title */
+  /* Títulos */
   .panel-title { font-size: 24px !important; }
+  .panel-sub { font-size: 13px !important; margin-bottom: 20px !important; }
 
   /* Timer */
   .timer-display { font-size: 52px !important; }
+  .timer-card { padding: 28px 20px; }
   .emergencia-acoes { grid-template-columns: 1fr 1fr !important; }
 
   /* Copyright footer */
@@ -712,14 +659,14 @@ tr:hover td { background:var(--rose-pale); }
   .splash-btn { width: 200px; text-align: center; }
 
   /* Chat */
-  .chat-wrap { height: calc(100vh - 64px - 280px) !important; min-height: 300px; }
+  .chat-wrap { height: calc(100vh - 52px - 80px - 120px) !important; min-height: 300px; }
 }
 
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr 1fr !important; }
-  .g-nav-item { font-size: 12px; padding: 7px 10px !important; }
   .panel-title { font-size: 20px !important; }
   .login-title { font-size: 28px !important; }
+  .g-main, .d-main { padding: 10px 12px 90px !important; }
 }
 </style>
 </head>
@@ -2937,6 +2884,8 @@ function verificarAdmin() {
     document.getElementById('admin-senha-input').value = '';
     carregarUsuariosAdmin();
     setTimeout(function() { try { carregarBibliotecaAdmin(); } catch(e) {} }, 300);
+    try { renderConteudosAdmin(); } catch(e) {}
+    try { renderFAQAdmin(); } catch(e) {}
     setTimeout(function() {
       var c = document.getElementById('adminMoonCanvas');
       if (c && typeof drawMoon === 'function') drawMoon(c, 28, 0.5, 1, false);
@@ -2958,6 +2907,12 @@ function adminNav(el, sectionId) {
   }
   if (sectionId === 'admin-usuarios') {
     setTimeout(function() { try { carregarUsuariosAdmin(); } catch(e) {} }, 100);
+  }
+  if (sectionId === 'admin-conteudo') {
+    try { renderConteudosAdmin(); } catch(e) {}
+  }
+  if (sectionId === 'admin-faq') {
+    try { renderFAQAdmin(); } catch(e) {}
   }
 }
 
@@ -3134,7 +3089,11 @@ async function carregarBibliotecaAdmin() {
   if (!el) return;
   try {
     var res = await db.from('biblioteca').select('*').order('criado_em', { ascending: false });
-    if (res.error || !res.data || !res.data.length) {
+    if (res.error) {
+      el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:#ff8a8a;">Erro ao carregar: ' + res.error.message + '</div>';
+      return;
+    }
+    if (!res.data || !res.data.length) {
       el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum material ainda</div>';
       return;
     }
