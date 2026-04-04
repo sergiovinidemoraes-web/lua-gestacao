@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- v20260403221500 -->
-<!-- Lua App v2.2.1 - 2026-04-03 - Fix: menu mobile via classe nav-ativa -->
+<!-- v20260403223000 -->
+<!-- Lua App v2.2.2 - 2026-04-03 - Fix: onclick UUID quebrado + initMobileNav tipo -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -2494,7 +2494,7 @@ function entrarNoApp(tipo, nome) {
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
   }
   mostrarToast('Bem-vinda, ' + primeiroNome + '!');
-  setTimeout(function() { try { initMobileNav(); } catch(e) {} }, 200);
+  setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
 }
 
 // ── LOGOUT ──
@@ -2986,19 +2986,25 @@ async function carregarUsuariosAdmin() {
       lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum usuario ainda</div>';
       return;
     }
-    var html = '';
+    lista.innerHTML = '';
     for (var i = 0; i < data.length; i++) {
-      var u = data[i];
-      var tipo = u.tipo === 'doula' ? 'Doula' : 'Gestante';
-      html += '<div class="admin-item-row">';
-      html += '<div>';
-      html += '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + u.nome + '</div>';
-      html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + u.email + ' - ' + tipo + '</div>';
-      html += '</div>';
-      html += '<button class="admin-del-btn" onclick="deletarUsuario(' + JSON.stringify(u.id) + ',' + JSON.stringify(u.nome) + ')">Remover</button>';
-      html += '</div>';
+      (function(u) {
+        var tipo = u.tipo === 'doula' ? 'Doula' : 'Gestante';
+        var row = document.createElement('div');
+        row.className = 'admin-item-row';
+        var info = document.createElement('div');
+        info.innerHTML =
+          '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + u.nome + '</div>' +
+          '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + u.email + ' - ' + tipo + '</div>';
+        var btn = document.createElement('button');
+        btn.className = 'admin-del-btn';
+        btn.textContent = 'Remover';
+        btn.addEventListener('click', function() { deletarUsuario(u.id, u.nome); });
+        row.appendChild(info);
+        row.appendChild(btn);
+        lista.appendChild(row);
+      })(data[i]);
     }
-    lista.innerHTML = html;
   } catch(e) { console.error('carregarUsuariosAdmin:', e); }
 }
 
@@ -3209,18 +3215,24 @@ function renderConteudosAdmin() {
     return;
   }
   var fases = { inicio:'Inicio', meio:'Meio', final:'Final', posparto:'Pos-parto' };
-  var html = '';
+  el.innerHTML = '';
   for (var i = 0; i < conteudosLocais.length; i++) {
-    var c = conteudosLocais[i];
-    html += '<div class="admin-item-row">';
-    html += '<div>';
-    html += '<div style="font-size:14px;color:#E8C5BC;">' + c.icone + ' ' + c.titulo + '</div>';
-    html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (fases[c.fase] || c.fase) + '</div>';
-    html += '</div>';
-    html += '<button class="admin-del-btn" onclick="deletarConteudo(' + c.id + ')">Remover</button>';
-    html += '</div>';
+    (function(c) {
+      var row = document.createElement('div');
+      row.className = 'admin-item-row';
+      var info = document.createElement('div');
+      info.innerHTML =
+        '<div style="font-size:14px;color:#E8C5BC;">' + c.icone + ' ' + c.titulo + '</div>' +
+        '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (fases[c.fase] || c.fase) + '</div>';
+      var btn = document.createElement('button');
+      btn.className = 'admin-del-btn';
+      btn.textContent = 'Remover';
+      btn.addEventListener('click', function() { deletarConteudo(c.id); });
+      row.appendChild(info);
+      row.appendChild(btn);
+      el.appendChild(row);
+    })(conteudosLocais[i]);
   }
-  el.innerHTML = html;
 }
 
 function deletarConteudo(id) {
@@ -3253,19 +3265,27 @@ function renderFAQAdmin() {
     el.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhuma pergunta ainda</div>';
     return;
   }
-  var html = '';
+  el.innerHTML = '';
   for (var i = 0; i < faqLocais.length; i++) {
-    var f = faqLocais[i];
-    var preview = f.resposta.length > 80 ? f.resposta.substring(0, 80) + '...' : f.resposta;
-    html += '<div class="admin-item-row">';
-    html += '<div style="flex:1;margin-right:12px;">';
-    html += '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + f.pergunta + '</div>';
-    html += '<div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:4px;">' + preview + '</div>';
-    html += '</div>';
-    html += '<button class="admin-del-btn" onclick="deletarFAQ(' + f.id + ')">Remover</button>';
-    html += '</div>';
+    (function(f) {
+      var preview = f.resposta.length > 80 ? f.resposta.substring(0, 80) + '...' : f.resposta;
+      var row = document.createElement('div');
+      row.className = 'admin-item-row';
+      var info = document.createElement('div');
+      info.style.flex = '1';
+      info.style.marginRight = '12px';
+      info.innerHTML =
+        '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + f.pergunta + '</div>' +
+        '<div style="font-size:12px;color:rgba(176,154,140,0.5);margin-top:4px;">' + preview + '</div>';
+      var btn = document.createElement('button');
+      btn.className = 'admin-del-btn';
+      btn.textContent = 'Remover';
+      btn.addEventListener('click', function() { deletarFAQ(f.id); });
+      row.appendChild(info);
+      row.appendChild(btn);
+      el.appendChild(row);
+    })(faqLocais[i]);
   }
-  el.innerHTML = html;
 }
 
 function deletarFAQ(id) {
@@ -3310,12 +3330,13 @@ function fecharModal() {
 }
 
 // ── Mobile Bottom Nav ──
-function initMobileNav() {
+function initMobileNav(tipo) {
   if (window.innerWidth > 768) return;
   var nav = document.getElementById('mobile-bottom-nav');
   if (!nav) return;
+  var role = tipo || currentRole;
 
-  if (currentRole === 'doula') {
+  if (role === 'doula') {
     nav.querySelector('.mobile-bottom-nav-inner').innerHTML = `
       <div class="mob-nav-item active" id="mob-d-dashboard" onclick="mobNavDoula('d-dashboard','mob-d-dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
