@@ -1301,6 +1301,17 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
+          <!-- Monitor de contrações em tempo real -->
+          <div class="card" style="margin-top:24px;" id="card-contracoes-doula">
+            <div class="card-title">⏱ Contrações em tempo real</div>
+            <div id="contracoes-realtime-status" style="font-size:13px;color:var(--earth-light);margin-bottom:12px;">Aguardando gestante iniciar o timer...</div>
+            <div id="contracoes-realtime-timer" style="display:none;text-align:center;padding:16px;background:var(--dark);border-radius:16px;margin-bottom:12px;">
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;">Contração ativa</div>
+              <div id="doula-timer-display" style="font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--rose-light);letter-spacing:4px;">00:00</div>
+            </div>
+            <div id="contracoes-realtime-log"></div>
+          </div>
+
           <div id="card-perfil-doula" class="card" style="margin-top:24px;background:linear-gradient(135deg,var(--rose-pale),var(--sage-light));border:1.5px dashed var(--rose-light);">
             <div class="card-title">Complete seu perfil</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Preencha para aparecer no marketplace do Lua e receber gestantes</div>
@@ -1580,11 +1591,15 @@ tr:hover td { background:var(--rose-pale); }
 
 // ─── App state ───
 let currentRole = '';
+let currentUserId = null;
+let currentDoulaId = null;
 let timerInterval = null;
 let timerRunning = false;
 let timerStart = null;
+let timerContraId = null; // id do registro ativo no supabase
 let lastContractionEnd = null;
 let contractions = [];
+let realtimeChannel = null;
 
 const frases = [
   '"Você está indo muito bem, mamãe 💛"',
@@ -1683,7 +1698,7 @@ function saveDiary() {
 }
 
 // ─── Timer ───
-function timerAction() {
+async function timerAction() {
   const btn = document.getElementById('timer-main-btn');
   if (!timerRunning) {
     timerRunning = true;
@@ -1691,6 +1706,16 @@ function timerAction() {
     btn.textContent = '⏹ Parar';
     btn.style.background = '#5C4035';
     timerInterval = setInterval(() => { updateTimerDisplay(); updateTimerFase(); }, 100);
+    // Salva contração ativa no Supabase
+    if (db && currentUserId) {
+      try {
+        var ins = await db.from('contracoes').insert({
+          gestante_id: currentUserId,
+          inicio: new Date(timerStart).toISOString()
+        }).select().single();
+        if (ins.data) timerContraId = ins.data.id;
+      } catch(e) {}
+    }
   } else {
     timerRunning = false;
     clearInterval(timerInterval);
@@ -1703,6 +1728,17 @@ function timerAction() {
     btn.style.background = 'var(--rose)';
     document.getElementById('timer-display').textContent = '00:00';
     document.getElementById('timer-fase').innerHTML = '';
+    // Atualiza contração no Supabase com fim e duração
+    if (db && timerContraId) {
+      try {
+        await db.from('contracoes').update({
+          fim: new Date().toISOString(),
+          duracao_ms: duration,
+          intervalo_ms: interval
+        }).eq('id', timerContraId);
+        timerContraId = null;
+      } catch(e) {}
+    }
   }
 }
 function updateTimerDisplay() {
@@ -2375,9 +2411,14 @@ async function verificarConfirmacao() {
 
 // ── CARREGAR USUÁRIO ──
 async function carregarUsuario(user) {
+  currentUserId = user.id;
   try {
     var res = await db.from('usuarios').select('*').eq('id', user.id).single();
-    if (res.data) { entrarNoApp(res.data.tipo, res.data.nome); return; }
+    if (res.data) {
+      currentDoulaId = res.data.doula_id || null;
+      entrarNoApp(res.data.tipo, res.data.nome);
+      return;
+    }
   } catch(e) {}
   var tipo = (user.user_metadata && user.user_metadata.tipo) || 'gestante';
   var nome = (user.user_metadata && user.user_metadata.nome) || user.email;
@@ -2418,9 +2459,100 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     var g2 = document.getElementById('doula-greeting');
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
+    // Busca gestante vinculada e inicia realtime
+    setTimeout(function() {
+      if (db && currentUserId) {
+        db.from('usuarios').select('id,nome').eq('doula_id', currentUserId).eq('tipo', 'gestante').limit(1)
+          .then(function(res) {
+            if (res.data && res.data.length) {
+              var gestante = res.data[0];
+              var status = document.getElementById('contracoes-realtime-status');
+              if (status) status.textContent = 'Monitorando: ' + gestante.nome;
+              iniciarRealtimeDoula(gestante.id);
+            }
+          });
+      }
+    }, 800);
   }
   mostrarToast('Bem-vinda, ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
+}
+
+// ── REALTIME CONTRAÇÕES (DOULA) ──
+var doulaTimerInterval = null;
+var doulaContraAtiva = null;
+
+function iniciarRealtimeDoula(gestanteId) {
+  if (!db || !gestanteId) return;
+  if (realtimeChannel) db.removeChannel(realtimeChannel);
+
+  // Carrega histórico recente
+  db.from('contracoes').select('*')
+    .eq('gestante_id', gestanteId)
+    .order('inicio', { ascending: false })
+    .limit(10)
+    .then(function(res) {
+      if (res.data) renderContracoesDoula(res.data);
+    });
+
+  // Assina atualizações em tempo real
+  realtimeChannel = db.channel('contracoes-' + gestanteId)
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'contracoes',
+      filter: 'gestante_id=eq.' + gestanteId
+    }, function(payload) {
+      var row = payload.new;
+      if (payload.eventType === 'INSERT') {
+        // Contração iniciada
+        doulaContraAtiva = row;
+        document.getElementById('contracoes-realtime-status').textContent = '🔴 Gestante com contração ativa!';
+        document.getElementById('contracoes-realtime-status').style.color = 'var(--alert)';
+        document.getElementById('contracoes-realtime-timer').style.display = 'block';
+        var inicio = new Date(row.inicio).getTime();
+        clearInterval(doulaTimerInterval);
+        doulaTimerInterval = setInterval(function() {
+          var elapsed = Date.now() - inicio;
+          var s = Math.floor(elapsed / 1000);
+          var display = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+          var el = document.getElementById('doula-timer-display');
+          if (el) el.textContent = display;
+        }, 500);
+      } else if (payload.eventType === 'UPDATE' && row.fim) {
+        // Contração encerrada
+        clearInterval(doulaTimerInterval);
+        doulaContraAtiva = null;
+        document.getElementById('contracoes-realtime-status').textContent = 'Aguardando próxima contração...';
+        document.getElementById('contracoes-realtime-status').style.color = 'var(--earth-light)';
+        document.getElementById('contracoes-realtime-timer').style.display = 'none';
+        document.getElementById('doula-timer-display').textContent = '00:00';
+        // Recarrega lista
+        db.from('contracoes').select('*')
+          .eq('gestante_id', gestanteId)
+          .order('inicio', { ascending: false })
+          .limit(10)
+          .then(function(res) { if (res.data) renderContracoesDoula(res.data); });
+      }
+    })
+    .subscribe();
+}
+
+function renderContracoesDoula(lista) {
+  var el = document.getElementById('contracoes-realtime-log');
+  if (!el) return;
+  var concluidas = lista.filter(function(c) { return c.fim; });
+  if (!concluidas.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:12px;">Nenhuma contração registrada ainda</div>';
+    return;
+  }
+  el.innerHTML = concluidas.map(function(c) {
+    var d = Math.round(c.duracao_ms / 1000);
+    var dur = Math.floor(d/60) + ':' + String(d%60).padStart(2,'0');
+    var intv = c.intervalo_ms ? (Math.floor(c.intervalo_ms/60000) + 'min ' + Math.round((c.intervalo_ms%60000)/1000) + 's') : '—';
+    var hora = new Date(c.inicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    return '<div class="contraction-row"><div class="cont-time">' + hora + '</div><div class="cont-duration">' + dur + '</div><div class="cont-interval">Intervalo: ' + intv + '</div></div>';
+  }).join('');
 }
 
 // ── LOGOUT ──
@@ -2705,15 +2837,42 @@ function renderDoulas(doulas) {
       '</div>' +
       '<div class="doula-mkt-tags">' + tags + '</div>' +
       '<div style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">' + bioText + '</div>';
+    var btnWrap = document.createElement('div');
+    btnWrap.style.cssText = 'display:flex;gap:8px;';
     var btn = document.createElement('button');
     btn.className = 'doula-mkt-btn';
     btn.textContent = 'Ver perfil';
+    btn.style.flex = '1';
     btn.onclick = (function(doula) {
       return function() { verPerfilDoula(doula); };
     })(d);
-    card.appendChild(btn);
+    var btnVincular = document.createElement('button');
+    btnVincular.className = 'doula-mkt-btn';
+    btnVincular.style.cssText = 'flex:1;background:var(--sage);';
+    btnVincular.textContent = currentDoulaId === d.id ? '✓ Minha doula' : 'Escolher';
+    btnVincular.onclick = (function(doula, btnRef) {
+      return function() { vincularDoula(doula.id, doula.nome, btnRef); };
+    })(d, btnVincular);
+    btnWrap.appendChild(btn);
+    btnWrap.appendChild(btnVincular);
+    card.appendChild(btnWrap);
     grid.appendChild(card);
   });
+}
+
+async function vincularDoula(doulaId, nomeDoula, btnRef) {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('usuarios').update({ doula_id: doulaId }).eq('id', currentUserId);
+    if (res.error) { mostrarToast('Erro: ' + res.error.message); return; }
+    currentDoulaId = doulaId;
+    if (btnRef) { btnRef.textContent = '✓ Minha doula'; btnRef.style.background = 'var(--sage)'; }
+    var nomeEl = document.getElementById('g-doula-nome');
+    if (nomeEl) nomeEl.textContent = nomeDoula;
+    mostrarToast('✅ ' + nomeDoula + ' é sua doula agora!');
+  } catch(e) {
+    mostrarToast('Erro: ' + e.message);
+  }
 }
 
 function filtrarDoulas(termo) {
