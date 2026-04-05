@@ -2559,13 +2559,13 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
     setTimeout(function() {
       if (db && currentUserId) {
-        db.from('usuarios').select('id,nome').eq('doula_id', currentUserId).eq('tipo', 'gestante').limit(1)
+        db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita').limit(1)
           .then(function(res) {
             if (res.data && res.data.length) {
               var gestante = res.data[0];
               var status = document.getElementById('contracoes-realtime-status');
-              if (status) status.textContent = 'Monitorando: ' + gestante.nome;
-              iniciarRealtimeDoula(gestante.id);
+              if (status) status.textContent = 'Monitorando: ' + gestante.gestante_nome;
+              iniciarRealtimeDoula(gestante.gestante_id);
             }
           });
       }
