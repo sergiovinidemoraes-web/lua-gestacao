@@ -575,8 +575,8 @@ tr:hover td { background:var(--rose-pale); }
    MOBILE RESPONSIVO
 ══════════════════════════════ */
 @media (max-width: 768px) {
-  /* Previne overflow horizontal */
-  body { overflow-x: hidden; }
+  /* Previne overflow horizontal sem quebrar position:fixed */
+  #app { overflow-x: hidden; }
 
   /* Header */
   header { padding: 0 16px; height: 52px; }
