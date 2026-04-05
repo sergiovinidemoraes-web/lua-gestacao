@@ -3255,8 +3255,9 @@ function abrirModal(titulo, sub, callback) {
   document.getElementById('modal-title').textContent = titulo;
   document.getElementById('modal-sub').textContent = sub;
   document.getElementById('modal-confirm-btn').onclick = function() {
+    var cb = modalCallback;
     fecharModal();
-    if (modalCallback) modalCallback();
+    if (cb) cb();
   };
   document.getElementById('lua-modal').classList.add('show');
 }
