@@ -2472,7 +2472,7 @@ async function verificarConfirmacao() {
 async function carregarUsuario(user) {
   currentUserId = user.id;
   try {
-    var res = await db.from('usuarios').select('*').eq('id', user.id).single();
+    var res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
     if (res.data) {
       currentDoulaId = res.data.doula_id || null;
       // Verifica solicitação pendente (gestante sem doula ainda)
@@ -3192,7 +3192,7 @@ async function salvarPerfilDoula() {
 async function carregarMinhaDoula() {
   if (!db || !currentDoulaId) return;
   try {
-    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).single();
+    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).maybeSingle();
     if (!res.data) return;
     var d = res.data;
     // Mostra e atualiza sidebar
@@ -3275,7 +3275,7 @@ async function carregarPerfilDoula() {
     var session = await db.auth.getSession();
     if (!session.data.session) return;
     var uid = session.data.session.user.id;
-    var res = await db.from('usuarios').select('id,nome,whatsapp,cidade,especialidades,bio').eq('id', uid).single();
+    var res = await db.from('usuarios').select('id,nome,whatsapp,cidade,especialidades,bio').eq('id', uid).maybeSingle();
     if (res.data) {
       var d = res.data;
       if (d.whatsapp && document.getElementById('doula-whatsapp')) document.getElementById('doula-whatsapp').value = d.whatsapp;
