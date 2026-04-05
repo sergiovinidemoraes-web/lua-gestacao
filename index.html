@@ -3094,7 +3094,7 @@ async function carregarBibliotecaAdmin() {
           abrirModal('Remover material?', 'Esta acao nao pode ser desfeita.', async function() {
             try {
               var res2 = await db.from('biblioteca').delete().eq('id', m.id);
-              if (res2.error) throw res2.error;
+              if (res2.error) { mostrarToast('Erro ao remover: ' + res2.error.message); return; }
               mostrarToast('Material removido!');
               carregarBibliotecaAdmin();
               carregarConteudos();
