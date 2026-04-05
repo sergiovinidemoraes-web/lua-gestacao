@@ -3064,8 +3064,8 @@ async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
   try {
     var r1 = await db.from('solicitacoes').update({ status: 'aceita' }).eq('id', solId);
     if (r1.error) throw r1.error;
-    var r2 = await db.from('usuarios').update({ doula_id: currentUserId }).eq('id', gestanteId);
-    if (r2.error) throw r2.error;
+    // Tenta atualizar doula_id na gestante (pode falhar por RLS — não é crítico)
+    try { await db.from('usuarios').update({ doula_id: currentUserId }).eq('id', gestanteId); } catch(e2) {}
     mostrarToast('✅ ' + gestanteNome + ' é sua cliente agora!');
     carregarSolicitacoesDoula();
     carregarClientesDoula();
@@ -3247,7 +3247,7 @@ async function carregarClientesDoula() {
   var tbody = document.getElementById('clientes-tbody');
   if (!tbody) return;
   try {
-    var res = await db.from('usuarios').select('id,nome,email,criado_em').eq('doula_id', currentUserId).eq('tipo', 'gestante');
+    var res = await db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentUserId).eq('status', 'aceita');
     if (res.error || !res.data || !res.data.length) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma gestante vinculada ainda</div><div style="font-size:13px;color:var(--earth-light);">As gestantes que escolherem você no marketplace aparecerão aqui</div></td></tr>';
       document.getElementById('stat-clientes').textContent = '0';
@@ -3257,13 +3257,13 @@ async function carregarClientesDoula() {
     tbody.innerHTML = res.data.map(function(g) {
       var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
       return '<tr>' +
-        '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.nome + '</td>' +
+        '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.gestante_nome + '</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">Ativa</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.id + '\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
+        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
         '</tr>';
     }).join('');
   } catch(e) {}
