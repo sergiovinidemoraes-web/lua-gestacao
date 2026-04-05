@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- v20260403225000 -->
-<!-- Lua App v2.2.3 - 2026-04-03 - Fix: menu mobile via CSS puro #app.visible -->
+<!-- v20260405150000 -->
+<!-- Lua App v2.3.3 - 2026-04-05 - Fix: sidebar doula oculta por padrão, Spotify sem lazy -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -781,10 +781,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span>Diário</div>
           <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span>Conversar com a Lua</div>
         </nav>
-        <div class="g-doula-card">
+        <div class="g-doula-card" id="g-doula-card-sidebar" style="display:none;">
           <div class="g-doula-card-title">Sua Doula</div>
-          <div class="g-doula-card-name" id="g-doula-nome">Sua Doula</div>
-          <div class="g-doula-card-sub">Conectada ao app</div>
+          <div class="g-doula-card-name" id="g-doula-nome">—</div>
+          <div class="g-doula-card-sub" id="g-doula-card-sub">Conectada ao app</div>
           <button class="g-doula-card-btn" onclick="gNavById('g-chat')">Enviar mensagem</button>
         </div>
       </aside>
@@ -823,6 +823,17 @@ tr:hover td { background:var(--rose-pale); }
               <button id="btn-whatsapp-doula" onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
               <button id="btn-ligar-doula" onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📞 Ligar</button>
             </div>
+          </div>
+          <div id="card-aguardando-doula" style="display:none;background:linear-gradient(135deg,#4a3728,#5c4530);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Solicitação Enviada</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+              <div style="font-size:28px;">⏳</div>
+              <div>
+                <div id="aguardando-doula-nome" style="font-size:16px;font-weight:500;">—</div>
+                <div style="font-size:12px;opacity:0.6;margin-top:2px;">Aguardando confirmação da doula</div>
+              </div>
+            </div>
+            <div style="font-size:12px;opacity:0.6;line-height:1.5;">Você receberá uma notificação quando ela aceitar sua solicitação.</div>
           </div>
           <button class="btn-falar-doula" id="btn-falar-doula-chat" onclick="gNavById('g-chat')" style="display:none;">
             🌙 Conversar com a Lua
@@ -1117,13 +1128,16 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="playlist-card">
             <div class="playlist-title">🎵 Playlist para o Parto</div>
-            <div class="playlist-sub">Músicas calmas para cada fase do trabalho de parto</div>
-            <div class="playlist-items">
-              <div class="playlist-item"><div class="playlist-item-num">1</div><div class="playlist-item-info"><div class="playlist-item-name">River</div><div class="playlist-item-artist">Leon Bridges</div></div><div class="playlist-play">▶</div></div>
-              <div class="playlist-item"><div class="playlist-item-num">2</div><div class="playlist-item-info"><div class="playlist-item-name">Holocene</div><div class="playlist-item-artist">Bon Iver</div></div><div class="playlist-play">▶</div></div>
-              <div class="playlist-item"><div class="playlist-item-num">3</div><div class="playlist-item-info"><div class="playlist-item-name">Let Her Go</div><div class="playlist-item-artist">Passenger</div></div><div class="playlist-play">▶</div></div>
-              <div class="playlist-item"><div class="playlist-item-num">4</div><div class="playlist-item-info"><div class="playlist-item-name">Yellow</div><div class="playlist-item-artist">Coldplay</div></div><div class="playlist-play">▶</div></div>
-            </div>
+            <div class="playlist-sub">Curada especialmente para acompanhar cada fase do trabalho de parto</div>
+            <iframe
+              src="https://open.spotify.com/embed/playlist/6KFgBH3jpYuAMf4fZkbSEC?utm_source=generator&theme=0"
+              width="100%"
+              height="380"
+              frameBorder="0"
+              allowtransparency="true"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              style="border-radius:14px;margin-top:8px;display:block;"
+            ></iframe>
           </div>
 
           <div class="card">
@@ -1279,7 +1293,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="d-sidebar-title">Painel da Doula</div>
         <nav>
           <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><span class="d-nav-icon">📊</span>Dashboard</div>
-          <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span>Clientes</div>
+          <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span>Clientes<span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-agenda')"><span class="d-nav-icon">📅</span>Agenda</div>
           <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span>Registros</div>
           <div class="d-nav-item" onclick="dNav(this,'d-posparto')"><span class="d-nav-icon">👶</span>Pós-Parto</div>
@@ -1308,6 +1322,20 @@ tr:hover td { background:var(--rose-pale); }
             <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label">Partos este mês</div></div>
             <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-consultas">0</div><div class="stat-label">Consultas hoje</div></div>
             <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val" id="stat-msgs">0</div><div class="stat-label">Msgs não lidas</div></div>
+          </div>
+
+          <!-- Banner de solicitações pendentes -->
+          <div id="banner-solicitacoes" style="display:none;background:linear-gradient(135deg,var(--rose-pale),#fce8e0);border:1.5px solid var(--rose-light);border-radius:16px;padding:16px 20px;margin-bottom:20px;cursor:pointer;" onclick="irParaClientesDoula()">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;background:var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">✉️</div>
+                <div>
+                  <div style="font-size:14px;font-weight:600;color:var(--dark);" id="banner-sol-texto">Nova solicitação pendente</div>
+                  <div style="font-size:12px;color:var(--earth-light);margin-top:2px;">Toque para ver e responder</div>
+                </div>
+              </div>
+              <div style="font-size:20px;color:var(--rose);">›</div>
+            </div>
           </div>
 
           <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:16px;">Alertas automáticos</div>
@@ -1381,6 +1409,11 @@ tr:hover td { background:var(--rose-pale); }
                 <button class="btn-secondary" onclick="document.getElementById('nova-cliente-form').style.display='none'">Cancelar</button>
               </div>
             </div>
+          </div>
+
+          <div id="solicitacoes-section" style="margin-bottom:20px;">
+            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:12px;">Solicitações pendentes</div>
+            <div id="solicitacoes-container"><div style="font-size:13px;color:var(--earth-light);padding:12px 0;">Nenhuma solicitação pendente.</div></div>
           </div>
 
           <div class="clients-table">
@@ -1611,6 +1644,8 @@ tr:hover td { background:var(--rose-pale); }
 let currentRole = '';
 let currentUserId = null;
 let currentDoulaId = null;
+let currentNome = '';
+let currentSolicitacaoPendente = null; // { id, doulaId, nomeDoula }
 let timerInterval = null;
 let timerRunning = false;
 let timerStart = null;
@@ -1618,6 +1653,7 @@ let timerContraId = null; // id do registro ativo no supabase
 let lastContractionEnd = null;
 let contractions = [];
 let realtimeChannel = null;
+let realtimeChannelSolicitacoes = null;
 
 const frases = [
   '"Você está indo muito bem, mamãe 💛"',
@@ -1636,6 +1672,11 @@ function dNav(el, panelId) {
   document.querySelectorAll('.d-panel').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById(panelId).classList.add('active');
+}
+
+function irParaClientesDoula() {
+  var navClientes = document.querySelector('.d-nav-item[onclick*="d-clientes"]');
+  if (navClientes) dNav(navClientes, 'd-clientes');
 }
 
 function gNav(el, panelId) {
@@ -2434,6 +2475,31 @@ async function carregarUsuario(user) {
     var res = await db.from('usuarios').select('*').eq('id', user.id).single();
     if (res.data) {
       currentDoulaId = res.data.doula_id || null;
+      // Verifica solicitação pendente (gestante sem doula ainda)
+      if (!currentDoulaId && res.data.tipo === 'gestante') {
+        try {
+          var sol = await db.from('solicitacoes')
+            .select('id,doula_id,gestante_nome')
+            .eq('gestante_id', user.id)
+            .eq('status', 'pendente')
+            .maybeSingle();
+          if (sol.data) {
+            // Busca nome da doula
+            var dRes = await db.from('usuarios').select('nome').eq('id', sol.data.doula_id).maybeSingle();
+            var nomeDoula = dRes.data ? dRes.data.nome : 'Doula';
+            currentSolicitacaoPendente = { id: sol.data.id, doulaId: sol.data.doula_id, nomeDoula: nomeDoula };
+          }
+          // Verifica se doula já aceitou (solicitação aceita mas doula_id ainda não estava no perfil — sincroniza)
+          var solAceita = await db.from('solicitacoes')
+            .select('id,doula_id')
+            .eq('gestante_id', user.id)
+            .eq('status', 'aceita')
+            .maybeSingle();
+          if (solAceita.data && !currentDoulaId) {
+            currentDoulaId = solAceita.data.doula_id;
+          }
+        } catch(e2) {}
+      }
       entrarNoApp(res.data.tipo, res.data.nome);
       return;
     }
@@ -2455,6 +2521,7 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
+  currentNome = nome;
   var primeiroNome = nome.split(' ')[0];
   var hora = new Date().getHours();
   var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
@@ -2468,6 +2535,14 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
     setTimeout(function() { try { carregarMinhaDoula(); } catch(e) {} }, 900);
+    setTimeout(function() {
+      try {
+        if (currentSolicitacaoPendente && !currentDoulaId) {
+          mostrarCardAguardando(currentSolicitacaoPendente.nomeDoula);
+          iniciarRealtimeSolicitacoesGestante(currentSolicitacaoPendente.id);
+        }
+      } catch(e) {}
+    }, 950);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
@@ -2478,7 +2553,9 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     var g2 = document.getElementById('doula-greeting');
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
-    // Carrega clientes e busca gestante vinculada para realtime
+    // Carrega clientes, solicitações e busca gestante vinculada para realtime
+    setTimeout(function() { try { carregarSolicitacoesDoula(); } catch(e) {} }, 850);
+    setTimeout(function() { try { iniciarRealtimeSolicitacoesDoula(); } catch(e) {} }, 1000);
     setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
     setTimeout(function() {
       if (db && currentUserId) {
@@ -2868,8 +2945,19 @@ function renderDoulas(doulas) {
     })(d);
     var btnVincular = document.createElement('button');
     btnVincular.className = 'doula-mkt-btn';
-    btnVincular.style.cssText = 'flex:1;background:var(--sage);';
-    btnVincular.textContent = currentDoulaId === d.id ? '✓ Minha doula' : 'Escolher';
+    var isPending = currentSolicitacaoPendente && currentSolicitacaoPendente.doulaId === d.id;
+    var isLinked = currentDoulaId === d.id;
+    if (isLinked) {
+      btnVincular.textContent = '✓ Minha doula';
+      btnVincular.style.cssText = 'flex:1;background:var(--sage);';
+    } else if (isPending) {
+      btnVincular.textContent = '⏳ Aguardando...';
+      btnVincular.style.cssText = 'flex:1;background:#a0a0a0;cursor:not-allowed;';
+      btnVincular.disabled = true;
+    } else {
+      btnVincular.textContent = 'Escolher';
+      btnVincular.style.cssText = 'flex:1;background:var(--sage);';
+    }
     btnVincular.onclick = (function(doula, btnRef) {
       return function() { vincularDoula(doula.id, doula.nome, btnRef); };
     })(d, btnVincular);
@@ -2882,18 +2970,174 @@ function renderDoulas(doulas) {
 
 async function vincularDoula(doulaId, nomeDoula, btnRef) {
   if (!db || !currentUserId) return;
+  if (currentDoulaId) { mostrarToast('Você já tem uma doula vinculada'); return; }
+  if (currentSolicitacaoPendente) { mostrarToast('Você já enviou uma solicitação, aguarde a confirmação'); return; }
   try {
-    var res = await db.from('usuarios').update({ doula_id: doulaId }).eq('id', currentUserId);
+    // Verifica se já existe solicitação ativa
+    var existing = await db.from('solicitacoes')
+      .select('id,status')
+      .eq('gestante_id', currentUserId)
+      .in('status', ['pendente', 'aceita'])
+      .maybeSingle();
+    if (existing.data) { mostrarToast('Você já tem uma solicitação em andamento'); return; }
+
+    var res = await db.from('solicitacoes').insert({
+      gestante_id: currentUserId,
+      doula_id: doulaId,
+      gestante_nome: currentNome,
+      status: 'pendente'
+    }).select().single();
     if (res.error) { mostrarToast('Erro: ' + res.error.message); return; }
-    currentDoulaId = doulaId;
-    if (btnRef) { btnRef.textContent = '✓ Minha doula'; btnRef.style.background = 'var(--sage)'; }
-    var nomeEl = document.getElementById('g-doula-nome');
-    if (nomeEl) nomeEl.textContent = nomeDoula;
-    mostrarToast('✅ ' + nomeDoula + ' é sua doula agora!');
-    try { carregarMinhaDoula(); } catch(e) {}
+
+    currentSolicitacaoPendente = { id: res.data.id, doulaId: doulaId, nomeDoula: nomeDoula };
+    if (btnRef) {
+      btnRef.textContent = '⏳ Aguardando...';
+      btnRef.style.background = '#a0a0a0';
+      btnRef.disabled = true;
+    }
+    mostrarToast('✉️ Solicitação enviada para ' + nomeDoula + '!');
+    mostrarCardAguardando(nomeDoula);
+    iniciarRealtimeSolicitacoesGestante(res.data.id);
   } catch(e) {
     mostrarToast('Erro: ' + e.message);
   }
+}
+
+function mostrarCardAguardando(nomeDoula) {
+  var card = document.getElementById('card-aguardando-doula');
+  if (card) card.style.display = 'block';
+  var nomeEl = document.getElementById('aguardando-doula-nome');
+  if (nomeEl) nomeEl.textContent = nomeDoula;
+  var btnEncontrar = document.getElementById('btn-encontrar-doula');
+  if (btnEncontrar) btnEncontrar.style.display = 'none';
+  // Mostra sidebar com estado de aguardando
+  var sidebarCard = document.getElementById('g-doula-card-sidebar');
+  if (sidebarCard) sidebarCard.style.display = 'block';
+  var nomeSidebar = document.getElementById('g-doula-nome');
+  if (nomeSidebar) nomeSidebar.textContent = nomeDoula;
+  var subSidebar = document.getElementById('g-doula-card-sub');
+  if (subSidebar) subSidebar.textContent = '⏳ Aguardando confirmação';
+}
+
+// ── Solicitações (DOULA) ──
+async function carregarSolicitacoesDoula() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('solicitacoes-container');
+  if (!container) return;
+  try {
+    var res = await db.from('solicitacoes')
+      .select('id,gestante_id,gestante_nome,criado_em')
+      .eq('doula_id', currentUserId)
+      .eq('status', 'pendente')
+      .order('criado_em', { ascending: false });
+    var qtd = res.data ? res.data.length : 0;
+    var banner = document.getElementById('banner-solicitacoes');
+    var badge = document.getElementById('badge-solicitacoes');
+    if (banner) banner.style.display = qtd > 0 ? 'block' : 'none';
+    if (badge) { badge.style.display = qtd > 0 ? 'inline-block' : 'none'; badge.textContent = qtd; }
+    if (banner && qtd > 0) {
+      var textoEl = document.getElementById('banner-sol-texto');
+      if (textoEl) textoEl.textContent = qtd === 1 ? '1 solicitação pendente' : qtd + ' solicitações pendentes';
+    }
+    if (!res.data || !res.data.length) {
+      container.innerHTML = '<div style="font-size:13px;color:var(--earth-light);padding:12px 0;">Nenhuma solicitação pendente.</div>';
+      return;
+    }
+    container.innerHTML = res.data.map(function(s) {
+      var data = new Date(s.criado_em).toLocaleDateString('pt-BR');
+      return '<div style="background:var(--rose-pale);border:1px solid var(--rose-light);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="font-size:14px;font-weight:600;color:var(--dark);">' + s.gestante_nome + '</div>' +
+          '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">Solicitou em ' + data + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button onclick="aceitarSolicitacao(\'' + s.id + '\',\'' + s.gestante_id + '\',\'' + s.gestante_nome.replace(/'/g,'') + '\')" style="background:var(--sage);color:white;border:none;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">✓ Aceitar</button>' +
+          '<button onclick="recusarSolicitacao(\'' + s.id + '\',\'' + s.gestante_nome.replace(/'/g,'') + '\')" style="background:#f0e8e4;color:var(--earth);border:none;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">✗ Recusar</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
+  if (!db) return;
+  try {
+    var r1 = await db.from('solicitacoes').update({ status: 'aceita' }).eq('id', solId);
+    if (r1.error) throw r1.error;
+    var r2 = await db.from('usuarios').update({ doula_id: currentUserId }).eq('id', gestanteId);
+    if (r2.error) throw r2.error;
+    mostrarToast('✅ ' + gestanteNome + ' é sua cliente agora!');
+    carregarSolicitacoesDoula();
+    carregarClientesDoula();
+  } catch(e) {
+    mostrarToast('Erro: ' + e.message);
+  }
+}
+
+async function recusarSolicitacao(solId, gestanteNome) {
+  if (!db) return;
+  try {
+    var r = await db.from('solicitacoes').update({ status: 'recusada' }).eq('id', solId);
+    if (r.error) throw r.error;
+    mostrarToast('Solicitação de ' + gestanteNome + ' recusada.');
+    carregarSolicitacoesDoula();
+  } catch(e) {
+    mostrarToast('Erro: ' + e.message);
+  }
+}
+
+// ── Realtime: nova solicitação para a DOULA ──
+function iniciarRealtimeSolicitacoesDoula() {
+  if (!db || !currentUserId) return;
+  if (realtimeChannelSolicitacoes) db.removeChannel(realtimeChannelSolicitacoes);
+  realtimeChannelSolicitacoes = db.channel('solicitacoes-doula-' + currentUserId)
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'solicitacoes',
+      filter: 'doula_id=eq.' + currentUserId
+    }, function(payload) {
+      var nome = payload.new.gestante_nome || 'Uma gestante';
+      mostrarToast('✨ Nova solicitação de ' + nome + '!');
+      carregarSolicitacoesDoula();
+    })
+    .subscribe();
+}
+
+// ── Realtime: resposta da doula para a GESTANTE ──
+function iniciarRealtimeSolicitacoesGestante(solicitacaoId) {
+  if (!db || !solicitacaoId) return;
+  if (realtimeChannelSolicitacoes) db.removeChannel(realtimeChannelSolicitacoes);
+  realtimeChannelSolicitacoes = db.channel('solicitacoes-gestante-' + solicitacaoId)
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'solicitacoes',
+      filter: 'id=eq.' + solicitacaoId
+    }, function(payload) {
+      var status = payload.new && payload.new.status;
+      if (status === 'aceita') {
+        currentDoulaId = currentSolicitacaoPendente ? currentSolicitacaoPendente.doulaId : null;
+        var nomeDoula = currentSolicitacaoPendente ? currentSolicitacaoPendente.nomeDoula : 'Sua doula';
+        currentSolicitacaoPendente = null;
+        mostrarToast('🎉 ' + nomeDoula + ' aceitou sua solicitação!');
+        var cardAguard = document.getElementById('card-aguardando-doula');
+        if (cardAguard) cardAguard.style.display = 'none';
+        carregarMinhaDoula();
+        if (realtimeChannelSolicitacoes) db.removeChannel(realtimeChannelSolicitacoes);
+      } else if (status === 'recusada') {
+        var nomeDoula = currentSolicitacaoPendente ? currentSolicitacaoPendente.nomeDoula : 'A doula';
+        currentSolicitacaoPendente = null;
+        mostrarToast('😔 ' + nomeDoula + ' não tem disponibilidade no momento. Escolha outra doula.');
+        var cardAguard = document.getElementById('card-aguardando-doula');
+        if (cardAguard) cardAguard.style.display = 'none';
+        var btnEncontrar = document.getElementById('btn-encontrar-doula');
+        if (btnEncontrar) btnEncontrar.style.display = '';
+        carregarMarketplace();
+        if (realtimeChannelSolicitacoes) db.removeChannel(realtimeChannelSolicitacoes);
+      }
+    })
+    .subscribe();
 }
 
 function filtrarDoulas(termo) {
@@ -2951,9 +3195,13 @@ async function carregarMinhaDoula() {
     var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).single();
     if (!res.data) return;
     var d = res.data;
-    // Atualiza sidebar
+    // Mostra e atualiza sidebar
+    var sidebarCard = document.getElementById('g-doula-card-sidebar');
+    if (sidebarCard) sidebarCard.style.display = 'block';
     var nomeEl = document.getElementById('g-doula-nome');
     if (nomeEl) nomeEl.textContent = d.nome;
+    var subEl = document.getElementById('g-doula-card-sub');
+    if (subEl) subEl.textContent = 'Conectada ao app';
     // Atualiza card no dashboard
     var card = document.getElementById('card-minha-doula');
     if (card) card.style.display = 'block';
