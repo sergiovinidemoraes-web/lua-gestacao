@@ -809,8 +809,26 @@ tr:hover td { background:var(--rose-pale); }
             <div class="frase-sub">Frase do dia • Semana 18</div>
           </div>
 
-          <button class="btn-falar-doula" onclick="gNavById('g-chat')">
+          <div id="card-minha-doula" style="display:none;background:linear-gradient(135deg,var(--dark),#3d2a22);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Sua Doula</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+              <div id="doula-card-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:white;flex-shrink:0;">D</div>
+              <div>
+                <div id="doula-card-nome" style="font-size:16px;font-weight:500;">—</div>
+                <div id="doula-card-cidade" style="font-size:12px;opacity:0.6;margin-top:2px;">—</div>
+              </div>
+            </div>
+            <div id="doula-card-bio" style="font-size:13px;opacity:0.7;margin-bottom:14px;line-height:1.5;"></div>
+            <div style="display:flex;gap:10px;">
+              <button id="btn-whatsapp-doula" onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
+              <button id="btn-ligar-doula" onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📞 Ligar</button>
+            </div>
+          </div>
+          <button class="btn-falar-doula" id="btn-falar-doula-chat" onclick="gNavById('g-chat')" style="display:none;">
             Falar com minha Doula
+          </button>
+          <button class="btn-falar-doula" id="btn-encontrar-doula" onclick="gNavById('g-marketplace')">
+            🔍 Encontrar minha Doula
           </button>
 
           <div class="proxima-consulta-card" id="proxima-consulta-card">
@@ -2449,6 +2467,7 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
+    setTimeout(function() { try { carregarMinhaDoula(); } catch(e) {} }, 900);
     var frases = ['"Você está indo muito bem, mamãe 💛"','"Falta pouco para conhecer seu bebê ✨"','"Seu corpo foi feito para isso. Confie nele 🌙"'];
     var el = document.getElementById('frase-texto');
     if (el) el.textContent = frases[Math.floor(Math.random() * frases.length)];
@@ -2459,7 +2478,8 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     var g2 = document.getElementById('doula-greeting');
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ☀️';
-    // Busca gestante vinculada e inicia realtime
+    // Carrega clientes e busca gestante vinculada para realtime
+    setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
     setTimeout(function() {
       if (db && currentUserId) {
         db.from('usuarios').select('id,nome').eq('doula_id', currentUserId).eq('tipo', 'gestante').limit(1)
@@ -2870,6 +2890,7 @@ async function vincularDoula(doulaId, nomeDoula, btnRef) {
     var nomeEl = document.getElementById('g-doula-nome');
     if (nomeEl) nomeEl.textContent = nomeDoula;
     mostrarToast('✅ ' + nomeDoula + ' é sua doula agora!');
+    try { carregarMinhaDoula(); } catch(e) {}
   } catch(e) {
     mostrarToast('Erro: ' + e.message);
   }
@@ -2921,6 +2942,83 @@ async function salvarPerfilDoula() {
     var card = document.getElementById('card-perfil-doula');
     if (card) { card.style.background = 'var(--white)'; card.style.border = 'none'; }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+// ── Carrega info da doula para a GESTANTE ──
+async function carregarMinhaDoula() {
+  if (!db || !currentDoulaId) return;
+  try {
+    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).single();
+    if (!res.data) return;
+    var d = res.data;
+    // Atualiza sidebar
+    var nomeEl = document.getElementById('g-doula-nome');
+    if (nomeEl) nomeEl.textContent = d.nome;
+    // Atualiza card no dashboard
+    var card = document.getElementById('card-minha-doula');
+    if (card) card.style.display = 'block';
+    var btnEncontrar = document.getElementById('btn-encontrar-doula');
+    if (btnEncontrar) btnEncontrar.style.display = 'none';
+    var btnChat = document.getElementById('btn-falar-doula-chat');
+    if (btnChat) btnChat.style.display = 'flex';
+    var inicial = (d.nome || 'D')[0].toUpperCase();
+    var avatarEl = document.getElementById('doula-card-avatar');
+    if (avatarEl) avatarEl.textContent = inicial;
+    var nomeCardEl = document.getElementById('doula-card-nome');
+    if (nomeCardEl) nomeCardEl.textContent = d.nome || '—';
+    var cidadeEl = document.getElementById('doula-card-cidade');
+    if (cidadeEl) cidadeEl.textContent = d.cidade ? '📍 ' + d.cidade : '—';
+    var bioEl = document.getElementById('doula-card-bio');
+    if (bioEl) bioEl.textContent = d.bio || '';
+    // Salva whatsapp para os botões
+    var btnWpp = document.getElementById('btn-whatsapp-doula');
+    if (btnWpp) btnWpp.dataset.whatsapp = d.whatsapp || '';
+    var btnLigar = document.getElementById('btn-ligar-doula');
+    if (btnLigar) btnLigar.dataset.whatsapp = d.whatsapp || '';
+  } catch(e) {}
+}
+
+function falarWhatsappDoula() {
+  var btn = document.getElementById('btn-whatsapp-doula');
+  var num = btn ? btn.dataset.whatsapp : '';
+  if (!num) return mostrarToast('Doula ainda não informou o WhatsApp');
+  var numLimpo = num.replace(/\D/g, '');
+  window.open('https://wa.me/55' + numLimpo, '_blank');
+}
+
+function ligarDoula() {
+  var btn = document.getElementById('btn-ligar-doula');
+  var num = btn ? btn.dataset.whatsapp : '';
+  if (!num) return mostrarToast('Doula ainda não informou o telefone');
+  window.location.href = 'tel:+55' + num.replace(/\D/g, '');
+}
+
+// ── Carrega clientes da DOULA ──
+async function carregarClientesDoula() {
+  if (!db || !currentUserId) return;
+  var tbody = document.getElementById('clientes-tbody');
+  if (!tbody) return;
+  try {
+    var res = await db.from('usuarios').select('id,nome,email,criado_em').eq('doula_id', currentUserId).eq('tipo', 'gestante');
+    if (res.error || !res.data || !res.data.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma gestante vinculada ainda</div><div style="font-size:13px;color:var(--earth-light);">As gestantes que escolherem você no marketplace aparecerão aqui</div></td></tr>';
+      document.getElementById('stat-clientes').textContent = '0';
+      return;
+    }
+    document.getElementById('stat-clientes').textContent = res.data.length;
+    tbody.innerHTML = res.data.map(function(g) {
+      var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
+      return '<tr>' +
+        '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.nome + '</td>' +
+        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">Ativa</td>' +
+        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
+        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.id + '\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
+        '</tr>';
+    }).join('');
+  } catch(e) {}
 }
 
 async function carregarPerfilDoula() {
