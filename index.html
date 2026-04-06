@@ -977,7 +977,7 @@ tr:hover td { background:var(--rose-pale); }
               <h3>Observações adicionais</h3>
               <textarea class="form-input form-textarea" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
             </div>
-            <button class="btn-primary" onclick="alert('Plano de parto salvo e compartilhado com Juliana! 💛')">Salvar e compartilhar com Juliana</button>
+            <button class="btn-primary" onclick="alert('Plano de parto salvo e compartilhado com sua doula! 💛')">Salvar e compartilhar com sua doula</button>
           </div>
         </div>
 
@@ -994,7 +994,7 @@ tr:hover td { background:var(--rose-pale); }
             <div class="emergencia-acao" onclick="abrirWhatsAppDoula()">
               
               <div class="ea-label">WhatsApp da Doula</div>
-              <div class="ea-sub">Contato direto com Juliana</div>
+              <div class="ea-sub">Contato direto com sua doula</div>
             </div>
             <div class="emergencia-acao" onclick="ligarParaDoula()">
               
@@ -1259,7 +1259,7 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- CHAT GESTANTE -->
         <div class="g-panel" id="g-chat">
-          <div class="panel-title">Chat com Juliana</div>
+          <div class="panel-title">Conversar com a Lua</div>
           <div class="panel-sub">Converse com Lua, sua assistente de gestação powered by IA 🌙</div>
           <div class="chat-faq-sugestoes">
             <button class="chat-faq-btn" onclick="sendFAQ(this)">🤱 Como melhorar a pega?</button>
@@ -1845,11 +1845,11 @@ function renderContractions() {
 
 // ─── FAQ respostas automáticas ───
 const faqRespostas = {
-  '🤱 Como melhorar a pega?': 'Para uma boa pega, certifique-se de que o bebê abre bem a boquinha antes de colocar no seio. O queixo deve tocar o seio e o lábio inferior deve ficar virado para fora. Não deve doer! Se sentir dor, solte com o dedo mínimo e tente de novo. Posso chamar a Juliana se precisar de mais apoio? 🤱',
-  '😴 Não consigo dormir': 'Dificuldade para dormir é muito comum na gestação! Tente dormir de lado (lado esquerdo é ótimo para a circulação), use um travesseiro entre os joelhos e faça os exercícios de respiração que a Juliana ensinou. Se persistir muito, vou avisar ela para te orientar melhor. 💛',
-  '🤔 O bebê se mexeu menos hoje': 'Os movimentos do bebê são muito importantes de acompanhar! A partir de 28 semanas, faça a contagem: o bebê deve se mover ao menos 10 vezes em 2 horas. Se você sentir movimentos significativamente menos do que o normal, entre em contato com a Juliana ou vá à maternidade. Quer que eu notifique a Juliana agora? 🌸',
+  '🤱 Como melhorar a pega?': 'Para uma boa pega, certifique-se de que o bebê abre bem a boquinha antes de colocar no seio. O queixo deve tocar o seio e o lábio inferior deve ficar virado para fora. Não deve doer! Se sentir dor, solte com o dedo mínimo e tente de novo. Sua doula pode te ajudar com mais orientações! 🤱',
+  '😴 Não consigo dormir': 'Dificuldade para dormir é muito comum na gestação! Tente dormir de lado (lado esquerdo é ótimo para a circulação), use um travesseiro entre os joelhos e faça exercícios de respiração. Se persistir muito, converse com sua doula para orientação. 💛',
+  '🤔 O bebê se mexeu menos hoje': 'Os movimentos do bebê são muito importantes de acompanhar! A partir de 28 semanas, faça a contagem: o bebê deve se mover ao menos 10 vezes em 2 horas. Se você sentir movimentos significativamente menos do que o normal, entre em contato com sua doula ou vá à maternidade. 🌸',
   '💛 O que levar na mala?': 'Ótima hora de preparar a mala! Vá para a seção "Conteúdo" e veja nossa checklist completa com tudo que você precisa para você e para o bebê. Não esqueça de levar todos os documentos: RG, cartão do convênio e os papéis do pré-natal! 🧳',
-  '⏱️ Como saber se é trabalho de parto?': 'Use a regra 5-1-1: contrações a cada **5 minutos**, durando **1 minuto**, por pelo menos **1 hora**. As contrações de trabalho de parto são regulares, aumentam em intensidade e não somem com mudança de posição. Quer abrir o timer de contrações agora? Vou avisar a Juliana se os intervalos estiverem regulares! ⏱️',
+  '⏱️ Como saber se é trabalho de parto?': 'Use a regra 5-1-1: contrações a cada **5 minutos**, durando **1 minuto**, por pelo menos **1 hora**. As contrações de trabalho de parto são regulares, aumentam em intensidade e não somem com mudança de posição. Quer abrir o timer de contrações agora? ⏱️',
 };
 
 // ── Chat IA (via /api/chat — chave segura no Vercel) ──
