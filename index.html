@@ -3263,7 +3263,7 @@ async function carregarClientesDoula() {
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">Ativa</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
+        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
         '</tr>';
     }).join('');
   } catch(e) {}
