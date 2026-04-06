@@ -15,12 +15,12 @@
 <meta name="theme-color" content="#2D1F1A">
 <meta name="description" content="Acompanhamento de gestação para doulas e gestantes">
 
-<!-- Ícone gerado via canvas (SVG inline como data URL) -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%232D1F1A'/%3E%3Cdefs%3E%3CradialGradient id='mg' cx='38%25' cy='35%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23FAF0E8'/%3E%3Cstop offset='40%25' stop-color='%23E8C5BC'/%3E%3Cstop offset='80%25' stop-color='%23C9897A'/%3E%3Cstop offset='100%25' stop-color='%238B4A38'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='256' cy='220' r='160' fill='url(%23mg)'/%3E%3Ccircle cx='310' cy='180' r='24' fill='%237A5040' opacity='0.15'/%3E%3Ccircle cx='210' cy='250' r='16' fill='%237A5040' opacity='0.12'/%3E%3Ccircle cx='270' cy='290' r='14' fill='%237A5040' opacity='0.1'/%3E%3Ctext x='256' y='440' text-anchor='middle' font-family='Georgia,serif' font-size='72' font-weight='300' fill='%23E8C5BC' letter-spacing='18'%3ELUA%3C/text%3E%3C/svg%3E">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%232D1F1A'/%3E%3Cdefs%3E%3CradialGradient id='mg' cx='38%25' cy='35%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23FAF0E8'/%3E%3Cstop offset='40%25' stop-color='%23E8C5BC'/%3E%3Cstop offset='80%25' stop-color='%23C9897A'/%3E%3Cstop offset='100%25' stop-color='%238B4A38'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='256' cy='220' r='160' fill='url(%23mg)'/%3E%3Ctext x='256' y='440' text-anchor='middle' font-family='Georgia,serif' font-size='72' font-weight='300' fill='%23E8C5BC' letter-spacing='18'%3ELUA%3C/text%3E%3C/svg%3E">
+<!-- Ícone do app -->
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 
 <!-- Manifest inline para PWA -->
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Lua%20%E2%80%94%20Gest%C3%A3o%22%2C%22short_name%22%3A%22Lua%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232D1F1A%22%2C%22theme_color%22%3A%22%232D1F1A%22%7D">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Lua%20%E2%80%94%20Gest%C3%A3o%22%2C%22short_name%22%3A%22Lua%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232D1F1A%22%2C%22theme_color%22%3A%22%232D1F1A%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon.svg%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -786,7 +786,6 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-doula-card-title">Sua Doula</div>
           <div class="g-doula-card-name" id="g-doula-nome">—</div>
           <div class="g-doula-card-sub" id="g-doula-card-sub">Conectada ao app</div>
-          <button class="g-doula-card-btn" onclick="gNavById('g-chat')">Enviar mensagem</button>
         </div>
       </aside>
 
@@ -984,25 +983,8 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- EMERGÊNCIA / TIMER -->
         <div class="g-panel" id="g-emergencia">
-          <div class="panel-title">Contrações & Emergência</div>
-          <div class="panel-sub">Acompanhe suas contrações e acione sua doula quando precisar</div>
-
-          <button class="btn-emergencia">
-            Estou em trabalho de parto — Acionar minha Doula
-          </button>
-
-          <div class="emergencia-acoes">
-            <div class="emergencia-acao" onclick="abrirWhatsAppDoula()">
-              
-              <div class="ea-label">WhatsApp da Doula</div>
-              <div class="ea-sub">Contato direto com sua doula</div>
-            </div>
-            <div class="emergencia-acao" onclick="ligarParaDoula()">
-              
-              <div class="ea-label">Ligar para Doula</div>
-              <div class="ea-sub">Para situações urgentes</div>
-            </div>
-          </div>
+          <div class="panel-title">Contrações</div>
+          <div class="panel-sub">Registre e acompanhe suas contrações</div>
 
           <div class="timer-card">
             <div class="timer-label">Duração da Contração</div>
