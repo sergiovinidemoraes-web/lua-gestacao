@@ -2526,36 +2526,32 @@ async function carregarUsuario(user) {
   currentUserId = user.id;
   try {
     var res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
-    if (res.data) {
-      currentDoulaId = res.data.doula_id || null;
-      // Verifica solicitação pendente (gestante sem doula ainda)
-      if (!currentDoulaId && res.data.tipo === 'gestante') {
-        try {
-          var sol = await db.from('solicitacoes')
-            .select('id,doula_id,gestante_nome')
-            .eq('gestante_id', user.id)
-            .eq('status', 'pendente')
-            .maybeSingle();
-          if (sol.data) {
-            // Busca nome da doula
-            var dRes = await db.from('usuarios').select('nome').eq('id', sol.data.doula_id).maybeSingle();
-            var nomeDoula = dRes.data ? dRes.data.nome : 'Doula';
-            currentSolicitacaoPendente = { id: sol.data.id, doulaId: sol.data.doula_id, nomeDoula: nomeDoula };
-          }
-          // Verifica se doula já aceitou (solicitação aceita mas doula_id ainda não estava no perfil — sincroniza)
-          var solAceita = await db.from('solicitacoes')
-            .select('id,doula_id')
-            .eq('gestante_id', user.id)
-            .eq('status', 'aceita')
-            .maybeSingle();
-          if (solAceita.data && !currentDoulaId) {
-            currentDoulaId = solAceita.data.doula_id;
-          }
-        } catch(e2) {}
-      }
-      entrarNoApp(res.data.tipo, res.data.nome);
-      return;
+    var tipo = res.data ? res.data.tipo : ((user.user_metadata && user.user_metadata.tipo) || 'gestante');
+    var nome = res.data ? res.data.nome : ((user.user_metadata && user.user_metadata.nome) || user.email);
+    if (res.data) currentDoulaId = res.data.doula_id || null;
+    // Verifica solicitações sempre que for gestante sem doula vinculada
+    if (!currentDoulaId && tipo === 'gestante') {
+      try {
+        var sol = await db.from('solicitacoes')
+          .select('id,doula_id,gestante_nome')
+          .eq('gestante_id', user.id)
+          .eq('status', 'pendente')
+          .maybeSingle();
+        if (sol.data) {
+          var dRes = await db.from('usuarios').select('nome').eq('id', sol.data.doula_id).maybeSingle();
+          var nomeDoula = dRes.data ? dRes.data.nome : 'Doula';
+          currentSolicitacaoPendente = { id: sol.data.id, doulaId: sol.data.doula_id, nomeDoula: nomeDoula };
+        }
+        var solAceita = await db.from('solicitacoes')
+          .select('id,doula_id')
+          .eq('gestante_id', user.id)
+          .eq('status', 'aceita')
+          .maybeSingle();
+        if (solAceita.data) currentDoulaId = solAceita.data.doula_id;
+      } catch(e2) {}
     }
+    entrarNoApp(tipo, nome);
+    return;
   } catch(e) {}
   var tipo = (user.user_metadata && user.user_metadata.tipo) || 'gestante';
   var nome = (user.user_metadata && user.user_metadata.nome) || user.email;
@@ -3287,6 +3283,10 @@ async function encerrarVinculo() {
       if (navMinha) navMinha.style.display = 'none';
       var navEncontrar = document.getElementById('nav-encontrar-doula');
       if (navEncontrar) navEncontrar.style.display = '';
+      var mobMinha = document.getElementById('mob-nav-minha-doula');
+      if (mobMinha) mobMinha.style.display = 'none';
+      var mobEncontrar = document.getElementById('mob-nav-encontrar-doula');
+      if (mobEncontrar) mobEncontrar.style.display = '';
       var sidebarCard = document.getElementById('g-doula-card-sidebar');
       if (sidebarCard) sidebarCard.style.display = 'none';
       var cardDoula = document.getElementById('card-minha-doula');
@@ -3363,11 +3363,15 @@ async function carregarMinhaDoula() {
     if (nomeEl) nomeEl.textContent = d.nome;
     var subEl = document.getElementById('g-doula-card-sub');
     if (subEl) subEl.textContent = 'Conectada ao app';
-    // Nav: mostra "Minha Doula", esconde "Encontrar Doula"
+    // Nav desktop e mobile: mostra "Minha Doula", esconde "Encontrar Doula"
     var navMinha = document.getElementById('nav-minha-doula');
     if (navMinha) navMinha.style.display = '';
     var navEncontrar = document.getElementById('nav-encontrar-doula');
     if (navEncontrar) navEncontrar.style.display = 'none';
+    var mobMinha = document.getElementById('mob-nav-minha-doula');
+    if (mobMinha) mobMinha.style.display = '';
+    var mobEncontrar = document.getElementById('mob-nav-encontrar-doula');
+    if (mobEncontrar) mobEncontrar.style.display = 'none';
     // Painel Minha Doula
     var el = document.getElementById('minha-doula-avatar');
     if (el) el.textContent = inicial;
@@ -4417,9 +4421,13 @@ function mostrarToast(msg) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     Contrações
   </div>
-  <div class="mob-more-item" onclick="mobNavMore('g-marketplace')">
+  <div class="mob-more-item" id="mob-nav-encontrar-doula" onclick="mobNavMore('g-marketplace')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     Encontrar Doula
+  </div>
+  <div class="mob-more-item" id="mob-nav-minha-doula" style="display:none;" onclick="mobNavMore('g-minha-doula')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+    Minha Doula
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-posparto')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
