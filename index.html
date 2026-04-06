@@ -776,7 +776,8 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span>Contrações</div>
           <div class="g-nav-item" onclick="gNav(this,'g-conteudo')"><span class="g-nav-icon">📚</span>Conteúdo</div>
           <div class="g-nav-item" onclick="gNav(this,'g-extras')"><span class="g-nav-icon">🎧</span>Extras</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span>Encontrar Doula</div>
+          <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span>Encontrar Doula</div>
+          <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span>Minha Doula</div>
           <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span>Pós-Parto</div>
           <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span>Diário</div>
           <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span>Conversar com a Lua</div>
@@ -1257,6 +1258,37 @@ tr:hover td { background:var(--rose-pale); }
           </div>
         </div>
 
+        <!-- MINHA DOULA -->
+        <div class="g-panel" id="g-minha-doula">
+          <div class="panel-title">Minha Doula</div>
+          <div id="minha-doula-info" style="background:linear-gradient(135deg,var(--dark),#3d2a22);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Sua Doula</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+              <div id="minha-doula-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:white;flex-shrink:0;">D</div>
+              <div>
+                <div id="minha-doula-nome" style="font-size:16px;font-weight:500;">—</div>
+                <div id="minha-doula-cidade" style="font-size:12px;opacity:0.6;margin-top:2px;">—</div>
+              </div>
+            </div>
+            <div id="minha-doula-bio" style="font-size:13px;opacity:0.7;margin-bottom:14px;line-height:1.5;"></div>
+            <div style="display:flex;gap:10px;margin-bottom:12px;">
+              <button onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
+              <button onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📞 Ligar</button>
+            </div>
+            <button onclick="encerrarVinculo()" style="width:100%;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:rgba(255,180,180,1);padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">Encerrar vínculo com esta doula</button>
+          </div>
+          <div class="card">
+            <div class="card-title">💬 Mensagens com sua doula</div>
+            <div id="msgs-gestante-container" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
+              <div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Carregando...</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <input id="msg-gestante-input" class="chat-input" style="flex:1;" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')enviarMensagemParaDoula()">
+              <button class="chat-send" onclick="enviarMensagemParaDoula()">➤</button>
+            </div>
+          </div>
+        </div>
+
         <!-- CHAT GESTANTE -->
         <div class="g-panel" id="g-chat">
           <div class="panel-title">Conversar com a Lua</div>
@@ -1294,6 +1326,7 @@ tr:hover td { background:var(--rose-pale); }
         <nav>
           <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><span class="d-nav-icon">📊</span>Dashboard</div>
           <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span>Clientes<span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
+          <div class="d-nav-item" id="nav-mensagens-doula" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span>Mensagens<span id="badge-msgs" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-agenda')"><span class="d-nav-icon">📅</span>Agenda</div>
           <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span>Registros</div>
           <div class="d-nav-item" onclick="dNav(this,'d-posparto')"><span class="d-nav-icon">👶</span>Pós-Parto</div>
@@ -1430,6 +1463,22 @@ tr:hover td { background:var(--rose-pale); }
                 </td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- MENSAGENS DOULA -->
+        <div class="d-panel" id="d-mensagens">
+          <div class="panel-title">Mensagens</div>
+          <div id="d-msgs-aviso" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Selecione uma cliente para ver as mensagens</div>
+          <div class="card" id="d-msgs-card" style="display:none;">
+            <div class="card-title" id="d-msgs-nome">—</div>
+            <div id="msgs-doula-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
+              <div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Carregando...</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <input id="msg-doula-input" class="chat-input" style="flex:1;" placeholder="Mensagem para a gestante..." onkeydown="if(event.key==='Enter')enviarMensagemParaGestante()">
+              <button class="chat-send" onclick="enviarMensagemParaGestante()">➤</button>
+            </div>
           </div>
         </div>
 
@@ -1654,6 +1703,10 @@ let lastContractionEnd = null;
 let contractions = [];
 let realtimeChannel = null;
 let realtimeChannelSolicitacoes = null;
+let realtimeChannelMensagens = null;
+let chatDoulaId = null;
+let chatGestanteIdDoula = null;
+let chatGestanteNomeDoula = null;
 
 const frases = [
   '"Você está indo muito bem, mamãe 💛"',
@@ -3140,6 +3193,112 @@ function iniciarRealtimeSolicitacoesGestante(solicitacaoId) {
     .subscribe();
 }
 
+// ── Mensagens gestante↔doula ──
+async function carregarMensagens(gestanteId, doulaId, containerEl, tipoLogado) {
+  if (!db || !gestanteId || !doulaId || !containerEl) return;
+  try {
+    var res = await db.from('mensagens')
+      .select('*')
+      .eq('gestante_id', gestanteId)
+      .eq('doula_id', doulaId)
+      .order('criado_em', { ascending: true });
+    renderMensagens(res.data || [], containerEl, tipoLogado);
+  } catch(e) {}
+}
+
+function renderMensagens(lista, containerEl, tipoLogado) {
+  if (!containerEl) return;
+  if (!lista.length) {
+    containerEl.innerHTML = '<div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Nenhuma mensagem ainda. Diga olá! 👋</div>';
+    return;
+  }
+  containerEl.innerHTML = lista.map(function(m) {
+    var enviada = m.remetente_tipo === tipoLogado;
+    var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    return '<div style="display:flex;flex-direction:column;align-items:' + (enviada ? 'flex-end' : 'flex-start') + ';margin-bottom:6px;">' +
+      '<div style="max-width:76%;padding:10px 14px;border-radius:18px;' + (enviada ? 'border-bottom-right-radius:4px;background:var(--rose);color:white;' : 'border-bottom-left-radius:4px;background:white;color:var(--dark);box-shadow:0 1px 3px rgba(0,0,0,0.08);') + 'font-size:14px;line-height:1.4;word-break:break-word;">' + m.texto + '</div>' +
+      '<div style="font-size:10px;opacity:0.45;margin-top:2px;">' + hora + '</div>' +
+      '</div>';
+  }).join('');
+  containerEl.scrollTop = containerEl.scrollHeight;
+}
+
+function iniciarRealtimeMensagens(gestanteId, doulaId, containerEl, tipoLogado) {
+  if (!db || !gestanteId || !doulaId) return;
+  if (realtimeChannelMensagens) db.removeChannel(realtimeChannelMensagens);
+  realtimeChannelMensagens = db.channel('msgs-' + gestanteId + '-' + doulaId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens',
+      filter: 'gestante_id=eq.' + gestanteId }, function(payload) {
+      if (payload.new.doula_id !== doulaId) return;
+      carregarMensagens(gestanteId, doulaId, containerEl, tipoLogado);
+    })
+    .subscribe();
+}
+
+async function enviarMensagemParaDoula() {
+  if (!chatDoulaId || !currentUserId) return;
+  var input = document.getElementById('msg-gestante-input');
+  var texto = (input ? input.value : '').trim();
+  if (!texto) return;
+  input.value = '';
+  try {
+    await db.from('mensagens').insert({ gestante_id: currentUserId, doula_id: chatDoulaId, remetente_tipo: 'gestante', texto: texto });
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function enviarMensagemParaGestante() {
+  if (!chatGestanteIdDoula || !currentUserId) return;
+  var input = document.getElementById('msg-doula-input');
+  var texto = (input ? input.value : '').trim();
+  if (!texto) return;
+  input.value = '';
+  try {
+    await db.from('mensagens').insert({ gestante_id: chatGestanteIdDoula, doula_id: currentUserId, remetente_tipo: 'doula', texto: texto });
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+function abrirChatComGestante(gestanteId, gestanteNome) {
+  chatGestanteIdDoula = gestanteId;
+  chatGestanteNomeDoula = gestanteNome;
+  var card = document.getElementById('d-msgs-card');
+  if (card) card.style.display = 'block';
+  var aviso = document.getElementById('d-msgs-aviso');
+  if (aviso) aviso.style.display = 'none';
+  var titulo = document.getElementById('d-msgs-nome');
+  if (titulo) titulo.textContent = '💬 ' + gestanteNome;
+  var container = document.getElementById('msgs-doula-container');
+  if (container) {
+    carregarMensagens(gestanteId, currentUserId, container, 'doula');
+    iniciarRealtimeMensagens(gestanteId, currentUserId, container, 'doula');
+  }
+  var navEl = document.getElementById('nav-mensagens-doula');
+  if (navEl) dNav(navEl, 'd-mensagens');
+}
+
+async function encerrarVinculo() {
+  abrirModal('Encerrar vínculo', 'Deseja encerrar o vínculo com sua doula?', async function() {
+    try {
+      var sol = await db.from('solicitacoes').select('id').eq('gestante_id', currentUserId).in('status', ['aceita','pendente']).maybeSingle();
+      if (sol.data) await db.from('solicitacoes').update({ status: 'encerrada' }).eq('id', sol.data.id);
+      currentDoulaId = null;
+      currentSolicitacaoPendente = null;
+      chatDoulaId = null;
+      var navMinha = document.getElementById('nav-minha-doula');
+      if (navMinha) navMinha.style.display = 'none';
+      var navEncontrar = document.getElementById('nav-encontrar-doula');
+      if (navEncontrar) navEncontrar.style.display = '';
+      var sidebarCard = document.getElementById('g-doula-card-sidebar');
+      if (sidebarCard) sidebarCard.style.display = 'none';
+      var cardDoula = document.getElementById('card-minha-doula');
+      if (cardDoula) cardDoula.style.display = 'none';
+      var btnEncontrar = document.getElementById('btn-encontrar-doula');
+      if (btnEncontrar) btnEncontrar.style.display = '';
+      mostrarToast('Vínculo encerrado.');
+      gNavById('g-dashboard');
+    } catch(e) { mostrarToast('Erro: ' + e.message); }
+  });
+}
+
 function filtrarDoulas(termo) {
   if (!termo.trim()) { renderDoulas(todasDoulas); return; }
   var t = termo.toLowerCase();
@@ -3195,21 +3354,36 @@ async function carregarMinhaDoula() {
     var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).maybeSingle();
     if (!res.data) return;
     var d = res.data;
-    // Mostra e atualiza sidebar
+    chatDoulaId = d.id;
+    var inicial = (d.nome || 'D')[0].toUpperCase();
+    // Sidebar
     var sidebarCard = document.getElementById('g-doula-card-sidebar');
     if (sidebarCard) sidebarCard.style.display = 'block';
     var nomeEl = document.getElementById('g-doula-nome');
     if (nomeEl) nomeEl.textContent = d.nome;
     var subEl = document.getElementById('g-doula-card-sub');
     if (subEl) subEl.textContent = 'Conectada ao app';
-    // Atualiza card no dashboard
+    // Nav: mostra "Minha Doula", esconde "Encontrar Doula"
+    var navMinha = document.getElementById('nav-minha-doula');
+    if (navMinha) navMinha.style.display = '';
+    var navEncontrar = document.getElementById('nav-encontrar-doula');
+    if (navEncontrar) navEncontrar.style.display = 'none';
+    // Painel Minha Doula
+    var el = document.getElementById('minha-doula-avatar');
+    if (el) el.textContent = inicial;
+    var el2 = document.getElementById('minha-doula-nome');
+    if (el2) el2.textContent = d.nome || '—';
+    var el3 = document.getElementById('minha-doula-cidade');
+    if (el3) el3.textContent = d.cidade ? '📍 ' + d.cidade : '—';
+    var el4 = document.getElementById('minha-doula-bio');
+    if (el4) el4.textContent = d.bio || '';
+    // Card no dashboard
     var card = document.getElementById('card-minha-doula');
     if (card) card.style.display = 'block';
     var btnEncontrar = document.getElementById('btn-encontrar-doula');
     if (btnEncontrar) btnEncontrar.style.display = 'none';
     var btnChat = document.getElementById('btn-falar-doula-chat');
     if (btnChat) btnChat.style.display = 'flex';
-    var inicial = (d.nome || 'D')[0].toUpperCase();
     var avatarEl = document.getElementById('doula-card-avatar');
     if (avatarEl) avatarEl.textContent = inicial;
     var nomeCardEl = document.getElementById('doula-card-nome');
@@ -3223,6 +3397,12 @@ async function carregarMinhaDoula() {
     if (btnWpp) btnWpp.dataset.whatsapp = d.whatsapp || '';
     var btnLigar = document.getElementById('btn-ligar-doula');
     if (btnLigar) btnLigar.dataset.whatsapp = d.whatsapp || '';
+    // Carrega mensagens
+    var container = document.getElementById('msgs-gestante-container');
+    if (container) {
+      carregarMensagens(currentUserId, d.id, container, 'gestante');
+      iniciarRealtimeMensagens(currentUserId, d.id, container, 'gestante');
+    }
   } catch(e) {}
 }
 
@@ -3263,7 +3443,10 @@ async function carregarClientesDoula() {
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">Ativa</td>' +
         '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-        '<td style="padding:14px;"><button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Ver contrações</button></td>' +
+        '<td style="padding:14px;display:flex;gap:6px;">' +
+        '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">⏱ Contrações</button>' +
+        '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">💬 Mensagens</button>' +
+        '</td>' +
         '</tr>';
     }).join('');
   } catch(e) {}
