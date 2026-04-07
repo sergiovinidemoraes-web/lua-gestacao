@@ -2093,6 +2093,11 @@ function abrirGuiaPais() { window.open('guia-pais-primeira-viagem.pdf','_blank')
 var _lang = 'pt';
 var _i18n = {
 pt: {
+  // Saudações e frases dinâmicas
+  'dash.bom.dia':'Bom dia','dash.boa.tarde':'Boa tarde','dash.boa.noite':'Boa noite',
+  'dash.semana.sub':'Semana {n} — você está indo muito bem!',
+  'frase.welcome':'Bem-vinda ao Lua! Configure sua DPP para começar. 💛',
+  'frase.default':'Você está indo muito bem, mamãe! 💛',
   // Header
   'hdr.logout':'Sair','hdr.role.gestante':'Gestante','hdr.role.doula':'Doula',
   // Nav gestante
@@ -2207,6 +2212,10 @@ pt: {
   'modal.cancel':'Cancelar','modal.confirm':'Remover'
 },
 en: {
+  'dash.bom.dia':'Good morning','dash.boa.tarde':'Good afternoon','dash.boa.noite':'Good evening',
+  'dash.semana.sub':'Week {n} — you\'re doing amazing!',
+  'frase.welcome':'Welcome to Lua! Set up your due date to get started. 💛',
+  'frase.default':'You\'re doing amazing, mama! 💛',
   'hdr.logout':'Sign out','hdr.role.gestante':'Expecting Mother','hdr.role.doula':'Doula',
   'nav.inicio':'Home','nav.gestacao':'My Pregnancy','nav.tarefas':'Phase Tasks',
   'nav.plano':'Birth Plan','nav.contracoes':'Contractions','nav.conteudo':'Content',
@@ -2306,6 +2315,10 @@ en: {
   'modal.cancel':'Cancel','modal.confirm':'Remove'
 },
 es: {
+  'dash.bom.dia':'Buenos días','dash.boa.tarde':'Buenas tardes','dash.boa.noite':'Buenas noches',
+  'dash.semana.sub':'Semana {n} — ¡lo estás haciendo muy bien!',
+  'frase.welcome':'¡Bienvenida a Lua! Configura tu FPP para comenzar. 💛',
+  'frase.default':'¡Lo estás haciendo muy bien, mamá! 💛',
   'hdr.logout':'Salir','hdr.role.gestante':'Embarazada','hdr.role.doula':'Doula',
   'nav.inicio':'Inicio','nav.gestacao':'Mi Embarazo','nav.tarefas':'Tareas por Fase',
   'nav.plano':'Plan de Parto','nav.contracoes':'Contracciones','nav.conteudo':'Contenido',
@@ -2427,6 +2440,20 @@ function setLang(lang) {
   document.querySelectorAll('[data-i18n-html]').forEach(function(el){
     el.innerHTML = t(el.getAttribute('data-i18n-html'));
   });
+  // Saudação e frase dinâmica (re-renderizar ao trocar idioma)
+  try {
+    var hora = new Date().getHours();
+    var saud = hora < 12 ? t('dash.bom.dia') : hora < 18 ? t('dash.boa.tarde') : t('dash.boa.noite');
+    var nomeEl = document.getElementById('header-user-name');
+    var primeiroNome = nomeEl ? nomeEl.textContent.split(' ')[0] : '';
+    var gEl = document.getElementById('gestante-greeting');
+    if (gEl && primeiroNome) gEl.textContent = saud + ', ' + primeiroNome + '! 🌸';
+    var sem = window._currentSemana || 0;
+    var dEl = document.getElementById('gestante-dash-sub');
+    if (dEl && sem) dEl.textContent = t('dash.semana.sub').replace('{n}', sem);
+    var fraseEl = document.getElementById('frase-texto');
+    if (fraseEl) fraseEl.textContent = getFraseSemana(sem);
+  } catch(e) {}
 }
 function toggleLangDropdown(e) {
   e.stopPropagation();
@@ -2916,6 +2943,12 @@ const faqRespostas = {
 
 // ── Chat IA (via /api/chat — chave segura no Vercel) ──
 // ── Frases por semana gestacional ──
+var frasesPorSemanaEn = {
+  1:'Your journey starts now. What a special moment!',2:'Your body is already working, even if you can\'t feel it yet. Trust it.',3:'Tiny cells multiplying with immense purpose. You are amazing.',4:'The baby is implanting. A new chapter begins.',5:'Subtle but real changes. Your body is adapting wisely.',6:'The baby\'s heart is already beating. What a miracle you carry!',7:'Nausea may appear — signs that everything is working.',8:'The baby is the size of a bean and already has tiny arms and legs.',9:'You\'re almost at the end of the first trimester. You\'re doing great!',10:'The baby can already make movements, even if you can\'t feel them yet.',11:'The second trimester is almost here. You\'ve come so far!',12:'First trimester ultrasound — an unforgettable moment awaits.',13:'First trimester complete! You\'ve been amazing.',14:'Welcome to the second trimester! Energy tends to return.',15:'The baby can already hear your voice. Talk to them!',16:'You may start feeling the first movements. How exciting!',17:'Your baby is growing fast. And so are you, mama.',18:'Movements are becoming more noticeable. Enjoy every one.',19:'The baby already has unique fingerprints — just like you.',20:'Halfway there! You\'re crushing this pregnancy.',21:'The baby swallows amniotic fluid and practises for the outside world.',22:'You can feel stronger kicks now. What a beautiful connection!',23:'The baby recognizes your voice. Keep talking to them.',24:'Fetal viability — another important milestone reached.',25:'The baby responds to sounds and light. What a rich world they\'re already discovering!',26:'Only 14 weeks left. You\'re doing amazing!',27:'Last month of the second trimester. What a beautiful journey.',28:'Welcome to the third trimester! The final stretch begins.',29:'The baby is gaining fat and getting rounder.',30:'Ten weeks to the big day. Breathe deep — you\'ve got this!',31:'The baby is usually head-down by now.',32:'Time to pack the hospital bag. How exciting!',33:'Every Braxton Hicks contraction is your body preparing.',34:'All organs are formed. Just growing now.',35:'Five weeks! The baby is almost ready for the world.',36:'Final maturation phase. You\'re almost there, mama!',37:'Early term! The baby could arrive any time.',38:'Every day now is a gift. Cherish these last moments alone.',39:'The baby is ready. Your body knows the right time.',40:'The moment has arrived or is near. You were incredible every single week!'
+};
+var frasesPorSemanaEs = {
+  1:'Tu viaje comienza ahora. ¡Qué momento tan especial!',2:'Tu cuerpo ya está trabajando, aunque aún no lo sientas. Confía en él.',3:'Pequeñas células multiplicándose con un propósito inmenso. ¡Eres increíble!',4:'El bebé se está implantando. Un nuevo capítulo comienza.',5:'Cambios sutiles pero reales. Tu cuerpo se adapta con sabiduría.',6:'El corazón del bebé ya late. ¡Qué milagro cargas!',7:'Las náuseas pueden aparecer — son señales de que todo funciona.',8:'El bebé tiene el tamaño de un frijol y ya tiene bracitos y piernitas.',9:'Estás casi al final del primer trimestre. ¡Lo estás haciendo muy bien!',10:'El bebé ya puede hacer movimientos, aunque aún no los sientas.',11:'El segundo trimestre está cerca. ¡Has llegado muy lejos!',12:'Ecografía del primer trimestre — un momento inolvidable te espera.',13:'¡Primer trimestre completado! Has sido increíble.',14:'¡Bienvenida al segundo trimestre! La energía tiende a volver.',15:'El bebé ya puede oír tu voz. ¡Habla con él!',16:'Puedes empezar a sentir los primeros movimientos. ¡Qué emoción!',17:'Tu bebé crece rápidamente. Y tú también, mamá.',18:'Los movimientos se vuelven más perceptibles. Disfruta cada uno.',19:'El bebé ya tiene huellas dactilares únicas — igual que tú.',20:'¡Mitad del camino! Lo estás haciendo genial.',21:'El bebé traga líquido amniótico y practica para el mundo exterior.',22:'Ya se sienten patadas más fuertes. ¡Qué conexión tan linda!',23:'El bebé reconoce tu voz. Sigue hablando con él.',24:'Viabilidad fetal — otro hito importante alcanzado.',25:'El bebé responde a sonidos y luz. ¡Qué mundo tan rico ya descubre!',26:'Solo quedan 14 semanas. ¡Lo estás haciendo increíble!',27:'Último mes del segundo trimestre. Qué hermoso viaje ha sido.',28:'¡Bienvenida al tercer trimestre! Comienza la recta final.',29:'El bebé está acumulando grasa y volviéndose más redondito.',30:'Diez semanas para el gran día. Respira hondo — ¡tú puedes!',31:'El bebé suele estar con la cabeza hacia abajo ya.',32:'Hora de preparar la bolsa de maternidad. ¡Qué emoción!',33:'Cada contracción de Braxton Hicks es tu cuerpo preparándose.',34:'Todos los órganos están formados. Solo falta crecer.',35:'¡Cinco semanas! El bebé está casi listo para el mundo.',36:'Fase de maduración final. ¡Casi estás ahí, mamá!',37:'¡A término temprano! El bebé puede llegar en cualquier momento.',38:'Cada día es un regalo. Disfruta estos últimos momentos sola.',39:'El bebé está listo. Tu cuerpo sabe el momento correcto.',40:'El momento llegó o está cerca. ¡Fuiste increíble cada semana!'
+};
 var frasesPorSemana = {
   1:  'Sua jornada comeca agora. Que momento especial!',
   2:  'Seu corpo já está trabalhando, mesmo que você ainda não sinta. Confie nele.',
@@ -2960,9 +2993,10 @@ var frasesPorSemana = {
 };
 
 function getFraseSemana(semana) {
-  if (!semana || semana <= 0) return '"Bem-vinda ao Lua! Configure sua DPP para começar. 💛"';
+  if (!semana || semana <= 0) return '"' + t('frase.welcome') + '"';
   var s = Math.min(Math.max(Math.round(semana), 1), 40);
-  return frasesPorSemana[s] ? '"' + frasesPorSemana[s] + '"' : '"Você está indo muito bem, mamãe! 💛"';
+  var obj = _lang === 'en' ? frasesPorSemanaEn : _lang === 'es' ? frasesPorSemanaEs : frasesPorSemana;
+  return obj[s] ? '"' + obj[s] + '"' : '"' + t('frase.default') + '"';
 }
 
 // ── Sintomas por trimestre/semana ──
@@ -3583,7 +3617,7 @@ function entrarNoApp(tipo, nome) {
   currentNome = nome;
   var primeiroNome = nome.split(' ')[0];
   var hora = new Date().getHours();
-  var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+  var saudacao = hora < 12 ? t('dash.bom.dia') : hora < 18 ? t('dash.boa.tarde') : t('dash.boa.noite');
   if (tipo === 'gestante') {
     setTimeout(function() {
       try { carregarDPP(); } catch(e) {}
@@ -3903,8 +3937,9 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-trimestre').textContent = tri; } catch(e) {}
   try { document.getElementById('g-acomp-sub').textContent = 'Você está na semana ' + info.semana + ' — ' + tri + ' 🌸'; } catch(e) {}
   
+  window._currentSemana = info.semana;
   // Gestante greeting sub
-  try { document.getElementById('gestante-dash-sub').textContent = 'Semana ' + info.semana + ' — voce esta indo muito bem!'; } catch(e) {}
+  try { document.getElementById('gestante-dash-sub').textContent = t('dash.semana.sub').replace('{n}', info.semana); } catch(e) {}
   // Update frase do dia
   try { document.getElementById('frase-texto').textContent = getFraseSemana(info.semana); } catch(e) {}
   // Update frase sub
