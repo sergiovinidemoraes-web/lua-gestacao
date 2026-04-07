@@ -1150,9 +1150,37 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card">
             <div class="plan-section" style="margin-bottom:16px;">
               <h3>Observações adicionais</h3>
-              <textarea class="form-input form-textarea" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
+              <textarea class="form-input form-textarea" id="plano-obs" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
             </div>
-            <button class="btn-primary" onclick="alert('Plano de parto salvo e compartilhado com sua doula! 💛')">Salvar e compartilhar com sua doula</button>
+
+            <div style="background:var(--rose-pale);border-radius:14px;padding:16px;margin-bottom:16px;">
+              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;">📋 Seus dados para o plano</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div>
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">Seu nome</label>
+                  <input class="form-input" type="text" id="plano-nome-gestante" placeholder="Seu nome completo" style="width:100%;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">Seu WhatsApp / telefone</label>
+                  <input class="form-input" type="tel" id="plano-contato-gestante" placeholder="(11) 99999-9999" style="width:100%;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">DPP (data provável do parto)</label>
+                  <input class="form-input" type="text" id="plano-dpp-display" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;">
+                </div>
+              </div>
+            </div>
+
+            <div style="background:rgba(122,100,85,0.06);border-radius:14px;padding:16px;margin-bottom:16px;">
+              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;">📧 E-mail da doula / equipe</div>
+              <input class="form-input" type="email" id="plano-email-doula" placeholder="email@doulaexemplo.com" style="width:100%;box-sizing:border-box;margin-bottom:8px;">
+              <div style="font-size:11px;color:var(--earth-light);line-height:1.6;">O PDF será baixado automaticamente. Seu cliente de e-mail será aberto com o destinatário e o plano no corpo da mensagem — basta anexar o arquivo baixado.</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button class="btn-primary" onclick="gerarPDFPlanoParto(true)">📩 Gerar PDF e enviar por e-mail</button>
+              <button onclick="gerarPDFPlanoParto(false)" style="background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">⬇️ Apenas baixar o PDF</button>
+            </div>
           </div>
         </div>
 
@@ -2028,6 +2056,9 @@ function gNav(el, panelId) {
   if (panelId === 'g-acomp' || panelId === 'g-dashboard') {
     try { carregarDPP(); } catch(e) {}
   }
+  if (panelId === 'g-plano') {
+    try { preencherCamposPlano(); } catch(e) {}
+  }
   if (panelId === 'g-conteudo' || panelId === 'g-posparto') {
     try { carregarConteudos(); } catch(e) {}
   }
@@ -2094,6 +2125,227 @@ function toggleTipoParto(btn, tipo) {
   var bC = document.getElementById('bloco-cesariana');
   if (tipo === 'vaginal') { bV.classList.add('visible'); bC.classList.remove('visible'); }
   else { bC.classList.add('visible'); bV.classList.remove('visible'); }
+}
+
+// Pré-preenche campos do plano com dados do usuário
+function preencherCamposPlano() {
+  try {
+    var nomeEl = document.getElementById('plano-nome-gestante');
+    if (nomeEl && currentNome) nomeEl.value = currentNome;
+    var dppEl = document.getElementById('plano-dpp-display');
+    if (dppEl) {
+      var dpp = '';
+      try { dpp = localStorage.getItem('lua_dpp') || ''; } catch(e) {}
+      if (dpp) {
+        var p = dpp.split('-');
+        dppEl.value = p[2] + '/' + p[1] + '/' + p[0];
+      }
+    }
+    // E-mail da doula vinculada (se houver)
+    var emailDoulaEl = document.getElementById('plano-email-doula');
+    if (emailDoulaEl && window._doulaEmail) emailDoulaEl.value = window._doulaEmail;
+  } catch(e) {}
+}
+
+// Coleta todas as seleções do plano de parto
+function coletarPlanoParto() {
+  var plano = {};
+
+  // Tipo de parto
+  plano.tipoParto = document.getElementById('btn-tipo-cesariana').classList.contains('selected') ? 'Cesariana' : 'Parto vaginal';
+
+  // Alívio da dor — checar itens .done
+  plano.alivioNaoFarm = [];
+  plano.alivioFarm = [];
+  var checks = document.querySelectorAll('#g-plano .plan-checklist');
+  if (checks[0]) checks[0].querySelectorAll('.plan-check-item.done .plan-check-label').forEach(function(el){ plano.alivioNaoFarm.push(el.textContent.trim()); });
+  if (checks[1]) checks[1].querySelectorAll('.plan-check-item.done .plan-check-label').forEach(function(el){ plano.alivioFarm.push(el.textContent.trim()); });
+
+  // Acompanhantes
+  plano.acompanhantes = [];
+  document.querySelectorAll('#g-plano .plan-options')[0] && document.querySelectorAll('#g-plano .plan-options').forEach(function(opts, i) {
+    if (i === 0) {
+      opts.querySelectorAll('.plan-option.selected').forEach(function(b){ plano.acompanhantes.push(b.textContent.trim()); });
+    }
+  });
+  // Pós-parto (pill buttons)
+  plano.posParto = [];
+  var posPartoOpts = document.querySelectorAll('#g-plano .plan-section')[2];
+  if (posPartoOpts) posPartoOpts.querySelectorAll('.plan-option.selected').forEach(function(b){ plano.posParto.push(b.textContent.trim()); });
+
+  // Procedimentos imediatos
+  plano.procedimentos = [];
+  if (checks[2]) checks[2].querySelectorAll('.plan-check-item.done .plan-check-label').forEach(function(el){ plano.procedimentos.push(el.textContent.trim()); });
+
+  // Bloco condicional ativo
+  plano.preferenciasEspecificas = [];
+  var blocoAtivo = document.querySelector('#g-plano .plan-cond-block.visible');
+  if (blocoAtivo) {
+    blocoAtivo.querySelectorAll('.plan-check-item.done .plan-check-label').forEach(function(el){ plano.preferenciasEspecificas.push(el.textContent.trim()); });
+  }
+
+  // Observações
+  var obsEl = document.getElementById('plano-obs');
+  plano.obs = obsEl ? obsEl.value.trim() : '';
+
+  return plano;
+}
+
+function gerarPDFPlanoParto(enviarEmail) {
+  var nomeGestante = (document.getElementById('plano-nome-gestante') || {}).value || currentNome || 'Gestante';
+  var contato = (document.getElementById('plano-contato-gestante') || {}).value || '';
+  var dppDisplay = (document.getElementById('plano-dpp-display') || {}).value || '';
+  var emailDoula = (document.getElementById('plano-email-doula') || {}).value || '';
+
+  if (enviarEmail && !emailDoula) {
+    mostrarToast('Informe o e-mail da doula para enviar');
+    return;
+  }
+
+  var plano = coletarPlanoParto();
+
+  // ── Gerar PDF ──
+  var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  var W = 210, margin = 20, y = 0, lineH = 7, colW = W - margin * 2;
+
+  // Paleta
+  var corTitulo   = [60, 35, 25];
+  var corRose     = [201, 137, 122];
+  var corSub      = [122, 100, 85];
+  var corTexto    = [80, 60, 50];
+  var corFundo    = [252, 246, 243];
+  var corFundoSec = [245, 237, 233];
+
+  // Fundo topo
+  doc.setFillColor.apply(doc, corRose);
+  doc.rect(0, 0, W, 46, 'F');
+
+  // Título
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.text('Plano de Parto', margin, 20);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Lua Gestação — documento gerado em ' + new Date().toLocaleDateString('pt-BR'), margin, 28);
+
+  // Dados da gestante
+  doc.setFontSize(10);
+  var info = nomeGestante;
+  if (dppDisplay) info += '   |   DPP: ' + dppDisplay;
+  if (contato)   info += '   |   ' + contato;
+  doc.text(info, margin, 36);
+
+  y = 56;
+
+  function secaoTitulo(titulo) {
+    doc.setFillColor.apply(doc, corFundoSec);
+    doc.roundedRect(margin, y - 5, colW, 10, 2, 2, 'F');
+    doc.setTextColor.apply(doc, corTitulo);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text(titulo, margin + 4, y + 2);
+    y += 12;
+  }
+
+  function item(texto, marcado) {
+    if (y > 270) { doc.addPage(); y = 20; }
+    var marca = marcado !== false ? '✓' : '○';
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor.apply(doc, marcado !== false ? corTexto : corSub);
+    var linhas = doc.splitTextToSize(marca + '  ' + texto, colW - 6);
+    doc.text(linhas, margin + 4, y);
+    y += linhas.length * 5.5 + 1.5;
+  }
+
+  function subLabel(txt) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor.apply(doc, corRose);
+    doc.text(txt.toUpperCase(), margin + 4, y);
+    y += 6;
+  }
+
+  function espaco(h) { y += h || 5; }
+
+  // 1. Tipo de parto
+  secaoTitulo('Tipo de Parto');
+  item(plano.tipoParto);
+  espaco(4);
+
+  // 2. Alívio da dor
+  secaoTitulo('Alívio da Dor');
+  subLabel('Não farmacológicos');
+  if (plano.alivioNaoFarm.length) { plano.alivioNaoFarm.forEach(function(t){ item(t); }); }
+  else { item('Nenhum selecionado', false); }
+  espaco(3);
+  subLabel('Farmacológicos');
+  if (plano.alivioFarm.length) { plano.alivioFarm.forEach(function(t){ item(t); }); }
+  else { item('Nenhum selecionado', false); }
+  espaco(4);
+
+  // 3. Acompanhantes
+  secaoTitulo('Acompanhantes');
+  if (plano.acompanhantes.length) { plano.acompanhantes.forEach(function(t){ item(t); }); }
+  else { item('Não informado', false); }
+  espaco(4);
+
+  // 4. Procedimentos imediatos
+  secaoTitulo('Procedimentos Imediatos Pós-Parto');
+  if (plano.procedimentos.length) { plano.procedimentos.forEach(function(t){ item(t); }); }
+  else { item('Nenhum selecionado', false); }
+  espaco(4);
+
+  // 5. Preferências específicas
+  if (plano.preferenciasEspecificas.length) {
+    secaoTitulo('Preferências Específicas — ' + plano.tipoParto);
+    plano.preferenciasEspecificas.forEach(function(t){ item(t); });
+    espaco(4);
+  }
+
+  // 6. Observações
+  if (plano.obs) {
+    secaoTitulo('Observações Adicionais');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor.apply(doc, corTexto);
+    var linhasObs = doc.splitTextToSize(plano.obs, colW - 6);
+    if (y + linhasObs.length * 6 > 275) { doc.addPage(); y = 20; }
+    doc.text(linhasObs, margin + 4, y);
+    y += linhasObs.length * 6 + 4;
+  }
+
+  // Rodapé
+  var totalPages = doc.getNumberOfPages();
+  for (var p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 160, 150);
+    doc.text('Lua Gestação · ' + nomeGestante + ' · ' + new Date().toLocaleDateString('pt-BR') + '  —  Página ' + p + ' de ' + totalPages, margin, 292);
+  }
+
+  // Download
+  var nomeArquivo = 'PlanoDePartoLua_' + nomeGestante.replace(/\s+/g,'_') + '.pdf';
+  doc.save(nomeArquivo);
+
+  // Abrir e-mail
+  if (enviarEmail && emailDoula) {
+    var assunto = encodeURIComponent('Plano de Parto — ' + nomeGestante);
+    var corpo = encodeURIComponent(
+      'Olá!\n\nSegue em anexo meu Plano de Parto gerado pelo app Lua Gestação.\n\n' +
+      '— Gestante: ' + nomeGestante + '\n' +
+      (dppDisplay ? '— DPP: ' + dppDisplay + '\n' : '') +
+      (contato ? '— Contato: ' + contato + '\n' : '') +
+      '\nO arquivo PDF foi baixado automaticamente — por favor, verifique sua pasta de Downloads e anexe-o a este e-mail antes de enviar.\n\n' +
+      'Com carinho 💛\n' + nomeGestante
+    );
+    setTimeout(function(){ window.location.href = 'mailto:' + emailDoula + '?subject=' + assunto + '&body=' + corpo; }, 800);
+    mostrarToast('PDF baixado! Seu e-mail foi aberto — anexe o arquivo e envie 💛');
+  } else {
+    mostrarToast('PDF baixado com sucesso! 💛');
+  }
 }
 function selectMood(el) { document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected'); }
 function toggleTarefa(el) { el.classList.toggle('done'); el.querySelector('.tarefa-check').textContent = el.classList.contains('done') ? '✓' : ''; }
@@ -2807,6 +3059,7 @@ function sendDMsg() {
 
 <!-- SUPABASE CONNECTION -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
@@ -3774,7 +4027,7 @@ async function salvarPerfilDoula() {
 async function carregarMinhaDoula() {
   if (!db || !currentDoulaId) return;
   try {
-    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio').eq('id', currentDoulaId).maybeSingle();
+    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio,email').eq('id', currentDoulaId).maybeSingle();
     if (!res.data) return;
     var d = res.data;
     chatDoulaId = d.id;
@@ -3819,6 +4072,8 @@ async function carregarMinhaDoula() {
     if (cidadeEl) cidadeEl.textContent = d.cidade ? '📍 ' + d.cidade : '—';
     var bioEl = document.getElementById('doula-card-bio');
     if (bioEl) bioEl.textContent = d.bio || '';
+    // Guarda e-mail da doula para pré-preencher no plano de parto
+    window._doulaEmail = d.email || '';
     // Salva whatsapp para os botões
     var btnWpp = document.getElementById('btn-whatsapp-doula');
     if (btnWpp) btnWpp.dataset.whatsapp = d.whatsapp || '';
