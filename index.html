@@ -1808,7 +1808,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:20px;">
             <div class="card-title">➕ Novo agendamento</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data e hora</label><input class="form-input" type="datetime-local"></div>
               <div class="form-group"><label class="form-label">Tipo de atendimento</label><select class="form-input form-select"><option>Consulta pré-natal</option><option>Preparação para o parto</option><option>Visita pós-parto</option><option>Reunião inicial</option><option>Outro</option></select></div>
               <div class="form-group"><label class="form-label">Observações</label><input class="form-input" type="text" placeholder="Tema ou observações da consulta"></div>
@@ -1833,7 +1833,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo registro</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select id="select-cliente-registros" class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data</label><input class="form-input" type="date"></div>
               <div class="form-group"><label class="form-label">Tipo de atendimento</label><select class="form-input form-select"><option>Consulta pré-natal</option><option>Preparação para o parto</option><option>Acompanhamento do parto</option><option>Visita pós-parto</option></select></div>
             </div>
@@ -1859,7 +1859,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo registro pós-parto</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select id="select-cliente-posparto" class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Data da visita</label><input class="form-input" type="date"></div>
               <div class="form-group"><label class="form-label">Dias pós-parto</label><input class="form-input" type="number" placeholder="Ex: 3"></div>
             </div>
@@ -1952,7 +1952,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card" style="margin-bottom:24px;">
             <div class="card-title">➕ Novo contrato</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Cliente</label><select class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
+              <div class="form-group"><label class="form-label">Cliente</label><select id="select-cliente-financeiro" class="form-input form-select"><option value="">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label">Valor total do serviço</label><input class="form-input" type="text" placeholder="R$ 0,00"></div>
               <div class="form-group"><label class="form-label">Número de parcelas</label><input class="form-input" type="number" placeholder="Ex: 3"></div>
               <div class="form-group"><label class="form-label">Status</label><select class="form-input form-select"><option>Pendente</option><option>Parcialmente pago</option><option>Pago</option></select></div>
@@ -4438,6 +4438,23 @@ function ligarDoula() {
 }
 
 // ── Carrega clientes da DOULA ──
+function populateClienteSelects(clientes) {
+  var ids = ['select-cliente-agenda','select-cliente-registros','select-cliente-posparto','select-cliente-financeiro'];
+  ids.forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var current = sel.value;
+    sel.innerHTML = '<option value="">Selecione uma cliente</option>';
+    clientes.forEach(function(g) {
+      var opt = document.createElement('option');
+      opt.value = g.gestante_id;
+      opt.textContent = g.gestante_nome;
+      sel.appendChild(opt);
+    });
+    if (current) sel.value = current;
+  });
+}
+
 async function carregarClientesDoula() {
   if (!db || !currentUserId) return;
   var tbody = document.getElementById('clientes-tbody');
@@ -4447,8 +4464,10 @@ async function carregarClientesDoula() {
     if (res.error || !res.data || !res.data.length) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma gestante vinculada ainda</div><div style="font-size:13px;color:var(--earth-light);">As gestantes que escolherem você no marketplace aparecerão aqui</div></td></tr>';
       document.getElementById('stat-clientes').textContent = '0';
+      populateClienteSelects([]);
       return;
     }
+    populateClienteSelects(res.data);
     document.getElementById('stat-clientes').textContent = res.data.length;
     tbody.innerHTML = res.data.map(function(g) {
       var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
