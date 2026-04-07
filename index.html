@@ -307,8 +307,9 @@ header {
 .timer-relatorio.visible { display:block; }
 /* lang selector */
 .lang-selector { display:flex; gap:4px; align-items:center; }
-.lang-btn { background:none; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:rgba(255,255,255,0.4); font-size:11px; font-weight:600; cursor:pointer; padding:3px 7px; font-family:inherit; transition:all 0.2s; }
-.lang-btn.active { border-color:var(--rose-light); color:var(--rose-light); }
+.lang-btn { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.35); border-radius:6px; color:rgba(255,255,255,0.75); font-size:11px; font-weight:700; cursor:pointer; padding:3px 7px; font-family:inherit; transition:all 0.2s; }
+.lang-btn:hover { background:rgba(255,255,255,0.18); color:white; border-color:rgba(255,255,255,0.6); }
+.lang-btn.active { background:var(--rose); border-color:var(--rose); color:white; }
 
 /* ─ Emergência / Timer ─ */
 .btn-emergencia { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#E07B5A,#c9573a); color:white; border:none; width:100%; padding:20px; border-radius:20px; font-size:18px; font-weight:600; cursor:pointer; font-family:inherit; margin-bottom:20px; transition:all 0.2s; box-shadow:0 8px 24px rgba(224,123,90,0.3); animation:pulse-alert 2s ease-in-out infinite; }
