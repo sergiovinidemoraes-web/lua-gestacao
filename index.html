@@ -795,7 +795,7 @@ tr:hover td { background:var(--rose-pale); }
     </div>
     <span style="font-size:13px;color:var(--earth-light);" id="header-user-name"></span>
     <button onclick="abrirAdmin()" style="background:none;border:none;font-size:16px;cursor:pointer;opacity:0.4;" title="Admin">⚙️</button>
-    <button class="header-switch" onclick="fazerLogout()">Sair</button>
+    <button class="header-switch" onclick="fazerLogout()" data-i18n="hdr.logout">Sair</button>
   </div>
   </header>
 
@@ -810,23 +810,23 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-week" id="g-semana-info">Bem-vinda ao Lua 🌙</div>
         </div>
         <nav class="g-nav">
-          <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span>Início</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><span class="g-nav-icon">🌱</span>Minha Gestação</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><span class="g-nav-icon">✅</span>Tarefas por Fase</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-plano')"><span class="g-nav-icon">📋</span>Plano de Parto</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span>Contrações</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-conteudo')"><span class="g-nav-icon">📚</span>Conteúdo</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-extras')"><span class="g-nav-icon">🎧</span>Extras</div>
-          <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span>Encontrar Doula</div>
-          <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span>Minha Doula</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span>Pós-Parto</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span>Diário</div>
-          <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span>Conversar com a Lua</div>
+          <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span><span data-i18n="nav.inicio">Início</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><span class="g-nav-icon">🌱</span><span data-i18n="nav.gestacao">Minha Gestação</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><span class="g-nav-icon">✅</span><span data-i18n="nav.tarefas">Tarefas por Fase</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-plano')"><span class="g-nav-icon">📋</span><span data-i18n="nav.plano">Plano de Parto</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span><span data-i18n="nav.contracoes">Contrações</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-conteudo')"><span class="g-nav-icon">📚</span><span data-i18n="nav.conteudo">Conteúdo</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-extras')"><span class="g-nav-icon">🎧</span><span data-i18n="nav.extras">Extras</span></div>
+          <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span><span data-i18n="nav.encontrar">Encontrar Doula</span></div>
+          <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span><span data-i18n="nav.minha.doula">Minha Doula</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span><span data-i18n="nav.posparto">Pós-Parto</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span><span data-i18n="nav.diario">Diário</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span><span data-i18n="nav.chat">Conversar com a Lua</span></div>
         </nav>
         <div class="g-doula-card" id="g-doula-card-sidebar" style="display:none;">
-          <div class="g-doula-card-title">Sua Doula</div>
+          <div class="g-doula-card-title" data-i18n="dash.doula.label">Sua Doula</div>
           <div class="g-doula-card-name" id="g-doula-nome">—</div>
-          <div class="g-doula-card-sub" id="g-doula-card-sub">Conectada ao app</div>
+          <div class="g-doula-card-sub" id="g-doula-card-sub" data-i18n="dash.doula.connected">Conectada ao app</div>
         </div>
       </aside>
 
@@ -838,11 +838,11 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="gestante-dash-sub">Bem-vinda ao Lua</div>
 
           <div id="onboarding-card" style="background:linear-gradient(135deg,#8A9E8C,#6a8a6c);border-radius:20px;padding:24px;color:white;margin-bottom:20px;display:none;">
-          <div style="font-size:16px;font-weight:500;margin-bottom:6px;" id="onboard-titulo">Configure sua gestação</div>
-          <div style="font-size:13px;opacity:0.85;margin-bottom:16px;" id="onboard-sub">Informe sua data provável do parto para acompanharmos sua jornada</div>
+          <div style="font-size:16px;font-weight:500;margin-bottom:6px;" id="onboard-titulo" data-i18n="dash.onboard.title">Configure sua gestação</div>
+          <div style="font-size:13px;opacity:0.85;margin-bottom:16px;" id="onboard-sub" data-i18n="dash.onboard.sub">Informe sua data provável do parto para acompanharmos sua jornada</div>
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
             <input type="date" id="dpp-input" style="padding:8px 14px;border-radius:10px;border:none;font-size:14px;font-family:inherit;background:rgba(255,255,255,0.2);color:white;outline:none;">
-            <button onclick="salvarDPP()" style="background:white;color:#6a8a6c;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">Salvar</button>
+            <button onclick="salvarDPP()" style="background:white;color:#6a8a6c;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="dash.onboard.save">Salvar</button>
           </div>
         </div>
         <div class="frases-do-dia">
@@ -851,7 +851,7 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div id="card-minha-doula" style="display:none;background:linear-gradient(135deg,var(--dark),#3d2a22);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
-            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Sua Doula</div>
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;" data-i18n="dash.doula.label">Sua Doula</div>
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
               <div id="doula-card-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:white;flex-shrink:0;">D</div>
               <div>
@@ -861,40 +861,40 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div id="doula-card-bio" style="font-size:13px;opacity:0.7;margin-bottom:14px;line-height:1.5;"></div>
             <div style="display:flex;gap:10px;">
-              <button id="btn-whatsapp-doula" onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
-              <button id="btn-ligar-doula" onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📞 Ligar</button>
+              <button id="btn-whatsapp-doula" onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.btn.wpp">💬 WhatsApp</button>
+              <button id="btn-ligar-doula" onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.btn.call">📞 Ligar</button>
             </div>
           </div>
           <div id="card-aguardando-doula" style="display:none;background:linear-gradient(135deg,#4a3728,#5c4530);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
-            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Solicitação Enviada</div>
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;" data-i18n="dash.doula.waiting.label">Solicitação Enviada</div>
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
               <div style="font-size:28px;">⏳</div>
               <div>
                 <div id="aguardando-doula-nome" style="font-size:16px;font-weight:500;">—</div>
-                <div style="font-size:12px;opacity:0.6;margin-top:2px;">Aguardando confirmação da doula</div>
+                <div style="font-size:12px;opacity:0.6;margin-top:2px;" data-i18n="dash.doula.waiting.sub">Aguardando confirmação da doula</div>
               </div>
             </div>
-            <div style="font-size:12px;opacity:0.6;line-height:1.5;">Você receberá uma notificação quando ela aceitar sua solicitação.</div>
+            <div style="font-size:12px;opacity:0.6;line-height:1.5;" data-i18n="dash.doula.waiting.note">Você receberá uma notificação quando ela aceitar sua solicitação.</div>
           </div>
-          <button class="btn-falar-doula" id="btn-falar-doula-chat" onclick="gNavById('g-chat')" style="display:none;">
+          <button class="btn-falar-doula" id="btn-falar-doula-chat" onclick="gNavById('g-chat')" style="display:none;" data-i18n="dash.btn.chat">
             🌙 Conversar com a Lua
           </button>
-          <button class="btn-falar-doula" id="btn-encontrar-doula" onclick="gNavById('g-marketplace')">
+          <button class="btn-falar-doula" id="btn-encontrar-doula" onclick="gNavById('g-marketplace')" data-i18n="dash.btn.findDoula">
             🔍 Encontrar minha Doula
           </button>
 
           <div class="proxima-consulta-card" id="proxima-consulta-card">
-            <div class="consulta-data">PRÓXIMA CONSULTA</div>
-            <div class="consulta-tema" id="proxima-consulta-tema">Nenhuma consulta agendada ainda</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:12px;">Sua doula irá agendar em breve</div>
-            <button class="btn-ver-detalhes" onclick="gNavById('g-agenda')">Ver agenda</button>
+            <div class="consulta-data" data-i18n="dash.appointment.label">PRÓXIMA CONSULTA</div>
+            <div class="consulta-tema" id="proxima-consulta-tema" data-i18n="dash.appointment.none">Nenhuma consulta agendada ainda</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:12px;" data-i18n="dash.appointment.note">Sua doula irá agendar em breve</div>
+            <button class="btn-ver-detalhes" onclick="gNavById('g-agenda')" data-i18n="dash.appointment.btn">Ver agenda</button>
           </div>
 
-          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:14px;">Tarefas do dia</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:14px;" data-i18n="dash.tasks.title">Tarefas do dia</div>
           <div class="tarefas-grid" id="tarefas-dia"></div>
 
           <div class="card" id="bebe-card" style="display:none;">
-            <div class="card-title">Desenvolvimento do bebê</div>
+            <div class="card-title" data-i18n="dash.baby.title">Desenvolvimento do bebê</div>
             <div style="display:flex;gap:20px;align-items:center;">
               <div style="font-size:56px;" id="bebe-emoji">🥭</div>
               <div>
@@ -906,14 +906,14 @@ tr:hover td { background:var(--rose-pale); }
 
           <!-- Guias e materiais -->
           <div class="card">
-            <div class="card-title">📚 Guias para você</div>
+            <div class="card-title" data-i18n="dash.guides.title">📚 Guias para você</div>
             <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
               <div class="content-icon">📖</div>
-              <div><div class="content-label">Guia das primeiras semanas</div><div class="content-sub">O que esperar do início da gestação</div></div>
+              <div><div class="content-label" data-i18n="dash.guide.weeks.label">Guia das primeiras semanas</div><div class="content-sub" data-i18n="dash.guide.weeks.sub">O que esperar do início da gestação</div></div>
             </div>
             <div class="content-item" style="cursor:pointer;" onclick="abrirGuiaPais()">
               <div class="content-icon">👶</div>
-              <div><div class="content-label">Guia para pais de primeira viagem</div><div class="content-sub">Tudo o que um pai/parceiro precisa saber</div></div>
+              <div><div class="content-label" data-i18n="dash.guide.parents.label">Guia para pais de primeira viagem</div><div class="content-sub" data-i18n="dash.guide.parents.sub">Tudo o que um pai/parceiro precisa saber</div></div>
             </div>
             <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
               <div class="content-icon">🌙</div>
@@ -924,80 +924,80 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- ACOMPANHAMENTO -->
         <div class="g-panel" id="g-acomp">
-          <div class="panel-title">Minha Gestação</div>
-          <div class="panel-sub" id="g-acomp-sub">Configure sua gestação no Dashboard 🌸</div>
+          <div class="panel-title" data-i18n="acomp.title">Minha Gestação</div>
+          <div class="panel-sub" id="g-acomp-sub" data-i18n="acomp.sub">Configure sua gestação no Dashboard 🌸</div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
               <div>
-                <div class="preg-weeks" id="g-semanas-num">— <span>semanas</span></div>
-                <div style="font-size:13px;color:var(--earth-light);margin-top:6px;" id="g-semanas-faltam">Cadastre sua DPP para calcular</div>
+                <div class="preg-weeks" id="g-semanas-num">— <span data-i18n="acomp.weeks">semanas</span></div>
+                <div style="font-size:13px;color:var(--earth-light);margin-top:6px;" id="g-semanas-faltam" data-i18n="acomp.configure.dpp">Cadastre sua DPP para calcular</div>
               </div>
               <div style="background:var(--sage-light);color:var(--sage);padding:4px 12px;border-radius:20px;font-size:12px;letter-spacing:1px;text-transform:uppercase;" id="g-trimestre">—</div>
             </div>
             <div class="preg-bar"><div class="preg-bar-fill" id="g-prog-bar" style="width:0%"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span>Início</span><span>Semana 40</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span data-i18n="acomp.bar.start">Início</span><span data-i18n="acomp.bar.end">Semana 40</span></div>
             <div class="preg-info-grid">
-              <div class="preg-info-item"><div class="preg-info-val" id="g-dpp">—</div><div class="preg-info-label">DPP estimada</div></div>
-              <div class="preg-info-item"><div class="preg-info-val" id="g-progresso">—</div><div class="preg-info-label">Progresso</div></div>
-              <div class="preg-info-item"><div class="preg-info-val" id="g-dias">—</div><div class="preg-info-label">Dias restantes</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="g-dpp">—</div><div class="preg-info-label" data-i18n="acomp.dpp.label">DPP estimada</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="g-progresso">—</div><div class="preg-info-label" data-i18n="acomp.progress.label">Progresso</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="g-dias">—</div><div class="preg-info-label" data-i18n="acomp.days.label">Dias restantes</div></div>
             </div>
           </div>
           <div class="card" id="card-sentir">
-            <div class="card-title">Esta semana você pode sentir...</div>
+            <div class="card-title" data-i18n="acomp.symptoms.title">Esta semana você pode sentir...</div>
             <div id="sentir-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);">Configure sua DPP para ver os sintomas da sua semana</div>
+              <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);" data-i18n="acomp.symptoms.ph">Configure sua DPP para ver os sintomas da sua semana</div>
             </div>
           </div>
         </div>
 
         <!-- TAREFAS POR FASE -->
         <div class="g-panel" id="g-tarefas">
-          <div class="panel-title">Tarefas por Fase</div>
-          <div class="panel-sub">Organizadas conforme sua semana gestacional</div>
+          <div class="panel-title" data-i18n="tarefas.title">Tarefas por Fase</div>
+          <div class="panel-sub" data-i18n="tarefas.sub">Organizadas conforme sua semana gestacional</div>
 
           <div class="fase-section">
-            <div class="fase-badge tri1">1º Trimestre — Semanas 1 a 13</div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Confirmar a gestação com médico</div><div class="fase-task-week">Sem. 4–6</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Iniciar suplementação de ácido fólico</div><div class="fase-task-week">Sem. 4</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Contatar uma doula</div><div class="fase-task-week">Sem. 8–12</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Fazer ultrassom morfológico do 1º tri</div><div class="fase-task-week">Sem. 11–13</div></div>
+            <div class="fase-badge tri1" data-i18n="tarefas.tri1">1º Trimestre — Semanas 1 a 13</div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.confirmar">Confirmar a gestação com médico</div><div class="fase-task-week">Sem. 4–6</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.folico">Iniciar suplementação de ácido fólico</div><div class="fase-task-week">Sem. 4</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.doula">Contatar uma doula</div><div class="fase-task-week">Sem. 8–12</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.morfologico1">Fazer ultrassom morfológico do 1º tri</div><div class="fase-task-week">Sem. 11–13</div></div>
           </div>
 
           <div class="fase-section">
-            <div class="fase-badge tri2">2º Trimestre — Semanas 14 a 27 (você está aqui!)</div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Ultrassom morfológico do 2º tri</div><div class="fase-task-week">Sem. 18–20</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Iniciar plano de parto</div><div class="fase-task-week">Sem. 20</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Fazer tour pela maternidade</div><div class="fase-task-week">Sem. 22</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Começar aulas de preparação para o parto</div><div class="fase-task-week">Sem. 24</div></div>
+            <div class="fase-badge tri2" data-i18n="tarefas.tri2">2º Trimestre — Semanas 14 a 27 (você está aqui!)</div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.morfologico2">Ultrassom morfológico do 2º tri</div><div class="fase-task-week">Sem. 18–20</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.plano">Iniciar plano de parto</div><div class="fase-task-week">Sem. 20</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.tour">Fazer tour pela maternidade</div><div class="fase-task-week">Sem. 22</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.aulas">Começar aulas de preparação para o parto</div><div class="fase-task-week">Sem. 24</div></div>
           </div>
 
           <div class="fase-section">
-            <div class="fase-badge tri3">3º Trimestre — Semanas 28 a 40</div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Organizar mala da maternidade</div><div class="fase-task-week">Sem. 32</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Lavar roupinhas do bebê</div><div class="fase-task-week">Sem. 34</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Preparar quarto / cantinho do bebê</div><div class="fase-task-week">Sem. 36</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Finalizar e compartilhar plano de parto</div><div class="fase-task-week">Sem. 36</div></div>
-            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text">Instalar cadeirinha no carro</div><div class="fase-task-week">Sem. 38</div></div>
+            <div class="fase-badge tri3" data-i18n="tarefas.tri3">3º Trimestre — Semanas 28 a 40</div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.mala">Organizar mala da maternidade</div><div class="fase-task-week">Sem. 32</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.roupas">Lavar roupinhas do bebê</div><div class="fase-task-week">Sem. 34</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.quarto">Preparar quarto / cantinho do bebê</div><div class="fase-task-week">Sem. 36</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.finalizar">Finalizar e compartilhar plano de parto</div><div class="fase-task-week">Sem. 36</div></div>
+            <div class="fase-task" onclick="toggleFaseTask(this)"><div class="fase-task-check"></div><div class="fase-task-text" data-i18n="t.cadeirinha">Instalar cadeirinha no carro</div><div class="fase-task-week">Sem. 38</div></div>
           </div>
         </div>
 
         <!-- PLANO DE PARTO -->
         <div class="g-panel" id="g-plano">
-          <div class="panel-title">Plano de Parto</div>
-          <div class="panel-sub">Registre suas preferências e compartilhe com sua doula</div>
+          <div class="panel-title" data-i18n="plano.title">Plano de Parto</div>
+          <div class="panel-sub" data-i18n="plano.sub">Registre suas preferências e compartilhe com sua doula</div>
 
           <div class="plan-orientacao">
-            <strong>💡 O que é o plano de parto?</strong>
-            É um documento que registra suas preferências, desejos e limites durante o trabalho de parto e nascimento. Ele serve como guia para sua equipe e doula, garantindo que suas escolhas sejam respeitadas. Converse com sua doula sobre cada item!
+            <strong data-i18n="plano.orientacao.title">💡 O que é o plano de parto?</strong>
+            <span data-i18n="plano.orientacao">É um documento que registra suas preferências, desejos e limites durante o trabalho de parto e nascimento. Ele serve como guia para sua equipe e doula, garantindo que suas escolhas sejam respeitadas. Converse com sua doula sobre cada item!</span>
           </div>
 
           <!-- 1. Tipo de parto -->
           <div class="card">
             <div class="plan-section">
-              <h3>Tipo de Parto</h3>
+              <h3 data-i18n="plano.tipo.title">Tipo de Parto</h3>
               <div class="plan-tipo-btns">
-                <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')">🌸 Parto vaginal</button>
-                <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')">🏥 Cesariana</button>
+                <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')" data-i18n="plano.tipo.vaginal">🌸 Parto vaginal</button>
+                <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')" data-i18n="plano.tipo.cesariana">🏥 Cesariana</button>
               </div>
             </div>
           </div>
@@ -1005,11 +1005,11 @@ tr:hover td { background:var(--rose-pale); }
           <!-- 2. Alívio da dor -->
           <div class="card">
             <div class="plan-section" style="margin-bottom:0;">
-              <h3>Alívio da Dor</h3>
-              <p style="font-size:13px;color:var(--mid);margin-bottom:4px;">Quais métodos você gostaria de ter disponíveis durante o trabalho de parto?</p>
-              <p style="font-size:12px;color:var(--earth-light);margin-bottom:16px;">Você pode marcar preferências, sabendo que sua experiência pode mudar ao longo do processo.</p>
+              <h3 data-i18n="plano.dor.title">Alívio da Dor</h3>
+              <p style="font-size:13px;color:var(--mid);margin-bottom:4px;" data-i18n="plano.dor.q">Quais métodos você gostaria de ter disponíveis durante o trabalho de parto?</p>
+              <p style="font-size:12px;color:var(--earth-light);margin-bottom:16px;" data-i18n="plano.dor.note">Você pode marcar preferências, sabendo que sua experiência pode mudar ao longo do processo.</p>
 
-              <div class="plan-group-label">Não farmacológicos</div>
+              <div class="plan-group-label" data-i18n="plano.dor.nao.farm">Não farmacológicos</div>
               <div class="plan-checklist">
                 <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Movimento (caminhar, bola, mudar posições)</div></div></div>
                 <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Posições (cócoras, quatro apoios, lateral)</div></div></div>
@@ -1028,7 +1028,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Apoio emocional contínuo (doula/companheiro)</div></div></div>
               </div>
 
-              <div class="plan-group-label" style="margin-top:18px;">Farmacológicos</div>
+              <div class="plan-group-label" style="margin-top:18px;" data-i18n="plano.dor.farm">Farmacológicos</div>
               <div class="plan-checklist">
                 <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Epidural</div><div class="plan-check-desc">Mais eficaz, padrão ouro — analgesia contínua</div></div></div>
                 <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Raquidiana</div><div class="plan-check-desc">Rápida, comum em cesárea</div></div></div>
@@ -1042,7 +1042,7 @@ tr:hover td { background:var(--rose-pale); }
           <!-- 3. Acompanhantes -->
           <div class="card">
             <div class="plan-section" style="margin-bottom:0;">
-              <h3>Acompanhantes</h3>
+              <h3 data-i18n="plano.acomp.title">Acompanhantes</h3>
               <div class="plan-options">
                 <button class="plan-option selected" onclick="togglePlan(this)">Parceiro(a)</button>
                 <button class="plan-option" onclick="togglePlan(this)">Mãe</button>
@@ -1055,7 +1055,7 @@ tr:hover td { background:var(--rose-pale); }
           <!-- 4. Pós-parto -->
           <div class="card">
             <div class="plan-section" style="margin-bottom:0;">
-              <h3>Pós-Parto</h3>
+              <h3 data-i18n="plano.pos.title">Pós-Parto</h3>
               <div class="plan-options">
                 <button class="plan-option selected" onclick="togglePlan(this)">Contato pele a pele imediato</button>
                 <button class="plan-option selected" onclick="togglePlan(this)">Amamentação na 1ª hora</button>
@@ -1067,8 +1067,8 @@ tr:hover td { background:var(--rose-pale); }
           <!-- 5. Procedimentos imediatos pós-parto -->
           <div class="card">
             <div class="plan-section" style="margin-bottom:0;">
-              <h3>Procedimentos Imediatos</h3>
-              <p style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">Marque as preferências para o momento logo após o nascimento</p>
+              <h3 data-i18n="plano.proc.title">Procedimentos Imediatos</h3>
+              <p style="font-size:12px;color:var(--earth-light);margin-bottom:12px;" data-i18n="plano.proc.note">Marque as preferências para o momento logo após o nascimento</p>
               <div class="plan-checklist">
                 <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Contato pele a pele imediato e ininterrupto</div></div></div>
                 <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Clampeamento tardio do cordão umbilical</div></div></div>
@@ -1095,7 +1095,7 @@ tr:hover td { background:var(--rose-pale); }
           <div id="bloco-vaginal" class="plan-cond-block visible">
             <div class="card">
               <div class="plan-section" style="margin-bottom:0;">
-                <h3>Preferências — Parto Vaginal</h3>
+                <h3 data-i18n="plano.vaginal.title">Preferências — Parto Vaginal</h3>
                 <div class="plan-checklist">
                   <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Presença de acompanhante</div></div></div>
                   <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Liberdade de movimento durante o trabalho de parto</div></div></div>
@@ -1120,7 +1120,7 @@ tr:hover td { background:var(--rose-pale); }
           <div id="bloco-cesariana" class="plan-cond-block">
             <div class="card">
               <div class="plan-section" style="margin-bottom:0;">
-                <h3>Preferências — Cesariana</h3>
+                <h3 data-i18n="plano.cesariana.title">Preferências — Cesariana</h3>
                 <div class="plan-checklist">
                   <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Presença de acompanhante na sala cirúrgica</div></div></div>
                   <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Ambiente mais humanizado (luz reduzida, silêncio, música)</div></div></div>
@@ -1150,49 +1150,49 @@ tr:hover td { background:var(--rose-pale); }
           <!-- Observações e salvar -->
           <div class="card">
             <div class="plan-section" style="margin-bottom:16px;">
-              <h3>Observações adicionais</h3>
-              <textarea class="form-input form-textarea" id="plano-obs" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
+              <h3 data-i18n="plano.obs.title">Observações adicionais</h3>
+              <textarea class="form-input form-textarea" id="plano-obs" data-i18n-ph="plano.obs.ph" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
             </div>
 
             <div style="background:var(--rose-pale);border-radius:14px;padding:16px;margin-bottom:16px;">
-              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;">📋 Seus dados para o plano</div>
+              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;" data-i18n="plano.dados.title">📋 Seus dados para o plano</div>
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div>
-                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">Seu nome</label>
-                  <input class="form-input" type="text" id="plano-nome-gestante" placeholder="Seu nome completo" style="width:100%;box-sizing:border-box;">
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;" data-i18n="plano.dados.nome.label">Seu nome</label>
+                  <input class="form-input" type="text" id="plano-nome-gestante" data-i18n-ph="plano.dados.nome.ph" placeholder="Seu nome completo" style="width:100%;box-sizing:border-box;">
                 </div>
                 <div>
-                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">Seu WhatsApp / telefone</label>
-                  <input class="form-input" type="tel" id="plano-contato-gestante" placeholder="(11) 99999-9999" style="width:100%;box-sizing:border-box;">
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;" data-i18n="plano.dados.contato.label">Seu WhatsApp / telefone</label>
+                  <input class="form-input" type="tel" id="plano-contato-gestante" data-i18n-ph="plano.dados.contato.ph" placeholder="(11) 99999-9999" style="width:100%;box-sizing:border-box;">
                 </div>
                 <div>
-                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;">DPP (data provável do parto)</label>
-                  <input class="form-input" type="text" id="plano-dpp-display" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;">
+                  <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:4px;" data-i18n="plano.dados.dpp.label">DPP (data provável do parto)</label>
+                  <input class="form-input" type="text" id="plano-dpp-display" data-i18n-ph="plano.dados.dpp.ph" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;">
                 </div>
               </div>
             </div>
 
             <div style="background:rgba(122,100,85,0.06);border-radius:14px;padding:16px;margin-bottom:16px;">
-              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;">📧 E-mail da doula / equipe</div>
-              <input class="form-input" type="email" id="plano-email-doula" placeholder="email@doulaexemplo.com" style="width:100%;box-sizing:border-box;margin-bottom:8px;">
-              <div style="font-size:11px;color:var(--earth-light);line-height:1.6;">O PDF será baixado automaticamente. Seu cliente de e-mail será aberto com o destinatário e o plano no corpo da mensagem — basta anexar o arquivo baixado.</div>
+              <div style="font-size:13px;font-weight:600;color:var(--mid);margin-bottom:12px;" data-i18n="plano.email.title">📧 E-mail da doula / equipe</div>
+              <input class="form-input" type="email" id="plano-email-doula" data-i18n-ph="plano.email.ph" placeholder="email@doulaexemplo.com" style="width:100%;box-sizing:border-box;margin-bottom:8px;">
+              <div style="font-size:11px;color:var(--earth-light);line-height:1.6;" data-i18n="plano.email.note">O PDF será baixado automaticamente. Seu cliente de e-mail será aberto com o destinatário e o plano no corpo da mensagem — basta anexar o arquivo baixado.</div>
             </div>
 
             <div style="display:flex;flex-direction:column;gap:10px;">
-              <button class="btn-primary" onclick="gerarPDFPlanoParto(true)">📩 Gerar PDF e enviar por e-mail</button>
-              <button onclick="gerarPDFPlanoParto(false)" style="background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">⬇️ Apenas baixar o PDF</button>
+              <button class="btn-primary" onclick="gerarPDFPlanoParto(true)" data-i18n="plano.btn.send">📩 Gerar PDF e enviar por e-mail</button>
+              <button onclick="gerarPDFPlanoParto(false)" style="background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="plano.btn.download">⬇️ Apenas baixar o PDF</button>
             </div>
           </div>
         </div>
 
         <!-- CONTRAÇÕES -->
         <div class="g-panel" id="g-emergencia">
-          <div class="panel-title">Contrações</div>
-          <div class="panel-sub">Observe seu padrão com calma e segurança</div>
+          <div class="panel-title" data-i18n="timer.title">Contrações</div>
+          <div class="panel-sub" data-i18n="timer.sub">Observe seu padrão com calma e segurança</div>
 
           <!-- Educativo: Aprenda a cronometrar -->
           <div class="card">
-            <div class="card-title">📖 Aprenda a cronometrar</div>
+            <div class="card-title" data-i18n="timer.edu.title">📖 Aprenda a cronometrar</div>
             <div class="timer-educativo">
               <strong>Como identificar o início</strong>
               A contração começa quando você sente o útero endurecer — uma tensão que cresce progressivamente. Pode vir com dor lombar, pressão na pelve ou cólica intensa.
@@ -1223,31 +1223,31 @@ tr:hover td { background:var(--rose-pale); }
             <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Intervalo desde a última: <span id="interval-display" style="color:var(--rose-light)">—</span></div>
             <div class="timer-fase" id="timer-fase"></div>
             <div class="timer-btns">
-              <button class="timer-btn timer-start" id="timer-main-btn" onclick="timerAction()">▶ Contração começou</button>
-              <button class="timer-btn timer-reset" onclick="resetTimer()">Reiniciar tudo</button>
+              <button class="timer-btn timer-start" id="timer-main-btn" onclick="timerAction()" data-i18n="timer.btn.start">▶ Contração começou</button>
+              <button class="timer-btn timer-reset" onclick="resetTimer()" data-i18n="timer.btn.reset">Reiniciar tudo</button>
             </div>
           </div>
 
           <!-- Botão falar com a doula -->
-          <button onclick="falarComDoulaContracoes()" style="width:100%;background:linear-gradient(135deg,var(--rose),#a06050);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:12px;">
+          <button onclick="falarComDoulaContracoes()" style="width:100%;background:linear-gradient(135deg,var(--rose),#a06050);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:12px;" data-i18n="timer.btn.doula">
             💬 Falar com minha doula agora
           </button>
 
           <!-- Registros -->
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-              <div class="card-title" style="margin-bottom:0;">Registros</div>
+              <div class="card-title" style="margin-bottom:0;" data-i18n="timer.log.title">Registros</div>
               <div style="font-size:12px;color:var(--earth-light);" id="avg-display">—</div>
             </div>
             <div id="contractions-log">
-              <div style="font-size:13px;color:var(--earth-light);text-align:center;padding:20px;">Nenhuma contração registrada ainda</div>
+              <div style="font-size:13px;color:var(--earth-light);text-align:center;padding:20px;" data-i18n="timer.log.empty">Nenhuma contração registrada ainda</div>
             </div>
           </div>
 
           <!-- Análise do padrão (aparece após 1h de observação ou pelo botão) -->
           <div id="timer-analise" style="display:none;">
             <div class="card">
-              <div class="card-title">📊 Observação do padrão</div>
+              <div class="card-title" data-i18n="timer.analise.title">📊 Observação do padrão</div>
               <div id="timer-analise-texto" style="font-size:13px;color:var(--mid);line-height:1.8;"></div>
             </div>
           </div>
@@ -1255,10 +1255,10 @@ tr:hover td { background:var(--rose-pale); }
           <!-- Fluxo: "Acho que estou em trabalho de parto" -->
           <div class="card">
             <div class="card-title">Como você está se sentindo?</div>
-            <button onclick="iniciarFluxoTP()" style="width:100%;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--mid);padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-bottom:12px;">
+            <button onclick="iniciarFluxoTP()" style="width:100%;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--mid);padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-bottom:12px;" data-i18n="timer.btn.tp">
               🌙 Acho que estou em trabalho de parto
             </button>
-            <button onclick="iniciarFluxoSozinha()" style="width:100%;background:rgba(122,100,85,0.08);border:1.5px solid rgba(122,100,85,0.15);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;">
+            <button onclick="iniciarFluxoSozinha()" style="width:100%;background:rgba(122,100,85,0.08);border:1.5px solid rgba(122,100,85,0.15);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;" data-i18n="timer.btn.alone">
               Estou sozinha agora
             </button>
           </div>
@@ -1349,7 +1349,7 @@ tr:hover td { background:var(--rose-pale); }
             </button>
           </div>
 
-          <button onclick="gerarRelatorioDoula()" style="width:100%;background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;">
+          <button onclick="gerarRelatorioDoula()" style="width:100%;background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;" data-i18n="timer.btn.relatorio">
             📋 Gerar relatório para a doula
           </button>
         </div>
@@ -1441,12 +1441,12 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- EXTRAS EMOCIONAIS -->
         <div class="g-panel" id="g-extras">
-          <div class="panel-title">Extras Emocionais</div>
-          <div class="panel-sub">Música, conexão e bem-estar para você e seu bebê</div>
+          <div class="panel-title" data-i18n="extras.title">Extras Emocionais</div>
+          <div class="panel-sub" data-i18n="extras.sub">Música, conexão e bem-estar para você e seu bebê</div>
 
           <div class="playlist-card">
-            <div class="playlist-title">🎵 Playlist para o Parto</div>
-            <div class="playlist-sub">Curada especialmente para acompanhar cada fase do trabalho de parto</div>
+            <div class="playlist-title" data-i18n="extras.playlist.title">🎵 Playlist para o Parto</div>
+            <div class="playlist-sub" data-i18n="extras.playlist.sub">Curada especialmente para acompanhar cada fase do trabalho de parto</div>
             <iframe
               src="https://open.spotify.com/embed/playlist/6KFgBH3jpYuAMf4fZkbSEC?utm_source=generator&theme=0"
               width="100%"
@@ -1459,19 +1459,19 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div class="card">
-            <div class="card-title">💫 Conexão com seu bebê</div>
-            <div class="content-item"><div class="content-icon">🗣️</div><div><div class="content-label">Converse com ele</div><div class="content-sub">Ele já ouve sua voz desde a semana 16!</div></div></div>
-            <div class="content-item"><div class="content-icon">📖</div><div><div class="content-label">Leia histórias em voz alta</div><div class="content-sub">Estimula o desenvolvimento auditivo</div></div></div>
+            <div class="card-title" data-i18n="extras.connection.title">💫 Conexão com seu bebê</div>
+            <div class="content-item"><div class="content-icon">🗣️</div><div><div class="content-label" data-i18n="extras.talk.label">Converse com ele</div><div class="content-sub" data-i18n="extras.talk.sub">Ele já ouve sua voz desde a semana 16!</div></div></div>
+            <div class="content-item"><div class="content-icon">📖</div><div><div class="content-label" data-i18n="extras.read.label">Leia histórias em voz alta</div><div class="content-sub" data-i18n="extras.read.sub">Estimula o desenvolvimento auditivo</div></div></div>
           </div>
         </div>
 
         <!-- MARKETPLACE -->
         <div class="g-panel" id="g-marketplace">
-          <div class="panel-title">Encontrar uma Doula</div>
-          <div class="panel-sub">Doulas verificadas prontas para te acompanhar</div>
+          <div class="panel-title" data-i18n="market.title">Encontrar uma Doula</div>
+          <div class="panel-sub" data-i18n="market.sub">Doulas verificadas prontas para te acompanhar</div>
 
           <div class="doulas-search">
-            <input type="text" placeholder="🔍 Buscar por cidade ou especialidade...">
+            <input type="text" data-i18n-ph="market.search.ph" placeholder="🔍 Buscar por cidade ou especialidade...">
           </div>
 
           <div class="doulas-grid" id="doulas-grid-lista">
@@ -1486,8 +1486,8 @@ tr:hover td { background:var(--rose-pale); }
         <div class="g-panel" id="g-posparto">
           <div class="pos-hero">
             <div class="pos-hero-emoji">💛</div>
-            <div class="pos-hero-title">Bem-vinda ao pós-parto</div>
-            <div class="pos-hero-sub">Você acabou de fazer algo extraordinário. Agora vamos cuidar de você e do seu bebê.</div>
+            <div class="pos-hero-title" data-i18n="pos.title">Bem-vinda ao pós-parto</div>
+            <div class="pos-hero-sub" data-i18n="pos.sub">Você acabou de fazer algo extraordinário. Agora vamos cuidar de você e do seu bebê.</div>
           </div>
           <div class="content-phases">
 
@@ -1537,7 +1537,7 @@ tr:hover td { background:var(--rose-pale); }
 
           </div>
           <div class="pos-alerta">
-            <div class="pos-alerta-title">⚠️ Sinais de alerta — procure ajuda imediatamente se tiver:</div>
+            <div class="pos-alerta-title" data-i18n="pos.alert.title">⚠️ Sinais de alerta — procure ajuda imediatamente se tiver:</div>
             <ul class="pos-alerta-items">
               <li>Tristeza intensa que não passa (baby blues x depressão pós-parto)</li>
               <li>Febre acima de 38°C</li>
@@ -1550,10 +1550,10 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- DIÁRIO -->
         <div class="g-panel" id="g-diario">
-          <div class="panel-title">Diário da Gestação</div>
-          <div class="panel-sub">Registre seus sentimentos e memórias desta fase única</div>
+          <div class="panel-title" data-i18n="diario.title">Diário da Gestação</div>
+          <div class="panel-sub" data-i18n="diario.sub">Registre seus sentimentos e memórias desta fase única</div>
           <div class="diary-new">
-            <textarea placeholder="Como você está se sentindo hoje? Escreva livremente..."></textarea>
+            <textarea data-i18n-ph="diario.ph" placeholder="Como você está se sentindo hoje? Escreva livremente..."></textarea>
             <div class="diary-new-footer">
               <div class="mood-btns">
                 <span class="mood-btn" onclick="selectMood(this)">😊</span>
@@ -1562,23 +1562,23 @@ tr:hover td { background:var(--rose-pale); }
                 <span class="mood-btn" onclick="selectMood(this)">😢</span>
                 <span class="mood-btn" onclick="selectMood(this)">😰</span>
               </div>
-              <button class="save-btn" onclick="saveDiary()">Salvar registro</button>
+              <button class="save-btn" onclick="saveDiary()" data-i18n="diario.btn.save">Salvar registro</button>
             </div>
           </div>
           <div id="diary-entries">
             <div class="empty-state" id="diary-empty">
               <div class="empty-icon">📓</div>
-              <div class="empty-title">Seu diário está esperando</div>
-              <div class="empty-sub">Registre aqui seus sentimentos, memórias e momentos especiais desta fase única 💛</div>
+              <div class="empty-title" data-i18n="diario.empty.title">Seu diário está esperando</div>
+              <div class="empty-sub" data-i18n="diario.empty.sub">Registre aqui seus sentimentos, memórias e momentos especiais desta fase única 💛</div>
             </div>
           </div>
         </div>
 
         <!-- MINHA DOULA -->
         <div class="g-panel" id="g-minha-doula">
-          <div class="panel-title">Minha Doula</div>
+          <div class="panel-title" data-i18n="doula.title">Minha Doula</div>
           <div id="minha-doula-info" style="background:linear-gradient(135deg,var(--dark),#3d2a22);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
-            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Sua Doula</div>
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;" data-i18n="doula.label">Sua Doula</div>
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
               <div id="minha-doula-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:white;flex-shrink:0;">D</div>
               <div>
@@ -1588,18 +1588,18 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div id="minha-doula-bio" style="font-size:13px;opacity:0.7;margin-bottom:14px;line-height:1.5;"></div>
             <div style="display:flex;gap:10px;margin-bottom:12px;">
-              <button onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
-              <button onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📞 Ligar</button>
+              <button onclick="falarWhatsappDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.btn.wpp">💬 WhatsApp</button>
+              <button onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.btn.call">📞 Ligar</button>
             </div>
-            <button onclick="encerrarVinculo()" style="width:100%;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:rgba(255,180,180,1);padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;">Encerrar vínculo com esta doula</button>
+            <button onclick="encerrarVinculo()" style="width:100%;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:rgba(255,180,180,1);padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.unlink">Encerrar vínculo com esta doula</button>
           </div>
           <div class="card">
-            <div class="card-title">💬 Mensagens com sua doula</div>
+            <div class="card-title" data-i18n="doula.msgs.title">💬 Mensagens com sua doula</div>
             <div id="msgs-gestante-container" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
               <div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Carregando...</div>
             </div>
             <div style="display:flex;gap:8px;">
-              <input id="msg-gestante-input" class="chat-input" style="flex:1;" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')enviarMensagemParaDoula()">
+              <input id="msg-gestante-input" class="chat-input" style="flex:1;" data-i18n-ph="doula.msg.ph" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')enviarMensagemParaDoula()">
               <button class="chat-send" onclick="enviarMensagemParaDoula()">➤</button>
             </div>
           </div>
@@ -1607,8 +1607,8 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- CHAT GESTANTE -->
         <div class="g-panel" id="g-chat">
-          <div class="panel-title">Conversar com a Lua</div>
-          <div class="panel-sub">Converse com Lua, sua assistente de gestação powered by IA 🌙</div>
+          <div class="panel-title" data-i18n="chat.title">Conversar com a Lua</div>
+          <div class="panel-sub" data-i18n="chat.sub">Converse com Lua, sua assistente de gestação powered by IA 🌙</div>
           <div class="chat-faq-sugestoes">
             <button class="chat-faq-btn" onclick="sendFAQ(this)">🤱 Como melhorar a pega?</button>
             <button class="chat-faq-btn" onclick="sendFAQ(this)">😴 Não consigo dormir</button>
@@ -1624,7 +1624,7 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
             <div class="chat-input-wrap">
-              <input class="chat-input" id="g-chat-input" placeholder="Escreva para Lua... 🌙" onkeydown="if(event.key==='Enter')sendGMsg()">
+              <input class="chat-input" id="g-chat-input" data-i18n-ph="chat.ph" placeholder="Escreva para Lua... 🌙" onkeydown="if(event.key==='Enter')sendGMsg()">
               <button class="chat-send" onclick="sendGMsg()">➤</button>
             </div>
           </div>
@@ -2090,26 +2090,336 @@ function abrirGuiaPais() { window.open('guia-pais-primeira-viagem.pdf','_blank')
 // ─── Internacionalização (i18n) ───
 var _lang = 'pt';
 var _i18n = {
-  pt: { appName:'LUA', tagline:'Acompanhamento de gestação', navInicio:'Início', navGestacao:'Minha Gestação', navPlano:'Plano de Parto', navContracoes:'Contrações', navConteudo:'Conteúdo', navExtras:'Extras', sair:'Sair' },
-  en: { appName:'LUA', tagline:'Pregnancy companion', navInicio:'Home', navGestacao:'My Pregnancy', navPlano:'Birth Plan', navContracoes:'Contractions', navConteudo:'Content', navExtras:'Extras', sair:'Sign out' },
-  es: { appName:'LUA', tagline:'Acompañamiento del embarazo', navInicio:'Inicio', navGestacao:'Mi Embarazo', navPlano:'Plan de Parto', navContracoes:'Contracciones', navConteudo:'Contenido', navExtras:'Extras', sair:'Salir' }
+pt: {
+  // Header
+  'hdr.logout':'Sair','hdr.role.gestante':'Gestante','hdr.role.doula':'Doula',
+  // Nav gestante
+  'nav.inicio':'Início','nav.gestacao':'Minha Gestação','nav.tarefas':'Tarefas por Fase',
+  'nav.plano':'Plano de Parto','nav.contracoes':'Contrações','nav.conteudo':'Conteúdo',
+  'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Minha Doula',
+  'nav.posparto':'Pós-Parto','nav.diario':'Diário','nav.chat':'Conversar com a Lua',
+  // Nav mobile
+  'mob.inicio':'Início','mob.gestacao':'Gestação','mob.conteudo':'Conteúdo',
+  'mob.chat':'Chat','mob.mais':'Mais',
+  'mob.more.tarefas':'Tarefas por Fase','mob.more.plano':'Plano de Parto',
+  'mob.more.contracoes':'Contrações','mob.more.encontrar':'Encontrar Doula',
+  'mob.more.minha.doula':'Minha Doula','mob.more.posparto':'Pós-Parto',
+  'mob.more.diario':'Diário','mob.more.extras':'Extras',
+  // Dashboard
+  'dash.title':'Olá! 🌸','dash.sub':'Bem-vinda ao Lua',
+  'dash.onboard.title':'Configure sua gestação',
+  'dash.onboard.sub':'Informe sua data provável do parto para acompanharmos sua jornada',
+  'dash.onboard.save':'Salvar',
+  'dash.doula.label':'Sua Doula','dash.doula.connected':'Conectada ao app',
+  'dash.doula.waiting.label':'Solicitação Enviada',
+  'dash.doula.waiting.sub':'Aguardando confirmação da doula',
+  'dash.doula.waiting.note':'Você receberá uma notificação quando ela aceitar sua solicitação.',
+  'dash.btn.chat':'🌙 Conversar com a Lua','dash.btn.findDoula':'🔍 Encontrar minha Doula',
+  'dash.appointment.label':'PRÓXIMA CONSULTA','dash.appointment.none':'Nenhuma consulta agendada ainda',
+  'dash.appointment.note':'Sua doula irá agendar em breve','dash.appointment.btn':'Ver agenda',
+  'dash.tasks.title':'Tarefas do dia','dash.baby.title':'Desenvolvimento do bebê',
+  'dash.guides.title':'📚 Guias para você',
+  'dash.guide.weeks.label':'Guia das primeiras semanas','dash.guide.weeks.sub':'O que esperar do início da gestação',
+  'dash.guide.parents.label':'Guia para pais de primeira viagem','dash.guide.parents.sub':'Tudo o que um pai/parceiro precisa saber',
+  'dash.guide.tri3.label':'Guia do terceiro trimestre','dash.guide.tri3.sub':'Preparação para o nascimento',
+  // Acompanhamento
+  'acomp.title':'Minha Gestação','acomp.sub':'Configure sua gestação no Dashboard 🌸',
+  'acomp.weeks':'semanas','acomp.configure.dpp':'Cadastre sua DPP para calcular',
+  'acomp.bar.start':'Início','acomp.bar.end':'Semana 40',
+  'acomp.dpp.label':'DPP estimada','acomp.progress.label':'Progresso','acomp.days.label':'Dias restantes',
+  'acomp.symptoms.title':'Esta semana você pode sentir...','acomp.symptoms.ph':'Configure sua DPP para ver os sintomas da sua semana',
+  // Tarefas
+  'tarefas.title':'Tarefas por Fase','tarefas.sub':'Organizadas conforme sua semana gestacional',
+  'tarefas.tri1':'1º Trimestre — Semanas 1 a 13','tarefas.tri2':'2º Trimestre — Semanas 14 a 27 (você está aqui!)',
+  'tarefas.tri3':'3º Trimestre — Semanas 28 a 40',
+  't.confirmar':'Confirmar a gestação com médico','t.folico':'Iniciar suplementação de ácido fólico',
+  't.doula':'Contatar uma doula','t.morfologico1':'Fazer ultrassom morfológico do 1º tri',
+  't.morfologico2':'Ultrassom morfológico do 2º tri','t.plano':'Iniciar plano de parto',
+  't.tour':'Fazer tour pela maternidade','t.aulas':'Começar aulas de preparação para o parto',
+  't.mala':'Organizar mala da maternidade','t.roupas':'Lavar roupinhas do bebê',
+  't.quarto':'Preparar quarto / cantinho do bebê','t.finalizar':'Finalizar e compartilhar plano de parto',
+  't.cadeirinha':'Instalar cadeirinha no carro',
+  // Plano de parto
+  'plano.title':'Plano de Parto','plano.sub':'Registre suas preferências e compartilhe com sua doula',
+  'plano.orientacao':'É um documento que registra suas preferências, desejos e limites durante o trabalho de parto e nascimento. Ele serve como guia para sua equipe e doula, garantindo que suas escolhas sejam respeitadas. Converse com sua doula sobre cada item!',
+  'plano.orientacao.title':'💡 O que é o plano de parto?',
+  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesariana',
+  'plano.dor.title':'Alívio da Dor',
+  'plano.dor.q':'Quais métodos você gostaria de ter disponíveis durante o trabalho de parto?',
+  'plano.dor.note':'Você pode marcar preferências, sabendo que sua experiência pode mudar ao longo do processo.',
+  'plano.dor.nao.farm':'Não farmacológicos','plano.dor.farm':'Farmacológicos',
+  'plano.acomp.title':'Acompanhantes',
+  'plano.pos.title':'Pós-Parto',
+  'plano.proc.title':'Procedimentos Imediatos',
+  'plano.proc.note':'Marque as preferências para o momento logo após o nascimento',
+  'plano.vaginal.title':'Preferências — Parto Vaginal',
+  'plano.cesariana.title':'Preferências — Cesariana',
+  'plano.obs.title':'Observações adicionais',
+  'plano.obs.ph':'Escreva aqui qualquer outra preferência ou informação importante para sua equipe...',
+  'plano.dados.title':'📋 Seus dados para o plano',
+  'plano.dados.nome.label':'Seu nome','plano.dados.nome.ph':'Seu nome completo',
+  'plano.dados.contato.label':'Seu WhatsApp / telefone','plano.dados.contato.ph':'(11) 99999-9999',
+  'plano.dados.dpp.label':'DPP (data provável do parto)','plano.dados.dpp.ph':'dd/mm/aaaa',
+  'plano.email.title':'📧 E-mail da doula / equipe','plano.email.ph':'email@doulaexemplo.com',
+  'plano.email.note':'O PDF será baixado automaticamente. Seu cliente de e-mail será aberto com o destinatário e o plano no corpo da mensagem — basta anexar o arquivo baixado.',
+  'plano.btn.send':'📩 Gerar PDF e enviar por e-mail','plano.btn.download':'⬇️ Apenas baixar o PDF',
+  // Contrações
+  'timer.title':'Contrações','timer.sub':'Observe seu padrão com calma e segurança',
+  'timer.edu.title':'📖 Aprenda a cronometrar',
+  'timer.btn.start':'▶ Contração começou','timer.btn.stop':'⏹ Contração terminou',
+  'timer.btn.reset':'Reiniciar tudo','timer.btn.doula':'💬 Falar com minha doula agora',
+  'timer.log.title':'Registros','timer.log.empty':'Nenhuma contração registrada ainda',
+  'timer.btn.tp':'🌙 Acho que estou em trabalho de parto',
+  'timer.btn.alone':'Estou sozinha agora',
+  'timer.btn.relatorio':'📋 Gerar relatório para a doula',
+  'timer.analise.title':'📊 Observação do padrão',
+  // Extras
+  'extras.title':'Extras Emocionais','extras.sub':'Música, conexão e bem-estar para você e seu bebê',
+  'extras.playlist.title':'🎵 Playlist para o Parto',
+  'extras.playlist.sub':'Curada especialmente para acompanhar cada fase do trabalho de parto',
+  'extras.connection.title':'💫 Conexão com seu bebê',
+  'extras.talk.label':'Converse com ele','extras.talk.sub':'Ele já ouve sua voz desde a semana 16!',
+  'extras.read.label':'Leia histórias em voz alta','extras.read.sub':'Estimula o desenvolvimento auditivo',
+  // Pós-parto
+  'pos.title':'Bem-vinda ao pós-parto',
+  'pos.sub':'Você acabou de fazer algo extraordinário. Agora vamos cuidar de você e do seu bebê.',
+  'pos.alert.title':'⚠️ Sinais de alerta — procure ajuda imediatamente se tiver:',
+  // Diário
+  'diario.title':'Diário da Gestação','diario.sub':'Registre seus sentimentos e memórias desta fase única',
+  'diario.ph':'Como você está se sentindo hoje? Escreva livremente...',
+  'diario.btn.save':'Salvar registro','diario.empty.title':'Seu diário está esperando',
+  'diario.empty.sub':'Registre aqui seus sentimentos, memórias e momentos especiais desta fase única 💛',
+  // Chat
+  'chat.title':'Conversar com a Lua','chat.sub':'Converse com Lua, sua assistente de gestação powered by IA 🌙',
+  'chat.ph':'Escreva para Lua... 🌙',
+  // Marketplace
+  'market.title':'Encontrar uma Doula','market.sub':'Doulas verificadas prontas para te acompanhar',
+  'market.search.ph':'🔍 Buscar por cidade ou especialidade...',
+  // Minha Doula
+  'doula.title':'Minha Doula','doula.label':'Sua Doula',
+  'doula.btn.wpp':'💬 WhatsApp','doula.btn.call':'📞 Ligar',
+  'doula.msgs.title':'💬 Mensagens com sua doula','doula.msg.ph':'Mensagem para sua doula...',
+  'doula.unlink':'Encerrar vínculo com esta doula',
+  // Modal
+  'modal.delete.title':'Remover material?','modal.delete.sub':'Esta ação não pode ser desfeita.',
+  'modal.cancel':'Cancelar','modal.confirm':'Remover'
+},
+en: {
+  'hdr.logout':'Sign out','hdr.role.gestante':'Expecting Mother','hdr.role.doula':'Doula',
+  'nav.inicio':'Home','nav.gestacao':'My Pregnancy','nav.tarefas':'Phase Tasks',
+  'nav.plano':'Birth Plan','nav.contracoes':'Contractions','nav.conteudo':'Content',
+  'nav.extras':'Extras','nav.encontrar':'Find a Doula','nav.minha.doula':'My Doula',
+  'nav.posparto':'Postpartum','nav.diario':'Journal','nav.chat':'Chat with Lua',
+  'mob.inicio':'Home','mob.gestacao':'Pregnancy','mob.conteudo':'Content',
+  'mob.chat':'Chat','mob.mais':'More',
+  'mob.more.tarefas':'Phase Tasks','mob.more.plano':'Birth Plan',
+  'mob.more.contracoes':'Contractions','mob.more.encontrar':'Find a Doula',
+  'mob.more.minha.doula':'My Doula','mob.more.posparto':'Postpartum',
+  'mob.more.diario':'Journal','mob.more.extras':'Extras',
+  'dash.title':'Hello! 🌸','dash.sub':'Welcome to Lua',
+  'dash.onboard.title':'Set up your pregnancy',
+  'dash.onboard.sub':'Enter your estimated due date so we can track your journey',
+  'dash.onboard.save':'Save',
+  'dash.doula.label':'Your Doula','dash.doula.connected':'Connected to the app',
+  'dash.doula.waiting.label':'Request Sent',
+  'dash.doula.waiting.sub':'Waiting for doula confirmation',
+  'dash.doula.waiting.note':'You will receive a notification when she accepts your request.',
+  'dash.btn.chat':'🌙 Chat with Lua','dash.btn.findDoula':'🔍 Find my Doula',
+  'dash.appointment.label':'NEXT APPOINTMENT','dash.appointment.none':'No appointment scheduled yet',
+  'dash.appointment.note':'Your doula will schedule soon','dash.appointment.btn':'View schedule',
+  'dash.tasks.title':'Today\'s tasks','dash.baby.title':'Baby development',
+  'dash.guides.title':'📚 Guides for you',
+  'dash.guide.weeks.label':'First weeks guide','dash.guide.weeks.sub':'What to expect from the beginning of pregnancy',
+  'dash.guide.parents.label':'First-time parents guide','dash.guide.parents.sub':'Everything a partner needs to know',
+  'dash.guide.tri3.label':'Third trimester guide','dash.guide.tri3.sub':'Preparing for birth',
+  'acomp.title':'My Pregnancy','acomp.sub':'Set up your pregnancy in the Dashboard 🌸',
+  'acomp.weeks':'weeks','acomp.configure.dpp':'Enter your due date to calculate',
+  'acomp.bar.start':'Start','acomp.bar.end':'Week 40',
+  'acomp.dpp.label':'Estimated due date','acomp.progress.label':'Progress','acomp.days.label':'Days remaining',
+  'acomp.symptoms.title':'This week you may feel...','acomp.symptoms.ph':'Set up your due date to see this week\'s symptoms',
+  'tarefas.title':'Phase Tasks','tarefas.sub':'Organized according to your gestational week',
+  'tarefas.tri1':'1st Trimester — Weeks 1 to 13','tarefas.tri2':'2nd Trimester — Weeks 14 to 27 (you are here!)',
+  'tarefas.tri3':'3rd Trimester — Weeks 28 to 40',
+  't.confirmar':'Confirm pregnancy with doctor','t.folico':'Start folic acid supplementation',
+  't.doula':'Contact a doula','t.morfologico1':'1st trimester morphological ultrasound',
+  't.morfologico2':'2nd trimester morphological ultrasound','t.plano':'Start birth plan',
+  't.tour':'Tour the maternity hospital','t.aulas':'Start birth preparation classes',
+  't.mala':'Pack the hospital bag','t.roupas':'Wash baby clothes',
+  't.quarto':'Prepare the baby\'s room','t.finalizar':'Finalize and share birth plan',
+  't.cadeirinha':'Install car seat',
+  'plano.title':'Birth Plan','plano.sub':'Record your preferences and share with your doula',
+  'plano.orientacao':'A document that records your preferences, wishes and limits during labor and birth. It serves as a guide for your team and doula, ensuring your choices are respected. Talk to your doula about each item!',
+  'plano.orientacao.title':'💡 What is a birth plan?',
+  'plano.tipo.title':'Type of Birth','plano.tipo.vaginal':'🌸 Vaginal birth','plano.tipo.cesariana':'🏥 Cesarean',
+  'plano.dor.title':'Pain Relief',
+  'plano.dor.q':'Which methods would you like to have available during labor?',
+  'plano.dor.note':'You can mark preferences, knowing that your experience may change throughout the process.',
+  'plano.dor.nao.farm':'Non-pharmacological','plano.dor.farm':'Pharmacological',
+  'plano.acomp.title':'Birth companions',
+  'plano.pos.title':'Postpartum',
+  'plano.proc.title':'Immediate Procedures',
+  'plano.proc.note':'Mark preferences for the moment right after birth',
+  'plano.vaginal.title':'Preferences — Vaginal Birth',
+  'plano.cesariana.title':'Preferences — Cesarean',
+  'plano.obs.title':'Additional notes',
+  'plano.obs.ph':'Write here any other preferences or important information for your team...',
+  'plano.dados.title':'📋 Your information',
+  'plano.dados.nome.label':'Your name','plano.dados.nome.ph':'Your full name',
+  'plano.dados.contato.label':'Your WhatsApp / phone','plano.dados.contato.ph':'Phone number',
+  'plano.dados.dpp.label':'Estimated due date (EDD)','plano.dados.dpp.ph':'mm/dd/yyyy',
+  'plano.email.title':'📧 Doula / team email','plano.email.ph':'doula@example.com',
+  'plano.email.note':'The PDF will be downloaded automatically. Your email client will open with the recipient and plan in the message body — just attach the downloaded file.',
+  'plano.btn.send':'📩 Generate PDF and send by email','plano.btn.download':'⬇️ Download PDF only',
+  'timer.title':'Contractions','timer.sub':'Observe your pattern calmly and safely',
+  'timer.edu.title':'📖 Learn to time contractions',
+  'timer.btn.start':'▶ Contraction started','timer.btn.stop':'⏹ Contraction ended',
+  'timer.btn.reset':'Reset all','timer.btn.doula':'💬 Talk to my doula now',
+  'timer.log.title':'Records','timer.log.empty':'No contractions recorded yet',
+  'timer.btn.tp':'🌙 I think I\'m in labor',
+  'timer.btn.alone':'I\'m alone right now',
+  'timer.btn.relatorio':'📋 Generate report for doula',
+  'timer.analise.title':'📊 Pattern observation',
+  'extras.title':'Emotional Extras','extras.sub':'Music, connection and wellness for you and your baby',
+  'extras.playlist.title':'🎵 Labor Playlist',
+  'extras.playlist.sub':'Curated especially to accompany each phase of labor',
+  'extras.connection.title':'💫 Connection with your baby',
+  'extras.talk.label':'Talk to them','extras.talk.sub':'They can already hear your voice from week 16!',
+  'extras.read.label':'Read stories aloud','extras.read.sub':'Stimulates auditory development',
+  'pos.title':'Welcome to postpartum',
+  'pos.sub':'You just did something extraordinary. Now let\'s take care of you and your baby.',
+  'pos.alert.title':'⚠️ Warning signs — seek help immediately if you have:',
+  'diario.title':'Pregnancy Journal','diario.sub':'Record your feelings and memories of this unique phase',
+  'diario.ph':'How are you feeling today? Write freely...',
+  'diario.btn.save':'Save entry','diario.empty.title':'Your journal is waiting',
+  'diario.empty.sub':'Record your feelings, memories and special moments of this unique phase 💛',
+  'chat.title':'Chat with Lua','chat.sub':'Chat with Lua, your AI-powered pregnancy assistant 🌙',
+  'chat.ph':'Write to Lua... 🌙',
+  'market.title':'Find a Doula','market.sub':'Verified doulas ready to support you',
+  'market.search.ph':'🔍 Search by city or specialty...',
+  'doula.title':'My Doula','doula.label':'Your Doula',
+  'doula.btn.wpp':'💬 WhatsApp','doula.btn.call':'📞 Call',
+  'doula.msgs.title':'💬 Messages with your doula','doula.msg.ph':'Message to your doula...',
+  'doula.unlink':'End relationship with this doula',
+  'modal.delete.title':'Remove material?','modal.delete.sub':'This action cannot be undone.',
+  'modal.cancel':'Cancel','modal.confirm':'Remove'
+},
+es: {
+  'hdr.logout':'Salir','hdr.role.gestante':'Embarazada','hdr.role.doula':'Doula',
+  'nav.inicio':'Inicio','nav.gestacao':'Mi Embarazo','nav.tarefas':'Tareas por Fase',
+  'nav.plano':'Plan de Parto','nav.contracoes':'Contracciones','nav.conteudo':'Contenido',
+  'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Mi Doula',
+  'nav.posparto':'Posparto','nav.diario':'Diario','nav.chat':'Hablar con Lua',
+  'mob.inicio':'Inicio','mob.gestacao':'Embarazo','mob.conteudo':'Contenido',
+  'mob.chat':'Chat','mob.mais':'Más',
+  'mob.more.tarefas':'Tareas por Fase','mob.more.plano':'Plan de Parto',
+  'mob.more.contracoes':'Contracciones','mob.more.encontrar':'Encontrar Doula',
+  'mob.more.minha.doula':'Mi Doula','mob.more.posparto':'Posparto',
+  'mob.more.diario':'Diario','mob.more.extras':'Extras',
+  'dash.title':'¡Hola! 🌸','dash.sub':'Bienvenida a Lua',
+  'dash.onboard.title':'Configura tu embarazo',
+  'dash.onboard.sub':'Ingresa tu fecha probable de parto para acompañar tu viaje',
+  'dash.onboard.save':'Guardar',
+  'dash.doula.label':'Tu Doula','dash.doula.connected':'Conectada a la app',
+  'dash.doula.waiting.label':'Solicitud Enviada',
+  'dash.doula.waiting.sub':'Esperando confirmación de la doula',
+  'dash.doula.waiting.note':'Recibirás una notificación cuando ella acepte tu solicitud.',
+  'dash.btn.chat':'🌙 Hablar con Lua','dash.btn.findDoula':'🔍 Encontrar mi Doula',
+  'dash.appointment.label':'PRÓXIMA CITA','dash.appointment.none':'Ninguna cita programada aún',
+  'dash.appointment.note':'Tu doula programará pronto','dash.appointment.btn':'Ver agenda',
+  'dash.tasks.title':'Tareas del día','dash.baby.title':'Desarrollo del bebé',
+  'dash.guides.title':'📚 Guías para ti',
+  'dash.guide.weeks.label':'Guía de las primeras semanas','dash.guide.weeks.sub':'Qué esperar del inicio del embarazo',
+  'dash.guide.parents.label':'Guía para padres primerizos','dash.guide.parents.sub':'Todo lo que un padre/pareja necesita saber',
+  'dash.guide.tri3.label':'Guía del tercer trimestre','dash.guide.tri3.sub':'Preparación para el nacimiento',
+  'acomp.title':'Mi Embarazo','acomp.sub':'Configura tu embarazo en el Panel 🌸',
+  'acomp.weeks':'semanas','acomp.configure.dpp':'Ingresa tu FPP para calcular',
+  'acomp.bar.start':'Inicio','acomp.bar.end':'Semana 40',
+  'acomp.dpp.label':'FPP estimada','acomp.progress.label':'Progreso','acomp.days.label':'Días restantes',
+  'acomp.symptoms.title':'Esta semana puedes sentir...','acomp.symptoms.ph':'Configura tu FPP para ver los síntomas de tu semana',
+  'tarefas.title':'Tareas por Fase','tarefas.sub':'Organizadas según tu semana gestacional',
+  'tarefas.tri1':'1er Trimestre — Semanas 1 a 13','tarefas.tri2':'2do Trimestre — Semanas 14 a 27 (¡estás aquí!)',
+  'tarefas.tri3':'3er Trimestre — Semanas 28 a 40',
+  't.confirmar':'Confirmar el embarazo con médico','t.folico':'Iniciar suplementación de ácido fólico',
+  't.doula':'Contactar una doula','t.morfologico1':'Ecografía morfológica del 1er tri',
+  't.morfologico2':'Ecografía morfológica del 2do tri','t.plano':'Iniciar plan de parto',
+  't.tour':'Recorrer la maternidad','t.aulas':'Comenzar clases de preparación para el parto',
+  't.mala':'Organizar bolsa de la maternidad','t.roupas':'Lavar ropita del bebé',
+  't.quarto':'Preparar el cuarto / rincón del bebé','t.finalizar':'Finalizar y compartir plan de parto',
+  't.cadeirinha':'Instalar silla de auto',
+  'plano.title':'Plan de Parto','plano.sub':'Registra tus preferencias y comparte con tu doula',
+  'plano.orientacao':'Un documento que registra tus preferencias, deseos y límites durante el trabajo de parto y el nacimiento. Sirve como guía para tu equipo y doula, garantizando que tus elecciones sean respetadas. ¡Habla con tu doula sobre cada punto!',
+  'plano.orientacao.title':'💡 ¿Qué es un plan de parto?',
+  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesárea',
+  'plano.dor.title':'Alivio del Dolor',
+  'plano.dor.q':'¿Qué métodos te gustaría tener disponibles durante el trabajo de parto?',
+  'plano.dor.note':'Puedes marcar preferencias, sabiendo que tu experiencia puede cambiar durante el proceso.',
+  'plano.dor.nao.farm':'No farmacológicos','plano.dor.farm':'Farmacológicos',
+  'plano.acomp.title':'Acompañantes',
+  'plano.pos.title':'Posparto',
+  'plano.proc.title':'Procedimientos Inmediatos',
+  'plano.proc.note':'Marca las preferencias para el momento justo después del nacimiento',
+  'plano.vaginal.title':'Preferencias — Parto Vaginal',
+  'plano.cesariana.title':'Preferencias — Cesárea',
+  'plano.obs.title':'Observaciones adicionales',
+  'plano.obs.ph':'Escribe aquí cualquier otra preferencia o información importante para tu equipo...',
+  'plano.dados.title':'📋 Tus datos para el plan',
+  'plano.dados.nome.label':'Tu nombre','plano.dados.nome.ph':'Tu nombre completo',
+  'plano.dados.contato.label':'Tu WhatsApp / teléfono','plano.dados.contato.ph':'Número de teléfono',
+  'plano.dados.dpp.label':'Fecha probable de parto (FPP)','plano.dados.dpp.ph':'dd/mm/aaaa',
+  'plano.email.title':'📧 Email de la doula / equipo','plano.email.ph':'doula@ejemplo.com',
+  'plano.email.note':'El PDF se descargará automáticamente. Tu cliente de correo se abrirá con el destinatario y el plan en el cuerpo del mensaje — solo adjunta el archivo descargado.',
+  'plano.btn.send':'📩 Generar PDF y enviar por correo','plano.btn.download':'⬇️ Solo descargar el PDF',
+  'timer.title':'Contracciones','timer.sub':'Observa tu patrón con calma y seguridad',
+  'timer.edu.title':'📖 Aprende a cronometrar',
+  'timer.btn.start':'▶ Contracción comenzó','timer.btn.stop':'⏹ Contracción terminó',
+  'timer.btn.reset':'Reiniciar todo','timer.btn.doula':'💬 Hablar con mi doula ahora',
+  'timer.log.title':'Registros','timer.log.empty':'Ninguna contracción registrada aún',
+  'timer.btn.tp':'🌙 Creo que estoy en trabajo de parto',
+  'timer.btn.alone':'Estoy sola ahora',
+  'timer.btn.relatorio':'📋 Generar reporte para la doula',
+  'timer.analise.title':'📊 Observación del patrón',
+  'extras.title':'Extras Emocionales','extras.sub':'Música, conexión y bienestar para ti y tu bebé',
+  'extras.playlist.title':'🎵 Playlist para el Parto',
+  'extras.playlist.sub':'Curada especialmente para acompañar cada fase del trabajo de parto',
+  'extras.connection.title':'💫 Conexión con tu bebé',
+  'extras.talk.label':'Habla con él/ella','extras.talk.sub':'¡Ya escucha tu voz desde la semana 16!',
+  'extras.read.label':'Lee historias en voz alta','extras.read.sub':'Estimula el desarrollo auditivo',
+  'pos.title':'Bienvenida al posparto',
+  'pos.sub':'Acabas de hacer algo extraordinario. Ahora vamos a cuidar de ti y de tu bebé.',
+  'pos.alert.title':'⚠️ Señales de alerta — busca ayuda inmediatamente si tienes:',
+  'diario.title':'Diario del Embarazo','diario.sub':'Registra tus sentimientos y memorias de esta fase única',
+  'diario.ph':'¿Cómo te sientes hoy? Escribe libremente...',
+  'diario.btn.save':'Guardar registro','diario.empty.title':'Tu diario te está esperando',
+  'diario.empty.sub':'Registra aquí tus sentimientos, memorias y momentos especiales de esta fase única 💛',
+  'chat.title':'Hablar con Lua','chat.sub':'Chatea con Lua, tu asistente de embarazo con IA 🌙',
+  'chat.ph':'Escribe a Lua... 🌙',
+  'market.title':'Encontrar una Doula','market.sub':'Doulas verificadas listas para acompañarte',
+  'market.search.ph':'🔍 Buscar por ciudad o especialidad...',
+  'doula.title':'Mi Doula','doula.label':'Tu Doula',
+  'doula.btn.wpp':'💬 WhatsApp','doula.btn.call':'📞 Llamar',
+  'doula.msgs.title':'💬 Mensajes con tu doula','doula.msg.ph':'Mensaje para tu doula...',
+  'doula.unlink':'Finalizar vínculo con esta doula',
+  'modal.delete.title':'¿Eliminar material?','modal.delete.sub':'Esta acción no se puede deshacer.',
+  'modal.cancel':'Cancelar','modal.confirm':'Eliminar'
+}
 };
+function t(key) { return (_i18n[_lang] || _i18n['pt'])[key] || (_i18n['pt'][key] || key); }
 function setLang(lang) {
   _lang = lang;
+  // Atualizar botões de idioma
   document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.textContent.toLowerCase()===lang); });
-  // Aplicar traduções nos nav items (escalável — adicionar mais conforme necessário)
-  var t = _i18n[lang] || _i18n['pt'];
-  var navMap = { 'g-dashboard': t.navInicio, 'g-acomp': t.navGestacao, 'g-plano': t.navPlano, 'g-emergencia': t.navContracoes, 'g-conteudo': t.navConteudo, 'g-extras': t.navExtras };
-  document.querySelectorAll('.g-nav-item').forEach(function(el){
-    var fn = el.getAttribute('onclick')||'';
-    var m = fn.match(/'(g-[^']+)'/);
-    if (m && navMap[m[1]]) {
-      var icon = el.querySelector('.g-nav-icon');
-      el.textContent = navMap[m[1]];
-      if (icon) el.insertBefore(icon, el.firstChild);
-    }
+  // Aplicar traduções via data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    el.textContent = t(el.getAttribute('data-i18n'));
   });
-  document.querySelector('.header-switch').textContent = t.sair;
+  // Placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    el.placeholder = t(el.getAttribute('data-i18n-ph'));
+  });
+  // innerHTML (conteúdo HTML complexo)
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+    el.innerHTML = t(el.getAttribute('data-i18n-html'));
+  });
 }
 
 function togglePlan(btn) { btn.classList.toggle('selected'); }
@@ -2398,7 +2708,7 @@ async function timerAction() {
     timerRunning = true;
     timerStart = Date.now();
     if (!observacaoInicio) observacaoInicio = Date.now();
-    btn.textContent = '⏹ Contração terminou';
+    btn.textContent = t('timer.btn.stop');
     btn.style.background = '#5C4035';
     timerInterval = setInterval(() => { updateTimerDisplay(); }, 100);
     if (db && currentUserId) {
@@ -2419,7 +2729,7 @@ async function timerAction() {
     contractions.unshift({ duration, interval, time: new Date() });
     renderContractions();
     analisarPadrao();
-    btn.textContent = '▶ Contração começou';
+    btn.textContent = t('timer.btn.start');
     btn.style.background = 'var(--rose)';
     document.getElementById('timer-display').textContent = '00:00';
     document.getElementById('timer-fase').innerHTML = '';
@@ -2487,9 +2797,9 @@ function resetTimer() {
   document.getElementById('timer-display').textContent = '00:00';
   document.getElementById('interval-display').textContent = '—';
   document.getElementById('avg-display').textContent = '—';
-  document.getElementById('timer-main-btn').textContent = '▶ Contração começou';
+  document.getElementById('timer-main-btn').textContent = t('timer.btn.start');
   document.getElementById('timer-main-btn').style.background = 'var(--rose)';
-  document.getElementById('contractions-log').innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:20px;">Nenhuma contração registrada ainda</div>';
+  document.getElementById('contractions-log').innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:20px;">' + t('timer.log.empty') + '</div>';
   document.getElementById('timer-fase').innerHTML = '';
   document.getElementById('timer-analise').style.display = 'none';
   ['flow-bolsa','flow-bolsa-sim','flow-sozinha','flow-latente','flow-tp-perguntas','timer-relatorio'].forEach(function(id){
@@ -5039,23 +5349,23 @@ function mostrarToast(msg) {
   <div class="mobile-bottom-nav-inner">
     <div class="mob-nav-item active" id="mob-inicio" onclick="mobNav('g-dashboard','mob-inicio')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Início</span>
+      <span data-i18n="mob.inicio">Início</span>
     </div>
     <div class="mob-nav-item" id="mob-gestacao" onclick="mobNav('g-acomp','mob-gestacao')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-      <span>Gestação</span>
+      <span data-i18n="mob.gestacao">Gestação</span>
     </div>
     <div class="mob-nav-item" id="mob-conteudo" onclick="mobNav('g-conteudo','mob-conteudo')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      <span>Conteúdo</span>
+      <span data-i18n="mob.conteudo">Conteúdo</span>
     </div>
     <div class="mob-nav-item" id="mob-chat" onclick="mobNav('g-chat','mob-chat')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span>Chat</span>
+      <span data-i18n="mob.chat">Chat</span>
     </div>
     <div class="mob-nav-item" id="mob-mais" onclick="toggleMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-      <span>Mais</span>
+      <span data-i18n="mob.mais">Mais</span>
     </div>
   </div>
 </div>
@@ -5090,35 +5400,35 @@ function mostrarToast(msg) {
 <div class="mob-nav-more" id="mob-nav-more">
   <div class="mob-more-item" onclick="mobNavMore('g-tarefas')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-    Tarefas por Fase
+    <span data-i18n="mob.more.tarefas">Tarefas por Fase</span>
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-plano')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-    Plano de Parto
+    <span data-i18n="mob.more.plano">Plano de Parto</span>
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-emergencia')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    Contrações
+    <span data-i18n="mob.more.contracoes">Contrações</span>
   </div>
   <div class="mob-more-item" id="mob-nav-encontrar-doula" onclick="mobNavMore('g-marketplace')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    Encontrar Doula
+    <span data-i18n="mob.more.encontrar">Encontrar Doula</span>
   </div>
   <div class="mob-more-item" id="mob-nav-minha-doula" style="display:none;" onclick="mobNavMore('g-minha-doula')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-    Minha Doula
+    <span data-i18n="mob.more.minha.doula">Minha Doula</span>
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-posparto')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-    Pós-Parto
+    <span data-i18n="mob.more.posparto">Pós-Parto</span>
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-diario')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-    Diário
+    <span data-i18n="mob.more.diario">Diário</span>
   </div>
   <div class="mob-more-item" onclick="mobNavMore('g-extras')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-    Extras
+    <span data-i18n="mob.more.extras">Extras</span>
   </div>
 </div>
 
@@ -5126,11 +5436,11 @@ function mostrarToast(msg) {
 <div class="lua-modal-overlay" id="lua-modal">
   <div class="lua-modal">
     <div class="lua-modal-icon">🗑️</div>
-    <div class="lua-modal-title" id="modal-title">Remover material?</div>
-    <div class="lua-modal-sub" id="modal-sub">Esta ação não pode ser desfeita.</div>
+    <div class="lua-modal-title" id="modal-title" data-i18n="modal.delete.title">Remover material?</div>
+    <div class="lua-modal-sub" id="modal-sub" data-i18n="modal.delete.sub">Esta ação não pode ser desfeita.</div>
     <div class="lua-modal-btns">
-      <button class="lua-modal-cancel" onclick="fecharModal()">Cancelar</button>
-      <button class="lua-modal-confirm" id="modal-confirm-btn">Remover</button>
+      <button class="lua-modal-cancel" onclick="fecharModal()" data-i18n="modal.cancel">Cancelar</button>
+      <button class="lua-modal-confirm" id="modal-confirm-btn" data-i18n="modal.confirm">Remover</button>
     </div>
   </div>
 </div>
