@@ -306,10 +306,14 @@ header {
 .timer-relatorio { background:var(--dark); border-radius:14px; padding:16px; margin-top:16px; color:white; font-size:12px; line-height:1.8; display:none; }
 .timer-relatorio.visible { display:block; }
 /* lang selector */
-.lang-selector { display:flex; gap:4px; align-items:center; }
-.lang-btn { background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.35); border-radius:6px; color:rgba(255,255,255,0.85); font-size:11px; font-weight:700; cursor:pointer; padding:3px 7px; font-family:inherit; transition:all 0.2s; }
-.lang-btn:hover { background:rgba(0,0,0,0.4); color:white; border-color:rgba(255,255,255,0.6); }
-.lang-btn.active { background:var(--rose); border-color:var(--rose); color:white; }
+.lang-selector { position:relative; display:inline-block; }
+.lang-trigger { background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.35); border-radius:8px; color:rgba(255,255,255,0.9); font-size:12px; font-weight:700; cursor:pointer; padding:5px 10px; font-family:inherit; transition:all 0.2s; display:flex; align-items:center; gap:5px; }
+.lang-trigger:hover { background:rgba(0,0,0,0.4); border-color:rgba(255,255,255,0.6); }
+.lang-dropdown { display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--dark); border:1px solid rgba(255,255,255,0.15); border-radius:10px; overflow:hidden; z-index:9999; min-width:70px; box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+.lang-dropdown.open { display:block; }
+.lang-btn { display:block; width:100%; background:transparent; border:none; color:rgba(255,255,255,0.7); font-size:13px; font-weight:700; cursor:pointer; padding:9px 16px; font-family:inherit; text-align:left; transition:background 0.15s; }
+.lang-btn:hover { background:rgba(255,255,255,0.08); color:white; }
+.lang-btn.active { color:var(--rose); background:rgba(201,137,122,0.12); }
 
 /* ─ Emergência / Timer ─ */
 .btn-emergencia { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#E07B5A,#c9573a); color:white; border:none; width:100%; padding:20px; border-radius:20px; font-size:18px; font-weight:600; cursor:pointer; font-family:inherit; margin-bottom:20px; transition:all 0.2s; box-shadow:0 8px 24px rgba(224,123,90,0.3); animation:pulse-alert 2s ease-in-out infinite; }
@@ -788,10 +792,13 @@ tr:hover td { background:var(--rose-pale); }
     </div>
     <div class="header-role" id="header-role">Gestante</div>
     <div style="display:flex;align-items:center;gap:12px;">
-    <div class="lang-selector">
-      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
-      <button class="lang-btn" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <div class="lang-selector" id="lang-selector">
+      <button class="lang-trigger" id="lang-trigger" onclick="toggleLangDropdown(event)">🌐 <span id="lang-label">PT</span> ▾</button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button class="lang-btn active" onclick="pickLang('pt')">PT — Português</button>
+        <button class="lang-btn" onclick="pickLang('en')">EN — English</button>
+        <button class="lang-btn" onclick="pickLang('es')">ES — Español</button>
+      </div>
     </div>
     <span style="font-size:13px;color:var(--earth-light);" id="header-user-name"></span>
     <button onclick="abrirAdmin()" style="background:none;border:none;font-size:16px;cursor:pointer;opacity:0.4;" title="Admin">⚙️</button>
@@ -904,22 +911,6 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
-          <!-- Guias e materiais -->
-          <div class="card">
-            <div class="card-title" data-i18n="dash.guides.title">📚 Guias para você</div>
-            <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
-              <div class="content-icon">📖</div>
-              <div><div class="content-label" data-i18n="dash.guide.weeks.label">Guia das primeiras semanas</div><div class="content-sub" data-i18n="dash.guide.weeks.sub">O que esperar do início da gestação</div></div>
-            </div>
-            <div class="content-item" style="cursor:pointer;" onclick="abrirGuiaPais()">
-              <div class="content-icon">👶</div>
-              <div><div class="content-label" data-i18n="dash.guide.parents.label">Guia para pais de primeira viagem</div><div class="content-sub" data-i18n="dash.guide.parents.sub">Tudo o que um pai/parceiro precisa saber</div></div>
-            </div>
-            <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
-              <div class="content-icon">🌙</div>
-              <div><div class="content-label">Guia do terceiro trimestre</div><div class="content-sub">Preparação para o nascimento</div></div>
-            </div>
-          </div>
         </div>
 
         <!-- ACOMPANHAMENTO -->
@@ -1369,7 +1360,18 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="phase-block-toggle">▼</div>
               </div>
               <div class="phase-block-body" id="content-gestante-inicio">
-                <div class="empty-state-small">Nenhum conteúdo ainda. Em breve! 💛</div>
+                <div class="content-item" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                  <div class="content-icon">📖</div>
+                  <div><div class="content-label">Guia das primeiras semanas</div><div class="content-sub">O que esperar do início da gestação</div></div>
+                </div>
+                <div class="content-item" onclick="abrirGuiaPais()" style="cursor:pointer;">
+                  <div class="content-icon">👶</div>
+                  <div><div class="content-label">Guia para pais de primeira viagem</div><div class="content-sub">Tudo o que um pai/parceiro precisa saber</div></div>
+                </div>
+                <div class="content-item" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                  <div class="content-icon">🌙</div>
+                  <div><div class="content-label">Guia do terceiro trimestre</div><div class="content-sub">Preparação para o nascimento</div></div>
+                </div>
               </div>
             </div>
 
@@ -2406,8 +2408,13 @@ es: {
 function t(key) { return (_i18n[_lang] || _i18n['pt'])[key] || (_i18n['pt'][key] || key); }
 function setLang(lang) {
   _lang = lang;
-  // Atualizar botões de idioma
-  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.textContent.toLowerCase()===lang); });
+  // Atualizar label do botão trigger
+  var lbl = document.getElementById('lang-label');
+  if (lbl) lbl.textContent = lang.toUpperCase();
+  // Atualizar botões do dropdown
+  document.querySelectorAll('.lang-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('onclick') === "pickLang('"+lang+"')");
+  });
   // Aplicar traduções via data-i18n
   document.querySelectorAll('[data-i18n]').forEach(function(el){
     el.textContent = t(el.getAttribute('data-i18n'));
@@ -2421,6 +2428,22 @@ function setLang(lang) {
     el.innerHTML = t(el.getAttribute('data-i18n-html'));
   });
 }
+function toggleLangDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+function pickLang(lang) {
+  setLang(lang);
+  document.getElementById('lang-dropdown').classList.remove('open');
+}
+// Fechar dropdown ao clicar fora
+document.addEventListener('click', function(e) {
+  var sel = document.getElementById('lang-selector');
+  if (sel && !sel.contains(e.target)) {
+    var dd = document.getElementById('lang-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+});
 
 function togglePlan(btn) { btn.classList.toggle('selected'); }
 function toggleCheck(item) {
