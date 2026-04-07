@@ -274,6 +274,41 @@ header {
 .plan-option.selected { background:var(--rose); color:white; border-color:var(--rose); }
 .plan-orientacao { background:var(--rose-pale); border-radius:14px; padding:16px; margin-bottom:16px; font-size:13px; color:var(--mid); line-height:1.7; }
 .plan-orientacao strong { color:var(--rose); display:block; margin-bottom:6px; }
+/* tipo de parto — radio style */
+.plan-tipo-btns { display:flex; gap:12px; }
+.plan-tipo-btn { flex:1; padding:14px 10px; border-radius:14px; border:2px solid var(--rose-light); font-size:14px; font-weight:500; color:var(--mid); cursor:pointer; background:transparent; font-family:inherit; transition:all 0.2s; text-align:center; }
+.plan-tipo-btn.selected { background:var(--rose); color:white; border-color:var(--rose); }
+/* checklist items no plano */
+.plan-checklist { display:flex; flex-direction:column; gap:0; }
+.plan-check-item { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid rgba(122,100,85,0.08); cursor:pointer; user-select:none; }
+.plan-check-item:last-child { border-bottom:none; }
+.plan-check-box { width:20px; height:20px; border-radius:5px; border:1.5px solid var(--rose-light); flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:1px; transition:all 0.15s; }
+.plan-check-item.done .plan-check-box { background:var(--rose); border-color:var(--rose); color:white; font-size:11px; }
+.plan-check-item.done .plan-check-label { text-decoration:line-through; opacity:0.5; }
+.plan-check-label { font-size:13px; color:var(--mid); line-height:1.5; }
+.plan-check-desc { font-size:11px; color:var(--earth-light); margin-top:2px; }
+.plan-group-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--earth-light); margin:12px 0 6px; }
+/* bloco condicional */
+.plan-cond-block { border-left:3px solid var(--rose-light); padding-left:16px; margin-top:8px; display:none; }
+.plan-cond-block.visible { display:block; }
+/* timer flow */
+.timer-flow-card { background:var(--rose-pale); border-radius:18px; padding:20px; margin-top:16px; display:none; }
+.timer-flow-card.visible { display:block; }
+.timer-flow-title { font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--mid); margin-bottom:12px; }
+.timer-flow-btns { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+.timer-flow-btn { padding:10px 20px; border-radius:30px; border:none; font-size:13px; font-weight:500; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.timer-flow-btn-yes { background:var(--rose); color:white; }
+.timer-flow-btn-no { background:rgba(122,100,85,0.12); color:var(--mid); }
+.timer-educativo { background:var(--gold-pale); border-radius:14px; padding:16px; font-size:13px; color:#6a5020; line-height:1.7; margin-bottom:16px; }
+.timer-educativo strong { display:block; margin-bottom:6px; color:#5a4010; }
+.timer-latente-card { background:linear-gradient(135deg,#e8f0e8,#d4e4d4); border-radius:18px; padding:20px; margin-top:16px; display:none; }
+.timer-latente-card.visible { display:block; }
+.timer-relatorio { background:var(--dark); border-radius:14px; padding:16px; margin-top:16px; color:white; font-size:12px; line-height:1.8; display:none; }
+.timer-relatorio.visible { display:block; }
+/* lang selector */
+.lang-selector { display:flex; gap:4px; align-items:center; }
+.lang-btn { background:none; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:rgba(255,255,255,0.4); font-size:11px; font-weight:600; cursor:pointer; padding:3px 7px; font-family:inherit; transition:all 0.2s; }
+.lang-btn.active { border-color:var(--rose-light); color:var(--rose-light); }
 
 /* ─ Emergência / Timer ─ */
 .btn-emergencia { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(135deg,#E07B5A,#c9573a); color:white; border:none; width:100%; padding:20px; border-radius:20px; font-size:18px; font-weight:600; cursor:pointer; font-family:inherit; margin-bottom:20px; transition:all 0.2s; box-shadow:0 8px 24px rgba(224,123,90,0.3); animation:pulse-alert 2s ease-in-out infinite; }
@@ -752,6 +787,11 @@ tr:hover td { background:var(--rose-pale); }
     </div>
     <div class="header-role" id="header-role">Gestante</div>
     <div style="display:flex;align-items:center;gap:12px;">
+    <div class="lang-selector">
+      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
     <span style="font-size:13px;color:var(--earth-light);" id="header-user-name"></span>
     <button onclick="abrirAdmin()" style="background:none;border:none;font-size:16px;cursor:pointer;opacity:0.4;" title="Admin">⚙️</button>
     <button class="header-switch" onclick="fazerLogout()">Sair</button>
@@ -862,6 +902,23 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
           </div>
+
+          <!-- Guias e materiais -->
+          <div class="card">
+            <div class="card-title">📚 Guias para você</div>
+            <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
+              <div class="content-icon">📖</div>
+              <div><div class="content-label">Guia das primeiras semanas</div><div class="content-sub">O que esperar do início da gestação</div></div>
+            </div>
+            <div class="content-item" style="cursor:pointer;" onclick="abrirGuiaPais()">
+              <div class="content-icon">👶</div>
+              <div><div class="content-label">Guia para pais de primeira viagem</div><div class="content-sub">Tudo o que um pai/parceiro precisa saber</div></div>
+            </div>
+            <div class="content-item" style="cursor:pointer;" onclick="alert('Em breve disponível! 💛')">
+              <div class="content-icon">🌙</div>
+              <div><div class="content-label">Guia do terceiro trimestre</div><div class="content-sub">Preparação para o nascimento</div></div>
+            </div>
+          </div>
         </div>
 
         <!-- ACOMPANHAMENTO -->
@@ -933,47 +990,165 @@ tr:hover td { background:var(--rose-pale); }
             É um documento que registra suas preferências, desejos e limites durante o trabalho de parto e nascimento. Ele serve como guia para sua equipe e doula, garantindo que suas escolhas sejam respeitadas. Converse com sua doula sobre cada item!
           </div>
 
+          <!-- 1. Tipo de parto -->
           <div class="card">
             <div class="plan-section">
               <h3>Tipo de Parto</h3>
-              <div class="plan-options">
-                <button class="plan-option selected" onclick="togglePlan(this)">Parto normal</button>
-                <button class="plan-option" onclick="togglePlan(this)">Cesárea</button>
-                <button class="plan-option" onclick="togglePlan(this)">Humanizado</button>
-                <button class="plan-option" onclick="togglePlan(this)">Na água</button>
+              <div class="plan-tipo-btns">
+                <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')">🌸 Parto vaginal</button>
+                <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')">🏥 Cesariana</button>
               </div>
             </div>
-            <div class="plan-section">
+          </div>
+
+          <!-- 2. Alívio da dor -->
+          <div class="card">
+            <div class="plan-section" style="margin-bottom:0;">
               <h3>Alívio da Dor</h3>
-              <div class="plan-options">
-                <button class="plan-option selected" onclick="togglePlan(this)">Epidural</button>
-                <button class="plan-option" onclick="togglePlan(this)">Bola de pilates</button>
-                <button class="plan-option selected" onclick="togglePlan(this)">Massagem</button>
-                <button class="plan-option" onclick="togglePlan(this)">Banheira</button>
-                <button class="plan-option" onclick="togglePlan(this)">Sem medicação</button>
-                <button class="plan-option" onclick="togglePlan(this)">Compressas quentes</button>
+              <p style="font-size:13px;color:var(--mid);margin-bottom:4px;">Quais métodos você gostaria de ter disponíveis durante o trabalho de parto?</p>
+              <p style="font-size:12px;color:var(--earth-light);margin-bottom:16px;">Você pode marcar preferências, sabendo que sua experiência pode mudar ao longo do processo.</p>
+
+              <div class="plan-group-label">Não farmacológicos</div>
+              <div class="plan-checklist">
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Movimento (caminhar, bola, mudar posições)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Posições (cócoras, quatro apoios, lateral)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Massagem</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Counterpressure (pressão na lombar)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Toque terapêutico</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Técnicas de respiração</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Relaxamento / meditação / visualização</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Água (chuveiro ou banheira)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Compressa quente</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Compressa fria</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">TENS (estimulação elétrica transcutânea)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Música / sons relaxantes</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Aromaterapia</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Ambiente tranquilo (luz baixa, privacidade)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Apoio emocional contínuo (doula/companheiro)</div></div></div>
+              </div>
+
+              <div class="plan-group-label" style="margin-top:18px;">Farmacológicos</div>
+              <div class="plan-checklist">
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Epidural</div><div class="plan-check-desc">Mais eficaz, padrão ouro — analgesia contínua</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Raquidiana</div><div class="plan-check-desc">Rápida, comum em cesárea</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Combinada (raqui + epidural)</div><div class="plan-check-desc">Início rápido + efeito contínuo</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Opioides</div><div class="plan-check-desc">Alívio parcial, mais simples</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Óxido nitroso</div><div class="plan-check-desc">Leve, mais autonomia para a gestante</div></div></div>
               </div>
             </div>
-            <div class="plan-section">
+          </div>
+
+          <!-- 3. Acompanhantes -->
+          <div class="card">
+            <div class="plan-section" style="margin-bottom:0;">
               <h3>Acompanhantes</h3>
               <div class="plan-options">
                 <button class="plan-option selected" onclick="togglePlan(this)">Parceiro(a)</button>
-                <button class="plan-option selected" onclick="togglePlan(this)">Doula</button>
                 <button class="plan-option" onclick="togglePlan(this)">Mãe</button>
                 <button class="plan-option" onclick="togglePlan(this)">Fotógrafo(a)</button>
+                <button class="plan-option" onclick="togglePlan(this)">Amiga(o)</button>
               </div>
             </div>
-            <div class="plan-section">
-              <h3>Pós-Parto Imediato</h3>
+          </div>
+
+          <!-- 4. Pós-parto -->
+          <div class="card">
+            <div class="plan-section" style="margin-bottom:0;">
+              <h3>Pós-Parto</h3>
               <div class="plan-options">
-                <button class="plan-option selected" onclick="togglePlan(this)">Contato pele a pele</button>
+                <button class="plan-option selected" onclick="togglePlan(this)">Contato pele a pele imediato</button>
                 <button class="plan-option selected" onclick="togglePlan(this)">Amamentação na 1ª hora</button>
-                <button class="plan-option" onclick="togglePlan(this)">Corte tardio do cordão</button>
-                <button class="plan-option" onclick="togglePlan(this)">Lotus birth</button>
-                <button class="plan-option" onclick="togglePlan(this)">Guardar cordão umbilical</button>
+                <button class="plan-option selected" onclick="togglePlan(this)">Clampeamento tardio do cordão</button>
               </div>
             </div>
-            <div class="plan-section">
+          </div>
+
+          <!-- 5. Procedimentos imediatos pós-parto -->
+          <div class="card">
+            <div class="plan-section" style="margin-bottom:0;">
+              <h3>Procedimentos Imediatos</h3>
+              <p style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">Marque as preferências para o momento logo após o nascimento</p>
+              <div class="plan-checklist">
+                <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Contato pele a pele imediato e ininterrupto</div></div></div>
+                <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Clampeamento tardio do cordão umbilical</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Corte do cordão pelo acompanhante (se desejado)</div></div></div>
+                <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Início da amamentação na primeira hora de vida</div></div></div>
+                <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Não separação mãe-bebê (rooming-in imediato)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Avaliação inicial do RN no colo da mãe (se estáveis)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Administração de vitamina K</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Profilaxia ocular neonatal</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Adiar o primeiro banho</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Pesagem e medidas após primeira hora</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Procedimentos de rotina com presença dos pais</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Aspiração de vias aéreas apenas se necessário</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Vacinação neonatal conforme decisão familiar</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Não oferecer fórmula, chupeta ou bicos sem consentimento</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Clampeamento fisiológico do cordão (se disponível)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Coleta de sangue de cordão (se aplicável)</div></div></div>
+                <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Destino da placenta conforme preferência</div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Bloco condicional Parto Vaginal -->
+          <div id="bloco-vaginal" class="plan-cond-block visible">
+            <div class="card">
+              <div class="plan-section" style="margin-bottom:0;">
+                <h3>Preferências — Parto Vaginal</h3>
+                <div class="plan-checklist">
+                  <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Presença de acompanhante</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Liberdade de movimento durante o trabalho de parto</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Liberdade de posição para parir</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Ambiente tranquilo (luz reduzida, silêncio, música)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Uso de métodos não farmacológicos para alívio da dor</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Uso de analgesia apenas se solicitado</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Monitorização fetal intermitente (se possível)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Evitar intervenções de rotina (ocitocina, ruptura artificial)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Não realização de episiotomia de rotina</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Orientação para puxos espontâneos</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Evitar posição litotômica (se possível)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Adiar procedimentos de rotina não urgentes</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Administração de medicamentos ao bebê conforme decisão familiar</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Não oferecer fórmula ou chupeta sem consentimento</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Bloco condicional Cesariana -->
+          <div id="bloco-cesariana" class="plan-cond-block">
+            <div class="card">
+              <div class="plan-section" style="margin-bottom:0;">
+                <h3>Preferências — Cesariana</h3>
+                <div class="plan-checklist">
+                  <div class="plan-check-item done" onclick="toggleCheck(this)"><div class="plan-check-box">✓</div><div><div class="plan-check-label">Presença de acompanhante na sala cirúrgica</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Ambiente mais humanizado (luz reduzida, silêncio, música)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Explicação dos procedimentos durante a cirurgia</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Uso de cortina transparente ou abaixada no nascimento</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Contato pele a pele imediato (se mãe e bebê estáveis)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Início da amamentação na sala de cirurgia ou recuperação</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Não separação mãe-bebê</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Clampeamento tardio do cordão (se possível)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Corte do cordão pelo acompanhante (se viável)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Presença do acompanhante durante todo o tempo</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Monitorização que permita contato com o bebê</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Evitar contenção dos braços (se possível)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Fotos ou vídeos do nascimento (se permitido)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Avaliação do bebê no colo da mãe (se estáveis)</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Adiar procedimentos de rotina não urgentes</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Administração de medicamentos ao bebê conforme decisão familiar</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Não oferecer fórmula sem consentimento</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Apoio à amamentação no pós-operatório imediato</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Controle adequado da dor no pós-operatório</div></div></div>
+                  <div class="plan-check-item" onclick="toggleCheck(this)"><div class="plan-check-box"></div><div><div class="plan-check-label">Alta com orientações claras sobre recuperação e amamentação</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Observações e salvar -->
+          <div class="card">
+            <div class="plan-section" style="margin-bottom:16px;">
               <h3>Observações adicionais</h3>
               <textarea class="form-input form-textarea" placeholder="Escreva aqui qualquer outra preferência ou informação importante para sua equipe..." style="width:100%;margin-top:4px;"></textarea>
             </div>
@@ -981,23 +1156,55 @@ tr:hover td { background:var(--rose-pale); }
           </div>
         </div>
 
-        <!-- EMERGÊNCIA / TIMER -->
+        <!-- CONTRAÇÕES -->
         <div class="g-panel" id="g-emergencia">
           <div class="panel-title">Contrações</div>
-          <div class="panel-sub">Registre e acompanhe suas contrações</div>
+          <div class="panel-sub">Observe seu padrão com calma e segurança</div>
 
+          <!-- Educativo: Aprenda a cronometrar -->
+          <div class="card">
+            <div class="card-title">📖 Aprenda a cronometrar</div>
+            <div class="timer-educativo">
+              <strong>Como identificar o início</strong>
+              A contração começa quando você sente o útero endurecer — uma tensão que cresce progressivamente. Pode vir com dor lombar, pressão na pelve ou cólica intensa.
+            </div>
+            <div class="timer-educativo">
+              <strong>Como identificar o fim</strong>
+              A contração termina quando o útero amolece completamente e a sensação de pressão passa. Respire fundo — é o sinal para clicar em "Parar".
+            </div>
+            <div class="timer-educativo">
+              <strong>Duração vs. intervalo</strong>
+              <b>Duração</b> = tempo que a contração dura (do início ao fim).<br>
+              <b>Intervalo</b> = tempo do fim de uma até o início da próxima.
+            </div>
+            <div class="timer-educativo">
+              <strong>Irregulares ou ritmadas?</strong>
+              Contrações irregulares, que param ao mudar de posição ou com hidratação, são mais comuns no início ou nos pródromos. Contrações ritmadas, que persistem independentemente do que você faz, merecem mais atenção — mas cada corpo tem seu próprio ritmo. Não existe uma regra única para todos.
+            </div>
+            <div class="timer-educativo" style="background:#f0e6e0;">
+              <strong>💡 O que observar sem entrar em pânico</strong>
+              Anote o padrão por pelo menos 1 hora antes de tirar conclusões. Contrações com menos de 1 minuto podem ser mais compatíveis com o início do processo ou fase latente. Contrações de 1 minuto ou mais, ritmadas e persistentes, merecem contato com sua doula e equipe — mas cada trabalho de parto é único.
+            </div>
+          </div>
+
+          <!-- Cronômetro -->
           <div class="timer-card">
             <div class="timer-label">Duração da Contração</div>
             <div class="timer-display" id="timer-display">00:00</div>
             <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Intervalo desde a última: <span id="interval-display" style="color:var(--rose-light)">—</span></div>
             <div class="timer-fase" id="timer-fase"></div>
-            <br>
             <div class="timer-btns">
-              <button class="timer-btn timer-start" id="timer-main-btn" onclick="timerAction()">▶ Iniciar</button>
+              <button class="timer-btn timer-start" id="timer-main-btn" onclick="timerAction()">▶ Contração começou</button>
               <button class="timer-btn timer-reset" onclick="resetTimer()">Reiniciar tudo</button>
             </div>
           </div>
 
+          <!-- Botão falar com a doula -->
+          <button onclick="falarComDoulaContracoes()" style="width:100%;background:linear-gradient(135deg,var(--rose),#a06050);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-bottom:12px;">
+            💬 Falar com minha doula agora
+          </button>
+
+          <!-- Registros -->
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
               <div class="card-title" style="margin-bottom:0;">Registros</div>
@@ -1008,15 +1215,114 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-title">Aprenda a cronometrar corretamente</div>
-            <div id="video-contracoes-area" style="background:var(--dark);border-radius:14px;padding:20px;text-align:center;color:white;">
-              <div style="font-size:14px;opacity:0.8;">Vídeo será adicionado em breve pelo admin</div>
-            </div>
-            <div style="margin-top:16px;padding:14px;background:var(--gold-pale);border-radius:12px;font-size:13px;color:#6a5020;line-height:1.7;">
-              <strong>⏱ Regra 5-1-1:</strong> Vá para o hospital quando as contrações durarem <strong>1 minuto</strong>, a cada <strong>5 minutos</strong>, por pelo menos <strong>1 hora</strong>.
+          <!-- Análise do padrão (aparece após 1h de observação ou pelo botão) -->
+          <div id="timer-analise" style="display:none;">
+            <div class="card">
+              <div class="card-title">📊 Observação do padrão</div>
+              <div id="timer-analise-texto" style="font-size:13px;color:var(--mid);line-height:1.8;"></div>
             </div>
           </div>
+
+          <!-- Fluxo: "Acho que estou em trabalho de parto" -->
+          <div class="card">
+            <div class="card-title">Como você está se sentindo?</div>
+            <button onclick="iniciarFluxoTP()" style="width:100%;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--mid);padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-bottom:12px;">
+              🌙 Acho que estou em trabalho de parto
+            </button>
+            <button onclick="iniciarFluxoSozinha()" style="width:100%;background:rgba(122,100,85,0.08);border:1.5px solid rgba(122,100,85,0.15);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;">
+              Estou sozinha agora
+            </button>
+          </div>
+
+          <!-- Flow: bolsa rompeu -->
+          <div class="timer-flow-card" id="flow-bolsa">
+            <div class="timer-flow-title">A bolsa rompeu?</div>
+            <p style="font-size:13px;color:var(--mid);line-height:1.6;">Sentiu um jato ou gotejamento de líquido?</p>
+            <div class="timer-flow-btns">
+              <button class="timer-flow-btn timer-flow-btn-yes" onclick="responderBolsa(true)">Sim, rompeu</button>
+              <button class="timer-flow-btn timer-flow-btn-no" onclick="responderBolsa(false)">Não / Não sei</button>
+            </div>
+          </div>
+
+          <!-- Info bolsa rompeu -->
+          <div class="timer-flow-card" id="flow-bolsa-sim" style="background:#fff3f0;">
+            <div class="timer-flow-title">⚠️ Bolsa rompida — oriente-se</div>
+            <div style="font-size:13px;color:var(--mid);line-height:1.9;">
+              • Ligue para seu profissional de saúde e sua doula<br>
+              • Observe a <strong>cor do líquido</strong> — deve ser claro ou levemente rosado<br>
+              • Você sente o <strong>bebê se mexer</strong>?<br>
+              • Evite toque vaginal<br>
+              • Evite relação sexual<br>
+              • Beba bastante água e mantenha-se hidratada
+            </div>
+            <button onclick="falarComDoulaContracoes()" style="margin-top:14px;background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">
+              💬 Falar com minha doula
+            </button>
+          </div>
+
+          <!-- Fluxo: está sozinha -->
+          <div class="timer-flow-card" id="flow-sozinha">
+            <div class="timer-flow-title">Você não está sozinha 💛</div>
+            <p style="font-size:13px;color:var(--mid);line-height:1.6;">Acione sua rede de apoio agora:</p>
+            <div style="font-size:13px;color:var(--mid);line-height:1.9;margin-bottom:12px;">
+              • Chame sua doula para iniciar o suporte remoto<br>
+              • Acione seu acompanhante ou pessoa de confiança<br>
+              • Mantenha o telefone por perto
+            </div>
+            <button onclick="falarComDoulaContracoes()" style="background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">
+              💬 Falar com minha doula agora
+            </button>
+          </div>
+
+          <!-- Fluxo: fase latente / pródromos -->
+          <div class="timer-latente-card" id="flow-latente">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#3a5a3a;margin-bottom:10px;">🌿 Esse pode ser o começo</div>
+            <p style="font-size:13px;color:#3a5a3a;line-height:1.8;margin-bottom:14px;">
+              "Que história você quer contar para o seu bebê sobre o dia em que ele nasceu?"<br><br>
+              Talvez esse seja um momento de acolhimento, presença e conexão. Você pode escrever uma cartinha para guardar esse começo.
+            </p>
+            <div style="font-size:13px;color:#3a5a3a;line-height:1.9;margin-bottom:14px;">
+              <strong>Cuidados para esse momento:</strong><br>
+              • Hidrate-se bem<br>
+              • Descanse — durma se conseguir<br>
+              • Coma alguma coisa leve se sentir fome<br>
+              • Tome banho quente, receba massagem<br>
+              • Fique com seu companheiro ou pessoa de apoio<br>
+              • Tire fotos desse início<br>
+              • Escreva para seu bebê
+            </div>
+            <button onclick="falarComDoulaContracoes()" style="background:#4a7a4a;color:white;border:none;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">
+              💬 Conversar com minha doula
+            </button>
+          </div>
+
+          <!-- Perguntas finais do fluxo TP -->
+          <div class="timer-flow-card" id="flow-tp-perguntas">
+            <div class="timer-flow-title">Algumas perguntas importantes</div>
+            <div style="font-size:13px;color:var(--mid);line-height:1.9;" id="flow-tp-checklist">
+              <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;"><input type="checkbox" style="margin-top:3px;"> Contrações de 4 em 4 minutos por pelo menos 1 hora, durando 1 minuto ou mais?</label>
+              <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;"><input type="checkbox" style="margin-top:3px;"> Está saindo alguma secreção?</label>
+              <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;"><input type="checkbox" style="margin-top:3px;"> Perdeu o tampão mucoso?</label>
+              <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;"><input type="checkbox" style="margin-top:3px;"> Tem dúvidas ou preocupações?</label>
+            </div>
+            <div class="timer-flow-btns">
+              <button class="timer-flow-btn timer-flow-btn-yes" onclick="mostrarBolsa()">Continuar</button>
+              <button class="timer-flow-btn timer-flow-btn-no" onclick="falarComDoulaContracoes()">💬 Falar com doula</button>
+            </div>
+          </div>
+
+          <!-- Relatório para a doula -->
+          <div class="timer-relatorio" id="timer-relatorio">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--rose-light);margin-bottom:12px;">📋 Relatório de contrações</div>
+            <div id="relatorio-conteudo" style="line-height:2;"></div>
+            <button onclick="enviarRelatorioDoula()" style="margin-top:14px;background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;">
+              Enviar relatório para minha doula
+            </button>
+          </div>
+
+          <button onclick="gerarRelatorioDoula()" style="width:100%;background:transparent;border:1.5px solid var(--rose-light);color:var(--mid);padding:12px;border-radius:14px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;">
+            📋 Gerar relatório para a doula
+          </button>
         </div>
 
         <!-- CONTEÚDO POR FASES -->
@@ -1126,7 +1432,6 @@ tr:hover td { background:var(--rose-pale); }
           <div class="card">
             <div class="card-title">💫 Conexão com seu bebê</div>
             <div class="content-item"><div class="content-icon">🗣️</div><div><div class="content-label">Converse com ele</div><div class="content-sub">Ele já ouve sua voz desde a semana 16!</div></div></div>
-            <div class="content-item"><div class="content-icon">✋</div><div><div class="content-label">Toque e massageie a barriga</div><div class="content-sub">Cria vínculo e relaxa mamãe</div></div></div>
             <div class="content-item"><div class="content-icon">📖</div><div><div class="content-label">Leia histórias em voz alta</div><div class="content-sub">Estimula o desenvolvimento auditivo</div></div></div>
           </div>
         </div>
@@ -1582,7 +1887,7 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="faq-item open">
             <div class="faq-question" onclick="toggleFaq(this)"><span>Como identificar o início do trabalho de parto?</span><span class="faq-toggle">▼</span></div>
-            <div class="faq-answer">Sinais incluem: contrações regulares que aumentam em frequência e intensidade, perda do tampão mucoso (muco rosado), ruptura da bolsa e pressão pélvica intensa. A regra 5-1-1 é um bom guia: contrações a cada 5 minutos, durando 1 minuto, por 1 hora. Diferente dos pródromos que são irregulares e cessam com mudança de posição.</div>
+            <div class="faq-answer">Cada trabalho de parto é único. Observe contrações que se tornam progressivamente mais intensas e regulares, que não somem com mudança de posição, e que persistem por 1 hora ou mais. Contrações de 1 minuto ou mais, ritmadas e persistentes, merecem atenção e contato com sua doula e equipe. Sinais adicionais: perda do tampão mucoso, ruptura da bolsa e pressão pélvica. Diferente dos pródromos, que são irregulares e cessam com mudança de posição ou hidratação.</div>
           </div>
           <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)"><span>O que fazer quando a gestante está em pânico durante o parto?</span><span class="faq-toggle">▼</span></div>
@@ -1748,7 +2053,48 @@ function gNavById(panelId) {
 
 
 // ─── Toggles ───
+function abrirGuiaPais() { window.open('guia-pais-primeira-viagem.pdf','_blank'); }
+
+// ─── Internacionalização (i18n) ───
+var _lang = 'pt';
+var _i18n = {
+  pt: { appName:'LUA', tagline:'Acompanhamento de gestação', navInicio:'Início', navGestacao:'Minha Gestação', navPlano:'Plano de Parto', navContracoes:'Contrações', navConteudo:'Conteúdo', navExtras:'Extras', sair:'Sair' },
+  en: { appName:'LUA', tagline:'Pregnancy companion', navInicio:'Home', navGestacao:'My Pregnancy', navPlano:'Birth Plan', navContracoes:'Contractions', navConteudo:'Content', navExtras:'Extras', sair:'Sign out' },
+  es: { appName:'LUA', tagline:'Acompañamiento del embarazo', navInicio:'Inicio', navGestacao:'Mi Embarazo', navPlano:'Plan de Parto', navContracoes:'Contracciones', navConteudo:'Contenido', navExtras:'Extras', sair:'Salir' }
+};
+function setLang(lang) {
+  _lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.textContent.toLowerCase()===lang); });
+  // Aplicar traduções nos nav items (escalável — adicionar mais conforme necessário)
+  var t = _i18n[lang] || _i18n['pt'];
+  var navMap = { 'g-dashboard': t.navInicio, 'g-acomp': t.navGestacao, 'g-plano': t.navPlano, 'g-emergencia': t.navContracoes, 'g-conteudo': t.navConteudo, 'g-extras': t.navExtras };
+  document.querySelectorAll('.g-nav-item').forEach(function(el){
+    var fn = el.getAttribute('onclick')||'';
+    var m = fn.match(/'(g-[^']+)'/);
+    if (m && navMap[m[1]]) {
+      var icon = el.querySelector('.g-nav-icon');
+      el.textContent = navMap[m[1]];
+      if (icon) el.insertBefore(icon, el.firstChild);
+    }
+  });
+  document.querySelector('.header-switch').textContent = t.sair;
+}
+
 function togglePlan(btn) { btn.classList.toggle('selected'); }
+function toggleCheck(item) {
+  item.classList.toggle('done');
+  var box = item.querySelector('.plan-check-box');
+  if (box) box.textContent = item.classList.contains('done') ? '✓' : '';
+}
+function toggleTipoParto(btn, tipo) {
+  document.getElementById('btn-tipo-vaginal').classList.remove('selected');
+  document.getElementById('btn-tipo-cesariana').classList.remove('selected');
+  btn.classList.add('selected');
+  var bV = document.getElementById('bloco-vaginal');
+  var bC = document.getElementById('bloco-cesariana');
+  if (tipo === 'vaginal') { bV.classList.add('visible'); bC.classList.remove('visible'); }
+  else { bC.classList.add('visible'); bV.classList.remove('visible'); }
+}
 function selectMood(el) { document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected'); }
 function toggleTarefa(el) { el.classList.toggle('done'); el.querySelector('.tarefa-check').textContent = el.classList.contains('done') ? '✓' : ''; }
 function toggleFaseTask(el) { el.classList.toggle('done'); el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : ''; }
@@ -1792,15 +2138,16 @@ function saveDiary() {
 }
 
 // ─── Timer ───
+var observacaoInicio = null; // quando começou a primeira contração
 async function timerAction() {
   const btn = document.getElementById('timer-main-btn');
   if (!timerRunning) {
     timerRunning = true;
     timerStart = Date.now();
-    btn.textContent = '⏹ Parar';
+    if (!observacaoInicio) observacaoInicio = Date.now();
+    btn.textContent = '⏹ Contração terminou';
     btn.style.background = '#5C4035';
-    timerInterval = setInterval(() => { updateTimerDisplay(); updateTimerFase(); }, 100);
-    // Salva contração ativa no Supabase
+    timerInterval = setInterval(() => { updateTimerDisplay(); }, 100);
     if (db && currentUserId) {
       try {
         var ins = await db.from('contracoes').insert({
@@ -1818,11 +2165,11 @@ async function timerAction() {
     lastContractionEnd = Date.now();
     contractions.unshift({ duration, interval, time: new Date() });
     renderContractions();
-    btn.textContent = '▶ Nova contração';
+    analisarPadrao();
+    btn.textContent = '▶ Contração começou';
     btn.style.background = 'var(--rose)';
     document.getElementById('timer-display').textContent = '00:00';
     document.getElementById('timer-fase').innerHTML = '';
-    // Atualiza contração no Supabase com fim e duração
     if (db && timerContraId) {
       try {
         await db.from('contracoes').update({
@@ -1840,26 +2187,62 @@ function updateTimerDisplay() {
   const s = Math.floor(elapsed / 1000);
   document.getElementById('timer-display').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
 }
-function updateTimerFase() {
-  if (!contractions.length || !contractions[0].interval) return;
-  const lastIntv = contractions[0].interval / 1000 / 60;
-  const faseEl = document.getElementById('timer-fase');
-  if (lastIntv <= 5) {
-    faseEl.innerHTML = '<span class="timer-fase-badge tf-ativo">⚡ Trabalho de parto ativo — Avise sua doula!</span>';
-  } else {
-    faseEl.innerHTML = '<span class="timer-fase-badge tf-prodromos">🌙 Possivelmente pródromos — Continue monitorando</span>';
+function analisarPadrao() {
+  if (contractions.length < 2) return;
+  const observacaoMs = observacaoInicio ? Date.now() - observacaoInicio : 0;
+  const observacaoMin = observacaoMs / 60000;
+  const duracoes = contractions.map(c => c.duration);
+  const duracaoMedia = duracoes.reduce((a,b)=>a+b,0) / duracoes.length;
+  const intervs = contractions.filter(c=>c.interval).map(c=>c.interval);
+  const intervMedia = intervs.length ? intervs.reduce((a,b)=>a+b,0)/intervs.length : null;
+  const duracaoMediaS = Math.round(duracaoMedia/1000);
+  const intervMediaMin = intervMedia ? (intervMedia/60000).toFixed(1) : null;
+  // Verificar ritmicidade: desvio padrão dos intervalos
+  var ritmadas = false;
+  if (intervs.length >= 3) {
+    const mean = intervs.reduce((a,b)=>a+b,0)/intervs.length;
+    const dp = Math.sqrt(intervs.reduce((a,b)=>a+(b-mean)**2,0)/intervs.length);
+    ritmadas = (dp / mean) < 0.25; // coeficiente de variação < 25%
   }
+  const el = document.getElementById('timer-analise');
+  const txt = document.getElementById('timer-analise-texto');
+  el.style.display = 'block';
+  var msg = '';
+  if (observacaoMin < 60) {
+    msg = `Você está observando há <strong>${Math.round(observacaoMin)} minutos</strong>. Continue registrando por pelo menos 1 hora para ter um padrão mais claro. `;
+  } else {
+    msg = `Você observou por <strong>${Math.round(observacaoMin)} minutos</strong>. `;
+  }
+  msg += `<br><br>Duração média das contrações: <strong>${Math.floor(duracaoMediaS/60)}min ${duracaoMediaS%60}s</strong>.<br>`;
+  if (intervMediaMin) msg += `Intervalo médio entre contrações: <strong>${intervMediaMin} min</strong>.<br>`;
+  if (ritmadas) {
+    msg += `As contrações parecem estar se tornando <strong>mais regulares</strong>. `;
+  } else {
+    msg += `O padrão ainda é <strong>irregular</strong> — isso é normal no início. `;
+  }
+  if (duracaoMedia >= 60000) {
+    msg += `<br><br><em>"Seu padrão merece atenção. Pode ser um bom momento para conversar com sua doula e equipe."</em>`;
+  } else {
+    msg += `<br><br><em>"Contrações com menos de 1 minuto podem ser compatíveis com o início do processo ou fase latente. Observe seu corpo e mantenha contato com sua rede de apoio."</em>`;
+    document.getElementById('flow-latente').classList.add('visible');
+  }
+  txt.innerHTML = msg;
 }
 function resetTimer() {
   clearInterval(timerInterval);
-  timerRunning = false; timerStart = null; lastContractionEnd = null; contractions = [];
+  timerRunning = false; timerStart = null; lastContractionEnd = null; contractions = []; observacaoInicio = null;
   document.getElementById('timer-display').textContent = '00:00';
   document.getElementById('interval-display').textContent = '—';
   document.getElementById('avg-display').textContent = '—';
-  document.getElementById('timer-main-btn').textContent = '▶ Iniciar';
+  document.getElementById('timer-main-btn').textContent = '▶ Contração começou';
   document.getElementById('timer-main-btn').style.background = 'var(--rose)';
   document.getElementById('contractions-log').innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:20px;">Nenhuma contração registrada ainda</div>';
   document.getElementById('timer-fase').innerHTML = '';
+  document.getElementById('timer-analise').style.display = 'none';
+  ['flow-bolsa','flow-bolsa-sim','flow-sozinha','flow-latente','flow-tp-perguntas','timer-relatorio'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) { el.classList.remove('visible'); el.style.display = ''; }
+  });
 }
 function renderContractions() {
   const log = document.getElementById('contractions-log');
@@ -1877,6 +2260,64 @@ function renderContractions() {
     document.getElementById('interval-display').textContent = `${Math.floor(ms/60000)}min ${Math.round((ms%60000)/1000)}s`;
   }
 }
+function iniciarFluxoTP() {
+  document.getElementById('flow-tp-perguntas').classList.add('visible');
+  document.getElementById('flow-tp-perguntas').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function iniciarFluxoSozinha() {
+  document.getElementById('flow-sozinha').classList.add('visible');
+  document.getElementById('flow-sozinha').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function mostrarBolsa() {
+  document.getElementById('flow-tp-perguntas').classList.remove('visible');
+  document.getElementById('flow-bolsa').classList.add('visible');
+  document.getElementById('flow-bolsa').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function responderBolsa(sim) {
+  document.getElementById('flow-bolsa').classList.remove('visible');
+  if (sim) {
+    document.getElementById('flow-bolsa-sim').classList.add('visible');
+    document.getElementById('flow-bolsa-sim').scrollIntoView({behavior:'smooth',block:'center'});
+  } else {
+    gerarRelatorioDoula();
+  }
+}
+function gerarRelatorioDoula() {
+  if (!contractions.length) { alert('Registre pelo menos uma contração antes de gerar o relatório.'); return; }
+  const inicio = contractions[contractions.length-1].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const total = contractions.length;
+  const duracoes = contractions.map(c=>c.duration);
+  const dMedia = Math.round(duracoes.reduce((a,b)=>a+b,0)/duracoes.length/1000);
+  const dMin = Math.round(Math.min(...duracoes)/1000);
+  const dMax = Math.round(Math.max(...duracoes)/1000);
+  const intervs = contractions.filter(c=>c.interval).map(c=>c.interval);
+  const iMedia = intervs.length ? Math.round(intervs.reduce((a,b)=>a+b,0)/intervs.length/1000) : null;
+  var ritmadas = false;
+  if (intervs.length >= 3) {
+    const mean = intervs.reduce((a,b)=>a+b,0)/intervs.length;
+    const dp = Math.sqrt(intervs.reduce((a,b)=>a+(b-mean)**2,0)/intervs.length);
+    ritmadas = (dp/mean) < 0.25;
+  }
+  var html = `Horário do início do registro: <strong>${inicio}</strong><br>`;
+  html += `Total de contrações registradas: <strong>${total}</strong><br>`;
+  html += `Duração média: <strong>${Math.floor(dMedia/60)}:${String(dMedia%60).padStart(2,'0')}</strong><br>`;
+  html += `Duração mínima: <strong>${Math.floor(dMin/60)}:${String(dMin%60).padStart(2,'0')}</strong> · Máxima: <strong>${Math.floor(dMax/60)}:${String(dMax%60).padStart(2,'0')}</strong><br>`;
+  if (iMedia) html += `Intervalo médio: <strong>${Math.floor(iMedia/60)}min ${iMedia%60}s</strong><br>`;
+  html += `Padrão: <strong>${ritmadas ? 'Contrações ritmadas' : 'Ainda irregular'}</strong><br>`;
+  html += `<br>Gerado pelo app Lua Gestação — ${new Date().toLocaleString('pt-BR')}`;
+  document.getElementById('relatorio-conteudo').innerHTML = html;
+  document.getElementById('timer-relatorio').classList.add('visible');
+  document.getElementById('timer-relatorio').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function enviarRelatorioDoula() {
+  var texto = document.getElementById('relatorio-conteudo').innerText;
+  falarComDoulaContracoes('📋 Relatório de contrações:\n\n' + texto);
+}
+function falarComDoulaContracoes(msg) {
+  var wha = document.getElementById('btn-whatsapp-doula');
+  if (wha) { wha.click(); return; }
+  gNavById('g-minha-doula');
+}
 
 // ─── FAQ respostas automáticas ───
 const faqRespostas = {
@@ -1884,7 +2325,7 @@ const faqRespostas = {
   '😴 Não consigo dormir': 'Dificuldade para dormir é muito comum na gestação! Tente dormir de lado (lado esquerdo é ótimo para a circulação), use um travesseiro entre os joelhos e faça exercícios de respiração. Se persistir muito, converse com sua doula para orientação. 💛',
   '🤔 O bebê se mexeu menos hoje': 'Os movimentos do bebê são muito importantes de acompanhar! A partir de 28 semanas, faça a contagem: o bebê deve se mover ao menos 10 vezes em 2 horas. Se você sentir movimentos significativamente menos do que o normal, entre em contato com sua doula ou vá à maternidade. 🌸',
   '💛 O que levar na mala?': 'Ótima hora de preparar a mala! Vá para a seção "Conteúdo" e veja nossa checklist completa com tudo que você precisa para você e para o bebê. Não esqueça de levar todos os documentos: RG, cartão do convênio e os papéis do pré-natal! 🧳',
-  '⏱️ Como saber se é trabalho de parto?': 'Use a regra 5-1-1: contrações a cada **5 minutos**, durando **1 minuto**, por pelo menos **1 hora**. As contrações de trabalho de parto são regulares, aumentam em intensidade e não somem com mudança de posição. Quer abrir o timer de contrações agora? ⏱️',
+  '⏱️ Como saber se é trabalho de parto?': 'Cada trabalho de parto é único — não existe uma regra que funcione igual para todos. O que observar: contrações que se tornam progressivamente mais intensas e regulares, que não somem com mudança de posição ou hidratação, e que persistem por 1 hora ou mais. Contrações com duração de 1 minuto ou mais, quando ritmadas, merecem mais atenção. Mas o mais importante é manter contato com sua doula e equipe — elas vão te orientar no momento certo. Quer abrir o cronômetro de contrações? ⏱️',
 };
 
 // ── Chat IA (via /api/chat — chave segura no Vercel) ──
