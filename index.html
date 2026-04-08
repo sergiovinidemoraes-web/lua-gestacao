@@ -1651,7 +1651,6 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span>Biblioteca</div>
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span>Guia Prático</div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span>Financeiro</div>
-          <div class="d-nav-item" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span>Mensagens</div>
         </nav>
         <div class="d-sidebar-clients">
           <div class="d-clients-title">Clientes Ativas</div>
@@ -1969,33 +1968,6 @@ tr:hover td { background:var(--rose-pale); }
               <div id="contratos-lista">
               <div class="empty-state-small">Nenhum contrato cadastrado ainda</div>
             </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- MENSAGENS DOULA -->
-        <div class="d-panel" id="d-mensagens">
-          <div class="panel-title">Mensagens</div>
-          <div class="panel-sub">Converse com suas gestantes</div>
-          <div class="messages-grid">
-            <div class="msg-list" id="msg-lista-doula">
-              <div style="padding:20px;text-align:center;">
-                <div style="font-size:28px;margin-bottom:8px;">💬</div>
-                <div style="font-size:13px;color:var(--earth-light);">Nenhuma conversa ainda</div>
-              </div>
-            </div>
-            <div class="msg-chat-area">
-              <div class="msg-chat-header">
-                <div id="d-chat-avatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9897A,#a8685a);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:white;">A</div>
-                <div><div style="font-size:15px;font-weight:500;" id="d-chat-name">Selecione uma conversa</div><div style="font-size:12px;color:var(--earth-light);"></div></div>
-              </div>
-              <div class="msg-chat-messages" id="d-chat-messages">
-                <div class="empty-state-small" style="margin:auto;text-align:center;color:var(--earth-light);font-size:13px;padding:20px;">Selecione uma conversa</div>
-              </div>
-              <div class="msg-chat-input-wrap">
-                <input class="chat-input" id="d-chat-input" placeholder="Selecione uma conversa..." onkeydown="if(event.key==='Enter')sendDMsg()">
-                <button class="chat-send" onclick="sendDMsg()">➤</button>
-              </div>
             </div>
           </div>
         </div>
