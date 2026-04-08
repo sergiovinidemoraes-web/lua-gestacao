@@ -4503,6 +4503,20 @@ async function carregarClientesDoula() {
         '</td>' +
         '</tr>';
     }).join('');
+    // Preenche sidebar de clientes ativas
+    var sidebarList = document.getElementById('sidebar-clientes-list');
+    if (sidebarList) {
+      sidebarList.innerHTML = res.data.map(function(g) {
+        var inicial = (g.gestante_nome || '?')[0].toUpperCase();
+        var cores = ['#C9897A','#8A9E8C','#C9A96E','#7A6455'];
+        var cor = cores[g.gestante_nome ? g.gestante_nome.charCodeAt(0) % cores.length : 0];
+        return '<div class="d-client-item" onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')">' +
+          '<div class="d-client-avatar" style="background:' + cor + ';">' + inicial + '</div>' +
+          '<div><div style="font-size:13px;color:rgba(255,255,255,0.85);font-weight:500;">' + g.gestante_nome + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.35);">Ativa</div></div>' +
+          '</div>';
+      }).join('');
+    }
   } catch(e) {}
 }
 
