@@ -1360,15 +1360,15 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="phase-block-toggle">▼</div>
               </div>
               <div class="phase-block-body" id="content-gestante-inicio">
-                <div class="content-item" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
                   <div class="content-icon">📖</div>
                   <div><div class="content-label">Guia das primeiras semanas</div><div class="content-sub">O que esperar do início da gestação</div></div>
                 </div>
-                <div class="content-item" onclick="abrirGuiaPais()" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="abrirGuiaPais()" style="cursor:pointer;">
                   <div class="content-icon">👶</div>
                   <div><div class="content-label">Guia para pais de primeira viagem</div><div class="content-sub">Tudo o que um pai/parceiro precisa saber</div></div>
                 </div>
-                <div class="content-item" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
                   <div class="content-icon">🌙</div>
                   <div><div class="content-label">Guia do terceiro trimestre</div><div class="content-sub">Preparação para o nascimento</div></div>
                 </div>
@@ -3770,10 +3770,22 @@ async function carregarConteudos() {
       'bib-grid-doula', 'gestante-contracoes'
     ];
 
-    // Clear all areas
+    // Clear all areas (preserving .guia-fixo static items)
     destinos.forEach(function(d) {
       var el = document.getElementById('content-' + d) || document.getElementById(d);
-      if (el) el.innerHTML = '<div class="empty-state-small">Nenhum conteudo ainda 💛</div>';
+      if (!el) return;
+      // Remove only non-static children
+      Array.from(el.children).forEach(function(child) {
+        if (!child.classList.contains('guia-fixo')) child.remove();
+      });
+      // Add empty state only if no Supabase items for this destino
+      var hasData = res.data.some(function(item) {
+        var dest = item.destino === 'doula' ? 'bib-grid-doula' : 'content-' + item.destino;
+        return dest === (el.id);
+      });
+      if (!hasData && !el.querySelector('.guia-fixo')) {
+        el.innerHTML = '<div class="empty-state-small">Nenhum conteudo ainda 💛</div>';
+      }
     });
 
     // Fill with content
