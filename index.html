@@ -8,6 +8,7 @@
 <title>Lua — Acompanhamento de gestação</title>
 
 <!-- PWA / App Icon -->
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Lua">
@@ -15,12 +16,14 @@
 <meta name="theme-color" content="#2D1F1A">
 <meta name="description" content="Acompanhamento de gestação para doulas e gestantes">
 
-<!-- Ícone do app -->
-<link rel="apple-touch-icon" sizes="512x512" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
+<!-- Ícones do app -->
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
 
-<!-- Manifest inline para PWA -->
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Lua%20%E2%80%94%20Gest%C3%A3o%22%2C%22short_name%22%3A%22Lua%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232D1F1A%22%2C%22theme_color%22%3A%22%232D1F1A%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22icon.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+<!-- Manifest PWA -->
+<link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -6287,6 +6290,16 @@ function mostrarToast(msg) {
     </div>
   </div>
 </div>
+
+
+<!-- Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
 
 </body>
 </html>
