@@ -781,7 +781,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="login-tipo" style="flex-wrap:wrap;">
           <button class="login-tipo-btn selected" id="tipo-gestante" onclick="selecionarTipo('gestante')">🤰 Gestante</button>
           <button class="login-tipo-btn" id="tipo-doula" onclick="selecionarTipo('doula')">🌙 Doula</button>
-          <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">👶 Pai / Parceiro</button>
+          <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">❤️ Acompanhante</button>
         </div>
       </div>
       <div id="pai-codigo-campo" style="display:none;">
@@ -877,7 +877,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span><span data-i18n="nav.minha.doula">Minha Doula</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span><span data-i18n="nav.posparto">Pós-Parto</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span><span data-i18n="nav.diario">Diário</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><span class="g-nav-icon">🧑</span><span>Meu Parceiro(a)</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><span class="g-nav-icon">❤️</span><span>Minha Pessoa</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span><span data-i18n="nav.chat">Conversar com a Lua</span></div>
         </nav>
         <div class="g-doula-card" id="g-doula-card-sidebar" style="display:none;">
@@ -965,8 +965,8 @@ tr:hover td { background:var(--rose-pale); }
             <div style="display:flex;align-items:center;gap:14px;">
               <div style="font-size:32px;">🧑</div>
               <div>
-                <div class="card-title" style="margin-bottom:4px;">Meu Parceiro(a)</div>
-                <div style="font-size:13px;color:var(--earth-light);">Convide seu parceiro para acompanhar a gestação →</div>
+                <div class="card-title" style="margin-bottom:4px;">Minha Pessoa</div>
+                <div style="font-size:13px;color:var(--earth-light);">Convide quem você quer por perto nessa jornada →</div>
               </div>
             </div>
           </div>
@@ -1662,17 +1662,17 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- MEU PARCEIRO(A) -->
         <div class="g-panel" id="g-parceiro">
-          <div class="panel-title">Meu Parceiro(a)</div>
-          <div class="panel-sub">Convide seu parceiro para acompanhar a gestação no Lua-Pai</div>
+          <div class="panel-title">Minha Pessoa ❤️</div>
+          <div class="panel-sub">Convide quem você quer por perto para acompanhar a gestação no Lua</div>
 
           <div class="card">
             <div class="card-title">🔑 Gerar código de convite</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;">Gere um código e compartilhe com seu parceiro. Ele cria uma conta como <strong>Pai / Parceiro</strong> e insere o código para se conectar à sua gestação.</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;">Gere um código e compartilhe com a pessoa especial da sua vida — pai, parceira, outra mãe ou quem você quiser por perto nessa jornada.</div>
             <button id="btn-gerar-convite" onclick="gerarCodigoConvite()" style="background:linear-gradient(135deg,var(--pai),#3a6070);color:white;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">🔑 Gerar código de convite</button>
             <div id="convite-card-display" style="display:none;margin-top:20px;background:linear-gradient(135deg,#4e7d8a,#3a6070);border-radius:16px;padding:24px;color:white;">
               <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;">Código de convite</div>
               <div style="font-size:42px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:12px;margin-bottom:14px;" id="convite-codigo-texto">——</div>
-              <div style="font-size:12px;opacity:0.7;margin-bottom:16px;line-height:1.5;">Compartilhe este código com seu parceiro. Ele usa ao criar a conta como "Pai / Parceiro".</div>
+              <div style="font-size:12px;opacity:0.7;margin-bottom:16px;line-height:1.5;">Compartilhe com a pessoa especial. Ela cria uma conta como "Acompanhante" e insere este código para se conectar à sua gestação.</div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button onclick="copiarCodigoConvite()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">📋 Copiar código</button>
                 <button onclick="gerarCodigoConvite(true)" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">↺ Gerar novo</button>
@@ -1689,11 +1689,11 @@ tr:hover td { background:var(--rose-pale); }
               </div>
               <div style="display:flex;gap:14px;align-items:flex-start;">
                 <div style="background:var(--pai-pale);color:var(--pai);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">2</div>
-                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Mande o código para seu parceiro(a) pelo WhatsApp ou mensagem</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Mande o código pelo WhatsApp ou mensagem para a pessoa especial</div>
               </div>
               <div style="display:flex;gap:14px;align-items:flex-start;">
                 <div style="background:var(--pai-pale);color:var(--pai);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">3</div>
-                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Ele cria a conta no Lua como <strong>Pai / Parceiro</strong> e insere o código — pronto, conectados!</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.5;">A pessoa cria a conta no Lua como <strong>Acompanhante</strong> e insere o código — pronto, conectadas!</div>
               </div>
             </div>
           </div>
@@ -2083,7 +2083,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="p-profile">
           <div class="p-avatar" id="p-avatar">A</div>
           <div class="p-name" id="p-profile-name">—</div>
-          <div class="p-week">🌙 Lua-Pai</div>
+          <div class="p-week">❤️ Lua — Acompanhante</div>
         </div>
         <nav class="p-nav">
           <div class="p-nav-item active" onclick="pNav(this,'p-dashboard')"><span class="p-nav-icon">🏠</span><span>Início</span></div>
@@ -2113,7 +2113,7 @@ tr:hover td { background:var(--rose-pale); }
         <!-- DASHBOARD PAI -->
         <div class="g-panel active" id="p-dashboard">
           <div class="panel-title" id="pai-greeting">Olá, papai! 👶</div>
-          <div class="panel-sub" id="pai-dash-sub">Bem-vindo ao Lua-Pai</div>
+          <div class="panel-sub" id="pai-dash-sub">Bem-vinde ao Lua — Acompanhante ❤️</div>
 
           <div id="p-gestacao-card" style="display:none;background:linear-gradient(135deg,var(--dark),#1e3a4a);border-radius:20px;padding:24px;color:white;margin-bottom:20px;">
             <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:14px;">Gestação da Parceira</div>
@@ -4995,7 +4995,7 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-doula').classList.remove('active');
   document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-' + tipo).classList.add('active');
-  document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : tipo === 'pai' ? '👶 Lua-Pai' : '🌙 Doula';
+  document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : tipo === 'pai' ? '❤️ Acompanhante' : '🌙 Doula';
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
