@@ -2,7 +2,7 @@
 
 ## Visão Geral
 SPA single-file (`index.html` ~4300 linhas). Backend 100% Supabase (Auth + Postgres + Realtime).
-Sem build, sem bundler — abre direto no browser. Deploy via GitHub Pages.
+Sem build, sem bundler — abre direto no browser. Deploy via Vercel (conectado ao GitHub, deploy automático no push para main). Domínio: luamaterna.com.
 
 ## Arquitetura
 
