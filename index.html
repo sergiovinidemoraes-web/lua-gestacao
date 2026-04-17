@@ -5290,6 +5290,8 @@ function atualizarDashboardGestante(dpp) {
   if (!dpp) {
     document.getElementById('onboard-titulo').textContent = 'Configure sua gestacao';
     document.getElementById('onboard-sub').textContent = 'Informe sua data provavel do parto para acompanharmos sua jornada';
+    try { document.getElementById('frase-texto').textContent = 'Configure sua DPP para receber sua frase da semana 🌸'; } catch(e) {}
+    try { document.getElementById('frase-sub').textContent = 'Frase do dia'; } catch(e) {}
     return;
   }
   document.getElementById('onboard-titulo').textContent = 'Data prevista do parto';
