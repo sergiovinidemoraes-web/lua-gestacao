@@ -877,6 +877,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span><span data-i18n="nav.minha.doula">Minha Doula</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span><span data-i18n="nav.posparto">Pós-Parto</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span><span data-i18n="nav.diario">Diário</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><span class="g-nav-icon">👶</span><span>Meu Parceiro(a)</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span><span data-i18n="nav.chat">Conversar com a Lua</span></div>
         </nav>
         <div class="g-doula-card" id="g-doula-card-sidebar" style="display:none;">
@@ -960,17 +961,12 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
-          <div class="card" id="card-convidar-parceiro" style="margin-top:20px;">
-            <div class="card-title">👶 Convidar parceiro</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.5;">Gere um código para que seu parceiro acompanhe a gestação no Lua-Pai.</div>
-            <button id="btn-gerar-convite" onclick="gerarCodigoConvite()" style="background:linear-gradient(135deg,var(--pai),#3a6070);color:white;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">🔑 Gerar código de convite</button>
-            <div id="convite-card-display" style="display:none;margin-top:16px;background:linear-gradient(135deg,#4e7d8a,#3a6070);border-radius:14px;padding:20px;color:white;">
-              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;">Código de convite</div>
-              <div style="font-size:38px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:10px;margin-bottom:12px;" id="convite-codigo-texto">——</div>
-              <div style="font-size:12px;opacity:0.7;margin-bottom:14px;line-height:1.5;">Compartilhe com seu parceiro. Ele usa ao criar a conta como "Pai / Parceiro".</div>
-              <div style="display:flex;gap:10px;">
-                <button onclick="copiarCodigoConvite()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;padding:8px 18px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">📋 Copiar código</button>
-                <button onclick="gerarCodigoConvite(true)" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:8px 18px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">↺ Novo</button>
+          <div class="card" id="card-convidar-parceiro" style="margin-top:20px;cursor:pointer;" onclick="gNavById('g-parceiro')">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="font-size:32px;">👶</div>
+              <div>
+                <div class="card-title" style="margin-bottom:4px;">Meu Parceiro(a)</div>
+                <div style="font-size:13px;color:var(--earth-light);">Convide seu parceiro para acompanhar a gestação →</div>
               </div>
             </div>
           </div>
@@ -1660,6 +1656,45 @@ tr:hover td { background:var(--rose-pale); }
             <div style="display:flex;gap:8px;">
               <input id="msg-gestante-input" class="chat-input" style="flex:1;" data-i18n-ph="doula.msg.ph" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')enviarMensagemParaDoula()">
               <button class="chat-send" onclick="enviarMensagemParaDoula()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEU PARCEIRO(A) -->
+        <div class="g-panel" id="g-parceiro">
+          <div class="panel-title">Meu Parceiro(a)</div>
+          <div class="panel-sub">Convide seu parceiro para acompanhar a gestação no Lua-Pai</div>
+
+          <div class="card">
+            <div class="card-title">🔑 Gerar código de convite</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;">Gere um código e compartilhe com seu parceiro. Ele cria uma conta como <strong>Pai / Parceiro</strong> e insere o código para se conectar à sua gestação.</div>
+            <button id="btn-gerar-convite" onclick="gerarCodigoConvite()" style="background:linear-gradient(135deg,var(--pai),#3a6070);color:white;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">🔑 Gerar código de convite</button>
+            <div id="convite-card-display" style="display:none;margin-top:20px;background:linear-gradient(135deg,#4e7d8a,#3a6070);border-radius:16px;padding:24px;color:white;">
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;">Código de convite</div>
+              <div style="font-size:42px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:12px;margin-bottom:14px;" id="convite-codigo-texto">——</div>
+              <div style="font-size:12px;opacity:0.7;margin-bottom:16px;line-height:1.5;">Compartilhe este código com seu parceiro. Ele usa ao criar a conta como "Pai / Parceiro".</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button onclick="copiarCodigoConvite()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">📋 Copiar código</button>
+                <button onclick="gerarCodigoConvite(true)" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:10px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">↺ Gerar novo</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px;">
+            <div class="card-title">💡 Como funciona</div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+              <div style="display:flex;gap:14px;align-items:flex-start;">
+                <div style="background:var(--pai-pale);color:var(--pai);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">1</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Clique em <strong>Gerar código</strong> e copie o código gerado</div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;">
+                <div style="background:var(--pai-pale);color:var(--pai);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">2</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Mande o código para seu parceiro(a) pelo WhatsApp ou mensagem</div>
+              </div>
+              <div style="display:flex;gap:14px;align-items:flex-start;">
+                <div style="background:var(--pai-pale);color:var(--pai);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">3</div>
+                <div style="font-size:13px;color:var(--mid);line-height:1.5;">Ele cria a conta no Lua como <strong>Pai / Parceiro</strong> e insere o código — pronto, conectados!</div>
+              </div>
             </div>
           </div>
         </div>
