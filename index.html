@@ -690,6 +690,46 @@ tr:hover td { background:var(--rose-pale); }
   .panel-title { font-size: 20px !important; }
   .login-title { font-size: 28px !important; }
 }
+
+/* ══════════════════════════════
+   LUA-PAI VIEW
+══════════════════════════════ */
+:root {
+  --pai: #4e7d8a;
+  --pai-light: #a8c8d0;
+  --pai-pale: #e8f4f7;
+}
+.pai-layout { display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 64px); }
+.p-sidebar { background:var(--white); border-right:1px solid rgba(78,125,138,0.12); padding:32px 0; display:flex; flex-direction:column; position:sticky; top:64px; height:calc(100vh - 64px); overflow-y:auto; }
+.p-profile { padding:0 24px 28px; border-bottom:1px solid rgba(78,125,138,0.1); margin-bottom:20px; }
+.p-avatar { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--pai-light),var(--pai)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:22px; color:white; font-weight:500; margin-bottom:12px; }
+.p-name { font-size:16px; font-weight:500; color:var(--dark); }
+.p-week { font-size:13px; color:var(--pai); margin-top:2px; font-weight:500; }
+.p-nav-item { display:flex; align-items:center; gap:12px; padding:12px 24px; cursor:pointer; font-size:14px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
+.p-nav-item:hover { background:var(--pai-pale); color:var(--pai); }
+.p-nav-item.active { background:var(--pai-pale); color:var(--pai); border-left-color:var(--pai); font-weight:500; }
+.p-nav-icon { font-size:18px; width:22px; text-align:center; }
+.p-parceira-card { margin:20px 16px 0; background:linear-gradient(135deg,var(--pai) 0%,#3a6070 100%); border-radius:14px; padding:16px; color:white; }
+.p-parceira-card-title { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; opacity:0.8; margin-bottom:8px; }
+.p-parceira-card-name { font-size:15px; font-weight:500; }
+.p-parceira-card-sub { font-size:12px; opacity:0.75; margin-top:2px; }
+.p-vincular-box { margin:20px 16px 0; background:rgba(78,125,138,0.08); border:1px solid rgba(78,125,138,0.2); border-radius:14px; padding:16px; }
+.p-vincular-box-title { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--pai); margin-bottom:8px; }
+.p-vincular-box-sub { font-size:12px; color:var(--earth-light); margin-bottom:12px; line-height:1.5; }
+.p-main { background:var(--cream); padding:32px; overflow-y:auto; }
+.p-cat-btn { padding:6px 14px; border-radius:20px; border:1.5px solid rgba(78,125,138,0.2); background:white; color:var(--mid); font-size:12px; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+.p-cat-btn:hover { border-color:var(--pai); color:var(--pai); }
+.p-cat-btn.selected { background:var(--pai); color:white; border-color:var(--pai); }
+@media (max-width: 768px) {
+  .pai-layout { grid-template-columns: 1fr !important; }
+  .p-sidebar { position:relative !important; top:auto !important; height:auto !important; border-right:none !important; border-bottom:1px solid rgba(78,125,138,0.1); padding:12px 0 8px !important; }
+  .p-profile { display: none; }
+  .p-nav { display:flex; flex-direction:row; overflow-x:auto; padding:0 8px; gap:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .p-nav::-webkit-scrollbar { display: none; }
+  .p-nav-item { flex-shrink:0; padding:8px 14px !important; border-left:none !important; border-radius:20px; font-size:13px; white-space:nowrap; }
+  .p-parceira-card,.p-vincular-box { display: none; }
+  .p-main { padding: 16px !important; }
+}
 </style>
 </head>
 <body>
@@ -738,10 +778,16 @@ tr:hover td { background:var(--rose-pale); }
       </div>
       <div>
         <label class="login-label">Você é...</label>
-        <div class="login-tipo">
+        <div class="login-tipo" style="flex-wrap:wrap;">
           <button class="login-tipo-btn selected" id="tipo-gestante" onclick="selecionarTipo('gestante')">🤰 Gestante</button>
           <button class="login-tipo-btn" id="tipo-doula" onclick="selecionarTipo('doula')">🌙 Doula</button>
+          <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">👶 Pai / Parceiro</button>
         </div>
+      </div>
+      <div id="pai-codigo-campo" style="display:none;">
+        <label class="login-label">Código de convite <span style="opacity:0.4;font-size:10px;">(opcional)</span></label>
+        <input class="login-input" type="text" id="cad-codigo-pai" placeholder="Ex: AB1C2D" maxlength="6" style="text-transform:uppercase;letter-spacing:3px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:6px;">Peça à sua parceira no app dela. Também pode vincular depois.</div>
       </div>
       <div class="login-erro" id="cad-erro"></div>
       <button class="login-btn" id="btn-cadastrar" onclick="fazerCadastro()">Criar conta</button>
@@ -910,6 +956,21 @@ tr:hover td { background:var(--rose-pale); }
               <div>
                 <div style="font-size:15px;font-weight:500;margin-bottom:6px;" id="bebe-titulo">Tamanho de uma manga</div>
                 <div style="font-size:14px;color:var(--mid);line-height:1.6;" id="bebe-desc">Cerca de 14 cm e 190g.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="card-convidar-parceiro" style="margin-top:20px;">
+            <div class="card-title">👶 Convidar parceiro</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.5;">Gere um código para que seu parceiro acompanhe a gestação no Lua-Pai.</div>
+            <button id="btn-gerar-convite" onclick="gerarCodigoConvite()" style="background:linear-gradient(135deg,var(--pai),#3a6070);color:white;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">🔑 Gerar código de convite</button>
+            <div id="convite-card-display" style="display:none;margin-top:16px;background:linear-gradient(135deg,#4e7d8a,#3a6070);border-radius:14px;padding:20px;color:white;">
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.7;margin-bottom:10px;">Código de convite</div>
+              <div style="font-size:38px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:10px;margin-bottom:12px;" id="convite-codigo-texto">——</div>
+              <div style="font-size:12px;opacity:0.7;margin-bottom:14px;line-height:1.5;">Compartilhe com seu parceiro. Ele usa ao criar a conta como "Pai / Parceiro".</div>
+              <div style="display:flex;gap:10px;">
+                <button onclick="copiarCodigoConvite()" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;padding:8px 18px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">📋 Copiar código</button>
+                <button onclick="gerarCodigoConvite(true)" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:8px 18px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">↺ Novo</button>
               </div>
             </div>
           </div>
@@ -1971,6 +2032,194 @@ tr:hover td { background:var(--rose-pale); }
       </main>
     </div>
   </div>
+
+  <!-- ══════ LUA-PAI VIEW ══════ -->
+  <div class="view" id="view-pai">
+    <div class="pai-layout">
+      <aside class="p-sidebar">
+        <div class="p-profile">
+          <div class="p-avatar" id="p-avatar">A</div>
+          <div class="p-name" id="p-profile-name">—</div>
+          <div class="p-week">🌙 Lua-Pai</div>
+        </div>
+        <nav class="p-nav">
+          <div class="p-nav-item active" onclick="pNav(this,'p-dashboard')"><span class="p-nav-icon">🏠</span><span>Início</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-gestacao')"><span class="p-nav-icon">🌱</span><span>Gestação</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-contracoes')"><span class="p-nav-icon">🚨</span><span>Contrações</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-diario')"><span class="p-nav-icon">📓</span><span>Diário do Pai</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-chat')"><span class="p-nav-icon">🌙</span><span>Conversar com a Lua</span></div>
+        </nav>
+        <div class="p-parceira-card" id="p-parceira-card" style="display:none;">
+          <div class="p-parceira-card-title">Sua parceira</div>
+          <div class="p-parceira-card-name" id="p-parceira-nome-sidebar">—</div>
+          <div class="p-parceira-card-sub">Conectada ao Lua</div>
+        </div>
+        <div class="p-vincular-box" id="p-vincular-box">
+          <div class="p-vincular-box-title">Vincular parceira</div>
+          <div class="p-vincular-box-sub">Peça o código de convite no app da sua parceira.</div>
+          <div style="display:flex;gap:8px;">
+            <input id="p-codigo-input" placeholder="Código" maxlength="6" style="flex:1;background:var(--cream);border:1px solid rgba(78,125,138,0.3);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--dark);font-family:inherit;outline:none;text-transform:uppercase;letter-spacing:2px;">
+            <button onclick="vincularGestantePai()" style="background:var(--pai);color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">Vincular</button>
+          </div>
+          <div id="p-vincular-erro" style="font-size:11px;color:#e07b5a;margin-top:6px;display:none;"></div>
+        </div>
+      </aside>
+
+      <main class="p-main">
+
+        <!-- DASHBOARD PAI -->
+        <div class="g-panel active" id="p-dashboard">
+          <div class="panel-title" id="pai-greeting">Olá, papai! 👶</div>
+          <div class="panel-sub" id="pai-dash-sub">Bem-vindo ao Lua-Pai</div>
+
+          <div id="p-gestacao-card" style="display:none;background:linear-gradient(135deg,var(--dark),#1e3a4a);border-radius:20px;padding:24px;color:white;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:14px;">Gestação da Parceira</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+              <div style="font-size:52px;" id="p-bebe-emoji">🌱</div>
+              <div>
+                <div style="font-size:30px;font-family:'Cormorant Garamond',serif;font-weight:300;" id="p-semanas-num">—</div>
+                <div style="font-size:13px;opacity:0.6;margin-top:4px;" id="p-parceira-nome-dash">—</div>
+              </div>
+            </div>
+            <div style="background:rgba(255,255,255,0.12);border-radius:10px;height:6px;margin-bottom:6px;">
+              <div id="p-prog-bar" style="background:white;border-radius:10px;height:6px;width:0%;transition:width 0.6s;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.4;margin-bottom:16px;"><span>Início</span><span>Semana 40</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:500;" id="p-dias-restantes">—</div>
+                <div style="font-size:11px;opacity:0.5;margin-top:2px;">dias restantes</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:center;">
+                <div style="font-size:18px;font-weight:500;" id="p-dpp-display">—</div>
+                <div style="font-size:11px;opacity:0.5;margin-top:2px;">data provável</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="p-sem-vinculo-banner" style="background:linear-gradient(135deg,rgba(78,125,138,0.12),rgba(78,125,138,0.06));border:1px solid rgba(78,125,138,0.2);border-radius:16px;padding:24px;margin-bottom:20px;">
+            <div style="font-size:32px;margin-bottom:10px;">👶</div>
+            <div style="font-size:16px;font-weight:500;color:var(--dark);margin-bottom:6px;">Conecte-se à gestação</div>
+            <div style="font-size:13px;color:var(--earth-light);line-height:1.6;">Insira o código de convite da sua parceira na barra lateral para começar a acompanhar a gestação.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">💡 Como você pode apoiar hoje</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:var(--rose-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">🤝 Pergunte como ela está se sentindo hoje</div>
+              <div style="background:var(--pai-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">🍽️ Prepare uma refeição especial para ela</div>
+              <div style="background:var(--gold-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">📚 Leia sobre a fase atual da gestação</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GESTAÇÃO DA PARCEIRA -->
+        <div class="g-panel" id="p-gestacao">
+          <div class="panel-title">Gestação da Parceira</div>
+          <div class="panel-sub">Acompanhe cada semana desta jornada</div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+              <div>
+                <div class="preg-weeks" id="p-gestacao-semanas">— <span>semanas</span></div>
+                <div style="font-size:13px;color:var(--earth-light);margin-top:6px;" id="p-gestacao-faltam">—</div>
+              </div>
+              <div style="background:var(--pai-pale);color:var(--pai);padding:4px 12px;border-radius:20px;font-size:12px;letter-spacing:1px;text-transform:uppercase;" id="p-gestacao-trimestre">—</div>
+            </div>
+            <div class="preg-bar"><div class="preg-bar-fill" id="p-gestacao-bar" style="width:0%;background:var(--pai);"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span>Início</span><span>Semana 40</span></div>
+            <div class="preg-info-grid">
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dpp">—</div><div class="preg-info-label">DPP estimada</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-progresso">—</div><div class="preg-info-label">Progresso</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dias">—</div><div class="preg-info-label">Dias restantes</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📖 O que acontece nesta semana</div>
+            <div id="p-semana-desc" style="font-size:14px;color:var(--mid);line-height:1.7;">Conecte-se à parceira para ver as informações da semana atual.</div>
+          </div>
+        </div>
+
+        <!-- CONTRAÇÕES EM TEMPO REAL -->
+        <div class="g-panel" id="p-contracoes">
+          <div class="panel-title">Contrações</div>
+          <div class="panel-sub">Acompanhe em tempo real as contrações da sua parceira</div>
+          <div class="card" style="background:linear-gradient(135deg,var(--dark),#1e2a3a);color:white;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.4;margin-bottom:12px;">Status em tempo real</div>
+            <div style="font-size:15px;margin-bottom:10px;" id="p-contracoes-status">Aguardando conexão com parceira...</div>
+            <div id="p-contracoes-timer-wrap" style="display:none;">
+              <div style="font-size:52px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:6px;" id="p-timer-display">00:00</div>
+              <div style="font-size:12px;opacity:0.5;margin-top:4px;">duração desta contração</div>
+            </div>
+          </div>
+          <div id="p-contracoes-log" style="margin-top:20px;"></div>
+          <div id="p-sem-vinculo-contracoes" class="empty-state" style="display:none;">
+            <div class="empty-icon">🔗</div>
+            <div class="empty-title">Não conectado</div>
+            <div class="empty-sub">Vincule-se à sua parceira para acompanhar as contrações.</div>
+          </div>
+        </div>
+
+        <!-- DIÁRIO DO PAI -->
+        <div class="g-panel" id="p-diario">
+          <div class="panel-title">Diário do Pai</div>
+          <div class="panel-sub">Registre seus sentimentos e momentos especiais desta jornada</div>
+          <div class="diary-new">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="p-diary-cats">
+              <button class="p-cat-btn selected" onclick="selectCategoriaPai(this,'💭 Sentimentos')">💭 Sentimentos</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'📝 Carta pro bebê')">📝 Carta pro bebê</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🏥 Consulta')">🏥 Consulta</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🤔 Preparativos')">🤔 Preparativos</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'❤️ Momento especial')">❤️ Momento especial</button>
+            </div>
+            <textarea id="p-diary-textarea" placeholder="Escreva livremente o que você está sentindo..."></textarea>
+            <div class="diary-new-footer">
+              <div class="mood-btns" id="p-mood-btns">
+                <span class="mood-btn" onclick="selectMoodPai(this)">😊</span>
+                <span class="mood-btn" onclick="selectMoodPai(this)">🥰</span>
+                <span class="mood-btn" onclick="selectMoodPai(this)">😢</span>
+                <span class="mood-btn" onclick="selectMoodPai(this)">🤩</span>
+                <span class="mood-btn" onclick="selectMoodPai(this)">😰</span>
+              </div>
+              <button class="save-btn" onclick="saveDiarioPai()">Salvar registro</button>
+            </div>
+          </div>
+          <div id="p-diary-entries">
+            <div class="empty-state" id="p-diary-empty">
+              <div class="empty-icon">📓</div>
+              <div class="empty-title">Seu diário está esperando</div>
+              <div class="empty-sub">Registre aqui seus sentimentos e momentos especiais 💛</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT LUA-PAI -->
+        <div class="g-panel" id="p-chat">
+          <div class="panel-title">Conversar com a Lua</div>
+          <div class="panel-sub">Lua está aqui para apoiar você nesta jornada como pai 🌙</div>
+          <div class="chat-faq-sugestoes">
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)">👶 Como apoiar no trabalho de parto?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)">💛 O que muda na relação após o parto?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)">🤔 Como me preparar para ser pai?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)">🍼 Como ajudar na amamentação?</button>
+          </div>
+          <div class="chat-wrap">
+            <div class="chat-messages" id="p-chat-messages">
+              <div class="chat-msg recv">
+                <div class="chat-bubble">Olá, papai! Sou Lua 🌙 Estou aqui para te apoiar nesta jornada incrível. Pode me perguntar qualquer coisa sobre a gestação, o parto e como você pode estar presente de verdade. Como posso te ajudar hoje?</div>
+                <div class="chat-time">Lua • agora</div>
+              </div>
+            </div>
+            <div class="chat-input-wrap">
+              <input class="chat-input" id="p-chat-input" placeholder="Escreva para Lua... 🌙" onkeydown="if(event.key==='Enter')sendPaiMsg()">
+              <button class="chat-send" onclick="sendPaiMsg()">➤</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1981,6 +2230,10 @@ let currentUserId = null;
 let currentDoulaId = null;
 let currentNome = '';
 let currentSolicitacaoPendente = null; // { id, doulaId, nomeDoula }
+let paiGestanteId = null;
+let paiRealtimeChannel = null;
+let paiTimerInterval = null;
+var paiCategoriaAtual = '💭 Sentimentos';
 let timerInterval = null;
 let timerRunning = false;
 let timerStart = null;
@@ -3511,6 +3764,316 @@ function saveDiary() {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
 }
 
+// ══════════════════════════════════════
+// LUA-PAI — Funções
+// ══════════════════════════════════════
+
+function pNav(el, panelId) {
+  document.querySelectorAll('.p-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#view-pai .g-panel').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (panelId === 'p-diario') { try { carregarDiarioPai(); } catch(e) {} }
+  if (panelId === 'p-gestacao' || panelId === 'p-dashboard') { try { carregarDashboardPai(); } catch(e) {} }
+}
+
+// ── Gestante: Gerar código de convite ──
+async function gerarCodigoConvite(forcarNovo) {
+  if (!db || !currentUserId) return;
+  var btn = document.getElementById('btn-gerar-convite');
+  if (btn) { btn.textContent = 'Gerando...'; btn.disabled = true; }
+  try {
+    if (!forcarNovo) {
+      var existing = await db.from('convites_pai').select('codigo').eq('gestante_id', currentUserId).eq('usado', false).maybeSingle();
+      if (existing.data) { mostrarCodigoConvite(existing.data.codigo); if (btn) { btn.textContent = 'Gerar novo código'; btn.disabled = false; } return; }
+    } else {
+      await db.from('convites_pai').update({ usado: true }).eq('gestante_id', currentUserId).eq('usado', false);
+    }
+    var codigo = Math.random().toString(36).substring(2, 8).toUpperCase();
+    var res = await db.from('convites_pai').insert({ gestante_id: currentUserId, codigo: codigo });
+    if (!res.error) { mostrarCodigoConvite(codigo); } else { mostrarToast('Erro ao gerar código. Tente novamente.'); }
+  } catch(e) { mostrarToast('Erro de conexão.'); }
+  if (btn) { btn.textContent = 'Gerar novo código'; btn.disabled = false; }
+}
+
+function mostrarCodigoConvite(codigo) {
+  var card = document.getElementById('convite-card-display');
+  var btn = document.getElementById('btn-gerar-convite');
+  if (card) { card.style.display = 'block'; document.getElementById('convite-codigo-texto').textContent = codigo; }
+  if (btn) btn.style.display = 'none';
+}
+
+function copiarCodigoConvite() {
+  var texto = document.getElementById('convite-codigo-texto');
+  if (!texto) return;
+  navigator.clipboard.writeText(texto.textContent).then(function() { mostrarToast('Código copiado! 💛'); }).catch(function() { mostrarToast('Código: ' + texto.textContent); });
+}
+
+// ── Pai: Vincular com gestante usando código ──
+async function vincularGestantePai() {
+  var input = document.getElementById('p-codigo-input');
+  var erroEl = document.getElementById('p-vincular-erro');
+  if (!input || !db) return;
+  var codigo = input.value.trim().toUpperCase();
+  if (erroEl) erroEl.style.display = 'none';
+  if (codigo.length < 4) { if (erroEl) { erroEl.textContent = 'Informe o código de convite.'; erroEl.style.display = 'block'; } return; }
+  var res = await db.from('convites_pai').select('id,gestante_id').eq('codigo', codigo).eq('usado', false).maybeSingle();
+  if (!res.data) { if (erroEl) { erroEl.textContent = 'Código inválido ou já utilizado.'; erroEl.style.display = 'block'; } return; }
+  var gestanteId = res.data.gestante_id;
+  await db.from('usuarios').update({ gestante_id: gestanteId }).eq('id', currentUserId);
+  await db.from('convites_pai').update({ usado: true }).eq('id', res.data.id);
+  paiGestanteId = gestanteId;
+  input.value = '';
+  mostrarToast('Conectado à gestação da sua parceira! 💛');
+  var vincularBox = document.getElementById('p-vincular-box');
+  if (vincularBox) vincularBox.style.display = 'none';
+  carregarDashboardPai();
+  iniciarRealtimePai(gestanteId);
+}
+
+// ── Pai: Carregar dashboard (lê DPP da gestante no Supabase) ──
+async function carregarDashboardPai() {
+  var semBanner = document.getElementById('p-sem-vinculo-banner');
+  var gestCard = document.getElementById('p-gestacao-card');
+  var parceiraCard = document.getElementById('p-parceira-card');
+  var vincularBox = document.getElementById('p-vincular-box');
+  if (!paiGestanteId) {
+    if (semBanner) semBanner.style.display = 'block';
+    if (gestCard) gestCard.style.display = 'none';
+    return;
+  }
+  if (semBanner) semBanner.style.display = 'none';
+  if (vincularBox) vincularBox.style.display = 'none';
+  var resG = await db.from('usuarios').select('nome,dpp').eq('id', paiGestanteId).maybeSingle();
+  if (!resG.data) return;
+  var nomeG = resG.data.nome ? resG.data.nome.split(' ')[0] : 'Parceira';
+  var dppG = resG.data.dpp || null;
+  // Mostra card da parceira na sidebar
+  if (parceiraCard) {
+    parceiraCard.style.display = 'block';
+    var el = document.getElementById('p-parceira-nome-sidebar');
+    if (el) el.textContent = nomeG;
+  }
+  var pNomeDash = document.getElementById('p-parceira-nome-dash');
+  if (pNomeDash) pNomeDash.textContent = nomeG;
+  if (!dppG) {
+    if (gestCard) gestCard.style.display = 'block';
+    var semEl = document.getElementById('p-semanas-num');
+    if (semEl) semEl.innerHTML = '— <span>semanas</span>';
+    return;
+  }
+  var info = calcularSemana(dppG);
+  if (gestCard) gestCard.style.display = 'block';
+  var partesDpp = dppG.split('-');
+  var dppFormatada = partesDpp[2] + '/' + partesDpp[1] + '/' + partesDpp[0];
+  try { document.getElementById('p-semanas-num').innerHTML = info.semana + ' <span style="font-size:16px;opacity:0.7;">semanas</span>'; } catch(e) {}
+  try { document.getElementById('p-prog-bar').style.width = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('p-dias-restantes').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
+  try { document.getElementById('p-dpp-display').textContent = dppFormatada; } catch(e) {}
+  // Emojis por semana
+  var bebeEmojis = {1:'🫧',4:'🌱',8:'🫘',12:'🫐',16:'🥝',20:'🍋',24:'🥭',28:'🥥',32:'🍍',36:'🎃',40:'👶'};
+  var emojiKey = Math.max.apply(null, Object.keys(bebeEmojis).filter(function(k){return parseInt(k)<=info.semana;}));
+  try { document.getElementById('p-bebe-emoji').textContent = bebeEmojis[emojiKey] || '👶'; } catch(e) {}
+  // Painel gestação
+  try { document.getElementById('p-gestacao-semanas').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
+  try { document.getElementById('p-gestacao-bar').style.width = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('p-gestacao-dpp').textContent = dppFormatada; } catch(e) {}
+  try { document.getElementById('p-gestacao-progresso').textContent = info.progresso + '%'; } catch(e) {}
+  try { document.getElementById('p-gestacao-dias').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
+  try { document.getElementById('p-gestacao-faltam').textContent = 'Faltam ' + (info.dias > 0 ? info.dias : 0) + ' dias'; } catch(e) {}
+  var tri = info.semana <= 13 ? '1º Trimestre' : info.semana <= 27 ? '2º Trimestre' : '3º Trimestre';
+  try { document.getElementById('p-gestacao-trimestre').textContent = tri; } catch(e) {}
+  // Frase da semana adaptada para o pai
+  try {
+    var frase = (frasesPorSemana && frasesPorSemana[info.semana]) ? frasesPorSemana[info.semana] : '';
+    var descEl = document.getElementById('p-semana-desc');
+    if (descEl && frase) descEl.textContent = 'Semana ' + info.semana + ': ' + frase;
+  } catch(e) {}
+}
+
+// ── Pai: Diário ──
+function selectCategoriaPai(el, cat) {
+  document.querySelectorAll('.p-cat-btn').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  paiCategoriaAtual = cat;
+}
+
+function selectMoodPai(el) {
+  document.querySelectorAll('#p-mood-btns .mood-btn').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+async function saveDiarioPai() {
+  var ta = document.getElementById('p-diary-textarea');
+  var mood = document.querySelector('#p-mood-btns .mood-btn.selected');
+  if (!ta || !ta.value.trim()) return;
+  var texto = ta.value.trim();
+  var humor = mood ? mood.textContent : null;
+  var emptyEl = document.getElementById('p-diary-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+  // Render imediato
+  var entry = document.createElement('div');
+  entry.className = 'diary-entry';
+  var now = new Date();
+  var catLabel = '<span style="background:var(--pai-pale);color:var(--pai);border-radius:10px;padding:2px 10px;font-size:11px;margin-right:8px;">' + paiCategoriaAtual + '</span>';
+  entry.innerHTML = '<div class="diary-date">' + catLabel + now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + texto + '</div>' + (humor ? '<div class="diary-mood">' + humor + '</div>' : '');
+  document.getElementById('p-diary-entries').prepend(entry);
+  ta.value = '';
+  document.querySelectorAll('#p-mood-btns .mood-btn').forEach(function(b) { b.classList.remove('selected'); });
+  // Salva no Supabase
+  if (db && currentUserId) {
+    try { await db.from('diario_pai').insert({ pai_id: currentUserId, categoria: paiCategoriaAtual, conteudo: texto, humor: humor }); } catch(e) {}
+  }
+  mostrarToast('Registro salvo 💛');
+}
+
+async function carregarDiarioPai() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('p-diary-entries');
+  var emptyEl = document.getElementById('p-diary-empty');
+  try {
+    var res = await db.from('diario_pai').select('*').eq('pai_id', currentUserId).order('criado_em', { ascending: false }).limit(30);
+    if (res.error || !res.data || !res.data.length) { if (emptyEl) emptyEl.style.display = 'block'; return; }
+    if (emptyEl) emptyEl.style.display = 'none';
+    // Limpa entradas antigas (exceto o empty state) antes de renderizar
+    Array.from(container.children).forEach(function(c) { if (c.id !== 'p-diary-empty') c.remove(); });
+    res.data.forEach(function(item) {
+      var entry = document.createElement('div');
+      entry.className = 'diary-entry';
+      var d = new Date(item.criado_em);
+      var catLabel = item.categoria ? '<span style="background:var(--pai-pale);color:var(--pai);border-radius:10px;padding:2px 10px;font-size:11px;margin-right:8px;">' + item.categoria + '</span>' : '';
+      entry.innerHTML = '<div class="diary-date">' + catLabel + d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + item.conteudo + '</div>' + (item.humor ? '<div class="diary-mood">' + item.humor + '</div>' : '');
+      container.appendChild(entry);
+    });
+  } catch(e) {}
+}
+
+// ── Pai: Chat com Lua ──
+var chatHistoryPai = [];
+var SYSTEM_PROMPT_PAI = 'Voce e Lua, uma assistente especialista em gestacao, parto e pos-parto, conversando com o PAI do bebe. Responda sempre em portugues brasileiro, com tom acolhedor, pratico e encorajador. Suas respostas devem ser curtas (maximo 3 paragrafos), diretas e apoiadoras. Ajude o pai a entender a gestacao, como apoiar a parceira, como se preparar para a paternidade e o que esperar no parto. Se houver emergencia medica, oriente a ir ao hospital imediatamente. Nunca substitua um medico.';
+
+async function enviarMensagemLuaPai(mensagem) {
+  var msgs = document.getElementById('p-chat-messages');
+  var typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg recv';
+  typingDiv.id = 'p-typing-indicator';
+  typingDiv.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+  chatHistoryPai.push({ role: 'user', content: mensagem });
+  try {
+    var response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistoryPai, systemPrompt: SYSTEM_PROMPT_PAI })
+    });
+    var data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Erro HTTP ' + response.status);
+    var reply = data.reply || 'Desculpe, tente novamente!';
+    chatHistoryPai.push({ role: 'assistant', content: reply });
+    var typing = document.getElementById('p-typing-indicator');
+    if (typing) typing.remove();
+    var hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    var respDiv = document.createElement('div');
+    respDiv.className = 'chat-msg recv';
+    respDiv.innerHTML = '<div class="chat-bubble">' + reply + '</div><div class="chat-time">Lua • ' + hora + '</div>';
+    msgs.appendChild(respDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  } catch(e) {
+    var tEl = document.getElementById('p-typing-indicator');
+    if (tEl) tEl.remove();
+    var errDiv = document.createElement('div');
+    errDiv.className = 'chat-msg recv';
+    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + ' 💛</div>';
+    msgs.appendChild(errDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+function sendFAQPai(btn) {
+  var msg = btn.textContent;
+  var msgs = document.getElementById('p-chat-messages');
+  var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  var div = document.createElement('div');
+  div.className = 'chat-msg sent';
+  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + now + '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  enviarMensagemLuaPai(msg);
+}
+
+function sendPaiMsg() {
+  var inp = document.getElementById('p-chat-input');
+  if (!inp || !inp.value.trim()) return;
+  var msgs = document.getElementById('p-chat-messages');
+  var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  var div = document.createElement('div');
+  div.className = 'chat-msg sent';
+  div.innerHTML = '<div class="chat-bubble">' + inp.value + '</div><div class="chat-time">' + now + '</div>';
+  msgs.appendChild(div);
+  var mensagem = inp.value;
+  inp.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+  enviarMensagemLuaPai(mensagem);
+}
+
+// ── Pai: Realtime contrações ──
+function iniciarRealtimePai(gestanteId) {
+  if (!db || !gestanteId) return;
+  if (paiRealtimeChannel) db.removeChannel(paiRealtimeChannel);
+  var statusEl = document.getElementById('p-contracoes-status');
+  var semVinculo = document.getElementById('p-sem-vinculo-contracoes');
+  if (semVinculo) semVinculo.style.display = 'none';
+  if (statusEl) statusEl.textContent = 'Monitorando contrações...';
+  // Carrega histórico recente
+  db.from('contracoes').select('*').eq('gestante_id', gestanteId).order('inicio', { ascending: false }).limit(10)
+    .then(function(res) { if (res.data) renderContracoesLog(res.data, 'p-contracoes-log'); });
+  // Realtime
+  paiRealtimeChannel = db.channel('pai-contracoes-' + gestanteId)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'contracoes', filter: 'gestante_id=eq.' + gestanteId }, function(payload) {
+      var row = payload.new;
+      if (payload.eventType === 'INSERT') {
+        if (statusEl) { statusEl.textContent = '🔴 Contração em andamento!'; statusEl.style.color = 'var(--alert)'; }
+        var wrap = document.getElementById('p-contracoes-timer-wrap');
+        if (wrap) wrap.style.display = 'block';
+        var inicio = new Date(row.inicio).getTime();
+        clearInterval(paiTimerInterval);
+        paiTimerInterval = setInterval(function() {
+          var elapsed = Date.now() - inicio;
+          var s = Math.floor(elapsed / 1000);
+          var display = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+          var el = document.getElementById('p-timer-display');
+          if (el) el.textContent = display;
+        }, 500);
+        mostrarToast('🚨 Sua parceira iniciou uma contração!');
+      } else if (payload.eventType === 'UPDATE' && row.fim) {
+        clearInterval(paiTimerInterval);
+        if (statusEl) { statusEl.textContent = 'Aguardando próxima contração...'; statusEl.style.color = ''; }
+        var wrap2 = document.getElementById('p-contracoes-timer-wrap');
+        if (wrap2) wrap2.style.display = 'none';
+        var timerEl = document.getElementById('p-timer-display');
+        if (timerEl) timerEl.textContent = '00:00';
+        db.from('contracoes').select('*').eq('gestante_id', gestanteId).order('inicio', { ascending: false }).limit(10)
+          .then(function(res) { if (res.data) renderContracoesLog(res.data, 'p-contracoes-log'); });
+      }
+    }).subscribe();
+}
+
+function renderContracoesLog(lista, containerId) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  var concluidas = lista.filter(function(c) { return c.fim; });
+  if (!concluidas.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:16px;">Nenhuma contração registrada ainda</div>'; return; }
+  el.innerHTML = concluidas.map(function(c) {
+    var d = Math.round(c.duracao_ms / 1000);
+    var dur = Math.floor(d/60) + ':' + String(d%60).padStart(2,'0');
+    var intv = c.intervalo_ms ? (Math.floor(c.intervalo_ms/60000) + 'min ' + Math.round((c.intervalo_ms%60000)/1000) + 's') : '—';
+    var hora = new Date(c.inicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    return '<div class="contraction-row"><div class="cont-time">' + hora + '</div><div class="cont-duration">' + dur + '</div><div class="cont-interval">Intervalo: ' + intv + '</div></div>';
+  }).join('');
+}
+
 // ─── Timer ───
 var observacaoInicio = null; // quando começou a primeira contração
 async function timerAction() {
@@ -4223,6 +4786,9 @@ function selecionarTipo(tipo) {
   tipoSelecionado = tipo;
   document.getElementById('tipo-gestante').classList.toggle('selected', tipo === 'gestante');
   document.getElementById('tipo-doula').classList.toggle('selected', tipo === 'doula');
+  document.getElementById('tipo-pai').classList.toggle('selected', tipo === 'pai');
+  var paiCampo = document.getElementById('pai-codigo-campo');
+  if (paiCampo) paiCampo.style.display = tipo === 'pai' ? 'block' : 'none';
 }
 
 // ── ENTRAR ──
@@ -4288,6 +4854,19 @@ async function fazerCadastro() {
     }
     if (res.data.user) {
       try { await db.from('usuarios').insert({ id: res.data.user.id, nome: nome, email: email, tipo: tipoSelecionado }); } catch(e) {}
+      if (tipoSelecionado === 'pai') {
+        var codigoPai = document.getElementById('cad-codigo-pai');
+        var codigo = codigoPai ? codigoPai.value.trim().toUpperCase() : '';
+        if (codigo.length >= 4) {
+          try {
+            var convite = await db.from('convites_pai').select('id,gestante_id').eq('codigo', codigo).eq('usado', false).maybeSingle();
+            if (convite.data) {
+              await db.from('usuarios').update({ gestante_id: convite.data.gestante_id }).eq('id', res.data.user.id);
+              await db.from('convites_pai').update({ usado: true }).eq('id', convite.data.id);
+            }
+          } catch(e2) {}
+        }
+      }
     }
     document.getElementById('form-cadastrar').style.display = 'none';
     var conf = document.getElementById('form-confirmacao');
@@ -4334,6 +4913,7 @@ async function carregarUsuario(user) {
     var tipo = res.data ? res.data.tipo : ((user.user_metadata && user.user_metadata.tipo) || 'gestante');
     var nome = res.data ? res.data.nome : ((user.user_metadata && user.user_metadata.nome) || user.email);
     if (res.data) currentDoulaId = res.data.doula_id || null;
+    if (res.data && tipo === 'pai') paiGestanteId = res.data.gestante_id || null;
     // Verifica solicitações sempre que for gestante sem doula vinculada
     if (!currentDoulaId && tipo === 'gestante') {
       try {
@@ -4370,8 +4950,9 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('app').classList.add('visible');
   document.getElementById('view-gestante').classList.remove('active');
   document.getElementById('view-doula').classList.remove('active');
+  document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-' + tipo).classList.add('active');
-  document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : '🌙 Doula';
+  document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : tipo === 'pai' ? '👶 Lua-Pai' : '🌙 Doula';
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
@@ -4426,7 +5007,20 @@ function entrarNoApp(tipo, nome) {
       }
     }, 800);
   }
-  mostrarToast('Bem-vinda, ' + primeiroNome + '!');
+  if (tipo === 'pai') {
+    var pNome = document.getElementById('p-profile-name');
+    if (pNome) pNome.textContent = primeiroNome;
+    var pAvatar = document.getElementById('p-avatar');
+    if (pAvatar) pAvatar.textContent = primeiroNome[0].toUpperCase();
+    var pGreet = document.getElementById('pai-greeting');
+    if (pGreet) pGreet.textContent = saudacao + ', ' + primeiroNome + '! 👶';
+    setTimeout(function() { try { carregarDashboardPai(); } catch(e) {} }, 400);
+    setTimeout(function() { try { carregarDiarioPai(); } catch(e) {} }, 600);
+    if (paiGestanteId) {
+      setTimeout(function() { try { iniciarRealtimePai(paiGestanteId); } catch(e) {} }, 800);
+    }
+  }
+  mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
 }
 
@@ -4729,6 +5323,7 @@ function salvarDPP() {
   var dpp = document.getElementById('dpp-input').value;
   if (!dpp) return mostrarToast('Informe a data provável do parto');
   try { localStorage.setItem('lua_dpp', dpp); } catch(e) {}
+  if (db && currentUserId) { try { db.from('usuarios').update({ dpp: dpp }).eq('id', currentUserId); } catch(e) {} }
   atualizarDashboardGestante(dpp);
   mostrarToast('✅ Data salva! Semana calculada 🌸');
 }
