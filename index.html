@@ -636,8 +636,7 @@ tr:hover td { background:var(--rose-pale); }
     padding: 12px 0 8px !important;
   }
   .g-profile { display: none; }
-  .g-nav { display: flex; flex-direction: row; overflow-x: auto; padding: 0 8px; gap: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .g-nav::-webkit-scrollbar { display: none; }
+  .g-nav { display: none !important; }
   .g-nav-item { flex-shrink: 0; padding: 8px 14px !important; border-left: none !important; border-radius: 20px; font-size: 13px; white-space: nowrap; }
   .g-nav-item.active { background: var(--rose-pale); color: var(--rose); }
   .g-doula-card { display: none; }
@@ -679,7 +678,7 @@ tr:hover td { background:var(--rose-pale); }
   .panel-title { font-size: 24px !important; }
   .timer-display { font-size: 52px !important; }
   .emergencia-acoes { grid-template-columns: 1fr 1fr !important; }
-  .lua-copyright { font-size: 10px; flex-wrap: wrap; justify-content: center; }
+  .lua-copyright { display: none !important; }
   .lua-watermark { display: none; }
   .splash-btns { flex-direction: column; align-items: center; gap: 12px; }
   .splash-btn { width: 200px; text-align: center; }
@@ -886,6 +885,45 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-doula-card-sub" id="g-doula-card-sub" data-i18n="dash.doula.connected">Conectada ao app</div>
         </div>
       </aside>
+
+      <!-- NOVO BOTTOM NAV MOBILE -->
+      <nav class="mobile-bottom-nav" id="gestante-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+          <div class="mob-nav-item active" onclick="gNav(this,'g-dashboard');fecharMobMore()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Início</span>
+          </div>
+          <div class="mob-nav-item" onclick="gNav(this,'g-acomp');fecharMobMore()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span>Gestação</span>
+          </div>
+          <div class="mob-nav-item" onclick="gNav(this,'g-emergencia');fecharMobMore()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Contrações</span>
+          </div>
+          <div class="mob-nav-item" onclick="gNav(this,'g-diario');fecharMobMore()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span>Diário</span>
+          </div>
+          <div class="mob-nav-item" onclick="toggleMobMore()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+            <span>Mais</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="mob-more-overlay" id="mob-more-overlay" onclick="fecharMobMore()"></div>
+      <div class="mob-nav-more" id="mob-nav-more">
+        <div class="mob-more-item" onclick="gNav(this,'g-tarefas');fecharMobMore()"><span>✅ Tarefas</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-plano');fecharMobMore()"><span>📋 Plano de Parto</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-conteudo');fecharMobMore()"><span>📚 Conteúdo</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-extras');fecharMobMore()"><span>🎧 Extras</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-marketplace');fecharMobMore()"><span>🔍 Encontrar Doula</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula');fecharMobMore()" id="mob-more-minha-doula" style="display:none;"><span>💜 Minha Doula</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-parceiro');fecharMobMore()"><span>❤️ Acompanhante</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-chat');fecharMobMore()"><span>🌙 Conversar</span></div>
+      </div>
 
       <main class="g-main">
 
@@ -2316,8 +2354,15 @@ function irParaClientesDoula() {
 
 function gNav(el, panelId) {
   document.querySelectorAll('.g-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('.mob-nav-item').forEach(function(i) { i.classList.remove('active'); });
   document.querySelectorAll('.g-panel').forEach(function(p) { p.classList.remove('active'); });
-  el.classList.add('active');
+  
+  if (el) el.classList.add('active');
+  if (panelId) {
+     var mobMatch = document.querySelector('.mob-nav-item[onclick*="' + panelId + '"]');
+     if (mobMatch && el !== mobMatch) mobMatch.classList.add('active');
+  }
+
   var panel = document.getElementById(panelId);
   if (panel) panel.classList.add('active');
   if (panelId === 'g-acomp' || panelId === 'g-dashboard') {
@@ -2332,6 +2377,20 @@ function gNav(el, panelId) {
   if (panelId === 'g-marketplace') {
     try { carregarMarketplace(); } catch(e) {}
   }
+}
+
+function toggleMobMore() {
+  var menu = document.getElementById('mob-nav-more');
+  var overlay = document.getElementById('mob-more-overlay');
+  if (menu) menu.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('open');
+}
+
+function fecharMobMore() {
+  var menu = document.getElementById('mob-nav-more');
+  var overlay = document.getElementById('mob-more-overlay');
+  if (menu) menu.classList.remove('open');
+  if (overlay) overlay.classList.remove('open');
 }
 
 function gNavById(panelId) {
