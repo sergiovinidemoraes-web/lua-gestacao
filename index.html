@@ -1683,6 +1683,7 @@ tr:hover td { background:var(--rose-pale); }
               <button onclick="ligarDoula()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.btn.call">📞 Ligar</button>
             </div>
             <button onclick="encerrarVinculo()" style="width:100%;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:rgba(255,180,180,1);padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.unlink">Encerrar vínculo com esta doula</button>
+            <button onclick="abrirAvaliacaoDoula()" style="width:100%;background:linear-gradient(135deg,var(--rose),#a8685a);border:none;color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:8px;">💛 Avaliar minha doula</button>
           </div>
           <div class="card">
             <div class="card-title" data-i18n="doula.msgs.title">💬 Mensagens com sua doula</div>
@@ -1737,7 +1738,8 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- CHAT GESTANTE -->
         <div class="g-panel" id="g-chat">
-          <div class="panel-title" data-i18n="chat.title">Conversar com a Lua</div>
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose-light);opacity:0.7;margin-bottom:4px;font-family:'DM Sans',sans-serif;">Programa desenvolvido por time brasileiro 🇧🇷</div>
+          <div class="panel-title" data-i18n="chat.title">Chat com a Lua IA</div>
           <div class="panel-sub" data-i18n="chat.sub">Converse com Lua, sua assistente de gestação powered by IA 🌙</div>
           <div class="chat-faq-sugestoes">
             <button class="chat-faq-btn" onclick="sendFAQ(this)" data-i18n="chat.faq.1">🤱 Como melhorar a pega?</button>
@@ -1757,6 +1759,15 @@ tr:hover td { background:var(--rose-pale); }
               <input class="chat-input" id="g-chat-input" data-i18n-ph="chat.ph" placeholder="Escreva para Lua... 🌙" onkeydown="if(event.key==='Enter')sendGMsg()">
               <button class="chat-send" onclick="sendGMsg()">➤</button>
             </div>
+          </div>
+          <!-- Reportar última resposta -->
+          <div style="text-align:right;margin-top:6px;">
+            <button onclick="abrirModalReporte()" style="background:none;border:1px solid rgba(201,137,122,0.3);color:var(--rose-light);font-size:11px;padding:4px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;">⚑ Reportar resposta</button>
+          </div>
+          <!-- Aviso fixo IA -->
+          <div style="margin-top:14px;background:rgba(201,137,122,0.08);border:1px solid rgba(201,137,122,0.18);border-radius:12px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;">
+            <span style="font-size:16px;flex-shrink:0;">⚕️</span>
+            <span style="font-size:12px;color:var(--earth-light);line-height:1.5;">O Chat Lua é uma ferramenta de inteligência artificial. Para dúvidas importantes, consulte sempre um profissional de saúde de confiança.</span>
           </div>
         </div>
 
@@ -1880,6 +1891,27 @@ tr:hover td { background:var(--rose-pale); }
               <input id="doula-especialidades" class="form-input" type="text" data-i18n-ph="doula.perfil.esp" placeholder="Especialidades separadas por virgula">
               <textarea id="doula-bio" class="form-input form-textarea" data-i18n-ph="doula.perfil.bio" placeholder="Sua bio curta — quem voce e e como trabalha..." style="height:80px;resize:none;"></textarea>
               <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;" data-i18n="doula.perfil.save">Salvar e aparecer no marketplace</button>
+            </div>
+          </div>
+
+          <!-- BACKUP DOULA -->
+          <div class="card" style="margin-top:20px;background:linear-gradient(135deg,rgba(30,18,12,0.9),rgba(40,25,15,0.9));border:1px solid rgba(201,137,122,0.2);">
+            <div class="card-title">🔄 Doula Backup</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Configure uma doula de backup para atender suas clientes quando você não estiver disponível</div>
+            <div style="display:grid;gap:10px;">
+              <div>
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;">E-mail da doula backup</label>
+                <input id="backup-doula-email" class="form-input" type="email" placeholder="backup@doula.com">
+              </div>
+              <div>
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:8px;">Permissões concedidas</label>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à Agenda</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso ao Chat</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso aos Registros</label>
+                </div>
+              </div>
+              <button onclick="salvarBackupDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">✅ Salvar configuração de backup</button>
             </div>
           </div>
 
@@ -2723,7 +2755,7 @@ pt: {
   'nav.inicio':'Início','nav.gestacao':'Minha Gestação','nav.tarefas':'Tarefas por Fase',
   'nav.plano':'Plano de Parto','nav.contracoes':'Contrações','nav.conteudo':'Conteúdo',
   'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Minha Doula',
-  'nav.posparto':'Pós-Parto','nav.diario':'Diário','nav.chat':'Conversar com a Lua',
+  'nav.posparto':'Pós-Parto','nav.diario':'Diário','nav.chat':'Chat com a Lua IA',
   // Nav mobile
   'mob.inicio':'Início','mob.gestacao':'Gestação','mob.conteudo':'Conteúdo',
   'mob.chat':'Chat','mob.mais':'Mais',
@@ -2782,7 +2814,7 @@ pt: {
   't.cadeirinha':'Instalar cadeirinha no carro',
   // Plano de parto
   'plano.title':'Plano de Parto','plano.sub':'Registre suas preferências e compartilhe com sua doula',
-  'plano.orientacao':'É um documento que registra suas preferências, desejos e limites durante o trabalho de parto e nascimento. Ele serve como guia para sua equipe e doula, garantindo que suas escolhas sejam respeitadas. Converse com sua doula sobre cada item!',
+  'plano.orientacao':'O Plano de Parto é um registro dos seus desejos, escolhas e limites para o nascimento. Ele serve como um guia para a sua equipe e doula, garantindo que você seja a protagonista do seu parto. Use esse espaço para organizar seus pensamentos e conversar com quem vai estar ao seu lado!',
   'plano.orientacao.title':'💡 O que é o plano de parto?',
   'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesariana',
   'plano.dor.title':'Alívio da Dor',
@@ -2981,11 +3013,13 @@ pt: {
   'diario.btn.save':'Salvar registro','diario.empty.title':'Seu diário está esperando',
   'diario.empty.sub':'Registre aqui seus sentimentos, memórias e momentos especiais desta fase única 💛',
   // Chat
-  'chat.title':'Conversar com a Lua','chat.sub':'Converse com Lua, sua assistente de gestação powered by IA 🌙',
+  'chat.title':'Chat com a Lua IA','chat.sub':'Converse com Lua, sua assistente de gestação powered by IA 🌙',
   'chat.faq.1':'🤱 Como melhorar a pega?','chat.faq.2':'😴 Não consigo dormir',
   'chat.faq.3':'🤔 O bebê se mexeu menos hoje','chat.faq.4':'💛 O que levar na mala?',
   'chat.faq.5':'⏱️ Como saber se é trabalho de parto?',
   'chat.ph':'Escreva para Lua... 🌙',
+  'chat.report.title':'Reportar resposta','chat.report.ph':'Descreva o problema com a resposta da Lua...',
+  'chat.report.send':'Enviar reporte','chat.report.cancel':'Cancelar',
   // Marketplace
   'market.title':'Encontrar uma Doula','market.sub':'Doulas verificadas prontas para te acompanhar',
   'market.search.ph':'🔍 Buscar por cidade ou especialidade...',
@@ -3153,7 +3187,7 @@ en: {
   't.quarto':'Prepare the baby\'s room','t.finalizar':'Finalize and share birth plan',
   't.cadeirinha':'Install car seat',
   'plano.title':'Birth Plan','plano.sub':'Record your preferences and share with your doula',
-  'plano.orientacao':'A document that records your preferences, wishes and limits during labor and birth. It serves as a guide for your team and doula, ensuring your choices are respected. Talk to your doula about each item!',
+  'plano.orientacao':'The Birth Plan is a record of your wishes, choices and limits for birth. It serves as a guide for your team and doula, ensuring you are the protagonist of your birth. Use this space to organize your thoughts and talk to those who will be by your side!',
   'plano.orientacao.title':'💡 What is a birth plan?',
   'plano.tipo.title':'Type of Birth','plano.tipo.vaginal':'🌸 Vaginal birth','plano.tipo.cesariana':'🏥 Cesarean',
   'plano.dor.title':'Pain Relief',
@@ -3516,7 +3550,7 @@ es: {
   't.quarto':'Preparar el cuarto / rincón del bebé','t.finalizar':'Finalizar y compartir plan de parto',
   't.cadeirinha':'Instalar silla de auto',
   'plano.title':'Plan de Parto','plano.sub':'Registra tus preferencias y comparte con tu doula',
-  'plano.orientacao':'Un documento que registra tus preferencias, deseos y límites durante el trabajo de parto y el nacimiento. Sirve como guía para tu equipo y doula, garantizando que tus elecciones sean respetadas. ¡Habla con tu doula sobre cada punto!',
+  'plano.orientacao':'El Plan de Parto es un registro de tus deseos, elecciones y límites para el nacimiento. Sirve como guía para tu equipo y doula, asegurando que seas la protagonista de tu parto. ¡Usa este espacio para organizar tus pensamientos y hablar con quienes estarán a tu lado!',
   'plano.orientacao.title':'💡 ¿Qué es un plan de parto?',
   'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesárea',
   'plano.dor.title':'Alivio del Dolor',
@@ -4718,12 +4752,14 @@ var frasesPorSemana = {
   37: 'A termo precoce! O bebê pode nascer a qualquer momento.',
   38: 'Cada dia agora é um presente. Aproveite esses últimos momentos a sós.',
   39: 'O bebê está pronto. Seu corpo sabe a hora certa.',
-  40: 'A hora chegou ou está chegando. Você foi incrível em cada semana!'
+  40: 'A hora chegou ou está chegando. Você foi incrível em cada semana!',
+  41: 'Cada bebê tem seu tempo. Continue confiando no seu corpo e na sua equipe. 🌙',
+  42: 'A jornada foi longa e você foi incrível. O encontro está muito próximo agora. 💛'
 };
 
 function getFraseSemana(semana) {
   if (!semana || semana <= 0) return '"' + t('frase.welcome') + '"';
-  var s = Math.min(Math.max(Math.round(semana), 1), 40);
+  var s = Math.min(Math.max(Math.round(semana), 1), 42);
   var obj = _lang === 'en' ? frasesPorSemanaEn : _lang === 'es' ? frasesPorSemanaEs : frasesPorSemana;
   return obj[s] ? '"' + obj[s] + '"' : '"' + t('frase.default') + '"';
 }
@@ -4901,6 +4937,143 @@ function sendDMsg() {
   msgs.appendChild(div);
   inp.value = '';
   msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ─── Reporte de resposta da Lua IA ───
+function abrirModalReporte() {
+  var modal = document.getElementById('modal-reporte');
+  if (!modal) return;
+  var msgs = document.getElementById('g-chat-messages');
+  var bulbs = msgs ? msgs.querySelectorAll('.chat-msg.recv .chat-bubble') : [];
+  var ultima = bulbs.length ? bulbs[bulbs.length - 1].textContent : 'Nenhuma resposta encontrada';
+  var preview = document.getElementById('reporte-msg-preview');
+  if (preview) preview.textContent = ultima.substring(0, 300) + (ultima.length > 300 ? '...' : '');
+  var desc = document.getElementById('reporte-descricao');
+  if (desc) desc.value = '';
+  modal.style.display = 'flex';
+}
+function fecharModalReporte() {
+  var modal = document.getElementById('modal-reporte');
+  if (modal) modal.style.display = 'none';
+}
+async function enviarReporte() {
+  var desc = document.getElementById('reporte-descricao');
+  var preview = document.getElementById('reporte-msg-preview');
+  if (!desc || !desc.value.trim()) { mostrarToast('Descreva o problema antes de enviar'); return; }
+  var payload = {
+    gestante_id: currentUserId || null,
+    gestante_nome: currentNome || 'Visitante',
+    mensagem_lua: preview ? preview.textContent : '',
+    descricao: desc.value.trim(),
+    lido: false
+  };
+  if (db) { try { await db.from('reportes').insert(payload); } catch(e) { console.warn('Reporte:', e.message); } }
+  fecharModalReporte();
+  mostrarToast('\u2691 Reporte enviado! Obrigada pelo feedback \ud83d\udc9b');
+}
+
+// ─── Admin: carregar reportes ───
+async function carregarReportesAdmin() {
+  var lista = document.getElementById('admin-reportes-lista');
+  if (!lista || !db) return;
+  lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
+  try {
+    var res = await db.from('reportes').select('*').order('criado_em', { ascending: false }).limit(100);
+    var data = res.data || [];
+    var badge = document.getElementById('badge-reportes');
+    var naolidos = data.filter(function(r) { return !r.lido; }).length;
+    if (badge) { badge.style.display = naolidos > 0 ? 'inline-block' : 'none'; badge.textContent = naolidos; }
+    if (!data.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte ainda \ud83c\udf19</div>'; return; }
+    lista.innerHTML = data.map(function(r) {
+      var d = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
+      var op = r.lido ? 'opacity:0.4;' : '';
+      var borda = r.lido ? '0.08' : '0.2';
+      return '<div style="border:1px solid rgba(201,137,122,' + borda + ');border-radius:12px;padding:16px;margin-bottom:12px;' + op + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + d + ' \u00b7 ' + (r.gestante_nome || 'Gestante') + '</div>' +
+        (r.lido ? '' : '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">Marcar lido</button>') +
+        '</div>' +
+        '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:6px;font-style:italic;">"' + (r.mensagem_lua || '').substring(0,200) + '"</div>' +
+        '<div style="font-size:13px;color:#E8C5BC;">\u2691 ' + (r.descricao || '') + '</div></div>';
+    }).join('');
+  } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
+}
+async function marcarRepLido(id, btn) {
+  if (!db || !id) return;
+  try { await db.from('reportes').update({ lido: true }).eq('id', id); } catch(e) {}
+  if (btn) { btn.closest('div[style]').style.opacity = '0.4'; btn.remove(); }
+  carregarReportesAdmin();
+}
+async function marcarTodosLidos() {
+  if (!db) return;
+  try { await db.from('reportes').update({ lido: true }).eq('lido', false); mostrarToast('\u2713 Todos marcados como lidos'); carregarReportesAdmin(); } catch(e) {}
+}
+
+// ─── Avaliação de Doula ───
+function abrirAvaliacaoDoula() {
+  var modal = document.getElementById('modal-avaliacao-doula');
+  if (modal) modal.style.display = 'flex';
+}
+function fecharAvaliacaoDoula() {
+  var modal = document.getElementById('modal-avaliacao-doula');
+  if (modal) modal.style.display = 'none';
+}
+function selecionarNotaAvaliacao(nota) {
+  document.querySelectorAll('.avaliacao-star').forEach(function(s, i) {
+    s.style.color = i < nota ? '#C9897A' : 'rgba(176,154,140,0.3)';
+  });
+  var el = document.getElementById('avaliacao-nota-valor');
+  if (el) el.value = nota;
+}
+async function salvarAvaliacaoDoula() {
+  var nota = parseInt((document.getElementById('avaliacao-nota-valor') || {}).value || '0');
+  var tipoParto = (document.getElementById('avaliacao-tipo-parto') || {}).value;
+  var comentario = ((document.getElementById('avaliacao-comentario') || {}).value || '').trim();
+  var cidade = ((document.getElementById('avaliacao-cidade') || {}).value || '').trim();
+  var modalidade = (document.getElementById('avaliacao-modalidade') || {}).value;
+  var dataParto = (document.getElementById('avaliacao-data-parto') || {}).value;
+  if (!nota || !tipoParto) { mostrarToast('Preencha o tipo de parto e a nota'); return; }
+  if (db && currentUserId && currentDoulaId) {
+    try {
+      await db.from('avaliacoes_doula').insert({
+        gestante_id: currentUserId, doula_id: currentDoulaId,
+        gestante_nome: currentNome, nota: nota, tipo_parto: tipoParto,
+        comentario: comentario, cidade: cidade, modalidade: modalidade,
+        data_parto: dataParto || null
+      });
+    } catch(e) { console.warn('avaliacao:', e.message); }
+  }
+  fecharAvaliacaoDoula();
+  mostrarToast('\ud83d\udc9b Avalia\u00e7\u00e3o enviada! Obrigada pelo feedback');
+}
+
+// ─── Backup Doula ───
+async function salvarBackupDoula() {
+  var email = document.getElementById('backup-doula-email');
+  if (!email || !email.value.trim()) { mostrarToast('Informe o e-mail da doula backup'); return; }
+  var payload = {
+    doula_id: currentUserId,
+    backup_email: email.value.trim().toLowerCase(),
+    perm_agenda: !!(document.getElementById('backup-perm-agenda') || {}).checked,
+    perm_chat: !!(document.getElementById('backup-perm-chat') || {}).checked,
+    perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked
+  };
+  if (db && currentUserId) {
+    try { await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); mostrarToast('\u2705 Doula backup configurada!'); }
+    catch(e) { mostrarToast('Erro: ' + e.message); }
+  } else { mostrarToast('\u2705 Configura\u00e7\u00e3o salva'); }
+}
+async function carregarBackupDoula() {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('backup_doulas').select('*').eq('doula_id', currentUserId).maybeSingle();
+    if (!res.data) return;
+    var el = document.getElementById('backup-doula-email');
+    if (el) el.value = res.data.backup_email || '';
+    var pa = document.getElementById('backup-perm-agenda'); if (pa) pa.checked = !!res.data.perm_agenda;
+    var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
+    var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
+  } catch(e) {}
 }
 
 </script>
@@ -5677,8 +5850,8 @@ function calcularSemana(dpp) {
   var semanasRestantes = Math.round(diffDias / 7);
   var semanasGestacao = 40 - semanasRestantes;
   if (semanasGestacao < 0) semanasGestacao = 0;
-  if (semanasGestacao > 40) semanasGestacao = 40;
-  return { semana: semanasGestacao, faltam: Math.max(0, semanasRestantes), dias: Math.max(0, diffDias), progresso: Math.round((semanasGestacao/40)*100) };
+  if (semanasGestacao > 42) semanasGestacao = 42;
+  return { semana: semanasGestacao, faltam: Math.max(0, semanasRestantes), dias: Math.max(0, diffDias), progresso: Math.min(100, Math.round((semanasGestacao/40)*100)) };
 }
 
 function atualizarDashboardGestante(dpp) {
@@ -5691,27 +5864,57 @@ function atualizarDashboardGestante(dpp) {
     try { document.getElementById('frase-sub').textContent = 'Frase do dia'; } catch(e) {}
     return;
   }
+  var partesDpp = dpp.split('-');
+  var dppFormatada = partesDpp[2] + '/' + partesDpp[1] + '/' + partesDpp[0];
   document.getElementById('onboard-titulo').textContent = 'Data prevista do parto';
   document.getElementById('onboard-sub').textContent = 'DPP: ' + dppFormatada + ' — Altere se necessario';
   document.getElementById('dpp-input').value = dpp;
   var info = calcularSemana(dpp);
-  // Parse date manually to avoid timezone issues
-  var partesDpp = dpp.split('-');
-  var dppFormatada = partesDpp[2] + '/' + partesDpp[1] + '/' + partesDpp[0];
-  
-  // Update dashboard
+
+  // Update dashboard semana
   try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
-  try { document.getElementById('g-semanas-faltam').textContent = t('dash.weeks.until').replace('{n}', info.faltam > 0 ? info.faltam : 0); } catch(e) {}
+
+  // Mensagem de semanas restantes com suporte emocional para 40+ semanas
+  try {
+    var faltamEl = document.getElementById('g-semanas-faltam');
+    if (faltamEl) {
+      if (info.semana >= 42) {
+        faltamEl.textContent = '💛 Converse com sua equipe — você foi incrível!';
+        faltamEl.style.color = 'var(--rose)';
+      } else if (info.semana >= 41) {
+        faltamEl.textContent = '🌙 Você passou da DPP. Tudo bem! Cada bebê tem seu tempo.';
+        faltamEl.style.color = 'var(--rose-light)';
+      } else if (info.semana >= 40) {
+        faltamEl.textContent = '✨ A hora chegou ou está chegando. Você foi incrível!';
+        faltamEl.style.color = 'var(--rose-light)';
+      } else {
+        faltamEl.textContent = t('dash.weeks.until').replace('{n}', info.faltam > 0 ? info.faltam : 0);
+        faltamEl.style.color = '';
+      }
+    }
+  } catch(e) {}
+
   try { document.getElementById('g-prog-bar').style.width = info.progresso + '%'; } catch(e) {}
   try { document.getElementById('g-dpp').textContent = dppFormatada; } catch(e) {}
   try { document.getElementById('g-progresso').textContent = info.progresso + '%'; } catch(e) {}
-  try { document.getElementById('g-dias').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
+
+  // Dias restantes — substituir por mensagem após semana 40
+  try {
+    var diasEl = document.getElementById('g-dias');
+    if (diasEl) {
+      if (info.semana >= 40) {
+        diasEl.textContent = '🤍';
+      } else {
+        diasEl.textContent = info.dias > 0 ? info.dias : 0;
+      }
+    }
+  } catch(e) {}
 
   // Trimestre
   var tri = info.semana <= 13 ? t('dash.trimestre.1') : info.semana <= 27 ? t('dash.trimestre.2') : t('dash.trimestre.3');
   try { document.getElementById('g-trimestre').textContent = tri; } catch(e) {}
   try { document.getElementById('g-acomp-sub').textContent = t('dash.acomp.sub').replace('{n}', info.semana).replace('{tri}', tri); } catch(e) {}
-  
+
   window._currentSemana = info.semana;
   // Gestante greeting sub
   try { document.getElementById('gestante-dash-sub').textContent = t('dash.semana.sub').replace('{n}', info.semana); } catch(e) {}
@@ -6938,6 +7141,78 @@ function mostrarToast(msg) {
   </div>
 </div>
 
+<!-- MODAL REPORTE -->
+<div id="modal-reporte" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:460px;width:100%;position:relative;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportar resposta</div>
+    <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Algo deu errado na resposta da Lua? Nos informe para melhorar!</div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Mensagem original da Lua</label>
+      <div id="reporte-msg-preview" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(176,154,140,0.7);max-height:80px;overflow-y:auto;font-style:italic;">Carregando...</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Descreva o problema</label>
+      <textarea id="reporte-descricao" rows="3" placeholder="Ex: a resposta foi inadequada, incoerente, ou falhou em traduzir corretamente..." style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;resize:none;"></textarea>
+    </div>
+    <div style="display:flex;gap:12px;">
+      <button onclick="fecharModalReporte()" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+      <button onclick="enviarReporte()" style="flex:2;background:var(--rose);color:white;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;">⚑ Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AVALIAÇÃO DOULA -->
+<div id="modal-avaliacao-doula" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:6px;">💛 Avaliar minha doula</div>
+    <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Compartilhe sua experiência para ajudar outras gestantes</div>
+    <input type="hidden" id="avaliacao-nota-valor" value="0">
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:8px;">Tipo de parto</label>
+      <select id="avaliacao-tipo-parto" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
+        <option value="">Selecione...</option>
+        <option value="vaginal">Parto vaginal</option>
+        <option value="cesarea">Cesárea</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:8px;">Nota para o atendimento</label>
+      <div style="display:flex;gap:8px;">
+        <span class="avaliacao-star" onclick="selecionarNotaAvaliacao(1)" style="font-size:28px;cursor:pointer;color:rgba(176,154,140,0.3);">★</span>
+        <span class="avaliacao-star" onclick="selecionarNotaAvaliacao(2)" style="font-size:28px;cursor:pointer;color:rgba(176,154,140,0.3);">★</span>
+        <span class="avaliacao-star" onclick="selecionarNotaAvaliacao(3)" style="font-size:28px;cursor:pointer;color:rgba(176,154,140,0.3);">★</span>
+        <span class="avaliacao-star" onclick="selecionarNotaAvaliacao(4)" style="font-size:28px;cursor:pointer;color:rgba(176,154,140,0.3);">★</span>
+        <span class="avaliacao-star" onclick="selecionarNotaAvaliacao(5)" style="font-size:28px;cursor:pointer;color:rgba(176,154,140,0.3);">★</span>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Comentário sobre a experiência</label>
+      <textarea id="avaliacao-comentario" rows="3" placeholder="Como foi seu atendimento? O que mais te marcou positivamente ou negativamente?" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;resize:none;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div>
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Sua cidade</label>
+        <input id="avaliacao-cidade" type="text" placeholder="Ex: São Paulo, SP" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Modalidade</label>
+        <select id="avaliacao-modalidade" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
+          <option value="presencial">Presencial</option>
+          <option value="online">Online</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Data do parto</label>
+      <input id="avaliacao-data-parto" type="date" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
+    </div>
+    <div style="display:flex;gap:12px;">
+      <button onclick="fecharAvaliacaoDoula()" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
+      <button onclick="salvarAvaliacaoDoula()" style="flex:2;background:var(--rose);color:white;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;">💛 Enviar avaliação</button>
+    </div>
+  </div>
+</div>
+
 <div id="admin-panel" style="display:none;position:fixed;inset:0;background:#0f0806;z-index:4000;overflow-y:auto;">
   <!-- Admin Header -->
   <div style="background:#1a0f0a;border-bottom:1px solid rgba(201,137,122,0.15);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;">
@@ -6960,6 +7235,7 @@ function mostrarToast(msg) {
         <div class="admin-nav-item" onclick="adminNav(this,'admin-biblioteca')">📚 Biblioteca</div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-conteudo')">📝 Conteúdos</div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-faq')">❓ FAQ</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-reportes');carregarReportesAdmin()">⚑ Reportes <span id="badge-reportes" style="display:none;background:var(--rose);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px;"></span></div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-estatisticas')">📊 Estatísticas</div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-config')">⚙️ Configurações</div>
       </div>
@@ -7145,6 +7421,19 @@ function mostrarToast(msg) {
         </div>
         <div id="admin-faq-lista" style="background:#1a0f0a;border-radius:14px;padding:16px;border:1px solid rgba(201,137,122,0.1);">
           <div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhuma pergunta adicionada ainda</div>
+        </div>
+      </div>
+
+      <!-- REPORTES -->
+      <div class="admin-panel-section" id="admin-reportes">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportes das Gestantes</div>
+        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Respostas marcadas como inadequadas ou com falha pelas gestantes</div>
+        <div style="display:flex;gap:10px;margin-bottom:20px;">
+          <button onclick="carregarReportesAdmin()" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Atualizar</button>
+          <button onclick="marcarTodosLidos()" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Marcar todos como lidos</button>
+        </div>
+        <div id="admin-reportes-lista" style="background:#1a0f0a;border-radius:14px;padding:16px;border:1px solid rgba(201,137,122,0.1);">
+          <div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando reportes...</div>
         </div>
       </div>
 
