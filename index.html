@@ -2243,6 +2243,11 @@ tr:hover td { background:var(--rose-pale); }
             <div style="font-size:13px;color:var(--earth-light);line-height:1.6;">Insira o código de convite da sua parceira na barra lateral para começar a acompanhar a gestação.</div>
           </div>
 
+          <div style="background:var(--pai);color:white;padding:20px;border-radius:16px;margin-bottom:24px;cursor:pointer;box-shadow:0 4px 12px rgba(78,125,138,0.2);transition:transform 0.2s;" onclick="pNav(null,'p-checklist')">
+            <div style="font-size:18px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:8px;">👨‍👩‍👧 Checklist do Acompanhante</div>
+            <div style="font-size:13px;opacity:0.9;line-height:1.4;">O seu guia prático para agir durante a gestação, parto e pós-parto. Toque para acessar.</div>
+          </div>
+
           <div class="card">
             <div class="card-title">💡 Como você pode apoiar hoje</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
@@ -2349,9 +2354,235 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="chat-time">Lua • agora</div>
               </div>
             </div>
-            <div class="chat-input-wrap">
-              <input class="chat-input" id="p-chat-input" placeholder="Escreva para Lua... 🌙" onkeydown="if(event.key==='Enter')sendPaiMsg()">
-              <button class="chat-send" onclick="sendPaiMsg()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHECKLIST ACOMPANHANTE -->
+        <div class="g-panel" id="p-checklist">
+          <div style="display:flex;align-items:center;margin-bottom:24px;">
+            <div onclick="pNav(null, 'p-dashboard')" style="font-size:24px;color:var(--pai);cursor:pointer;margin-right:16px;">←</div>
+            <div>
+              <div class="panel-title" style="margin-bottom:4px;font-size:24px;">Checklist do Acompanhante</div>
+              <div class="panel-sub" style="margin-bottom:0;font-size:13px;">👨‍👩‍👧 Seu guia para gestação, parto e pós-parto</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">🤰 Durante a Gestação</div>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Ouvir sem julgar</li>
+                <li>Validar sentimentos ("faz sentido você se sentir assim")</li>
+                <li>Reduzir estresse (evitar conflitos desnecessários)</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> menos cortisol = melhor evolução da gestação</div>
+            </div>
+            
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Presença ativa nas consultas</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Participar de consultas e exames sempre que possível</li>
+                <li>Fazer perguntas junto com ela</li>
+                <li>Entender o plano de parto</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> você vira o principal defensor das escolhas dela</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Massagens para alívio</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Lombar (dor nas costas)</li>
+                <li>Pernas (inchaço)</li>
+                <li>Ombros (tensão)</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> melhora circulação, reduz dor e ansiedade</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ajuda prática no dia a dia</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Dividir tarefas da casa</li>
+                <li>Incentivar descanso</li>
+                <li>Garantir alimentação adequada</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> preserva energia física e emocional da gestante</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparação para o parto</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Estudar sinais de trabalho de parto</li>
+                <li>Conhecer fases (latente, ativa, expulsivo)</li>
+                <li>Saber quando ir para o hospital</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> evita correria e decisões precipitadas</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">🤱 Durante o Trabalho de Parto</div>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Manter a calma</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Seu comportamento influencia diretamente o dela</li>
+                <li>Evite demonstrar medo ou desespero</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> segurança emocional = progresso do trabalho de parto</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o plano de parto</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Comunicar desejos dela à equipe</li>
+                <li>Confirmar procedimentos antes de autorizar</li>
+                <li>Ser ponte entre equipe e gestante</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> reduz intervenções desnecessárias</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio físico</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Ajudar em posições (bola, cócoras, chuveiro)</li>
+                <li>Massagem lombar durante contrações</li>
+                <li>Compressas mornas</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> alívio da dor e melhor progressão</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional ativo</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Frases simples: "você está indo muito bem"</li>
+                <li>Contato físico (mão, abraço)</li>
+                <li>Incentivar respiração</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> aumenta ocitocina (hormônio do parto)</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Evitar atrapalhar</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Não interromper concentração dela</li>
+                <li>Evitar muitas perguntas</li>
+                <li>Não trazer tensão para o ambiente</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> protege o fluxo natural do parto</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">👶 Pós-Parto Imediato</div>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamina K</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Aplicação intramuscular no bebê após o nascimento</li>
+                <li>Previne hemorragia neonatal</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Essencial</b> para evitar sangramentos graves</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Profilaxia ocular</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>🇺🇸 EUA: Pomada de eritromicina</li>
+                <li>🇧🇷 Brasil: Nitrato de prata (menos usado atualmente)</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Previne:</b> infecções oculares causadas por bactérias</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Clampeamento tardio do cordão</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Esperar parar de pulsar antes de cortar</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Mais ferro (menor risco de anemia) e melhor adaptação neonatal</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Contato pele a pele imediato</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Bebê direto no peito da mãe</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Regula temperatura, estimula amamentação e aumenta vínculo</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title">🤱 Pós-Parto (Em Casa)</div>
+            
+            <div style="margin-bottom:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o ambiente da mãe</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Evitar visitas excessivas</li>
+                <li>Reduzir barulho e estímulos</li>
+                <li>Criar ambiente calmo e seguro</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> favorece produção de ocitocina (leite + vínculo)</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoiar a amamentação</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Trazer água sempre que ela for amamentar</li>
+                <li>Garantir que ela esteja confortável</li>
+                <li>Incentivar sem pressionar</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormônios:</b> Ocitocina (saída) e Prolactina (produção)</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Assumir tarefas práticas</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Trocar fraldas e colocar bebê para arrotar</li>
+                <li>Organizar casa e refeições</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> mãe foca na recuperação e no bebê</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitorar mamadas</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Frequência (livre demanda) e tempo de mamada</li>
+                <li>Sinais de fome e saciedade</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Ajuda</b> a identificar possíveis dificuldades cedo</div>
+            </div>
+
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Observar sinais de alerta</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li><b>Na mãe:</b> Tristeza intensa, dor forte, febre</li>
+                <li><b>No bebê:</b> Dificuldade para mamar, poucas fraldas molhadas, letargia</li>
+              </ul>
+              <div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 Em caso de dúvida: buscar ajuda imediatamente</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
+              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ser o guardião da mãe</div>
+              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
+                <li>Proteger descanso dela e filtrar visitas</li>
+                <li>Garantir que ela coma, beba água e durma</li>
+              </ul>
+              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>A recuperação dela é prioridade</b></div>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,var(--pai) 0%,#2a4756 100%);color:white;border-radius:16px;padding:24px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:12px;">💡</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:12px;">Resumo do Papel do Pai</div>
+            <div style="font-size:14px;opacity:0.9;margin-bottom:16px;">Você não é um espectador. Você é:</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Protetor</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Facilitador</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Regulador do ambiente</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Apoio emocional</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Defensor das escolhas</span>
             </div>
           </div>
         </div>
