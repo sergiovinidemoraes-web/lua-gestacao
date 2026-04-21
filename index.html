@@ -1927,6 +1927,9 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
           </div>
+          <div style="text-align:right;margin-top:16px;">
+            <button onclick="abrirModalReporte('doula')" style="background:none;border:1px solid rgba(201,137,122,0.3);color:rgba(201,137,122,0.7);font-size:11px;padding:4px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;">⚑ Reportar problema</button>
+          </div>
         </div>
 
         <!-- CLIENTES -->
@@ -2387,6 +2390,9 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
             </div>
+          </div>
+          <div style="text-align:right;margin-top:6px;">
+            <button onclick="abrirModalReporte('pai')" style="background:none;border:1px solid rgba(78,125,138,0.35);color:rgba(78,125,138,0.8);font-size:11px;padding:4px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;">⚑ Reportar resposta</button>
           </div>
         </div>
 
@@ -4940,14 +4946,29 @@ function sendDMsg() {
 }
 
 // ─── Reporte de resposta da Lua IA ───
-function abrirModalReporte() {
+var _reporteTipo = 'gestante';
+function abrirModalReporte(tipo) {
+  _reporteTipo = tipo || tipoSelecionado || 'gestante';
   var modal = document.getElementById('modal-reporte');
   if (!modal) return;
-  var msgs = document.getElementById('g-chat-messages');
-  var bulbs = msgs ? msgs.querySelectorAll('.chat-msg.recv .chat-bubble') : [];
-  var ultima = bulbs.length ? bulbs[bulbs.length - 1].textContent : 'Nenhuma resposta encontrada';
-  var preview = document.getElementById('reporte-msg-preview');
-  if (preview) preview.textContent = ultima.substring(0, 300) + (ultima.length > 300 ? '...' : '');
+  var msgSection = document.getElementById('reporte-msg-section');
+  var titulo = document.getElementById('reporte-modal-title');
+  var sub = document.getElementById('reporte-modal-sub');
+  if (_reporteTipo === 'doula') {
+    if (titulo) titulo.textContent = '⚑ Reportar problema';
+    if (sub) sub.textContent = 'Encontrou algum problema no app? Nos informe para melhorar!';
+    if (msgSection) msgSection.style.display = 'none';
+  } else {
+    if (titulo) titulo.textContent = '⚑ Reportar resposta';
+    if (sub) sub.textContent = 'Algo deu errado na resposta da Lua? Nos informe para melhorar!';
+    if (msgSection) msgSection.style.display = 'block';
+    var chatId = _reporteTipo === 'pai' ? 'p-chat-messages' : 'g-chat-messages';
+    var msgs = document.getElementById(chatId);
+    var bulbs = msgs ? msgs.querySelectorAll('.chat-msg.recv .chat-bubble') : [];
+    var ultima = bulbs.length ? bulbs[bulbs.length - 1].textContent : 'Nenhuma resposta encontrada';
+    var preview = document.getElementById('reporte-msg-preview');
+    if (preview) preview.textContent = ultima.substring(0, 300) + (ultima.length > 300 ? '...' : '');
+  }
   var desc = document.getElementById('reporte-descricao');
   if (desc) desc.value = '';
   modal.style.display = 'flex';
@@ -4963,6 +4984,8 @@ async function enviarReporte() {
   var payload = {
     gestante_id: currentUserId || null,
     gestante_nome: currentNome || 'Visitante',
+    usuario_nome: currentNome || 'Visitante',
+    tipo_usuario: _reporteTipo || tipoSelecionado || 'gestante',
     mensagem_lua: preview ? preview.textContent : '',
     descricao: desc.value.trim(),
     lido: false
@@ -4973,27 +4996,46 @@ async function enviarReporte() {
 }
 
 // ─── Admin: carregar reportes ───
+var _reporteFiltro = 'todos';
+function setFiltroReporte(filtro, btn) {
+  _reporteFiltro = filtro;
+  ['todos','gestante','doula','pai'].forEach(function(f) {
+    var el = document.getElementById('rfiltro-' + f);
+    if (el) { el.style.background = 'rgba(255,255,255,0.06)'; el.style.color = 'rgba(176,154,140,0.7)'; el.style.border = '1px solid rgba(255,255,255,0.1)'; }
+  });
+  if (btn) { btn.style.background = 'var(--rose)'; btn.style.color = 'white'; btn.style.border = 'none'; }
+  carregarReportesAdmin();
+}
 async function carregarReportesAdmin() {
   var lista = document.getElementById('admin-reportes-lista');
   if (!lista || !db) return;
   lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
   try {
-    var res = await db.from('reportes').select('*').order('criado_em', { ascending: false }).limit(100);
+    var res = await db.from('reportes').select('*').order('criado_em', { ascending: false }).limit(200);
     var data = res.data || [];
     var badge = document.getElementById('badge-reportes');
     var naolidos = data.filter(function(r) { return !r.lido; }).length;
     if (badge) { badge.style.display = naolidos > 0 ? 'inline-block' : 'none'; badge.textContent = naolidos; }
-    if (!data.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte ainda \ud83c\udf19</div>'; return; }
-    lista.innerHTML = data.map(function(r) {
+    var filtrado = _reporteFiltro === 'todos' ? data : data.filter(function(r) { return (r.tipo_usuario || 'gestante') === _reporteFiltro; });
+    if (!filtrado.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte \ud83c\udf19</div>'; return; }
+    var tipoLabel = { gestante: 'Gestante', doula: 'Doula', pai: 'Acompanhante' };
+    var tipoColor = { gestante: '#C9897A', doula: '#90B3A7', pai: '#82A0C8' };
+    lista.innerHTML = filtrado.map(function(r) {
       var d = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
       var op = r.lido ? 'opacity:0.4;' : '';
       var borda = r.lido ? '0.08' : '0.2';
+      var tipo = r.tipo_usuario || 'gestante';
+      var nome = r.usuario_nome || r.gestante_nome || 'Usuário';
+      var cor = tipoColor[tipo] || '#C9897A';
+      var label = tipoLabel[tipo] || tipo;
       return '<div style="border:1px solid rgba(201,137,122,' + borda + ');border-radius:12px;padding:16px;margin-bottom:12px;' + op + '">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
-        '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + d + ' \u00b7 ' + (r.gestante_nome || 'Gestante') + '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+        '<span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span>' +
+        '<span style="font-size:12px;color:rgba(176,154,140,0.5);">' + d + ' \u00b7 ' + nome + '</span></div>' +
         (r.lido ? '' : '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">Marcar lido</button>') +
         '</div>' +
-        '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:6px;font-style:italic;">"' + (r.mensagem_lua || '').substring(0,200) + '"</div>' +
+        (r.mensagem_lua ? '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:6px;font-style:italic;">"' + r.mensagem_lua.substring(0,200) + '"</div>' : '') +
         '<div style="font-size:13px;color:#E8C5BC;">\u2691 ' + (r.descricao || '') + '</div></div>';
     }).join('');
   } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
@@ -7259,9 +7301,9 @@ function mostrarToast(msg) {
 <!-- MODAL REPORTE -->
 <div id="modal-reporte" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:460px;width:100%;position:relative;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportar resposta</div>
-    <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Algo deu errado na resposta da Lua? Nos informe para melhorar!</div>
-    <div style="margin-bottom:14px;">
+    <div id="reporte-modal-title" style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportar resposta</div>
+    <div id="reporte-modal-sub" style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Algo deu errado na resposta da Lua? Nos informe para melhorar!</div>
+    <div id="reporte-msg-section" style="margin-bottom:14px;">
       <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;">Mensagem original da Lua</label>
       <div id="reporte-msg-preview" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(176,154,140,0.7);max-height:80px;overflow-y:auto;font-style:italic;">Carregando...</div>
     </div>
@@ -7541,8 +7583,14 @@ function mostrarToast(msg) {
 
       <!-- REPORTES -->
       <div class="admin-panel-section" id="admin-reportes">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportes das Gestantes</div>
-        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Respostas marcadas como inadequadas ou com falha pelas gestantes</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportes</div>
+        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Reportes enviados por gestantes, doulas e acompanhantes</div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+          <button onclick="setFiltroReporte('todos',this)" id="rfiltro-todos" style="background:var(--rose);color:white;border:none;padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Todos</button>
+          <button onclick="setFiltroReporte('gestante',this)" id="rfiltro-gestante" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Gestante</button>
+          <button onclick="setFiltroReporte('doula',this)" id="rfiltro-doula" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Doula</button>
+          <button onclick="setFiltroReporte('pai',this)" id="rfiltro-pai" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Acompanhante</button>
+        </div>
         <div style="display:flex;gap:10px;margin-bottom:20px;">
           <button onclick="carregarReportesAdmin()" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Atualizar</button>
           <button onclick="marcarTodosLidos()" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Marcar todos como lidos</button>
