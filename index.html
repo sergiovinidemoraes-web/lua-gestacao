@@ -5330,12 +5330,15 @@ async function carregarBackupDoula() {
 <!-- SUPABASE CONNECTION -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
 var db = null;
 var tipoSelecionado = 'gestante';
 var adminSenha = 'lua_admin_2026';
+var sessaoAtualId = null;
+var sessaoInicio = null;
 
 window.addEventListener('load', function() {
   try {
@@ -5600,6 +5603,7 @@ function entrarNoApp(tipo, nome) {
   }
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
+  registrarInicioSessao(tipo);
 }
 
 // ── REALTIME CONTRAÇÕES (DOULA) ──
@@ -5681,11 +5685,42 @@ function renderContracoesDoula(lista) {
 
 // ── LOGOUT ──
 async function fazerLogout() {
+  await registrarFimSessao();
   try { if (db) await db.auth.signOut(); } catch(e) {}
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   mostrarToast('Até logo! 🌙');
 }
+
+async function registrarInicioSessao(tipo) {
+  if (!db || !currentUserId) return;
+  try {
+    sessaoInicio = Date.now();
+    var res = await db.from('sessoes').insert({ user_id: currentUserId, tipo: tipo, inicio: new Date().toISOString() }).select('id').maybeSingle();
+    if (res.data) sessaoAtualId = res.data.id;
+  } catch(e) {}
+}
+
+async function registrarFimSessao() {
+  if (!db || !sessaoAtualId || !sessaoInicio) return;
+  try {
+    var duracao = Date.now() - sessaoInicio;
+    await db.from('sessoes').update({ fim: new Date().toISOString(), duracao_ms: duracao }).eq('id', sessaoAtualId);
+    sessaoAtualId = null;
+    sessaoInicio = null;
+  } catch(e) {}
+}
+
+window.addEventListener('beforeunload', function() {
+  if (!sessaoAtualId || !sessaoInicio || !db) return;
+  var duracao = Date.now() - sessaoInicio;
+  // usa sendBeacon para garantir envio mesmo fechando a aba
+  var url = 'https://mmjrcusivcjiqjelyjyu.supabase.co/rest/v1/sessoes?id=eq.' + sessaoAtualId;
+  var body = JSON.stringify({ fim: new Date().toISOString(), duracao_ms: duracao });
+  try {
+    navigator.sendBeacon && navigator.sendBeacon(url + '&method=PATCH', new Blob([body], { type: 'application/json' }));
+  } catch(e) {}
+});
 
 function backToSplash() { fazerLogout(); }
 function enterApp(role) { entrarNoApp(role, role === 'gestante' ? 'Visitante' : 'Doula'); }
@@ -6619,6 +6654,9 @@ function adminNav(el, sectionId) {
   if (sectionId === 'admin-usuarios') {
     setTimeout(function() { try { carregarUsuariosAdmin(); } catch(e) {} }, 100);
   }
+  if (sectionId === 'admin-estatisticas') {
+    setTimeout(function() { try { carregarEstatisticas(); } catch(e) {} }, 100);
+  }
   if (sectionId === 'admin-conteudo') {
     try { renderConteudosAdmin(); } catch(e) {}
   }
@@ -6963,9 +7001,86 @@ function deletarFAQ(id) {
   mostrarToast('✅ Removido');
 }
 
+var _adminCharts = {};
+
 async function carregarEstatisticas() {
   await carregarUsuariosAdmin();
-  mostrarToast('📊 Atualizado!');
+  if (!db) return;
+  mostrarToast('📊 Carregando...');
+
+  try {
+    var desde = new Date();
+    desde.setDate(desde.getDate() - 29);
+    var res = await db.from('sessoes').select('tipo,inicio,duracao_ms').gte('inicio', desde.toISOString());
+    if (res.error) { mostrarToast('Erro ao carregar sessões'); return; }
+    var sessoes = res.data || [];
+
+    // ── helpers ──
+    function diasUltimos30() {
+      var dias = [];
+      for (var i = 29; i >= 0; i--) {
+        var d = new Date(); d.setDate(d.getDate() - i);
+        dias.push(d.toISOString().slice(0, 10));
+      }
+      return dias;
+    }
+    var dias = diasUltimos30();
+    var labels30 = dias.map(function(d) { return d.slice(5); }); // MM-DD
+
+    var tipos = ['gestante', 'doula', 'pai'];
+    var cores = { gestante: 'rgba(201,137,122,0.85)', doula: 'rgba(144,179,167,0.85)', pai: 'rgba(130,160,200,0.85)' };
+
+    // ── Gráfico 1: acessos por dia por perfil ──
+    var datasets1 = tipos.map(function(tipo) {
+      var counts = dias.map(function(dia) {
+        return sessoes.filter(function(s) { return s.tipo === tipo && s.inicio.slice(0, 10) === dia; }).length;
+      });
+      return { label: tipo === 'pai' ? 'Acompanhante' : tipo.charAt(0).toUpperCase() + tipo.slice(1), data: counts, backgroundColor: cores[tipo], borderRadius: 4 };
+    });
+    _renderAdminChart('chart-acessos', 'bar', { labels: labels30, datasets: datasets1 },
+      { plugins: { legend: { labels: { color: '#c9897a', font: { size: 11 } } } }, scales: { x: { stacked: false, ticks: { color: 'rgba(176,154,140,0.6)', maxRotation: 45, font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.04)' } }, y: { ticks: { color: 'rgba(176,154,140,0.6)' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true } } });
+
+    // ── Gráfico 2: média de tempo de sessão por perfil (minutos) ──
+    var medias = tipos.map(function(tipo) {
+      var filtradas = sessoes.filter(function(s) { return s.tipo === tipo && s.duracao_ms; });
+      if (!filtradas.length) return 0;
+      var soma = filtradas.reduce(function(acc, s) { return acc + s.duracao_ms; }, 0);
+      return Math.round(soma / filtradas.length / 60000 * 10) / 10;
+    });
+    var labelsMedias = tipos.map(function(t) { return t === 'pai' ? 'Acompanhante' : t.charAt(0).toUpperCase() + t.slice(1); });
+    _renderAdminChart('chart-tempo', 'bar', {
+      labels: labelsMedias,
+      datasets: [{ label: 'Média (min)', data: medias, backgroundColor: tipos.map(function(t) { return cores[t]; }), borderRadius: 6 }]
+    }, { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: 'rgba(176,154,140,0.6)' }, grid: { color: 'rgba(255,255,255,0.04)' } }, y: { ticks: { color: 'rgba(176,154,140,0.6)' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true } } });
+
+    // ── Gráfico 3: horário de pico (hora do dia) ──
+    var horas = Array.from({ length: 24 }, function(_, i) { return i; });
+    var contsHora = horas.map(function(h) {
+      return sessoes.filter(function(s) { return new Date(s.inicio).getHours() === h; }).length;
+    });
+    _renderAdminChart('chart-horario', 'line', {
+      labels: horas.map(function(h) { return h + 'h'; }),
+      datasets: [{ label: 'Acessos', data: contsHora, borderColor: '#C9897A', backgroundColor: 'rgba(201,137,122,0.15)', fill: true, tension: 0.4, pointRadius: 3 }]
+    }, { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: 'rgba(176,154,140,0.6)', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }, y: { ticks: { color: 'rgba(176,154,140,0.6)' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true } } });
+
+    // ── totais rápidos ──
+    var totalSessoes = sessoes.length;
+    var usuariosUnicos = new Set(sessoes.map(function(s) { return s.tipo + '_' + s.inicio.slice(0,10); })).size;
+    document.getElementById('stat-sessoes-total').textContent = totalSessoes;
+    document.getElementById('stat-dau').textContent = Math.round(usuariosUnicos / 30 * 10) / 10;
+
+    mostrarToast('✅ Estatísticas atualizadas!');
+  } catch(e) { console.error('carregarEstatisticas:', e); mostrarToast('Erro ao carregar'); }
+}
+
+function _renderAdminChart(canvasId, tipo, data, options) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (_adminCharts[canvasId]) { _adminCharts[canvasId].destroy(); }
+  _adminCharts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: tipo, data: data,
+    options: Object.assign({ responsive: true, maintainAspectRatio: false, animation: { duration: 400 } }, options)
+  });
 }
 
 function alterarSenhaAdmin() {
@@ -7440,14 +7555,39 @@ function mostrarToast(msg) {
       <!-- ESTATÍSTICAS -->
       <div class="admin-panel-section" id="admin-estatisticas">
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Estatísticas</div>
-        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Visão geral do uso do app</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Frequência e tempo de uso por perfil — últimos 30 dias</div>
+
+        <!-- Cards rápidos -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
           <div class="admin-stat"><div class="admin-stat-val" id="stat-total-cad">—</div><div class="admin-stat-label">Total cadastrados</div></div>
           <div class="admin-stat"><div class="admin-stat-val" id="stat-hoje">—</div><div class="admin-stat-label">Cadastros hoje</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-doulas-total">—</div><div class="admin-stat-label">Doulas ativas</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-gest-total">—</div><div class="admin-stat-label">Gestantes ativas</div></div>
+          <div class="admin-stat"><div class="admin-stat-val" id="stat-sessoes-total">—</div><div class="admin-stat-label">Sessões (30 dias)</div></div>
+          <div class="admin-stat"><div class="admin-stat-val" id="stat-dau">—</div><div class="admin-stat-label">Sessões/dia (média)</div></div>
         </div>
-        <button onclick="carregarEstatisticas()" style="background:var(--rose);color:white;border:none;padding:10px 24px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">📊 Carregar estatísticas</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div class="admin-stat" style="display:none;"><div class="admin-stat-val" id="stat-doulas-total">—</div></div>
+          <div class="admin-stat" style="display:none;"><div class="admin-stat-val" id="stat-gest-total">—</div></div>
+        </div>
+
+        <!-- Gráfico: acessos por dia -->
+        <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:500;color:#E8C5BC;margin-bottom:14px;">Acessos por dia</div>
+          <div style="height:180px;"><canvas id="chart-acessos"></canvas></div>
+        </div>
+
+        <!-- Gráfico: tempo médio de sessão -->
+        <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:500;color:#E8C5BC;margin-bottom:14px;">Tempo médio de sessão por perfil (minutos)</div>
+          <div style="height:160px;"><canvas id="chart-tempo"></canvas></div>
+        </div>
+
+        <!-- Gráfico: horário de pico -->
+        <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:20px;">
+          <div style="font-size:13px;font-weight:500;color:#E8C5BC;margin-bottom:14px;">Horário de pico (hora do dia)</div>
+          <div style="height:160px;"><canvas id="chart-horario"></canvas></div>
+        </div>
+
+        <button onclick="carregarEstatisticas()" style="background:var(--rose);color:white;border:none;padding:10px 24px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">↻ Atualizar</button>
       </div>
 
       <!-- CONFIGURAÇÕES -->
