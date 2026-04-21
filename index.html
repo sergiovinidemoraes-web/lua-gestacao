@@ -6713,6 +6713,7 @@ async function carregarUsuariosAdmin() {
     var res = await db.from('usuarios').select('*').order('criado_em', { ascending: false });
     if (res.error) return;
     var data = res.data;
+    _adminUsuarios = data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante'; });
     try { document.getElementById('total-usuarios').textContent = data.length; } catch(e) {}
@@ -7044,6 +7045,8 @@ function deletarFAQ(id) {
 }
 
 var _adminCharts = {};
+var _adminUsuarios = [];
+var _adminSessoesLog = [];
 
 async function carregarEstatisticas() {
   await carregarUsuariosAdmin();
@@ -7111,8 +7114,60 @@ async function carregarEstatisticas() {
     document.getElementById('stat-sessoes-total').textContent = totalSessoes;
     document.getElementById('stat-dau').textContent = Math.round(usuariosUnicos / 30 * 10) / 10;
 
+    // ── log detalhado de acessos ──
+    var userMap = {};
+    _adminUsuarios.forEach(function(u) { userMap[u.id] = u; });
+    _adminSessoesLog = sessoes.map(function(s) {
+      var u = userMap[s.user_id] || {};
+      return Object.assign({}, s, { _nome: u.nome || 'Usuário', _email: u.email || '' });
+    }).sort(function(a, b) { return new Date(b.inicio) - new Date(a.inicio); });
+    renderLogAcessos(_adminSessoesLog);
+
     mostrarToast('✅ Estatísticas atualizadas!');
   } catch(e) { console.error('carregarEstatisticas:', e); mostrarToast('Erro ao carregar'); }
+}
+
+function renderLogAcessos(lista) {
+  var el = document.getElementById('admin-log-acessos');
+  if (!el) return;
+  var tipoLabel = { gestante: 'Gestante', doula: 'Doula', pai: 'Acompanhante' };
+  var tipoColor = { gestante: '#C9897A', doula: '#90B3A7', pai: '#82A0C8' };
+  if (!lista.length) {
+    el.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:16px;">Nenhuma sessão no período</div>';
+    return;
+  }
+  var rows = lista.slice(0, 100).map(function(s) {
+    var tipo = s.tipo || 'gestante';
+    var cor = tipoColor[tipo] || '#C9897A';
+    var label = tipoLabel[tipo] || tipo;
+    var d = s.inicio ? new Date(s.inicio).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+    var dur = s.duracao_ms ? (s.duracao_ms < 60000 ? '< 1 min' : Math.round(s.duracao_ms / 60000) + ' min') : (s.fim ? '< 1 min' : 'em andamento');
+    return '<tr style="border-top:1px solid rgba(201,137,122,0.06);">' +
+      '<td style="padding:8px 10px;color:#E8C5BC;">' + s._nome +
+        (s._email ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + s._email + '</div>' : '') + '</td>' +
+      '<td style="padding:8px 10px;"><span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span></td>' +
+      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + d + '</td>' +
+      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + dur + '</td>' +
+      '</tr>';
+  }).join('');
+  el.innerHTML = '<div style="overflow-x:auto;">' +
+    '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1px;font-size:10px;">' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Nome</th>' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Perfil</th>' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Data / Hora</th>' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Duração</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    (lista.length > 100 ? '<div style="text-align:center;font-size:11px;color:rgba(176,154,140,0.4);padding:8px;">Mostrando 100 de ' + lista.length + ' sessões</div>' : '') +
+    '</div>';
+}
+
+function filtrarLogAcessos(busca) {
+  if (!busca) { renderLogAcessos(_adminSessoesLog); return; }
+  var q = busca.toLowerCase();
+  renderLogAcessos(_adminSessoesLog.filter(function(s) {
+    return (s._nome || '').toLowerCase().indexOf(q) !== -1 || (s._email || '').toLowerCase().indexOf(q) !== -1;
+  }));
 }
 
 function _renderAdminChart(canvasId, tipo, data, options) {
@@ -7633,6 +7688,15 @@ function mostrarToast(msg) {
         <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:20px;">
           <div style="font-size:13px;font-weight:500;color:#E8C5BC;margin-bottom:14px;">Horário de pico (hora do dia)</div>
           <div style="height:160px;"><canvas id="chart-horario"></canvas></div>
+        </div>
+
+        <!-- Detalhamento de acessos -->
+        <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+            <div style="font-size:13px;font-weight:500;color:#E8C5BC;">Detalhamento de acessos</div>
+            <input id="stat-busca-usuario" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarLogAcessos(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;outline:none;width:220px;">
+          </div>
+          <div id="admin-log-acessos" style="color:rgba(176,154,140,0.4);font-size:13px;text-align:center;padding:16px;">Carregando...</div>
         </div>
 
         <button onclick="carregarEstatisticas()" style="background:var(--rose);color:white;border:none;padding:10px 24px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">↻ Atualizar</button>
