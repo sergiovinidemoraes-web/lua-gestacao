@@ -2868,6 +2868,14 @@ pt: {
   'chat.ph':'Escreva para Lua... 🌙',
   'chat.report.title':'Reportar resposta','chat.report.ph':'Descreva o problema com a resposta da Lua...',
   'chat.report.send':'Enviar reporte','chat.report.cancel':'Cancelar',
+  // Feedback global
+  'feedback.btn':'⚑ Reportar',
+  'feedback.title':'⚑ Enviar feedback',
+  'feedback.sub':'Reporte bugs, sugestões de melhoria ou qualquer problema no app.',
+  'feedback.tipo.label':'Tipo','feedback.secao.label':'Seção','feedback.msg.label':'Mensagem',
+  'feedback.tipo.bug':'🐛 Bug','feedback.tipo.melhoria':'✨ Melhoria',
+  'feedback.tipo.sugestao':'💡 Sugestão','feedback.tipo.outro':'💬 Outro',
+  'feedback.msg.ph':'Descreva com detalhes...','feedback.cancel':'Cancelar','feedback.send':'⚑ Enviar',
   // Marketplace
   'market.title':'Encontrar uma Doula','market.sub':'Doulas verificadas prontas para te acompanhar',
   'market.search.ph':'🔍 Buscar por cidade ou especialidade...',
@@ -3299,6 +3307,14 @@ en: {
   'chat.faq.3':'🤔 Baby moved less today','chat.faq.4':'💛 What to pack in the hospital bag?',
   'chat.faq.5':'⏱️ How do I know if it\'s labor?',
   'chat.ph':'Write to Lua... 🌙',
+  // Feedback global
+  'feedback.btn':'⚑ Report',
+  'feedback.title':'⚑ Send feedback',
+  'feedback.sub':'Report bugs, improvement suggestions or any issue in the app.',
+  'feedback.tipo.label':'Type','feedback.secao.label':'Section','feedback.msg.label':'Message',
+  'feedback.tipo.bug':'🐛 Bug','feedback.tipo.melhoria':'✨ Improvement',
+  'feedback.tipo.sugestao':'💡 Suggestion','feedback.tipo.outro':'💬 Other',
+  'feedback.msg.ph':'Describe in detail...','feedback.cancel':'Cancel','feedback.send':'⚑ Send',
   'market.title':'Find a Doula','market.sub':'Verified doulas ready to support you',
   'market.search.ph':'🔍 Search by city or specialty...',
   'doula.title':'My Doula','doula.label':'Your Doula',
@@ -3727,6 +3743,14 @@ es: {
   'chat.faq.3':'🤔 El bebé se movió menos hoy','chat.faq.4':'💛 ¿Qué llevar en la bolsa?',
   'chat.faq.5':'⏱️ ¿Cómo saber si es trabajo de parto?',
   'chat.ph':'Escribe a Lua... 🌙',
+  // Feedback global
+  'feedback.btn':'⚑ Reportar',
+  'feedback.title':'⚑ Enviar comentario',
+  'feedback.sub':'Reporta bugs, sugerencias de mejora o cualquier problema en la app.',
+  'feedback.tipo.label':'Tipo','feedback.secao.label':'Sección','feedback.msg.label':'Mensaje',
+  'feedback.tipo.bug':'🐛 Bug','feedback.tipo.melhoria':'✨ Mejora',
+  'feedback.tipo.sugestao':'💡 Sugerencia','feedback.tipo.outro':'💬 Otro',
+  'feedback.msg.ph':'Describe con detalle...','feedback.cancel':'Cancelar','feedback.send':'⚑ Enviar',
   'market.title':'Encontrar una Doula','market.sub':'Doulas verificadas listas para acompañarte',
   'market.search.ph':'🔍 Buscar por ciudad o especialidad...',
   'doula.title':'Mi Doula','doula.label':'Tu Doula',
@@ -5559,6 +5583,7 @@ function entrarNoApp(tipo, nome) {
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
   currentNome = nome;
+  try { _fbMostrarBotao(true); } catch(e) {}
   var primeiroNome = nome.split(' ')[0];
   var hora = new Date().getHours();
   var saudacao = hora < 12 ? t('dash.bom.dia') : hora < 18 ? t('dash.boa.tarde') : t('dash.boa.noite');
@@ -5708,6 +5733,7 @@ function renderContracoesDoula(lista) {
 async function fazerLogout() {
   await registrarFimSessao();
   try { if (db) await db.auth.signOut(); } catch(e) {}
+  try { _fbMostrarBotao(false); } catch(e) {}
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   mostrarToast('Até logo! 🌙');
@@ -7867,6 +7893,126 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
   });
 }
+</script>
+
+<!-- BOTÃO FLUTUANTE DE FEEDBACK -->
+<button id="fab-feedback" onclick="abrirFeedbackGlobal()" style="display:none;position:fixed;bottom:80px;right:18px;z-index:8500;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:10px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px;transition:opacity 0.2s;" data-i18n="feedback.btn">⚑ Reportar</button>
+
+<!-- MODAL FEEDBACK GLOBAL -->
+<div id="modal-feedback-global" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:460px;width:100%;position:relative;max-height:90vh;overflow-y:auto;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:4px;" data-i18n="feedback.title">⚑ Enviar feedback</div>
+    <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;" data-i18n="feedback.sub">Reporte bugs, sugestões de melhoria ou qualquer problema no app.</div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:8px;" data-i18n="feedback.tipo.label">Tipo</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="fb-tipo-btn active" data-tipo="bug" onclick="selecionarTipoFeedback(this)" style="background:rgba(201,137,122,0.2);border:1px solid rgba(201,137,122,0.5);color:#E8C5BC;border-radius:10px;padding:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;" data-i18n="feedback.tipo.bug">🐛 Bug</button>
+        <button class="fb-tipo-btn" data-tipo="melhoria" onclick="selecionarTipoFeedback(this)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);border-radius:10px;padding:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;" data-i18n="feedback.tipo.melhoria">✨ Melhoria</button>
+        <button class="fb-tipo-btn" data-tipo="sugestao" onclick="selecionarTipoFeedback(this)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);border-radius:10px;padding:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;" data-i18n="feedback.tipo.sugestao">💡 Sugestão</button>
+        <button class="fb-tipo-btn" data-tipo="outro" onclick="selecionarTipoFeedback(this)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);border-radius:10px;padding:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;" data-i18n="feedback.tipo.outro">💬 Outro</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;" data-i18n="feedback.secao.label">Seção</label>
+      <input id="fb-secao" type="text" readonly style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(176,154,140,0.7);font-family:'DM Sans',sans-serif;outline:none;">
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;" data-i18n="feedback.msg.label">Mensagem</label>
+      <textarea id="fb-mensagem" rows="4" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;resize:none;" data-i18n-ph="feedback.msg.ph" placeholder="Descreva com detalhes..."></textarea>
+    </div>
+
+    <div style="display:flex;gap:12px;">
+      <button onclick="fecharFeedbackGlobal()" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;" data-i18n="feedback.cancel">Cancelar</button>
+      <button onclick="enviarFeedbackGlobal()" style="flex:2;background:var(--rose);color:white;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;" data-i18n="feedback.send">⚑ Enviar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+#fab-feedback { display:none; }
+#fab-feedback.fb-visible { display:flex !important; }
+@media (max-width:768px) { #fab-feedback { bottom:72px; } }
+.fb-tipo-btn.active { background:rgba(201,137,122,0.2) !important; border-color:rgba(201,137,122,0.5) !important; color:#E8C5BC !important; }
+</style>
+
+<script>
+var _fbTipoSelecionado = 'bug';
+
+var _fbSecaoMap = {
+  'g-dashboard':'Dashboard','g-acomp':'Gestação','g-contracoes':'Contrações','g-diario':'Diário',
+  'g-chat':'Chat Lua','g-parceiro':'Acompanhante','g-plano':'Plano de Parto','g-biblioteca':'Biblioteca',
+  'g-marketplace':'Marketplace','g-posparto':'Pós-Parto','g-doula-perfil':'Perfil Doula',
+  'd-dashboard':'Dashboard Doula','d-clientes':'Clientes','d-agenda':'Agenda','d-biblioteca':'Biblioteca Doula',
+  'd-chat':'Chat','d-perfil':'Perfil',
+  'p-dashboard':'Dashboard Acomp.','p-gestacao':'Gestação Acomp.','p-contracoes':'Contrações Acomp.',
+  'p-diario':'Diário Acomp.','p-chat':'Chat Lua Acomp.','p-checklist':'Checklist Acomp.',
+  'admin-usuarios':'Admin › Usuários','admin-estatisticas':'Admin › Estatísticas','admin-conteudos':'Admin › Conteúdos',
+  'admin-biblioteca':'Admin › Biblioteca'
+};
+
+function _fbGetSecaoAtual() {
+  var active = document.querySelector('.g-panel.active, .d-panel.active');
+  if (active) return _fbSecaoMap[active.id] || active.id;
+  var adminActive = document.querySelector('.admin-panel-section.active');
+  if (adminActive) return _fbSecaoMap[adminActive.id] || adminActive.id;
+  return '—';
+}
+
+function abrirFeedbackGlobal() {
+  var modal = document.getElementById('modal-feedback-global');
+  if (!modal) return;
+  document.getElementById('fb-secao').value = _fbGetSecaoAtual();
+  document.getElementById('fb-mensagem').value = '';
+  _fbTipoSelecionado = 'bug';
+  document.querySelectorAll('.fb-tipo-btn').forEach(function(b) { b.classList.remove('active'); });
+  var first = document.querySelector('.fb-tipo-btn[data-tipo="bug"]');
+  if (first) first.classList.add('active');
+  modal.style.display = 'flex';
+}
+
+function fecharFeedbackGlobal() {
+  var modal = document.getElementById('modal-feedback-global');
+  if (modal) modal.style.display = 'none';
+}
+
+function selecionarTipoFeedback(btn) {
+  document.querySelectorAll('.fb-tipo-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  _fbTipoSelecionado = btn.getAttribute('data-tipo');
+}
+
+async function enviarFeedbackGlobal() {
+  var msg = (document.getElementById('fb-mensagem').value || '').trim();
+  if (!msg) { mostrarToast('✏️ Escreva sua mensagem'); return; }
+  var secao = document.getElementById('fb-secao').value || '—';
+  var payload = {
+    user_id: currentUserId || null,
+    tipo_usuario: tipoSelecionado || null,
+    secao: secao,
+    tipo: _fbTipoSelecionado,
+    mensagem: msg
+  };
+  var res = await db.from('reportes').insert(payload);
+  if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
+  fecharFeedbackGlobal();
+  mostrarToast('✅ Feedback enviado! Obrigado 💛');
+}
+
+function _fbMostrarBotao(show) {
+  var btn = document.getElementById('fab-feedback');
+  if (!btn) return;
+  if (show) btn.classList.add('fb-visible');
+  else btn.classList.remove('fb-visible');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('modal-feedback-global').addEventListener('click', function(e) {
+    if (e.target === this) fecharFeedbackGlobal();
+  });
+});
 </script>
 
 </body>
