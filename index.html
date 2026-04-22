@@ -2187,26 +2187,26 @@ tr:hover td { background:var(--rose-pale); }
         <div class="p-profile">
           <div class="p-avatar" id="p-avatar">A</div>
           <div class="p-name" id="p-profile-name">—</div>
-          <div class="p-week">❤️ Lua — Acompanhante</div>
+          <div class="p-week" data-i18n="pai.role">❤️ Lua — Acompanhante</div>
         </div>
         <nav class="p-nav">
-          <div class="p-nav-item active" onclick="pNav(this,'p-dashboard')"><span class="p-nav-icon">🏠</span><span>Início</span></div>
-          <div class="p-nav-item" onclick="pNav(this,'p-gestacao')"><span class="p-nav-icon">🌱</span><span>Gestação</span></div>
-          <div class="p-nav-item" onclick="pNav(this,'p-contracoes')"><span class="p-nav-icon">🚨</span><span>Contrações</span></div>
-          <div class="p-nav-item" onclick="pNav(this,'p-diario')"><span class="p-nav-icon">📓</span><span>Diário do Pai</span></div>
-          <div class="p-nav-item" onclick="pNav(this,'p-chat')"><span class="p-nav-icon">🌙</span><span>Conversar com a Lua</span></div>
+          <div class="p-nav-item active" onclick="pNav(this,'p-dashboard')"><span class="p-nav-icon">🏠</span><span data-i18n="pai.nav.home">Início</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-gestacao')"><span class="p-nav-icon">🌱</span><span data-i18n="pai.nav.gestacao">Gestação</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-contracoes')"><span class="p-nav-icon">🚨</span><span data-i18n="pai.nav.contracoes">Contrações</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-diario')"><span class="p-nav-icon">📓</span><span data-i18n="pai.nav.diario">Diário do Pai</span></div>
+          <div class="p-nav-item" onclick="pNav(this,'p-chat')"><span class="p-nav-icon">🌙</span><span data-i18n="pai.nav.chat">Conversar com a Lua</span></div>
         </nav>
         <div class="p-parceira-card" id="p-parceira-card" style="display:none;">
-          <div class="p-parceira-card-title">Sua parceira</div>
+          <div class="p-parceira-card-title" data-i18n="pai.parceira.title">Sua parceira</div>
           <div class="p-parceira-card-name" id="p-parceira-nome-sidebar">—</div>
-          <div class="p-parceira-card-sub">Conectada ao Lua</div>
+          <div class="p-parceira-card-sub" data-i18n="pai.parceira.sub">Conectada ao Lua</div>
         </div>
         <div class="p-vincular-box" id="p-vincular-box">
-          <div class="p-vincular-box-title">Vincular parceira</div>
-          <div class="p-vincular-box-sub">Peça o código de convite no app da sua parceira.</div>
+          <div class="p-vincular-box-title" data-i18n="pai.vincular.title">Vincular parceira</div>
+          <div class="p-vincular-box-sub" data-i18n="pai.vincular.sub">Peça o código de convite no app da sua parceira.</div>
           <div style="display:flex;gap:8px;">
-            <input id="p-codigo-input" placeholder="Código" maxlength="6" style="flex:1;background:var(--cream);border:1px solid rgba(78,125,138,0.3);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--dark);font-family:inherit;outline:none;text-transform:uppercase;letter-spacing:2px;">
-            <button onclick="vincularGestantePai()" style="background:var(--pai);color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">Vincular</button>
+            <input id="p-codigo-input" data-i18n-ph="pai.vincular.ph" placeholder="Código" maxlength="6" style="flex:1;background:var(--cream);border:1px solid rgba(78,125,138,0.3);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--dark);font-family:inherit;outline:none;text-transform:uppercase;letter-spacing:2px;">
+            <button onclick="vincularGestantePai()" data-i18n="pai.vincular.btn" style="background:var(--pai);color:white;border:none;padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">Vincular</button>
           </div>
           <div id="p-vincular-erro" style="font-size:11px;color:#e07b5a;margin-top:6px;display:none;"></div>
         </div>
@@ -2217,23 +2217,23 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mobile-bottom-nav-inner">
           <div class="mob-nav-item active" onclick="pNav(this,'p-dashboard')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span>Início</span>
+            <span data-i18n="pai.mob.home">Início</span>
           </div>
           <div class="mob-nav-item" onclick="pNav(this,'p-gestacao')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            <span>Gestação</span>
+            <span data-i18n="pai.mob.gestacao">Gestação</span>
           </div>
           <div class="mob-nav-item" onclick="pNav(this,'p-contracoes')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span>Contrações</span>
+            <span data-i18n="pai.mob.contracoes">Contrações</span>
           </div>
           <div class="mob-nav-item" onclick="pNav(this,'p-diario')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span>Diário</span>
+            <span data-i18n="pai.mob.diario">Diário</span>
           </div>
           <div class="mob-nav-item" onclick="pNav(this,'p-chat')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span>Chat</span>
+            <span data-i18n="pai.mob.chat">Chat</span>
           </div>
         </div>
       </nav>
@@ -2243,10 +2243,10 @@ tr:hover td { background:var(--rose-pale); }
         <!-- DASHBOARD PAI -->
         <div class="g-panel active" id="p-dashboard">
           <div class="panel-title" id="pai-greeting">Olá, papai! 👶</div>
-          <div class="panel-sub" id="pai-dash-sub">Bem-vinde ao Lua — Acompanhante ❤️</div>
+          <div class="panel-sub" id="pai-dash-sub" data-i18n="pai.dash.sub">Bem-vinde ao Lua — Acompanhante ❤️</div>
 
           <div id="p-gestacao-card" style="display:none;background:linear-gradient(135deg,var(--dark),#1e3a4a);border-radius:20px;padding:24px;color:white;margin-bottom:20px;">
-            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:14px;">Gestação da Parceira</div>
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:14px;" data-i18n="pai.dash.card.label">Gestação da Parceira</div>
             <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
               <div style="font-size:52px;" id="p-bebe-emoji">🌱</div>
               <div>
@@ -2257,99 +2257,99 @@ tr:hover td { background:var(--rose-pale); }
             <div style="background:rgba(255,255,255,0.12);border-radius:10px;height:6px;margin-bottom:6px;">
               <div id="p-prog-bar" style="background:white;border-radius:10px;height:6px;width:0%;transition:width 0.6s;"></div>
             </div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.4;margin-bottom:16px;"><span>Início</span><span>Semana 40</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.4;margin-bottom:16px;"><span data-i18n="pai.bar.start">Início</span><span data-i18n="pai.bar.end">Semana 40</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:center;">
                 <div style="font-size:20px;font-weight:500;" id="p-dias-restantes">—</div>
-                <div style="font-size:11px;opacity:0.5;margin-top:2px;">dias restantes</div>
+                <div style="font-size:11px;opacity:0.5;margin-top:2px;" data-i18n="pai.dash.days">dias restantes</div>
               </div>
               <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px;text-align:center;">
                 <div style="font-size:18px;font-weight:500;" id="p-dpp-display">—</div>
-                <div style="font-size:11px;opacity:0.5;margin-top:2px;">data provável</div>
+                <div style="font-size:11px;opacity:0.5;margin-top:2px;" data-i18n="pai.dash.dpp">data provável</div>
               </div>
             </div>
           </div>
 
           <div id="p-sem-vinculo-banner" style="background:linear-gradient(135deg,rgba(78,125,138,0.12),rgba(78,125,138,0.06));border:1px solid rgba(78,125,138,0.2);border-radius:16px;padding:24px;margin-bottom:20px;">
             <div style="font-size:32px;margin-bottom:10px;">👶</div>
-            <div style="font-size:16px;font-weight:500;color:var(--dark);margin-bottom:6px;">Conecte-se à gestação</div>
-            <div style="font-size:13px;color:var(--earth-light);line-height:1.6;">Insira o código de convite da sua parceira na barra lateral para começar a acompanhar a gestação.</div>
+            <div style="font-size:16px;font-weight:500;color:var(--dark);margin-bottom:6px;" data-i18n="pai.dash.connect.title">Conecte-se à gestação</div>
+            <div style="font-size:13px;color:var(--earth-light);line-height:1.6;" data-i18n="pai.dash.connect.sub">Insira o código de convite da sua parceira na barra lateral para começar a acompanhar a gestação.</div>
           </div>
 
           <div style="background:var(--pai);color:white;padding:20px;border-radius:16px;margin-bottom:24px;cursor:pointer;box-shadow:0 4px 12px rgba(78,125,138,0.2);transition:transform 0.2s;" onclick="pNav(null,'p-checklist')">
-            <div style="font-size:18px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:8px;">👨‍👩‍👧 Checklist do Acompanhante</div>
-            <div style="font-size:13px;opacity:0.9;line-height:1.4;">O seu guia prático para agir durante a gestação, parto e pós-parto. Toque para acessar.</div>
+            <div style="font-size:18px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:8px;" data-i18n="pai.dash.checklist.title">👨‍👩‍👧 Checklist do Acompanhante</div>
+            <div style="font-size:13px;opacity:0.9;line-height:1.4;" data-i18n="pai.dash.checklist.sub">O seu guia prático para agir durante a gestação, parto e pós-parto. Toque para acessar.</div>
           </div>
 
           <div class="card">
-            <div class="card-title">💡 Como você pode apoiar hoje</div>
+            <div class="card-title" data-i18n="pai.dash.support.title">💡 Como você pode apoiar hoje</div>
             <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="background:var(--rose-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">🤝 Pergunte como ela está se sentindo hoje</div>
-              <div style="background:var(--pai-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">🍽️ Prepare uma refeição especial para ela</div>
-              <div style="background:var(--gold-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);">📚 Leia sobre a fase atual da gestação</div>
+              <div style="background:var(--rose-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);" data-i18n="pai.dash.support.1">🤝 Pergunte como ela está se sentindo hoje</div>
+              <div style="background:var(--pai-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);" data-i18n="pai.dash.support.2">🍽️ Prepare uma refeição especial para ela</div>
+              <div style="background:var(--gold-pale);border-radius:10px;padding:12px;font-size:13px;color:var(--mid);" data-i18n="pai.dash.support.3">📚 Leia sobre a fase atual da gestação</div>
             </div>
           </div>
         </div>
 
         <!-- GESTAÇÃO DA PARCEIRA -->
         <div class="g-panel" id="p-gestacao">
-          <div class="panel-title">Gestação da Parceira</div>
-          <div class="panel-sub">Acompanhe cada semana desta jornada</div>
+          <div class="panel-title" data-i18n="pai.gest.title">Gestação da Parceira</div>
+          <div class="panel-sub" data-i18n="pai.gest.sub">Acompanhe cada semana desta jornada</div>
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
               <div>
-                <div class="preg-weeks" id="p-gestacao-semanas">— <span>semanas</span></div>
+                <div class="preg-weeks" id="p-gestacao-semanas">— <span data-i18n="pai.gest.weeks">semanas</span></div>
                 <div style="font-size:13px;color:var(--earth-light);margin-top:6px;" id="p-gestacao-faltam">—</div>
               </div>
               <div style="background:var(--pai-pale);color:var(--pai);padding:4px 12px;border-radius:20px;font-size:12px;letter-spacing:1px;text-transform:uppercase;" id="p-gestacao-trimestre">—</div>
             </div>
             <div class="preg-bar"><div class="preg-bar-fill" id="p-gestacao-bar" style="width:0%;background:var(--pai);"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span>Início</span><span>Semana 40</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span data-i18n="pai.bar.start">Início</span><span data-i18n="pai.bar.end">Semana 40</span></div>
             <div class="preg-info-grid">
-              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dpp">—</div><div class="preg-info-label">DPP estimada</div></div>
-              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-progresso">—</div><div class="preg-info-label">Progresso</div></div>
-              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dias">—</div><div class="preg-info-label">Dias restantes</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dpp">—</div><div class="preg-info-label" data-i18n="pai.gest.dpp.label">DPP estimada</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-progresso">—</div><div class="preg-info-label" data-i18n="pai.gest.progress.label">Progresso</div></div>
+              <div class="preg-info-item"><div class="preg-info-val" id="p-gestacao-dias">—</div><div class="preg-info-label" data-i18n="pai.gest.days.label">Dias restantes</div></div>
             </div>
           </div>
           <div class="card">
-            <div class="card-title">📖 O que acontece nesta semana</div>
-            <div id="p-semana-desc" style="font-size:14px;color:var(--mid);line-height:1.7;">Conecte-se à parceira para ver as informações da semana atual.</div>
+            <div class="card-title" data-i18n="pai.gest.week.title">📖 O que acontece nesta semana</div>
+            <div id="p-semana-desc" style="font-size:14px;color:var(--mid);line-height:1.7;" data-i18n="pai.gest.connect">Conecte-se à parceira para ver as informações da semana atual.</div>
           </div>
         </div>
 
         <!-- CONTRAÇÕES EM TEMPO REAL -->
         <div class="g-panel" id="p-contracoes">
-          <div class="panel-title">Contrações</div>
-          <div class="panel-sub">Acompanhe em tempo real as contrações da sua parceira</div>
+          <div class="panel-title" data-i18n="pai.cont.title">Contrações</div>
+          <div class="panel-sub" data-i18n="pai.cont.sub">Acompanhe em tempo real as contrações da sua parceira</div>
           <div class="card" style="background:linear-gradient(135deg,var(--dark),#1e2a3a);color:white;">
-            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.4;margin-bottom:12px;">Status em tempo real</div>
-            <div style="font-size:15px;margin-bottom:10px;" id="p-contracoes-status">Aguardando conexão com parceira...</div>
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.4;margin-bottom:12px;" data-i18n="pai.cont.realtime">Status em tempo real</div>
+            <div style="font-size:15px;margin-bottom:10px;" id="p-contracoes-status" data-i18n="pai.cont.waiting">Aguardando conexão com parceira...</div>
             <div id="p-contracoes-timer-wrap" style="display:none;">
               <div style="font-size:52px;font-family:'Cormorant Garamond',serif;font-weight:300;letter-spacing:6px;" id="p-timer-display">00:00</div>
-              <div style="font-size:12px;opacity:0.5;margin-top:4px;">duração desta contração</div>
+              <div style="font-size:12px;opacity:0.5;margin-top:4px;" data-i18n="pai.cont.duration">duração desta contração</div>
             </div>
           </div>
           <div id="p-contracoes-log" style="margin-top:20px;"></div>
           <div id="p-sem-vinculo-contracoes" class="empty-state" style="display:none;">
             <div class="empty-icon">🔗</div>
-            <div class="empty-title">Não conectado</div>
-            <div class="empty-sub">Vincule-se à sua parceira para acompanhar as contrações.</div>
+            <div class="empty-title" data-i18n="pai.cont.empty.title">Não conectado</div>
+            <div class="empty-sub" data-i18n="pai.cont.empty.sub">Vincule-se à sua parceira para acompanhar as contrações.</div>
           </div>
         </div>
 
         <!-- DIÁRIO DO PAI -->
         <div class="g-panel" id="p-diario">
-          <div class="panel-title">Diário do Pai</div>
-          <div class="panel-sub">Registre seus sentimentos e momentos especiais desta jornada</div>
+          <div class="panel-title" data-i18n="pai.diario.title">Diário do Pai</div>
+          <div class="panel-sub" data-i18n="pai.diario.sub">Registre seus sentimentos e momentos especiais desta jornada</div>
           <div class="diary-new">
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="p-diary-cats">
-              <button class="p-cat-btn selected" onclick="selectCategoriaPai(this,'💭 Sentimentos')">💭 Sentimentos</button>
-              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'📝 Carta pro bebê')">📝 Carta pro bebê</button>
-              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🏥 Consulta')">🏥 Consulta</button>
-              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🤔 Preparativos')">🤔 Preparativos</button>
-              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'❤️ Momento especial')">❤️ Momento especial</button>
+              <button class="p-cat-btn selected" onclick="selectCategoriaPai(this,'💭 Sentimentos')" data-i18n="pai.diario.cat.1">💭 Sentimentos</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'📝 Carta pro bebê')" data-i18n="pai.diario.cat.2">📝 Carta pro bebê</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🏥 Consulta')" data-i18n="pai.diario.cat.3">🏥 Consulta</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'🤔 Preparativos')" data-i18n="pai.diario.cat.4">🤔 Preparativos</button>
+              <button class="p-cat-btn" onclick="selectCategoriaPai(this,'❤️ Momento especial')" data-i18n="pai.diario.cat.5">❤️ Momento especial</button>
             </div>
-            <textarea id="p-diary-textarea" placeholder="Escreva livremente o que você está sentindo..."></textarea>
+            <textarea id="p-diary-textarea" data-i18n-ph="pai.diario.ph" placeholder="Escreva livremente o que você está sentindo..."></textarea>
             <div class="diary-new-footer">
               <div class="mood-btns" id="p-mood-btns">
                 <span class="mood-btn" onclick="selectMoodPai(this)">😊</span>
@@ -2358,33 +2358,33 @@ tr:hover td { background:var(--rose-pale); }
                 <span class="mood-btn" onclick="selectMoodPai(this)">🤩</span>
                 <span class="mood-btn" onclick="selectMoodPai(this)">😰</span>
               </div>
-              <button class="save-btn" onclick="saveDiarioPai()">Salvar registro</button>
+              <button class="save-btn" onclick="saveDiarioPai()" data-i18n="pai.diario.save">Salvar registro</button>
             </div>
           </div>
           <div id="p-diary-entries">
             <div class="empty-state" id="p-diary-empty">
               <div class="empty-icon">📓</div>
-              <div class="empty-title">Seu diário está esperando</div>
-              <div class="empty-sub">Registre aqui seus sentimentos e momentos especiais 💛</div>
+              <div class="empty-title" data-i18n="pai.diario.empty.title">Seu diário está esperando</div>
+              <div class="empty-sub" data-i18n="pai.diario.empty.sub">Registre aqui seus sentimentos e momentos especiais 💛</div>
             </div>
           </div>
         </div>
 
         <!-- CHAT LUA-PAI -->
         <div class="g-panel" id="p-chat">
-          <div class="panel-title">Conversar com a Lua</div>
-          <div class="panel-sub">Lua está aqui para apoiar você nesta jornada como pai 🌙</div>
+          <div class="panel-title" data-i18n="pai.chat.title">Conversar com a Lua</div>
+          <div class="panel-sub" data-i18n="pai.chat.sub">Lua está aqui para apoiar você nesta jornada como pai 🌙</div>
           <div class="chat-faq-sugestoes">
-            <button class="chat-faq-btn" onclick="sendFAQPai(this)">👶 Como apoiar no trabalho de parto?</button>
-            <button class="chat-faq-btn" onclick="sendFAQPai(this)">💛 O que muda na relação após o parto?</button>
-            <button class="chat-faq-btn" onclick="sendFAQPai(this)">🤔 Como me preparar para ser pai?</button>
-            <button class="chat-faq-btn" onclick="sendFAQPai(this)">🍼 Como ajudar na amamentação?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)" data-i18n="pai.chat.faq.1">👶 Como apoiar no trabalho de parto?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)" data-i18n="pai.chat.faq.2">💛 O que muda na relação após o parto?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)" data-i18n="pai.chat.faq.3">🤔 Como me preparar para ser pai?</button>
+            <button class="chat-faq-btn" onclick="sendFAQPai(this)" data-i18n="pai.chat.faq.4">🍼 Como ajudar na amamentação?</button>
           </div>
           <div class="chat-wrap">
             <div class="chat-messages" id="p-chat-messages">
               <div class="chat-msg recv">
-                <div class="chat-bubble">Olá, papai! Sou Lua 🌙 Estou aqui para te apoiar nesta jornada incrível. Pode me perguntar qualquer coisa sobre a gestação, o parto e como você pode estar presente de verdade. Como posso te ajudar hoje?</div>
-                <div class="chat-time">Lua • agora</div>
+                <div class="chat-bubble" data-i18n="pai.chat.initial">Olá, papai! Sou Lua 🌙 Estou aqui para te apoiar nesta jornada incrível. Pode me perguntar qualquer coisa sobre a gestação, o parto e como você pode estar presente de verdade. Como posso te ajudar hoje?</div>
+                <div class="chat-time" data-i18n="pai.chat.time">Lua • agora</div>
               </div>
             </div>
             </div>
@@ -2399,226 +2399,66 @@ tr:hover td { background:var(--rose-pale); }
           <div style="display:flex;align-items:center;margin-bottom:24px;">
             <div onclick="pNav(null, 'p-dashboard')" style="font-size:24px;color:var(--pai);cursor:pointer;margin-right:16px;">←</div>
             <div>
-              <div class="panel-title" style="margin-bottom:4px;font-size:24px;">Checklist do Acompanhante</div>
-              <div class="panel-sub" style="margin-bottom:0;font-size:13px;">👨‍👩‍👧 Seu guia para gestação, parto e pós-parto</div>
+              <div class="panel-title" style="margin-bottom:4px;font-size:24px;" data-i18n="pai.check.title">Checklist do Acompanhante</div>
+              <div class="panel-sub" style="margin-bottom:0;font-size:13px;" data-i18n="pai.check.sub">👨‍👩‍👧 Seu guia para gestação, parto e pós-parto</div>
             </div>
           </div>
 
           <div class="card" style="margin-bottom:16px;">
-            <div class="card-title">🤰 Durante a Gestação</div>
+            <div class="card-title" data-i18n="pai.check.s1.title">🤰 Durante a Gestação</div>
             
-            <div style="margin-bottom:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Ouvir sem julgar</li>
-                <li>Validar sentimentos ("faz sentido você se sentir assim")</li>
-                <li>Reduzir estresse (evitar conflitos desnecessários)</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> menos cortisol = melhor evolução da gestação</div>
-            </div>
-            
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Presença ativa nas consultas</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Participar de consultas e exames sempre que possível</li>
-                <li>Fazer perguntas junto com ela</li>
-                <li>Entender o plano de parto</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> você vira o principal defensor das escolhas dela</div>
-            </div>
+          <div data-i18n-html="pai.check.s1.content">
+            <div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Ouvir sem julgar</li><li>Validar sentimentos ("faz sentido você se sentir assim")</li><li>Reduzir estresse (evitar conflitos desnecessários)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> menos cortisol = melhor evolução da gestação</div></div>
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Presença ativa nas consultas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Participar de consultas e exames sempre que possível</li><li>Fazer perguntas junto com ela</li><li>Entender o plano de parto</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> você vira o principal defensor das escolhas dela</div></div>
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Massagens para alívio</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Lombar (dor nas costas)</li><li>Pernas (inchaço)</li><li>Ombros (tensão)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> melhora circulação, reduz dor e ansiedade</div></div>
+            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ajuda prática no dia a dia</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Dividir tarefas da casa</li><li>Incentivar descanso</li><li>Garantir alimentação adequada</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> preserva energia física e emocional da gestante</div></div>
+            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparação para o parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Estudar sinais de trabalho de parto</li><li>Conhecer fases (latente, ativa, expulsivo)</li><li>Saber quando ir para o hospital</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> evita correria e decisões precipitadas</div></div>
+          </div>
+          </div>
 
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Massagens para alívio</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Lombar (dor nas costas)</li>
-                <li>Pernas (inchaço)</li>
-                <li>Ombros (tensão)</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> melhora circulação, reduz dor e ansiedade</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ajuda prática no dia a dia</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Dividir tarefas da casa</li>
-                <li>Incentivar descanso</li>
-                <li>Garantir alimentação adequada</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> preserva energia física e emocional da gestante</div>
-            </div>
-
-            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparação para o parto</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Estudar sinais de trabalho de parto</li>
-                <li>Conhecer fases (latente, ativa, expulsivo)</li>
-                <li>Saber quando ir para o hospital</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> evita correria e decisões precipitadas</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-title" data-i18n="pai.check.s2.title">🤱 Durante o Trabalho de Parto</div>
+            <div data-i18n-html="pai.check.s2.content">
+              <div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Manter a calma</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Seu comportamento influencia diretamente o dela</li><li>Evite demonstrar medo ou desespero</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> segurança emocional = progresso do trabalho de parto</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o plano de parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Comunicar desejos dela à equipe</li><li>Confirmar procedimentos antes de autorizar</li><li>Ser ponte entre equipe e gestante</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> reduz intervenções desnecessárias</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio físico</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Ajudar em posições (bola, cócoras, chuveiro)</li><li>Massagem lombar durante contrações</li><li>Compressas mornas</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> alívio da dor e melhor progressão</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional ativo</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frases simples: "você está indo muito bem"</li><li>Contato físico (mão, abraço)</li><li>Incentivar respiração</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> aumenta ocitocina (hormônio do parto)</div></div>
+              <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Evitar atrapalhar</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Não interromper concentração dela</li><li>Evitar muitas perguntas</li><li>Não trazer tensão para o ambiente</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> protege o fluxo natural do parto</div></div>
             </div>
           </div>
 
           <div class="card" style="margin-bottom:16px;">
-            <div class="card-title">🤱 Durante o Trabalho de Parto</div>
-            
-            <div style="margin-bottom:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Manter a calma</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Seu comportamento influencia diretamente o dela</li>
-                <li>Evite demonstrar medo ou desespero</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> segurança emocional = progresso do trabalho de parto</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o plano de parto</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Comunicar desejos dela à equipe</li>
-                <li>Confirmar procedimentos antes de autorizar</li>
-                <li>Ser ponte entre equipe e gestante</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> reduz intervenções desnecessárias</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio físico</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Ajudar em posições (bola, cócoras, chuveiro)</li>
-                <li>Massagem lombar durante contrações</li>
-                <li>Compressas mornas</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> alívio da dor e melhor progressão</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional ativo</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Frases simples: "você está indo muito bem"</li>
-                <li>Contato físico (mão, abraço)</li>
-                <li>Incentivar respiração</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> aumenta ocitocina (hormônio do parto)</div>
-            </div>
-
-            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Evitar atrapalhar</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Não interromper concentração dela</li>
-                <li>Evitar muitas perguntas</li>
-                <li>Não trazer tensão para o ambiente</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> protege o fluxo natural do parto</div>
+            <div class="card-title" data-i18n="pai.check.s3.title">👶 Pós-Parto Imediato</div>
+            <div data-i18n-html="pai.check.s3.content">
+              <div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamina K</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Aplicação intramuscular no bebê após o nascimento</li><li>Previne hemorragia neonatal</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Essencial</b> para evitar sangramentos graves</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Profilaxia ocular</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>🇺🇸 USA: Erythromycin ointment</li><li>🇧🇷 Brasil: Nitrato de prata (menos usado atualmente)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Previne:</b> infecções oculares causadas por bactérias</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Clampeamento tardio do cordão</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Esperar parar de pulsar antes de cortar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Mais ferro (menor risco de anemia) e melhor adaptação neonatal</div></div>
+              <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Contato pele a pele imediato</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Bebê direto no peito da mãe</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Regula temperatura, estimula amamentação e aumenta vínculo</div></div>
             </div>
           </div>
 
           <div class="card" style="margin-bottom:16px;">
-            <div class="card-title">👶 Pós-Parto Imediato</div>
-            
-            <div style="margin-bottom:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamina K</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Aplicação intramuscular no bebê após o nascimento</li>
-                <li>Previne hemorragia neonatal</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Essencial</b> para evitar sangramentos graves</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Profilaxia ocular</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>🇺🇸 EUA: Pomada de eritromicina</li>
-                <li>🇧🇷 Brasil: Nitrato de prata (menos usado atualmente)</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Previne:</b> infecções oculares causadas por bactérias</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Clampeamento tardio do cordão</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Esperar parar de pulsar antes de cortar</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Mais ferro (menor risco de anemia) e melhor adaptação neonatal</div>
-            </div>
-
-            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Contato pele a pele imediato</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Bebê direto no peito da mãe</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Regula temperatura, estimula amamentação e aumenta vínculo</div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-title">🤱 Pós-Parto (Em Casa)</div>
-            
-            <div style="margin-bottom:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o ambiente da mãe</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Evitar visitas excessivas</li>
-                <li>Reduzir barulho e estímulos</li>
-                <li>Criar ambiente calmo e seguro</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> favorece produção de ocitocina (leite + vínculo)</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoiar a amamentação</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Trazer água sempre que ela for amamentar</li>
-                <li>Garantir que ela esteja confortável</li>
-                <li>Incentivar sem pressionar</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormônios:</b> Ocitocina (saída) e Prolactina (produção)</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Assumir tarefas práticas</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Trocar fraldas e colocar bebê para arrotar</li>
-                <li>Organizar casa e refeições</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> mãe foca na recuperação e no bebê</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitorar mamadas</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Frequência (livre demanda) e tempo de mamada</li>
-                <li>Sinais de fome e saciedade</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Ajuda</b> a identificar possíveis dificuldades cedo</div>
-            </div>
-
-            <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Observar sinais de alerta</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li><b>Na mãe:</b> Tristeza intensa, dor forte, febre</li>
-                <li><b>No bebê:</b> Dificuldade para mamar, poucas fraldas molhadas, letargia</li>
-              </ul>
-              <div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 Em caso de dúvida: buscar ajuda imediatamente</div>
-            </div>
-
-            <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;">
-              <div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ser o guardião da mãe</div>
-              <ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);">
-                <li>Proteger descanso dela e filtrar visitas</li>
-                <li>Garantir que ela coma, beba água e durma</li>
-              </ul>
-              <div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>A recuperação dela é prioridade</b></div>
+            <div class="card-title" data-i18n="pai.check.s4.title">🤱 Pós-Parto (Em Casa)</div>
+            <div data-i18n-html="pai.check.s4.content">
+              <div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o ambiente da mãe</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Evitar visitas excessivas</li><li>Reduzir barulho e estímulos</li><li>Criar ambiente calmo e seguro</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> favorece produção de ocitocina (leite + vínculo)</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoiar a amamentação</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Trazer água sempre que ela for amamentar</li><li>Garantir que ela esteja confortável</li><li>Incentivar sem pressionar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormônios:</b> Ocitocina (saída) e Prolactina (produção)</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Assumir tarefas práticas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Trocar fraldas e colocar bebê para arrotar</li><li>Organizar casa e refeições</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> mãe foca na recuperação e no bebê</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitorar mamadas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frequência (livre demanda) e tempo de mamada</li><li>Sinais de fome e saciedade</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Ajuda</b> a identificar possíveis dificuldades cedo</div></div>
+              <div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Observar sinais de alerta</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li><b>Na mãe:</b> Tristeza intensa, dor forte, febre</li><li><b>No bebê:</b> Dificuldade para mamar, poucas fraldas molhadas, letargia</li></ul><div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 Em caso de dúvida: buscar ajuda imediatamente</div></div>
+              <div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ser o guardião da mãe</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Proteger descanso dela e filtrar visitas</li><li>Garantir que ela coma, beba água e durma</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>A recuperação dela é prioridade</b></div></div>
             </div>
           </div>
 
           <div style="background:linear-gradient(135deg,var(--pai) 0%,#2a4756 100%);color:white;border-radius:16px;padding:24px;text-align:center;">
             <div style="font-size:32px;margin-bottom:12px;">💡</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:12px;">Resumo do Papel do Pai</div>
-            <div style="font-size:14px;opacity:0.9;margin-bottom:16px;">Você não é um espectador. Você é:</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:12px;" data-i18n="pai.check.summary.title">Resumo do Papel do Pai</div>
+            <div style="font-size:14px;opacity:0.9;margin-bottom:16px;" data-i18n="pai.check.summary.sub">Você não é um espectador. Você é:</div>
             <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
-              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Protetor</span>
-              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Facilitador</span>
-              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Regulador do ambiente</span>
-              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Apoio emocional</span>
-              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;">Defensor das escolhas</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.1">Protetor</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.2">Facilitador</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.3">Regulador do ambiente</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.4">Apoio emocional</span>
+              <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.5">Defensor das escolhas</span>
             </div>
           </div>
         </div>
@@ -3126,7 +2966,56 @@ pt: {
   'doula.unlink':'Encerrar vínculo com esta doula',
   // Modal
   'modal.delete.title':'Remover material?','modal.delete.sub':'Esta ação não pode ser desfeita.',
-  'modal.cancel':'Cancelar','modal.confirm':'Remover'
+  'modal.cancel':'Cancelar','modal.confirm':'Remover',
+  // Acompanhante
+  'pai.role':'❤️ Lua — Acompanhante',
+  'pai.nav.home':'Início','pai.nav.gestacao':'Gestação','pai.nav.contracoes':'Contrações',
+  'pai.nav.diario':'Diário do Pai','pai.nav.chat':'Conversar com a Lua',
+  'pai.mob.home':'Início','pai.mob.gestacao':'Gestação','pai.mob.contracoes':'Contrações',
+  'pai.mob.diario':'Diário','pai.mob.chat':'Chat',
+  'pai.parceira.title':'Sua parceira','pai.parceira.sub':'Conectada ao Lua',
+  'pai.vincular.title':'Vincular parceira','pai.vincular.sub':'Peça o código de convite no app da sua parceira.',
+  'pai.vincular.ph':'Código','pai.vincular.btn':'Vincular',
+  'pai.dash.sub':'Bem-vinde ao Lua — Acompanhante ❤️','pai.dash.card.label':'Gestação da Parceira',
+  'pai.bar.start':'Início','pai.bar.end':'Semana 40',
+  'pai.dash.days':'dias restantes','pai.dash.dpp':'data provável',
+  'pai.dash.connect.title':'Conecte-se à gestação',
+  'pai.dash.connect.sub':'Insira o código de convite da sua parceira na barra lateral para começar a acompanhar a gestação.',
+  'pai.dash.checklist.title':'👨‍👩‍👧 Checklist do Acompanhante',
+  'pai.dash.checklist.sub':'O seu guia prático para agir durante a gestação, parto e pós-parto. Toque para acessar.',
+  'pai.dash.support.title':'💡 Como você pode apoiar hoje',
+  'pai.dash.support.1':'🤝 Pergunte como ela está se sentindo hoje',
+  'pai.dash.support.2':'🍽️ Prepare uma refeição especial para ela',
+  'pai.dash.support.3':'📚 Leia sobre a fase atual da gestação',
+  'pai.gest.title':'Gestação da Parceira','pai.gest.sub':'Acompanhe cada semana desta jornada',
+  'pai.gest.weeks':'semanas','pai.gest.dpp.label':'DPP estimada',
+  'pai.gest.progress.label':'Progresso','pai.gest.days.label':'Dias restantes',
+  'pai.gest.week.title':'📖 O que acontece nesta semana',
+  'pai.gest.connect':'Conecte-se à parceira para ver as informações da semana atual.',
+  'pai.cont.title':'Contrações','pai.cont.sub':'Acompanhe em tempo real as contrações da sua parceira',
+  'pai.cont.realtime':'Status em tempo real','pai.cont.waiting':'Aguardando conexão com parceira...',
+  'pai.cont.duration':'duração desta contração','pai.cont.empty.title':'Não conectado',
+  'pai.cont.empty.sub':'Vincule-se à sua parceira para acompanhar as contrações.',
+  'pai.diario.title':'Diário do Pai','pai.diario.sub':'Registre seus sentimentos e momentos especiais desta jornada',
+  'pai.diario.cat.1':'💭 Sentimentos','pai.diario.cat.2':'📝 Carta pro bebê',
+  'pai.diario.cat.3':'🏥 Consulta','pai.diario.cat.4':'🤔 Preparativos','pai.diario.cat.5':'❤️ Momento especial',
+  'pai.diario.ph':'Escreva livremente o que você está sentindo...','pai.diario.save':'Salvar registro',
+  'pai.diario.empty.title':'Seu diário está esperando','pai.diario.empty.sub':'Registre aqui seus sentimentos e momentos especiais 💛',
+  'pai.chat.title':'Conversar com a Lua','pai.chat.sub':'Lua está aqui para apoiar você nesta jornada como pai 🌙',
+  'pai.chat.faq.1':'👶 Como apoiar no trabalho de parto?','pai.chat.faq.2':'💛 O que muda na relação após o parto?',
+  'pai.chat.faq.3':'🤔 Como me preparar para ser pai?','pai.chat.faq.4':'🍼 Como ajudar na amamentação?',
+  'pai.chat.initial':'Olá, papai! Sou Lua 🌙 Estou aqui para te apoiar nesta jornada incrível. Pode me perguntar qualquer coisa sobre a gestação, o parto e como você pode estar presente de verdade. Como posso te ajudar hoje?',
+  'pai.chat.time':'Lua • agora',
+  'pai.check.title':'Checklist do Acompanhante','pai.check.sub':'👨‍👩‍👧 Seu guia para gestação, parto e pós-parto',
+  'pai.check.s1.title':'🤰 Durante a Gestação','pai.check.s2.title':'🤱 Durante o Trabalho de Parto',
+  'pai.check.s3.title':'👶 Pós-Parto Imediato','pai.check.s4.title':'🤱 Pós-Parto (Em Casa)',
+  'pai.check.summary.title':'Resumo do Papel do Pai','pai.check.summary.sub':'Você não é um espectador. Você é:',
+  'pai.check.role.1':'Protetor','pai.check.role.2':'Facilitador','pai.check.role.3':'Regulador do ambiente',
+  'pai.check.role.4':'Apoio emocional','pai.check.role.5':'Defensor das escolhas',
+  'pai.check.s1.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Ouvir sem julgar</li><li>Validar sentimentos</li><li>Reduzir estresse (evitar conflitos desnecessários)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> menos cortisol = melhor evolução da gestação</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Presença ativa nas consultas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Participar de consultas e exames</li><li>Fazer perguntas junto com ela</li><li>Entender o plano de parto</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> você vira o principal defensor das escolhas dela</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Massagens para alívio</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Lombar (dor nas costas)</li><li>Pernas (inchaço)</li><li>Ombros (tensão)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> melhora circulação, reduz dor e ansiedade</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ajuda prática no dia a dia</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Dividir tarefas da casa</li><li>Incentivar descanso</li><li>Garantir alimentação adequada</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> preserva energia física e emocional da gestante</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparação para o parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Estudar sinais de trabalho de parto</li><li>Conhecer fases (latente, ativa, expulsivo)</li><li>Saber quando ir para o hospital</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> evita correria e decisões precipitadas</div></div>',
+  'pai.check.s2.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Manter a calma</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Seu comportamento influencia diretamente o dela</li><li>Evite demonstrar medo ou desespero</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> segurança emocional = progresso do trabalho de parto</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o plano de parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Comunicar desejos dela à equipe</li><li>Confirmar procedimentos antes de autorizar</li><li>Ser ponte entre equipe e gestante</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> reduz intervenções desnecessárias</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio físico</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Ajudar em posições (bola, cócoras, chuveiro)</li><li>Massagem lombar durante contrações</li><li>Compressas mornas</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> alívio da dor e melhor progressão</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoio emocional ativo</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frases simples: "você está indo muito bem"</li><li>Contato físico (mão, abraço)</li><li>Incentivar respiração</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> aumenta ocitocina (hormônio do parto)</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Evitar atrapalhar</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Não interromper concentração dela</li><li>Evitar muitas perguntas</li><li>Não trazer tensão para o ambiente</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> protege o fluxo natural do parto</div></div>',
+  'pai.check.s3.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamina K</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Aplicação intramuscular no bebê após o nascimento</li><li>Previne hemorragia neonatal</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Essencial</b> para evitar sangramentos graves</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Profilaxia ocular</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>🇺🇸 EUA: Pomada de eritromicina</li><li>🇧🇷 Brasil: Nitrato de prata</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Previne:</b> infecções oculares causadas por bactérias</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Clampeamento tardio do cordão</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Esperar parar de pulsar antes de cortar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Mais ferro e melhor adaptação neonatal</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Contato pele a pele imediato</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Bebê direto no peito da mãe</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefícios:</b> Regula temperatura, estimula amamentação e aumenta vínculo</div></div>',
+  'pai.check.s4.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger o ambiente da mãe</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Evitar visitas excessivas</li><li>Reduzir barulho e estímulos</li><li>Criar ambiente calmo e seguro</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> favorece produção de ocitocina (leite + vínculo)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoiar a amamentação</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Trazer água sempre que ela for amamentar</li><li>Garantir que ela esteja confortável</li><li>Incentivar sem pressionar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormônios:</b> Ocitocina (saída) e Prolactina (produção)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Assumir tarefas práticas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Trocar fraldas e colocar bebê para arrotar</li><li>Organizar casa e refeições</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> mãe foca na recuperação e no bebê</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitorar mamadas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frequência (livre demanda) e tempo de mamada</li><li>Sinais de fome e saciedade</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Ajuda</b> a identificar possíveis dificuldades cedo</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Observar sinais de alerta</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li><b>Na mãe:</b> Tristeza intensa, dor forte, febre</li><li><b>No bebê:</b> Dificuldade para mamar, poucas fraldas molhadas, letargia</li></ul><div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 Em caso de dúvida: buscar ajuda imediatamente</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ser o guardião da mãe</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Proteger descanso dela e filtrar visitas</li><li>Garantir que ela coma, beba água e durma</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>A recuperação dela é prioridade</b></div></div>'
 },
 en: {
   'dash.bom.dia':'Good morning','dash.boa.tarde':'Good afternoon','dash.boa.noite':'Good evening',
@@ -3489,7 +3378,56 @@ en: {
   'loading':'Loading...',
   'doula.unlink':'End relationship with this doula',
   'modal.delete.title':'Remove material?','modal.delete.sub':'This action cannot be undone.',
-  'modal.cancel':'Cancel','modal.confirm':'Remove'
+  'modal.cancel':'Cancel','modal.confirm':'Remove',
+  // Companion (pai)
+  'pai.role':'❤️ Lua — Companion',
+  'pai.nav.home':'Home','pai.nav.gestacao':'Pregnancy','pai.nav.contracoes':'Contractions',
+  'pai.nav.diario':'Partner Journal','pai.nav.chat':'Chat with Lua',
+  'pai.mob.home':'Home','pai.mob.gestacao':'Pregnancy','pai.mob.contracoes':'Contractions',
+  'pai.mob.diario':'Journal','pai.mob.chat':'Chat',
+  'pai.parceira.title':'Your partner','pai.parceira.sub':'Connected to Lua',
+  'pai.vincular.title':'Link partner','pai.vincular.sub':'Ask your partner for the invite code in her app.',
+  'pai.vincular.ph':'Code','pai.vincular.btn':'Link',
+  'pai.dash.sub':'Welcome to Lua — Companion ❤️','pai.dash.card.label':'Partner\'s Pregnancy',
+  'pai.bar.start':'Start','pai.bar.end':'Week 40',
+  'pai.dash.days':'days remaining','pai.dash.dpp':'due date',
+  'pai.dash.connect.title':'Connect to the pregnancy',
+  'pai.dash.connect.sub':'Enter your partner\'s invite code in the sidebar to start tracking the pregnancy.',
+  'pai.dash.checklist.title':'👨‍👩‍👧 Companion Checklist',
+  'pai.dash.checklist.sub':'Your practical guide to acting during pregnancy, labor and postpartum. Tap to access.',
+  'pai.dash.support.title':'💡 How you can support today',
+  'pai.dash.support.1':'🤝 Ask how she\'s feeling today',
+  'pai.dash.support.2':'🍽️ Prepare a special meal for her',
+  'pai.dash.support.3':'📚 Read about the current pregnancy stage',
+  'pai.gest.title':'Partner\'s Pregnancy','pai.gest.sub':'Follow every week of this journey',
+  'pai.gest.weeks':'weeks','pai.gest.dpp.label':'Estimated due date',
+  'pai.gest.progress.label':'Progress','pai.gest.days.label':'Days remaining',
+  'pai.gest.week.title':'📖 What happens this week',
+  'pai.gest.connect':'Connect to your partner to see this week\'s information.',
+  'pai.cont.title':'Contractions','pai.cont.sub':'Track your partner\'s contractions in real time',
+  'pai.cont.realtime':'Real-time status','pai.cont.waiting':'Waiting for partner connection...',
+  'pai.cont.duration':'duration of this contraction','pai.cont.empty.title':'Not connected',
+  'pai.cont.empty.sub':'Link to your partner to track contractions.',
+  'pai.diario.title':'Partner Journal','pai.diario.sub':'Record your feelings and special moments of this journey',
+  'pai.diario.cat.1':'💭 Feelings','pai.diario.cat.2':'📝 Letter to the baby',
+  'pai.diario.cat.3':'🏥 Appointment','pai.diario.cat.4':'🤔 Preparations','pai.diario.cat.5':'❤️ Special moment',
+  'pai.diario.ph':'Write freely about what you\'re feeling...','pai.diario.save':'Save entry',
+  'pai.diario.empty.title':'Your journal is waiting','pai.diario.empty.sub':'Record your feelings and special moments here 💛',
+  'pai.chat.title':'Chat with Lua','pai.chat.sub':'Lua is here to support you on this journey as a partner 🌙',
+  'pai.chat.faq.1':'👶 How to support during labor?','pai.chat.faq.2':'💛 What changes in the relationship after birth?',
+  'pai.chat.faq.3':'🤔 How to prepare to be a father?','pai.chat.faq.4':'🍼 How to help with breastfeeding?',
+  'pai.chat.initial':'Hello! I\'m Lua 🌙 I\'m here to support you on this incredible journey. Feel free to ask me anything about pregnancy, birth and how you can truly be present. How can I help you today?',
+  'pai.chat.time':'Lua • now',
+  'pai.check.title':'Companion Checklist','pai.check.sub':'👨‍👩‍👧 Your guide for pregnancy, labor and postpartum',
+  'pai.check.s1.title':'🤰 During Pregnancy','pai.check.s2.title':'🤱 During Labor',
+  'pai.check.s3.title':'👶 Immediate Postpartum','pai.check.s4.title':'🤱 Postpartum (At Home)',
+  'pai.check.summary.title':'Summary of the Partner\'s Role','pai.check.summary.sub':'You are not a spectator. You are:',
+  'pai.check.role.1':'Protector','pai.check.role.2':'Facilitator','pai.check.role.3':'Environment regulator',
+  'pai.check.role.4':'Emotional support','pai.check.role.5':'Advocate for her choices',
+  'pai.check.s1.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Emotional support</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Listen without judging</li><li>Validate her feelings ("it makes sense to feel that way")</li><li>Reduce stress (avoid unnecessary conflict)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> less cortisol = better pregnancy progress</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Active presence at appointments</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Attend checkups and exams whenever possible</li><li>Ask questions together with her</li><li>Understand the birth plan</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> you become the main advocate for her choices</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Relief massages</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Lower back (back pain)</li><li>Legs (swelling)</li><li>Shoulders (tension)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> improves circulation, reduces pain and anxiety</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Practical day-to-day help</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Share household tasks</li><li>Encourage rest</li><li>Ensure adequate nutrition</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> preserves her physical and emotional energy</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparation for birth</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Study signs of labor</li><li>Know the phases (latent, active, expulsive)</li><li>Know when to go to the hospital</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> avoids rushing and hasty decisions</div></div>',
+  'pai.check.s2.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Stay calm</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Your behavior directly influences hers</li><li>Avoid showing fear or despair</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> emotional safety = better labor progress</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Protect the birth plan</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Communicate her wishes to the team</li><li>Confirm procedures before authorizing</li><li>Be the bridge between the team and her</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> reduces unnecessary interventions</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Physical support</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Help with positions (ball, squat, shower)</li><li>Lower back massage during contractions</li><li>Warm compresses</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> pain relief and better progression</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Active emotional support</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Simple phrases: "you\'re doing so well"</li><li>Physical contact (hand, hug)</li><li>Encourage breathing</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> boosts oxytocin (labor hormone)</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Avoid disrupting</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Do not interrupt her focus</li><li>Avoid too many questions</li><li>Do not bring tension into the environment</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> protects the natural flow of labor</div></div>',
+  'pai.check.s3.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamin K</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Intramuscular injection for the baby after birth</li><li>Prevents neonatal hemorrhage</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Essential</b> to prevent serious bleeding</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Eye prophylaxis</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>🇺🇸 USA: Erythromycin ointment</li><li>🇧🇷 Brazil: Silver nitrate (less common now)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Prevents:</b> bacterial eye infections</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Delayed cord clamping</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Wait for the cord to stop pulsing before cutting</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefits:</b> more iron (lower anemia risk) and better neonatal adaptation</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Immediate skin-to-skin contact</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Baby placed directly on mom\'s chest</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Benefits:</b> regulates temperature, stimulates breastfeeding and strengthens bonding</div></div>',
+  'pai.check.s4.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Protect mom\'s environment</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Limit excessive visitors</li><li>Reduce noise and stimulation</li><li>Create a calm, safe environment</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> promotes oxytocin production (milk + bonding)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Support breastfeeding</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Bring water whenever she nurses</li><li>Make sure she is comfortable</li><li>Encourage without pressuring</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormones:</b> Oxytocin (let-down) and Prolactin (production)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Take on practical tasks</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Change diapers and burp the baby</li><li>Organize the home and meals</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impact:</b> mom focuses on recovery and the baby</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitor feedings</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frequency (on demand) and feeding duration</li><li>Signs of hunger and fullness</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Helps</b> identify possible difficulties early</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Watch for warning signs</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li><b>In mom:</b> intense sadness, severe pain, fever</li><li><b>In baby:</b> difficulty feeding, few wet diapers, lethargy</li></ul><div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 When in doubt: seek help immediately</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Be mom\'s guardian</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Protect her rest and filter visitors</li><li>Make sure she eats, drinks water and sleeps</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Her recovery is the priority</b></div></div>'
 },
 es: {
   'dash.bom.dia':'Buenos días','dash.boa.tarde':'Buenas tardes','dash.boa.noite':'Buenas noches',
@@ -3852,7 +3790,56 @@ es: {
   'loading':'Cargando...',
   'doula.unlink':'Finalizar vínculo con esta doula',
   'modal.delete.title':'¿Eliminar material?','modal.delete.sub':'Esta acción no se puede deshacer.',
-  'modal.cancel':'Cancelar','modal.confirm':'Eliminar'
+  'modal.cancel':'Cancelar','modal.confirm':'Eliminar',
+  // Acompañante (pai)
+  'pai.role':'❤️ Lua — Acompañante',
+  'pai.nav.home':'Inicio','pai.nav.gestacao':'Embarazo','pai.nav.contracoes':'Contracciones',
+  'pai.nav.diario':'Diario del Padre','pai.nav.chat':'Hablar con Lua',
+  'pai.mob.home':'Inicio','pai.mob.gestacao':'Embarazo','pai.mob.contracoes':'Contracciones',
+  'pai.mob.diario':'Diario','pai.mob.chat':'Chat',
+  'pai.parceira.title':'Tu pareja','pai.parceira.sub':'Conectada a Lua',
+  'pai.vincular.title':'Vincular pareja','pai.vincular.sub':'Pide el código de invitación en la app de tu pareja.',
+  'pai.vincular.ph':'Código','pai.vincular.btn':'Vincular',
+  'pai.dash.sub':'Bienvenido a Lua — Acompañante ❤️','pai.dash.card.label':'Embarazo de tu Pareja',
+  'pai.bar.start':'Inicio','pai.bar.end':'Semana 40',
+  'pai.dash.days':'días restantes','pai.dash.dpp':'fecha probable',
+  'pai.dash.connect.title':'Conéctate al embarazo',
+  'pai.dash.connect.sub':'Ingresa el código de invitación de tu pareja en la barra lateral para comenzar a seguir el embarazo.',
+  'pai.dash.checklist.title':'👨‍👩‍👧 Checklist del Acompañante',
+  'pai.dash.checklist.sub':'Tu guía práctica para actuar durante el embarazo, parto y posparto. Toca para acceder.',
+  'pai.dash.support.title':'💡 Cómo puedes apoyar hoy',
+  'pai.dash.support.1':'🤝 Pregúntale cómo se siente hoy',
+  'pai.dash.support.2':'🍽️ Prepara una comida especial para ella',
+  'pai.dash.support.3':'📚 Lee sobre la fase actual del embarazo',
+  'pai.gest.title':'Embarazo de tu Pareja','pai.gest.sub':'Sigue cada semana de este viaje',
+  'pai.gest.weeks':'semanas','pai.gest.dpp.label':'FPP estimada',
+  'pai.gest.progress.label':'Progreso','pai.gest.days.label':'Días restantes',
+  'pai.gest.week.title':'📖 Qué pasa esta semana',
+  'pai.gest.connect':'Conéctate a tu pareja para ver la información de la semana actual.',
+  'pai.cont.title':'Contracciones','pai.cont.sub':'Sigue en tiempo real las contracciones de tu pareja',
+  'pai.cont.realtime':'Estado en tiempo real','pai.cont.waiting':'Esperando conexión con tu pareja...',
+  'pai.cont.duration':'duración de esta contracción','pai.cont.empty.title':'No conectado',
+  'pai.cont.empty.sub':'Vincúlate a tu pareja para seguir las contracciones.',
+  'pai.diario.title':'Diario del Padre','pai.diario.sub':'Registra tus sentimientos y momentos especiales de este viaje',
+  'pai.diario.cat.1':'💭 Sentimientos','pai.diario.cat.2':'📝 Carta al bebé',
+  'pai.diario.cat.3':'🏥 Consulta','pai.diario.cat.4':'🤔 Preparativos','pai.diario.cat.5':'❤️ Momento especial',
+  'pai.diario.ph':'Escribe libremente lo que estás sintiendo...','pai.diario.save':'Guardar registro',
+  'pai.diario.empty.title':'Tu diario está esperando','pai.diario.empty.sub':'Registra aquí tus sentimientos y momentos especiales 💛',
+  'pai.chat.title':'Hablar con Lua','pai.chat.sub':'Lua está aquí para apoyarte en este viaje como padre 🌙',
+  'pai.chat.faq.1':'👶 ¿Cómo apoyar durante el trabajo de parto?','pai.chat.faq.2':'💛 ¿Qué cambia en la relación después del parto?',
+  'pai.chat.faq.3':'🤔 ¿Cómo prepararme para ser padre?','pai.chat.faq.4':'🍼 ¿Cómo ayudar con la lactancia?',
+  'pai.chat.initial':'¡Hola, papá! Soy Lua 🌙 Estoy aquí para apoyarte en este viaje increíble. Puedes preguntarme cualquier cosa sobre el embarazo, el parto y cómo puedes estar verdaderamente presente. ¿Cómo puedo ayudarte hoy?',
+  'pai.chat.time':'Lua • ahora',
+  'pai.check.title':'Checklist del Acompañante','pai.check.sub':'👨‍👩‍👧 Tu guía para embarazo, parto y posparto',
+  'pai.check.s1.title':'🤰 Durante el Embarazo','pai.check.s2.title':'🤱 Durante el Trabajo de Parto',
+  'pai.check.s3.title':'👶 Posparto Inmediato','pai.check.s4.title':'🤱 Posparto (En Casa)',
+  'pai.check.summary.title':'Resumen del Papel del Padre','pai.check.summary.sub':'No eres un espectador. Eres:',
+  'pai.check.role.1':'Protector','pai.check.role.2':'Facilitador','pai.check.role.3':'Regulador del ambiente',
+  'pai.check.role.4':'Apoyo emocional','pai.check.role.5':'Defensor de sus elecciones',
+  'pai.check.s1.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoyo emocional</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Escuchar sin juzgar</li><li>Validar sentimientos ("tiene sentido sentirse así")</li><li>Reducir el estrés (evitar conflictos innecesarios)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> menos cortisol = mejor evolución del embarazo</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Presencia activa en las consultas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Participar en controles y exámenes siempre que sea posible</li><li>Hacer preguntas junto a ella</li><li>Entender el plan de parto</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> te conviertes en el principal defensor de sus elecciones</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Masajes de alivio</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Lumbar (dolor de espalda)</li><li>Piernas (hinchazón)</li><li>Hombros (tensión)</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> mejora la circulación, reduce el dolor y la ansiedad</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ayuda práctica en el día a día</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Compartir las tareas del hogar</li><li>Fomentar el descanso</li><li>Asegurar una alimentación adecuada</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> preserva su energía física y emocional</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Preparación para el parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Estudiar las señales del trabajo de parto</li><li>Conocer las fases (latente, activa, expulsivo)</li><li>Saber cuándo ir al hospital</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> evita prisas y decisiones precipitadas</div></div>',
+  'pai.check.s2.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Mantener la calma</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Tu comportamiento influye directamente en el de ella</li><li>Evita mostrar miedo o desesperación</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> seguridad emocional = progreso del trabajo de parto</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger el plan de parto</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Comunicar sus deseos al equipo médico</li><li>Confirmar procedimientos antes de autorizar</li><li>Ser el puente entre el equipo y ella</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> reduce intervenciones innecesarias</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoyo físico</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Ayudar en posiciones (pelota, cuclillas, ducha)</li><li>Masaje lumbar durante contracciones</li><li>Compresas tibias</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> alivio del dolor y mejor progresión</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoyo emocional activo</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frases simples: "lo estás haciendo muy bien"</li><li>Contacto físico (mano, abrazo)</li><li>Fomentar la respiración</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> aumenta la oxitocina (hormona del parto)</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Evitar interrumpir</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>No interrumpir su concentración</li><li>Evitar demasiadas preguntas</li><li>No llevar tensión al ambiente</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> protege el flujo natural del parto</div></div>',
+  'pai.check.s3.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Vitamina K</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Inyección intramuscular al bebé tras el nacimiento</li><li>Previene hemorragia neonatal</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Esencial</b> para evitar sangrados graves</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Profilaxis ocular</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>🇺🇸 EE.UU.: Pomada de eritromicina</li><li>🇧🇷 Brasil: Nitrato de plata</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Previene:</b> infecciones oculares por bacterias</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Pinzamiento tardío del cordón</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Esperar a que deje de pulsar antes de cortar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Beneficios:</b> más hierro y mejor adaptación neonatal</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Contacto piel a piel inmediato</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>El bebé directo sobre el pecho de la madre</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Beneficios:</b> regula temperatura, estimula lactancia y fortalece el vínculo</div></div>',
+  'pai.check.s4.content':'<div style="margin-bottom:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Proteger el entorno de la madre</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Limitar visitas excesivas</li><li>Reducir ruido y estímulos</li><li>Crear un ambiente tranquilo y seguro</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> favorece la producción de oxitocina (leche + vínculo)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Apoyar la lactancia</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Traer agua cada vez que ella amamante</li><li>Asegurarte de que esté cómoda</li><li>Animar sin presionar</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Hormonas:</b> Oxitocina (bajada) y Prolactina (producción)</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Asumir tareas prácticas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Cambiar pañales y hacer eructar al bebé</li><li>Organizar el hogar y las comidas</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Impacto:</b> la madre se centra en recuperarse y en el bebé</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Monitorear las tomas</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Frecuencia (a demanda) y duración de cada toma</li><li>Señales de hambre y saciedad</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Ayuda</b> a identificar posibles dificultades temprano</div></div><div style="margin-bottom:16px;border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Observar señales de alerta</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li><b>En la madre:</b> tristeza intensa, dolor fuerte, fiebre</li><li><b>En el bebé:</b> dificultad para mamar, pocos pañales mojados, letargo</li></ul><div style="font-size:13px;background:rgba(255,100,100,0.1);color:#d32f2f;padding:8px 12px;border-radius:8px;font-weight:500;">🚨 Ante cualquier duda: buscar ayuda inmediatamente</div></div><div style="border-top:1px solid rgba(78,125,138,0.1);padding-top:16px;"><div style="font-weight:600;color:var(--dark);margin-bottom:4px;">✔️ Ser el guardián de la madre</div><ul style="margin:0 0 8px 20px;padding:0;font-size:14px;color:var(--mid);"><li>Proteger su descanso y filtrar visitas</li><li>Asegurarte de que coma, beba agua y duerma</li></ul><div style="font-size:13px;color:var(--pai);background:var(--pai-pale);padding:8px 12px;border-radius:8px;">👉 <b>Su recuperación es la prioridad</b></div></div>'
 }
 };
 function t(key) { return (_i18n[_lang] || _i18n['pt'])[key] || (_i18n['pt'][key] || key); }
