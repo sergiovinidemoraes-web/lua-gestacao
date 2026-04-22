@@ -5068,44 +5068,105 @@ async function carregarReportesAdmin() {
   if (!lista || !db) return;
   lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
   try {
+    if (!_adminUsuarios || !_adminUsuarios.length) await carregarUsuariosAdmin();
+    var userMap = {};
+    (_adminUsuarios || []).forEach(function(u) { userMap[u.id] = u; });
+
     var res = await db.from('reportes').select('*').order('criado_em', { ascending: false }).limit(200);
     var data = res.data || [];
     var badge = document.getElementById('badge-reportes');
     var naolidos = data.filter(function(r) { return !r.lido; }).length;
     if (badge) { badge.style.display = naolidos > 0 ? 'inline-block' : 'none'; badge.textContent = naolidos; }
     var filtrado = _reporteFiltro === 'todos' ? data : data.filter(function(r) { return (r.tipo_usuario || 'gestante') === _reporteFiltro; });
-    if (!filtrado.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte \ud83c\udf19</div>'; return; }
+    if (!filtrado.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte ainda 🌙</div>'; return; }
+
     var tipoLabel = { gestante: 'Gestante', doula: 'Doula', pai: 'Acompanhante' };
     var tipoColor = { gestante: '#C9897A', doula: '#90B3A7', pai: '#82A0C8' };
+    var fbLabel = { bug: '🐛 Bug', melhoria: '✨ Melhoria', sugestao: '💡 Sugestão', outro: '💬 Outro' };
+
     lista.innerHTML = filtrado.map(function(r) {
       var d = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
-      var op = r.lido ? 'opacity:0.4;' : '';
-      var borda = r.lido ? '0.08' : '0.2';
-      var tipo = r.tipo_usuario || 'gestante';
+      var op = r.lido ? 'opacity:0.55;' : '';
+      var borda = r.lido ? '0.08' : '0.25';
+      var perfil = r.tipo_usuario || 'gestante';
       var nome = r.usuario_nome || r.gestante_nome || 'Usuário';
-      var cor = tipoColor[tipo] || '#C9897A';
-      var label = tipoLabel[tipo] || tipo;
-      return '<div style="border:1px solid rgba(201,137,122,' + borda + ');border-radius:12px;padding:16px;margin-bottom:12px;' + op + '">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
-        '<div style="display:flex;align-items:center;gap:8px;">' +
-        '<span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span>' +
-        '<span style="font-size:12px;color:rgba(176,154,140,0.5);">' + d + ' \u00b7 ' + nome + '</span></div>' +
-        (r.lido ? '' : '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">Marcar lido</button>') +
+      var cor = tipoColor[perfil] || '#C9897A';
+      var perfilLabel = tipoLabel[perfil] || perfil;
+      var fbTag = r.tipo_feedback ? (fbLabel[r.tipo_feedback] || r.tipo_feedback) : null;
+      var secao = r.secao || null;
+
+      var uid = r.gestante_id;
+      var u = uid ? userMap[uid] : null;
+      var email = u ? (u.email || '') : '';
+      var whatsapp = u ? (u.whatsapp || '') : '';
+      var waTel = whatsapp.replace(/\D/g, '');
+
+      var contatoHtml = '';
+      if (email || waTel) {
+        contatoHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">';
+        if (email) contatoHtml += '<span onclick="navigator.clipboard.writeText(\'' + email + '\');mostrarToast(\'Email copiado!\')" style="font-size:11px;color:rgba(176,154,140,0.6);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2px 10px;cursor:pointer;">✉ ' + email + '</span>';
+        if (waTel) contatoHtml += '<a href="https://wa.me/' + waTel + '" target="_blank" style="font-size:11px;color:#90B3A7;background:rgba(144,179,167,0.1);border:1px solid rgba(144,179,167,0.2);border-radius:20px;padding:2px 10px;text-decoration:none;">💬 WhatsApp</a>';
+        contatoHtml += '</div>';
+      }
+
+      var respostaHtml = '';
+      if (r.resposta) {
+        respostaHtml = '<div style="background:rgba(144,179,167,0.08);border:1px solid rgba(144,179,167,0.2);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#90B3A7;">↩ <strong>Sua resposta:</strong> ' + r.resposta + '</div>';
+      } else {
+        respostaHtml = '<div id="rep-form-' + r.id + '" style="display:none;margin-top:10px;">' +
+          '<textarea id="rep-txt-' + r.id + '" rows="2" placeholder="Digite sua resposta..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;font-size:12px;color:white;font-family:\'DM Sans\',sans-serif;outline:none;resize:none;"></textarea>' +
+          '<div style="display:flex;gap:8px;margin-top:6px;">' +
+          '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'none\'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.6);padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;">Cancelar</button>' +
+          '<button onclick="enviarRespostaReporte(\'' + r.id + '\',' + (waTel ? '\'' + waTel + '\'' : 'null') + ')" style="flex:2;background:var(--rose);color:white;border:none;padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;">↩ Enviar resposta</button>' +
+          '</div></div>';
+      }
+
+      return '<div id="rep-card-' + r.id + '" style="border:1px solid rgba(201,137,122,' + borda + ');border-radius:12px;padding:16px;margin-bottom:12px;' + op + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+        '<span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + perfilLabel + '</span>' +
+        (fbTag ? '<span style="font-size:10px;color:rgba(176,154,140,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:2px 8px;border-radius:20px;">' + fbTag + '</span>' : '') +
+        (secao ? '<span style="font-size:10px;color:rgba(176,154,140,0.45);">📍 ' + secao + '</span>' : '') +
         '</div>' +
-        (r.mensagem_lua ? '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:6px;font-style:italic;">"' + r.mensagem_lua.substring(0,200) + '"</div>' : '') +
-        '<div style="font-size:13px;color:#E8C5BC;">\u2691 ' + (r.descricao || '') + '</div></div>';
+        '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+        (r.lido ? '' : '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">✓ Lido</button>') +
+        (!r.resposta ? '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'block\'" style="background:rgba(144,179,167,0.15);border:none;color:#90B3A7;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">↩ Responder</button>' : '') +
+        '</div></div>' +
+        '<div style="font-size:11px;color:rgba(176,154,140,0.4);margin-bottom:8px;">' + d + ' · ' + nome + '</div>' +
+        (r.mensagem_lua ? '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:8px;font-style:italic;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px 10px;">"' + r.mensagem_lua.substring(0,200) + '"</div>' : '') +
+        '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.descricao || '') + '</div>' +
+        contatoHtml + respostaHtml + '</div>';
     }).join('');
   } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
 }
+
+async function enviarRespostaReporte(id, waTel) {
+  var txt = ((document.getElementById('rep-txt-' + id) || {}).value || '').trim();
+  if (!txt) { mostrarToast('Escreva a resposta antes de enviar'); return; }
+  if (!db || !id) return;
+  try {
+    await db.from('reportes').update({ resposta: txt, lido: true }).eq('id', id);
+    mostrarToast('✅ Resposta salva!');
+    if (waTel) {
+      var msg = encodeURIComponent('Olá! Recebemos seu feedback no Lua Gestação e gostaríamos de responder:\n\n' + txt);
+      window.open('https://wa.me/' + waTel + '?text=' + msg, '_blank');
+    }
+    carregarReportesAdmin();
+  } catch(e) { mostrarToast('Erro ao salvar resposta'); }
+}
+
 async function marcarRepLido(id, btn) {
   if (!db || !id) return;
   try { await db.from('reportes').update({ lido: true }).eq('id', id); } catch(e) {}
-  if (btn) { btn.closest('div[style]').style.opacity = '0.4'; btn.remove(); }
-  carregarReportesAdmin();
+  var card = document.getElementById('rep-card-' + id);
+  if (card) card.style.opacity = '0.55';
+  if (btn) btn.remove();
+  var badge = document.getElementById('badge-reportes');
+  if (badge) { var n = Math.max(0, parseInt(badge.textContent || '0') - 1); badge.textContent = n; if (n <= 0) badge.style.display = 'none'; }
 }
 async function marcarTodosLidos() {
   if (!db) return;
-  try { await db.from('reportes').update({ lido: true }).eq('lido', false); mostrarToast('\u2713 Todos marcados como lidos'); carregarReportesAdmin(); } catch(e) {}
+  try { await db.from('reportes').update({ lido: true }).eq('lido', false); mostrarToast('✓ Todos marcados como lidos'); carregarReportesAdmin(); } catch(e) {}
 }
 
 // ─── Avaliação de Doula ───
@@ -6695,6 +6756,7 @@ function adminNav(el, sectionId) {
   document.querySelectorAll('.admin-panel-section').forEach(function(p) { p.classList.remove('active'); });
   el.classList.add('active');
   document.getElementById(sectionId).classList.add('active');
+  try { _fbMostrarBotao(false); } catch(e) {}
   if (sectionId === 'admin-biblioteca') {
     setTimeout(function() { try { carregarBibliotecaAdmin(); } catch(e) {} }, 100);
   }
@@ -7989,11 +8051,13 @@ async function enviarFeedbackGlobal() {
   if (!msg) { mostrarToast('✏️ Escreva sua mensagem'); return; }
   var secao = document.getElementById('fb-secao').value || '—';
   var payload = {
-    user_id: currentUserId || null,
+    gestante_id: currentUserId || null,
+    usuario_nome: currentNome || 'Usuário',
     tipo_usuario: tipoSelecionado || null,
     secao: secao,
-    tipo: _fbTipoSelecionado,
-    mensagem: msg
+    tipo_feedback: _fbTipoSelecionado,
+    descricao: msg,
+    lido: false
   };
   var res = await db.from('reportes').insert(payload);
   if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
