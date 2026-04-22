@@ -243,6 +243,9 @@ header {
 .tarefa-item.done .tarefa-check { background:var(--rose); border-color:var(--rose); color:white; }
 .tarefa-text { font-size:13px; color:var(--mid); }
 .tarefa-item.done .tarefa-text { text-decoration:line-through; }
+.tarefa-sintoma { font-size:11px; color:var(--rose-light); margin-top:2px; }
+.placenta-btn { background:var(--rose-pale); color:var(--mid); border:1px solid rgba(201,137,122,0.25); border-radius:20px; padding:6px 14px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.placenta-btn.selected { background:var(--rose); color:white; border-color:var(--rose); }
 
 /* ─ Progresso gravidez ─ */
 .preg-weeks { font-size:48px; font-family:'Cormorant Garamond',serif; color:var(--rose); line-height:1; }
@@ -935,6 +938,7 @@ tr:hover td { background:var(--rose-pale); }
             <input type="date" id="dpp-input" style="padding:8px 14px;border-radius:10px;border:none;font-size:14px;font-family:inherit;background:rgba(255,255,255,0.2);color:white;outline:none;">
             <button onclick="salvarDPP()" style="background:white;color:#6a8a6c;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="dash.onboard.save">Salvar</button>
           </div>
+          <div style="font-size:11px;opacity:0.7;margin-top:10px;font-style:italic;line-height:1.5;">A DPP é uma data provável — 40 semanas é uma estimativa, não uma ordem de despejo 😊</div>
         </div>
         <div class="frases-do-dia">
             <div class="frase-texto" id="frase-texto">"Você está indo muito bem, mamãe 💛"</div>
@@ -1021,10 +1025,14 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div class="preg-bar"><div class="preg-bar-fill" id="g-prog-bar" style="width:0%"></div></div>
             <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--earth-light);margin-bottom:20px;"><span data-i18n="acomp.bar.start">Início</span><span data-i18n="acomp.bar.end">Semana 42</span></div>
-            <div class="preg-info-grid">
+            <div class="preg-info-grid" style="grid-template-columns:1fr 1fr;">
               <div class="preg-info-item"><div class="preg-info-val" id="g-dpp">—</div><div class="preg-info-label" data-i18n="acomp.dpp.label">DPP estimada</div></div>
               <div class="preg-info-item"><div class="preg-info-val" id="g-progresso">—</div><div class="preg-info-label" data-i18n="acomp.progress.label">Progresso</div></div>
-              <div class="preg-info-item"><div class="preg-info-val" id="g-dias">—</div><div class="preg-info-label" data-i18n="acomp.days.label">Dias restantes</div></div>
+            </div>
+            <div id="g-msg-acolhedora" style="font-size:13px;color:var(--mid);margin-top:14px;padding:12px;background:var(--rose-pale);border-radius:10px;line-height:1.5;display:none;"></div>
+            <div id="card-aviso-dpp-passada" style="display:none;background:rgba(201,137,122,0.12);border:1px solid rgba(201,137,122,0.3);border-radius:14px;padding:16px;margin-top:16px;line-height:1.6;">
+              <div style="font-size:14px;font-weight:500;margin-bottom:6px;color:var(--rose);">🌙 Você já passou da DPP</div>
+              <div style="font-size:13px;color:var(--mid);">Não falte às suas consultas. Alguns bebês nascem até 42 semanas — isso é completamente normal!</div>
             </div>
           </div>
           <div class="card" id="card-sentir">
@@ -1032,6 +1040,37 @@ tr:hover td { background:var(--rose-pale); }
             <div id="sentir-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div style="background:var(--rose-pale);border-radius:12px;padding:14px;font-size:13px;color:var(--mid);" data-i18n="acomp.symptoms.ph">Configure sua DPP para ver os sintomas da sua semana</div>
             </div>
+          </div>
+
+          <!-- Contador de movimentos do bebê -->
+          <div class="card" id="card-movimentos-bebe" style="display:none;">
+            <div class="card-title">👶 Movimentos do bebê</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.5;">A partir da semana 28, sinta 10 movimentos por dia. Toque no botão a cada movimentinho!</div>
+            <div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;">
+              <button onclick="contarMovimento()" style="background:var(--rose);color:white;border:none;padding:14px 22px;border-radius:14px;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;flex-shrink:0;">+ Movimento</button>
+              <div>
+                <div style="font-size:36px;font-weight:300;font-family:'Cormorant Garamond',serif;" id="mov-contador">0</div>
+                <div style="font-size:11px;color:var(--earth-light);">de 10 movimentos</div>
+              </div>
+            </div>
+            <div style="background:rgba(201,137,122,0.15);border-radius:10px;height:8px;margin-bottom:8px;">
+              <div id="mov-barra" style="background:var(--rose);border-radius:10px;height:8px;width:0%;transition:width 0.4s;"></div>
+            </div>
+            <div id="mov-msg" style="font-size:12px;color:var(--earth-light);"></div>
+          </div>
+
+          <!-- Posição da placenta -->
+          <div class="card" id="card-placenta">
+            <div class="card-title">🫁 Posição da placenta</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:12px;line-height:1.5;">Registre o que o ultrassom indicou. Isso nos ajuda a personalizar suas indicações.</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'anterior')">Anterior</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'posterior')">Posterior</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'fúndica')">Fúndica</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'lateral')">Lateral</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'previa')">Prévia</button>
+            </div>
+            <div id="placenta-info" style="font-size:13px;color:var(--mid);background:var(--rose-pale);border-radius:10px;padding:12px;line-height:1.6;display:none;"></div>
           </div>
         </div>
 
@@ -4216,6 +4255,47 @@ function gerarPDFPlanoParto(enviarEmail) {
 }
 function selectMood(el) { document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected'); }
 function toggleTarefa(el) { el.classList.toggle('done'); el.querySelector('.tarefa-check').textContent = el.classList.contains('done') ? '✓' : ''; }
+
+function contarMovimento() {
+  var hoje = new Date().toDateString();
+  var key = 'lua_mov_' + hoje;
+  var count = Math.min(20, parseInt(localStorage.getItem(key) || '0') + 1);
+  localStorage.setItem(key, count);
+  atualizarMovimentos(count);
+}
+
+function atualizarMovimentos(count) {
+  try { document.getElementById('mov-contador').textContent = count; } catch(e) {}
+  try { document.getElementById('mov-barra').style.width = Math.min(100, (count / 10) * 100) + '%'; } catch(e) {}
+  try {
+    var msg = document.getElementById('mov-msg');
+    if (!msg) return;
+    if (count >= 10) {
+      msg.textContent = '💛 Ótimo! Seu bebê está ativo e saudável!';
+      msg.style.color = 'var(--rose)';
+    } else {
+      msg.textContent = 'Faltam ' + (10 - count) + ' movimentos para a meta diária';
+      msg.style.color = 'var(--earth-light)';
+    }
+  } catch(e) {}
+}
+
+var placentaInfos = {
+  anterior:  'A placenta fica na parede frontal do útero. Os movimentos do bebê podem demorar um pouco mais a ser sentidos — isso é normal!',
+  posterior: 'A posição mais comum. Você tende a sentir os movimentos do bebê com mais facilidade.',
+  fúndica:   'A placenta está no fundo (topo) do útero. Posição tranquila, sem restrições especiais.',
+  lateral:   'A placenta está na lateral do útero. Acompanhe com sua equipe de saúde nas consultas.',
+  previa:    'A placenta está próxima ao colo do útero. Siga rigorosamente as orientações médicas e evite esforço físico intenso.'
+};
+
+function selecionarPlacenta(btn, tipo) {
+  document.querySelectorAll('.placenta-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  try { localStorage.setItem('lua_placenta', tipo); } catch(e) {}
+  var infoEl = document.getElementById('placenta-info');
+  if (infoEl) { infoEl.textContent = placentaInfos[tipo] || ''; infoEl.style.display = 'block'; }
+  if (db && currentUserId) { try { db.from('usuarios').update({ placenta: tipo }).eq('id', currentUserId); } catch(e) {} }
+}
 function toggleFaseTask(el) { el.classList.toggle('done'); el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : ''; }
 function toggleChecklist(el) { el.classList.toggle('done'); el.querySelector('.checklist-box').textContent = el.classList.contains('done') ? '✓' : ''; }
 function togglePhaseBlock(header) { header.parentElement.classList.toggle('open'); }
@@ -4851,37 +4931,83 @@ var sintomasPorFase = {
 function atualizarTarefas(semana) {
   var grid = document.getElementById('tarefas-dia');
   if (!grid) return;
-  var tri1 = [
-    t('task.folic'),
-    t('task.water'),
-    t('task.meals'),
-    t('task.rest'),
-    t('task.prenatal'),
-    t('task.avoid.food'),
+  // Tarefas por faixa de semana com associação de sintoma (opcional)
+  var listasSemana = [
+    { ate: 4,  tarefas: [
+      { texto: 'Confirmar gestação com médico ou enfermeira' },
+      { texto: 'Iniciar ácido fólico (400–800 mcg/dia)', sintoma: 'prevenção de malformações' },
+      { texto: 'Evitar álcool, cigarro e medicamentos sem orientação' },
+      { texto: 'Hidrate-se bem — ao menos 2 litros de água por dia' },
+    ]},
+    { ate: 8,  tarefas: [
+      { texto: 'Comer pequenas porções com frequência', sintoma: 'enjoos e náuseas' },
+      { texto: 'Evitar barriga vazia — tenha biscoitos de sal por perto', sintoma: 'enjoos e náuseas' },
+      { texto: 'Descansar sempre que o cansaço aparecer', sintoma: 'cansaço excessivo' },
+      { texto: 'Continuar ácido fólico e vitaminas prescritas' },
+      { texto: 'Marcar a 1ª consulta pré-natal se ainda não fez' },
+    ]},
+    { ate: 13, tarefas: [
+      { texto: 'Fazer ultrassom morfológico do 1º trimestre (sem. 11–13)' },
+      { texto: 'Continuar pré-natal regularmente' },
+      { texto: 'Usar sutiã de apoio — seios estão sensíveis', sintoma: 'seios sensíveis' },
+      { texto: 'Conversar com sua doula sobre o plano de parto' },
+      { texto: 'Hidrate-se bem e descanse quando precisar' },
+    ]},
+    { ate: 19, tarefas: [
+      { texto: 'Hidrate-se bem — pode ajudar nas dores de cabeça', sintoma: 'dor de cabeça' },
+      { texto: 'Praticar caminhadas leves ou ioga' },
+      { texto: 'Usar hidratante na barriga para conforto da pele' },
+      { texto: 'Começar a registrar os primeiros movimentos do bebê' },
+      { texto: 'Tomar suplementos prescritos (ferro, vitamina D)' },
+    ]},
+    { ate: 27, tarefas: [
+      { texto: 'Contar movimentos do bebê — use o contador acima', sintoma: 'movimentos do bebê' },
+      { texto: 'Fazer ultrassom morfológico do 2º trimestre (sem. 18–20)' },
+      { texto: 'Iniciar ou continuar aulas de preparação para o parto' },
+      { texto: 'Praticar respiração diafragmática para relaxar', sintoma: 'ansiedade' },
+      { texto: 'Hidrate-se e eleve as pernas se houver inchaço' },
+    ]},
+    { ate: 31, tarefas: [
+      { texto: 'Contar 10 movimentos do bebê por dia', sintoma: 'movimentos do bebê' },
+      { texto: 'Praticar exercícios de Kegel diariamente' },
+      { texto: 'Usar travesseiro de apoio para dormir de lado', sintoma: 'dificuldade para dormir' },
+      { texto: 'Hidrate-se e eleve as pernas para aliviar o inchaço', sintoma: 'inchaço nas pernas' },
+      { texto: 'Conversar com a equipe sobre posição do bebê' },
+    ]},
+    { ate: 35, tarefas: [
+      { texto: 'Contar 10 movimentos do bebê por dia', sintoma: 'movimentos do bebê' },
+      { texto: 'Organizar a mala da maternidade' },
+      { texto: 'Respirar fundo nas contrações de Braxton Hicks', sintoma: 'contrações de Braxton Hicks' },
+      { texto: 'Confirmar plano de parto com sua doula' },
+      { texto: 'Descansar sempre que possível — o corpo precisa' },
+    ]},
+    { ate: 39, tarefas: [
+      { texto: 'Contar 10 movimentos por dia e anotar qualquer mudança', sintoma: 'movimentos do bebê' },
+      { texto: 'Verificar se a mala da maternidade está completa' },
+      { texto: 'Instalar a cadeirinha e checar o trajeto para a maternidade' },
+      { texto: 'Respirar fundo — seu corpo e bebê estão se preparando', sintoma: 'falta de ar' },
+      { texto: 'Ligar para sua doula ao notar contrações regulares' },
+    ]},
+    { ate: 42, tarefas: [
+      { texto: 'Não falte às consultas — acompanhamento é essencial agora' },
+      { texto: 'Contar movimentos do bebê e avisar se sentir redução', sintoma: 'movimentos do bebê' },
+      { texto: 'Repousar e guardar energia para o trabalho de parto' },
+      { texto: 'Manter contato próximo com sua doula e equipe de saúde' },
+      { texto: 'Confie no seu corpo — cada bebê tem seu tempo 🌙' },
+    ]},
   ];
-  var tri2 = [
-    t('task.movements'),
-    t('task.water'),
-    t('task.breathing'),
-    t('task.supplements'),
-    t('task.moisturize'),
-    t('task.exercise'),
-  ];
-  var tri3 = [
-    t('task.movements3'),
-    t('task.water'),
-    t('task.kegel'),
-    t('task.bag'),
-    t('task.supplements'),
-    t('task.rest.legs'),
-  ];
-  var tarefas = semana <= 13 ? tri1 : semana <= 27 ? tri2 : tri3;
+  var lista = null;
+  for (var i = 0; i < listasSemana.length; i++) {
+    if (semana <= listasSemana[i].ate) { lista = listasSemana[i].tarefas; break; }
+  }
+  if (!lista) lista = listasSemana[listasSemana.length - 1].tarefas;
   grid.innerHTML = '';
-  tarefas.forEach(function(t) {
+  lista.forEach(function(item) {
     var div = document.createElement('div');
     div.className = 'tarefa-item';
     div.onclick = function() { toggleTarefa(this); };
-    div.innerHTML = '<div class="tarefa-check"></div><div class="tarefa-text">' + t + '</div>';
+    var sintomaHtml = item.sintoma ? '<div class="tarefa-sintoma">↳ ' + item.sintoma + '</div>' : '';
+    div.innerHTML = '<div class="tarefa-check"></div><div><div class="tarefa-text">' + item.texto + '</div>' + sintomaHtml + '</div>';
     grid.appendChild(div);
   });
 }
@@ -6040,15 +6166,45 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-dpp').textContent = dppFormatada; } catch(e) {}
   try { document.getElementById('g-progresso').textContent = info.progresso + '%'; } catch(e) {}
 
-  // Dias restantes — substituir por mensagem após semana 40
+  // Mensagem acolhedora (substituiu "Dias restantes")
   try {
-    var diasEl = document.getElementById('g-dias');
-    if (diasEl) {
-      if (info.semana >= 40) {
-        diasEl.textContent = '🤍';
-      } else {
-        diasEl.textContent = info.dias > 0 ? info.dias : 0;
-      }
+    var msgEl = document.getElementById('g-msg-acolhedora');
+    if (msgEl) {
+      var msgs = {
+        0:  'Sua jornada está começando. Você não está sozinha 🌱',
+        5:  'O corpo já está trabalhando por dois. Descanse com carinho 💛',
+        9:  'Passando pelas primeiras semanas — isso exige coragem. Você está indo bem 🌸',
+        14: 'Entrando no 2º trimestre! Muitas mamães se sentem com mais energia agora ✨',
+        20: 'Você pode começar a sentir os movimentos do bebê. Que emoção! 🥰',
+        24: 'Mais da metade da jornada! O bebê já responde aos sons da sua voz 🎶',
+        28: 'No 3º trimestre! Cuide do descanso e do movimento do bebê 🌙',
+        32: 'Reta final se aproximando — cada semana é uma conquista 💪',
+        36: 'O bebê está se preparando. Você também está pronta 🌟',
+        38: 'A qualquer momento! Confie no seu corpo e no seu bebê 🤍',
+        40: 'Você chegou à DPP. Cada bebê tem seu tempo — respire fundo 🌙',
+        41: 'Passando da DPP. Isso é normal. Seu corpo e seu bebê sabem a hora certa 💛',
+        42: 'Você foi incrível em cada semana desta jornada. Converse com sua equipe 🌸'
+      };
+      var chave = Math.max.apply(null, Object.keys(msgs).filter(function(k){ return parseInt(k) <= info.semana; }));
+      msgEl.textContent = msgs[chave] || '';
+      msgEl.style.display = msgEl.textContent ? 'block' : 'none';
+    }
+  } catch(e) {}
+
+  // Aviso pós-DPP
+  try {
+    var avisoEl = document.getElementById('card-aviso-dpp-passada');
+    if (avisoEl) avisoEl.style.display = info.semana >= 40 ? 'block' : 'none';
+  } catch(e) {}
+
+  // Contador de movimentos — visível a partir da semana 16
+  try {
+    var movCard = document.getElementById('card-movimentos-bebe');
+    if (movCard) movCard.style.display = info.semana >= 16 ? 'block' : 'none';
+    if (info.semana >= 16) {
+      var hoje = new Date().toDateString();
+      var movCount = parseInt(localStorage.getItem('lua_mov_' + hoje) || '0');
+      atualizarMovimentos(movCount);
     }
   } catch(e) {}
 
@@ -6097,6 +6253,14 @@ async function carregarDPP() {
     } catch(e) {}
   }
   atualizarDashboardGestante(dpp);
+  // Restaura posição da placenta salva
+  try {
+    var placSalva = localStorage.getItem('lua_placenta');
+    if (placSalva) {
+      var btn = document.querySelector('.placenta-btn[onclick*="\'' + placSalva + '\'"]');
+      if (btn) selecionarPlacenta(btn, placSalva);
+    }
+  } catch(e) {}
 }
 
 // ── Marketplace de doulas ──
