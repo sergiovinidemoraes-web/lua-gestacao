@@ -187,11 +187,11 @@ header {
 .g-nav-icon { font-size:18px; width:22px; text-align:center; }
 
 /* ── Mobile Bottom Nav ── */
-.mobile-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--white); border-top:1px solid var(--rose-pale); z-index:1000; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
+.mobile-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--dark); border-top:1px solid rgba(201,137,122,0.15); z-index:1000; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
 @media (max-width: 768px) { .mobile-bottom-nav { display:block; } }
 .mobile-bottom-nav-inner { display:flex; justify-content:space-around; align-items:center; }
-.mob-nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 8px; cursor:pointer; color:var(--earth-light); min-width:48px; transition:color 0.2s; }
-.mob-nav-item.active { color:var(--rose); }
+.mob-nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 8px; cursor:pointer; color:rgba(201,137,122,0.5); min-width:48px; transition:color 0.2s; }
+.mob-nav-item.active { color:var(--rose-light); }
 .mob-nav-item svg { width:22px; height:22px; stroke-width:1.8; }
 .mob-nav-item span { font-size:9px; font-family:'DM Sans',sans-serif; letter-spacing:0.3px; }
 .mob-nav-more { position:fixed; bottom:70px; right:16px; background:var(--dark); border-radius:20px; padding:12px 16px; z-index:1001; display:none; flex-direction:column; gap:4px; box-shadow:0 8px 32px rgba(0,0,0,0.3); min-width:200px; }
@@ -677,8 +677,6 @@ tr:hover td { background:var(--rose-pale); }
   .panel-title { font-size: 24px !important; }
   .timer-display { font-size: 52px !important; }
   .emergencia-acoes { grid-template-columns: 1fr 1fr !important; }
-  .lua-copyright { display: none !important; }
-  .lua-watermark { display: none; }
   .splash-btns { flex-direction: column; align-items: center; gap: 12px; }
   .splash-btn { width: 200px; text-align: center; }
   .chat-wrap { height: calc(100vh - 200px) !important; min-height: 300px; }
@@ -5314,60 +5312,6 @@ async function carregarBackupDoula() {
 })();
 </script>
 
-<!-- COPYRIGHT FOOTER -->
-<style>
-.lua-copyright {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--dark);
-  color: rgba(255,255,255,0.35);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-align: center;
-  padding: 7px 16px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  font-family: 'DM Sans', sans-serif;
-}
-.lua-copyright span { color: var(--rose-light); font-weight: 500; }
-.lua-copyright .sep { opacity: 0.2; }
-.lua-watermark {
-  position: fixed;
-  bottom: 36px;
-  right: 18px;
-  background: rgba(201,137,122,0.12);
-  border: 1px solid rgba(201,137,122,0.25);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 11px;
-  color: var(--rose);
-  letter-spacing: 1px;
-  z-index: 9998;
-  font-family: 'DM Sans', sans-serif;
-  backdrop-filter: blur(6px);
-  pointer-events: none;
-}
-/* Push content up so footer doesn't overlap */
-.g-main, .d-main { padding-bottom: 52px !important; }
-</style>
-
-<div class="lua-copyright" id="lua-copyright-bar">
-  © <span id="copy-year">2025</span> <span>LUA</span> — Todos os direitos reservados
-  <span class="sep">|</span>
-  Produto criado e desenvolvido por <span id="owner-name">Sergio Moraes e Karen Barcelos — The Doula School</span>
-  <span class="sep">|</span>
-  Versão 1.0 · Protótipo confidencial
-</div>
-<div class="lua-watermark" id="lua-watermark">🌙 LUA · Protótipo v1.0</div>
-
-<script>
-  // Atualizar ano automaticamente
-  document.getElementById('copy-year').textContent = new Date().getFullYear();
-</script>
 
 <!-- SUPABASE CONNECTION -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -7056,7 +7000,7 @@ async function carregarEstatisticas() {
   try {
     var desde = new Date();
     desde.setDate(desde.getDate() - 29);
-    var res = await db.from('sessoes').select('tipo,inicio,duracao_ms').gte('inicio', desde.toISOString());
+    var res = await db.from('sessoes').select('user_id,tipo,inicio,duracao_ms').gte('inicio', desde.toISOString());
     if (res.error) { mostrarToast('Erro ao carregar sessões'); return; }
     var sessoes = res.data || [];
 
@@ -7110,21 +7054,61 @@ async function carregarEstatisticas() {
 
     // ── totais rápidos ──
     var totalSessoes = sessoes.length;
-    var usuariosUnicos = new Set(sessoes.map(function(s) { return s.tipo + '_' + s.inicio.slice(0,10); })).size;
+    var usuariosUnicos = new Set(sessoes.map(function(s) { return s.user_id; }).filter(Boolean)).size;
     document.getElementById('stat-sessoes-total').textContent = totalSessoes;
-    document.getElementById('stat-dau').textContent = Math.round(usuariosUnicos / 30 * 10) / 10;
+    document.getElementById('stat-dau').textContent = usuariosUnicos;
 
     // ── log detalhado de acessos ──
     var userMap = {};
     _adminUsuarios.forEach(function(u) { userMap[u.id] = u; });
     _adminSessoesLog = sessoes.map(function(s) {
       var u = userMap[s.user_id] || {};
-      return Object.assign({}, s, { _nome: u.nome || 'Usuário', _email: u.email || '' });
+      return Object.assign({}, s, { _nome: u.nome || '(sem nome)', _email: u.email || '' });
     }).sort(function(a, b) { return new Date(b.inicio) - new Date(a.inicio); });
+
+    // ── frequência por usuário ──
+    var freqMap = {};
+    _adminSessoesLog.forEach(function(s) {
+      var uid = s.user_id || s._email || s._nome;
+      if (!freqMap[uid]) freqMap[uid] = { _nome: s._nome, _email: s._email, tipo: s.tipo, count: 0, ultimo: s.inicio };
+      freqMap[uid].count++;
+      if (new Date(s.inicio) > new Date(freqMap[uid].ultimo)) freqMap[uid].ultimo = s.inicio;
+    });
+    var freqLista = Object.values(freqMap).sort(function(a, b) { return b.count - a.count; });
+    renderFrequenciaUsuarios(freqLista);
+
     renderLogAcessos(_adminSessoesLog);
 
     mostrarToast('✅ Estatísticas atualizadas!');
   } catch(e) { console.error('carregarEstatisticas:', e); mostrarToast('Erro ao carregar'); }
+}
+
+function renderFrequenciaUsuarios(lista) {
+  var el = document.getElementById('admin-freq-usuarios');
+  if (!el) return;
+  var tipoLabel = { gestante: 'Gestante', doula: 'Doula', pai: 'Acompanhante' };
+  var tipoColor = { gestante: '#C9897A', doula: '#90B3A7', pai: '#82A0C8' };
+  if (!lista.length) { el.innerHTML = '<div style="color:rgba(176,154,140,0.4);font-size:13px;padding:16px;text-align:center;">Nenhum acesso registrado</div>'; return; }
+  var rows = lista.map(function(u) {
+    var cor = tipoColor[u.tipo] || '#C9897A';
+    var label = tipoLabel[u.tipo] || u.tipo;
+    var ultimo = u.ultimo ? new Date(u.ultimo).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+    return '<tr style="border-top:1px solid rgba(201,137,122,0.06);">' +
+      '<td style="padding:8px 10px;color:#E8C5BC;">' + u._nome +
+        (u._email ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + u._email + '</div>' : '') + '</td>' +
+      '<td style="padding:8px 10px;"><span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span></td>' +
+      '<td style="padding:8px 10px;text-align:center;color:#E8C5BC;font-weight:600;font-size:15px;">' + u.count + '</td>' +
+      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + ultimo + '</td>' +
+      '</tr>';
+  }).join('');
+  el.innerHTML = '<div style="overflow-x:auto;">' +
+    '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1px;font-size:10px;">' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Usuário</th>' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Perfil</th>' +
+    '<th style="text-align:center;padding:6px 10px;font-weight:600;">Sessões</th>' +
+    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Último acesso</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
 }
 
 function renderLogAcessos(lista) {
@@ -7665,7 +7649,7 @@ function mostrarToast(msg) {
           <div class="admin-stat"><div class="admin-stat-val" id="stat-total-cad">—</div><div class="admin-stat-label">Total cadastrados</div></div>
           <div class="admin-stat"><div class="admin-stat-val" id="stat-hoje">—</div><div class="admin-stat-label">Cadastros hoje</div></div>
           <div class="admin-stat"><div class="admin-stat-val" id="stat-sessoes-total">—</div><div class="admin-stat-label">Sessões (30 dias)</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-dau">—</div><div class="admin-stat-label">Sessões/dia (média)</div></div>
+          <div class="admin-stat"><div class="admin-stat-val" id="stat-dau">—</div><div class="admin-stat-label">Usuários ativos (30d)</div></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
           <div class="admin-stat" style="display:none;"><div class="admin-stat-val" id="stat-doulas-total">—</div></div>
@@ -7690,10 +7674,16 @@ function mostrarToast(msg) {
           <div style="height:160px;"><canvas id="chart-horario"></canvas></div>
         </div>
 
+        <!-- Frequência por usuário -->
+        <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:500;color:#E8C5BC;margin-bottom:14px;">Frequência por usuário — últimos 30 dias</div>
+          <div id="admin-freq-usuarios" style="color:rgba(176,154,140,0.4);font-size:13px;text-align:center;padding:16px;">Carregando...</div>
+        </div>
+
         <!-- Detalhamento de acessos -->
         <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:20px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-            <div style="font-size:13px;font-weight:500;color:#E8C5BC;">Detalhamento de acessos</div>
+            <div style="font-size:13px;font-weight:500;color:#E8C5BC;">Log de acessos (individual)</div>
             <input id="stat-busca-usuario" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarLogAcessos(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;outline:none;width:220px;">
           </div>
           <div id="admin-log-acessos" style="color:rgba(176,154,140,0.4);font-size:13px;text-align:center;padding:16px;">Carregando...</div>
