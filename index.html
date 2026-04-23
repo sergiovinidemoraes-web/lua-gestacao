@@ -2512,6 +2512,7 @@ let currentRole = '';
 let currentUserId = null;
 let currentDoulaId = null;
 let currentNome = '';
+let currentEmail = '';
 let currentSolicitacaoPendente = null; // { id, doulaId, nomeDoula }
 let paiGestanteId = null;
 let paiRealtimeChannel = null;
@@ -5720,6 +5721,7 @@ async function verificarConfirmacao() {
 // ── CARREGAR USUÁRIO ──
 async function carregarUsuario(user) {
   currentUserId = user.id;
+  currentEmail = user.email || '';
   try {
     var res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
     var tipo = res.data ? res.data.tipo : ((user.user_metadata && user.user_metadata.tipo) || 'gestante');
@@ -5929,7 +5931,7 @@ async function registrarInicioSessao(tipo) {
   if (!db || !currentUserId) return;
   try {
     sessaoInicio = Date.now();
-    var res = await db.from('sessoes').insert({ user_id: currentUserId, tipo: tipo, inicio: new Date().toISOString() }).select('id').maybeSingle();
+    var res = await db.from('sessoes').insert({ user_id: currentUserId, tipo: tipo, inicio: new Date().toISOString(), nome: currentNome || null, email: currentEmail || null }).select('id').maybeSingle();
     if (res.data) sessaoAtualId = res.data.id;
   } catch(e) {}
 }
@@ -7299,7 +7301,7 @@ async function carregarEstatisticas() {
   try {
     var desde = new Date();
     desde.setDate(desde.getDate() - 29);
-    var res = await db.from('sessoes').select('user_id,tipo,inicio,duracao_ms').gte('inicio', desde.toISOString());
+    var res = await db.from('sessoes').select('user_id,tipo,inicio,duracao_ms,nome,email').gte('inicio', desde.toISOString());
     if (res.error) { mostrarToast('Erro ao carregar sessões'); return; }
     var sessoes = res.data || [];
 
@@ -7362,7 +7364,7 @@ async function carregarEstatisticas() {
     _adminUsuarios.forEach(function(u) { userMap[u.id] = u; });
     _adminSessoesLog = sessoes.map(function(s) {
       var u = userMap[s.user_id] || {};
-      return Object.assign({}, s, { _nome: u.nome || '(sem nome)', _email: u.email || '' });
+      return Object.assign({}, s, { _nome: u.nome || s.nome || u.email || s.email || '(sem nome)', _email: u.email || s.email || '' });
     }).sort(function(a, b) { return new Date(b.inicio) - new Date(a.inicio); });
 
     // ── frequência por usuário ──
