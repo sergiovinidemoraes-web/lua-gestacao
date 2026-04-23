@@ -6908,8 +6908,12 @@ function fecharAdmin() {
   document.getElementById('admin-panel').style.display = 'none';
 }
 
-function verificarAdmin() {
+async function verificarAdmin() {
   var senha = document.getElementById('admin-senha-input').value;
+  try {
+    var cfgRes = await db.from('configuracoes').select('valor').eq('chave', 'admin_senha').maybeSingle();
+    if (cfgRes.data && cfgRes.data.valor) adminSenha = cfgRes.data.valor;
+  } catch(e) {}
   if (senha === adminSenha) {
     document.getElementById('admin-login-overlay').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
@@ -7491,11 +7495,15 @@ function _renderAdminChart(canvasId, tipo, data, options) {
   });
 }
 
-function alterarSenhaAdmin() {
+async function alterarSenhaAdmin() {
   var nova = document.getElementById('nova-senha-admin').value;
   var conf = document.getElementById('conf-senha-admin').value;
   if (!nova || nova.length < 8) return mostrarToast('⚠️ Mínimo 8 caracteres');
   if (nova !== conf) return mostrarToast('⚠️ Senhas não coincidem');
+  try {
+    var res = await db.from('configuracoes').upsert({ chave: 'admin_senha', valor: nova });
+    if (res.error) { mostrarToast('❌ Erro ao salvar senha'); return; }
+  } catch(e) { mostrarToast('❌ Erro ao salvar senha'); return; }
   adminSenha = nova;
   try { localStorage.setItem('lua_admin_senha', nova); } catch(e) {}
   document.getElementById('nova-senha-admin').value='';
