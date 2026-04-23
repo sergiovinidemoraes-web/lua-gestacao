@@ -7367,6 +7367,32 @@ async function carregarEstatisticas() {
       return Object.assign({}, s, { _nome: u.nome || s.nome || u.email || s.email || '(sem nome)', _email: u.email || s.email || '' });
     }).sort(function(a, b) { return new Date(b.inicio) - new Date(a.inicio); });
 
+    // ── buscar emails de usuários sem nome via auth.users ──
+    var semNomeIds = [];
+    var vistos = {};
+    _adminSessoesLog.forEach(function(s) {
+      if (s._nome === '(sem nome)' && s.user_id && !vistos[s.user_id]) {
+        vistos[s.user_id] = true;
+        semNomeIds.push(s.user_id);
+      }
+    });
+    if (semNomeIds.length) {
+      try {
+        var authRes = await db.rpc('admin_get_user_emails', { user_ids: semNomeIds });
+        if (authRes.data && authRes.data.length) {
+          var authEmailMap = {};
+          authRes.data.forEach(function(u) { authEmailMap[u.id] = u.email; });
+          _adminSessoesLog = _adminSessoesLog.map(function(s) {
+            if (s._nome === '(sem nome)' && s.user_id && authEmailMap[s.user_id]) {
+              var email = authEmailMap[s.user_id];
+              return Object.assign({}, s, { _nome: email, _email: email });
+            }
+            return s;
+          });
+        }
+      } catch(e) {}
+    }
+
     // ── frequência por usuário ──
     var freqMap = {};
     _adminSessoesLog.forEach(function(s) {
