@@ -1486,7 +1486,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="phase-block-toggle">▼</div>
               </div>
               <div class="phase-block-body" id="content-gestante-inicio">
-                <div class="content-item guia-fixo" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="alert(t('content.coming.soon'))" style="cursor:pointer;">
                   <div class="content-icon">📖</div>
                   <div><div class="content-label" data-i18n="dash.guide.weeks.label">Guia das primeiras semanas</div><div class="content-sub" data-i18n="dash.guide.weeks.sub">O que esperar do início da gestação</div></div>
                 </div>
@@ -1494,7 +1494,7 @@ tr:hover td { background:var(--rose-pale); }
                   <div class="content-icon">👶</div>
                   <div><div class="content-label" data-i18n="dash.guide.parents.label">Guia para pais de primeira viagem</div><div class="content-sub" data-i18n="dash.guide.parents.sub">Tudo o que um pai/parceiro precisa saber</div></div>
                 </div>
-                <div class="content-item guia-fixo" onclick="alert('Em breve disponível! 💛')" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="alert(t('content.coming.soon'))" style="cursor:pointer;">
                   <div class="content-icon">🌙</div>
                   <div><div class="content-label" data-i18n="dash.guide.tri3.label">Guia do terceiro trimestre</div><div class="content-sub" data-i18n="dash.guide.tri3.sub">Preparação para o nascimento</div></div>
                 </div>
@@ -2659,6 +2659,8 @@ pt: {
   'dash.appointment.note':'Sua doula irá agendar em breve','dash.appointment.btn':'Ver agenda',
   'dash.tasks.title':'Tarefas do dia','dash.baby.title':'Desenvolvimento do bebê',
   'dash.guides.title':'📚 Guias para você',
+  'content.coming.soon':'Em breve disponível! 💛',
+  'content.empty':'Nenhum conteúdo ainda 💛',
   'dash.guide.weeks.label':'Guia das primeiras semanas','dash.guide.weeks.sub':'O que esperar do início da gestação',
   'dash.guide.parents.label':'Guia para pais de primeira viagem','dash.guide.parents.sub':'Tudo o que um pai/parceiro precisa saber',
   'dash.guide.tri3.label':'Guia do terceiro trimestre','dash.guide.tri3.sub':'Preparação para o nascimento',
@@ -3165,6 +3167,8 @@ en: {
   'dash.appointment.note':'Your doula will schedule soon','dash.appointment.btn':'View schedule',
   'dash.tasks.title':'Today\'s tasks','dash.baby.title':'Baby development',
   'dash.guides.title':'📚 Guides for you',
+  'content.coming.soon':'Coming soon! 💛',
+  'content.empty':'No content yet 💛',
   'dash.guide.weeks.label':'First weeks guide','dash.guide.weeks.sub':'What to expect from the beginning of pregnancy',
   'dash.guide.parents.label':'First-time parents guide','dash.guide.parents.sub':'Everything a partner needs to know',
   'dash.guide.tri3.label':'Third trimester guide','dash.guide.tri3.sub':'Preparing for birth',
@@ -3658,6 +3662,8 @@ es: {
   'dash.appointment.note':'Tu doula programará pronto','dash.appointment.btn':'Ver agenda',
   'dash.tasks.title':'Tareas del día','dash.baby.title':'Desarrollo del bebé',
   'dash.guides.title':'📚 Guías para ti',
+  'content.coming.soon':'¡Próximamente disponible! 💛',
+  'content.empty':'Sin contenido aún 💛',
   'dash.guide.weeks.label':'Guía de las primeras semanas','dash.guide.weeks.sub':'Qué esperar del inicio del embarazo',
   'dash.guide.parents.label':'Guía para padres primerizos','dash.guide.parents.sub':'Todo lo que un padre/pareja necesita saber',
   'dash.guide.tri3.label':'Guía del tercer trimestre','dash.guide.tri3.sub':'Preparación para el nacimiento',
@@ -6166,7 +6172,7 @@ async function carregarConteudos() {
         return dest === (el.id);
       });
       if (!hasData && !el.querySelector('.guia-fixo')) {
-        el.innerHTML = '<div class="empty-state-small">Nenhum conteudo ainda 💛</div>';
+        el.innerHTML = '<div class="empty-state-small">' + t('content.empty') + '</div>';
       }
     });
 
