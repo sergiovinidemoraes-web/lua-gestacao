@@ -2631,7 +2631,7 @@ pt: {
   'frase.welcome':'Bem-vinda ao Lua! Configure sua DPP para começar. 💛',
   'frase.default':'Você está indo muito bem, mamãe! 💛',
   // Header
-  'hdr.logout':'Sair','hdr.role.gestante':'Gestante','hdr.role.doula':'Doula',
+  'hdr.logout':'Sair','hdr.role.gestante':'Gestante','hdr.role.doula':'Doula','hdr.role.pai':'Acompanhante',
   // Nav gestante
   'nav.inicio':'Início','nav.gestacao':'Minha Gestação','nav.tarefas':'Tarefas por Fase',
   'nav.plano':'Plano de Parto','nav.contracoes':'Contrações','nav.conteudo':'Conteúdo',
@@ -3083,7 +3083,7 @@ en: {
   'dash.semana.sub':'Week {n} — you\'re doing amazing!',
   'frase.welcome':'Welcome to Lua! Set up your due date to get started. 💛',
   'frase.default':'You\'re doing amazing, mama! 💛',
-  'hdr.logout':'Sign out','hdr.role.gestante':'Expecting Mother','hdr.role.doula':'Doula',
+  'hdr.logout':'Sign out','hdr.role.gestante':'Expecting Mother','hdr.role.doula':'Doula','hdr.role.pai':'Companion',
   'nav.inicio':'Home','nav.gestacao':'My Pregnancy','nav.tarefas':'Phase Tasks',
   'nav.plano':'Birth Plan','nav.contracoes':'Contractions','nav.conteudo':'Content',
   'nav.extras':'Extras','nav.encontrar':'Find a Doula','nav.minha.doula':'My Doula',
@@ -3519,7 +3519,7 @@ es: {
   'dash.semana.sub':'Semana {n} — ¡lo estás haciendo muy bien!',
   'frase.welcome':'¡Bienvenida a Lua! Configura tu FPP para comenzar. 💛',
   'frase.default':'¡Lo estás haciendo muy bien, mamá! 💛',
-  'hdr.logout':'Salir','hdr.role.gestante':'Embarazada','hdr.role.doula':'Doula',
+  'hdr.logout':'Salir','hdr.role.gestante':'Embarazada','hdr.role.doula':'Doula','hdr.role.pai':'Acompañante',
   'nav.inicio':'Inicio','nav.gestacao':'Mi Embarazo','nav.tarefas':'Tareas por Fase',
   'nav.plano':'Plan de Parto','nav.contracoes':'Contracciones','nav.conteudo':'Contenido',
   'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Mi Doula',
@@ -3963,7 +3963,13 @@ function setLang(lang) {
   });
   // Aplicar traduções via data-i18n
   document.querySelectorAll('[data-i18n]').forEach(function(el){
-    el.textContent = t(el.getAttribute('data-i18n'));
+    var key = el.getAttribute('data-i18n');
+    if (key === 'hdr.role.gestante' || key === 'hdr.role.doula' || key === 'hdr.role.pai') {
+      var emoji = key === 'hdr.role.gestante' ? '🤰' : key === 'hdr.role.pai' ? '❤️' : '🌙';
+      el.textContent = emoji + ' ' + t(key);
+    } else {
+      el.textContent = t(key);
+    }
   });
   // Placeholders
   document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
@@ -5766,7 +5772,11 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-doula').classList.remove('active');
   document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-' + tipo).classList.add('active');
-  document.getElementById('header-role').textContent = tipo === 'gestante' ? '🤰 Gestante' : tipo === 'pai' ? '❤️ Acompanhante' : '🌙 Doula';
+  var roleEl = document.getElementById('header-role');
+  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : 'hdr.role.doula';
+  var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : '🌙';
+  roleEl.setAttribute('data-i18n', roleKey);
+  roleEl.textContent = roleEmoji + ' ' + t(roleKey);
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
