@@ -1061,14 +1061,14 @@ tr:hover td { background:var(--rose-pale); }
 
           <!-- Posição da placenta -->
           <div class="card" id="card-placenta">
-            <div class="card-title">🫁 Posição da placenta</div>
-            <div style="font-size:13px;color:var(--mid);margin-bottom:12px;line-height:1.5;">Registre o que o ultrassom indicou. Isso nos ajuda a personalizar suas indicações.</div>
+            <div class="card-title" data-i18n="placenta.title">🫁 Posição da placenta</div>
+            <div style="font-size:13px;color:var(--mid);margin-bottom:12px;line-height:1.5;" data-i18n="placenta.sub">Registre o que o ultrassom indicou. Isso nos ajuda a personalizar suas indicações.</div>
             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-              <button class="placenta-btn" onclick="selecionarPlacenta(this,'anterior')">Anterior</button>
-              <button class="placenta-btn" onclick="selecionarPlacenta(this,'posterior')">Posterior</button>
-              <button class="placenta-btn" onclick="selecionarPlacenta(this,'fúndica')">Fúndica</button>
-              <button class="placenta-btn" onclick="selecionarPlacenta(this,'lateral')">Lateral</button>
-              <button class="placenta-btn" onclick="selecionarPlacenta(this,'previa')">Prévia</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'anterior')" data-i18n="placenta.anterior">Anterior</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'posterior')" data-i18n="placenta.posterior">Posterior</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'fundica')" data-i18n="placenta.fundica">Fúndica</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'lateral')" data-i18n="placenta.lateral">Lateral</button>
+              <button class="placenta-btn" onclick="selecionarPlacenta(this,'previa')" data-i18n="placenta.previa">Prévia</button>
             </div>
             <div id="placenta-info" style="font-size:13px;color:var(--mid);background:var(--rose-pale);border-radius:10px;padding:12px;line-height:1.6;display:none;"></div>
           </div>
@@ -2688,6 +2688,14 @@ pt: {
   'task.bag':'Verificar mala da maternidade',
   'task.rest.legs':'Descansar com pernas elevadas',
   'parceiro.card.sub':'Convide quem você quer por perto nessa jornada →',
+  'placenta.title':'🫁 Posição da placenta',
+  'placenta.sub':'Registre o que o ultrassom indicou. Isso nos ajuda a personalizar suas indicações.',
+  'placenta.anterior':'Anterior','placenta.posterior':'Posterior','placenta.fundica':'Fúndica','placenta.lateral':'Lateral','placenta.previa':'Prévia',
+  'placenta.info.anterior':'A placenta fica na parede frontal do útero. Os movimentos do bebê podem demorar um pouco mais a ser sentidos — isso é normal!',
+  'placenta.info.posterior':'A posição mais comum. Você tende a sentir os movimentos do bebê com mais facilidade.',
+  'placenta.info.fundica':'A placenta está no fundo (topo) do útero. Posição tranquila, sem restrições especiais.',
+  'placenta.info.lateral':'A placenta está na lateral do útero. Acompanhe com sua equipe de saúde nas consultas.',
+  'placenta.info.previa':'A placenta está próxima ao colo do útero. Siga rigorosamente as orientações médicas e evite esforço físico intenso.',
   'tw.s.malform':'prevenção de malformações','tw.s.nausea':'enjoos e náuseas','tw.s.tired':'cansaço excessivo',
   'tw.s.breast':'seios sensíveis','tw.s.head':'dor de cabeça','tw.s.moves':'movimentos do bebê',
   'tw.s.anxiety':'ansiedade','tw.s.sleep':'dificuldade para dormir','tw.s.swelling':'inchaço nas pernas',
@@ -3184,6 +3192,14 @@ en: {
   'task.bag':'Check hospital bag',
   'task.rest.legs':'Rest with legs elevated',
   'parceiro.card.sub':'Invite someone special to follow this journey →',
+  'placenta.title':'🫁 Placenta position',
+  'placenta.sub':'Record what your ultrasound indicated. This helps us personalize your guidance.',
+  'placenta.anterior':'Anterior','placenta.posterior':'Posterior','placenta.fundica':'Fundal','placenta.lateral':'Lateral','placenta.previa':'Previa',
+  'placenta.info.anterior':'The placenta is on the front wall of the uterus. Baby movements may take a little longer to feel — that\'s normal!',
+  'placenta.info.posterior':'The most common position. You tend to feel baby movements more easily.',
+  'placenta.info.fundica':'The placenta is at the top of the uterus. A peaceful position with no special restrictions.',
+  'placenta.info.lateral':'The placenta is on the side of the uterus. Follow up with your healthcare team at appointments.',
+  'placenta.info.previa':'The placenta is near the cervix. Strictly follow medical guidance and avoid intense physical exertion.',
   'tw.s.malform':'birth defect prevention','tw.s.nausea':'nausea and morning sickness','tw.s.tired':'excessive tiredness',
   'tw.s.breast':'breast tenderness','tw.s.head':'headaches','tw.s.moves':'baby movements',
   'tw.s.anxiety':'anxiety','tw.s.sleep':'difficulty sleeping','tw.s.swelling':'leg swelling',
@@ -3669,6 +3685,14 @@ es: {
   'task.bag':'Verificar bolsa de maternidad',
   'task.rest.legs':'Descansar con piernas elevadas',
   'parceiro.card.sub':'Invita a quien quieres cerca en este viaje →',
+  'placenta.title':'🫁 Posición de la placenta',
+  'placenta.sub':'Registra lo que indicó el ultrasonido. Esto nos ayuda a personalizar tus indicaciones.',
+  'placenta.anterior':'Anterior','placenta.posterior':'Posterior','placenta.fundica':'Fúndica','placenta.lateral':'Lateral','placenta.previa':'Previa',
+  'placenta.info.anterior':'La placenta está en la pared frontal del útero. Los movimientos del bebé pueden tardar un poco más en sentirse — ¡es normal!',
+  'placenta.info.posterior':'La posición más común. Tiendes a sentir los movimientos del bebé con más facilidad.',
+  'placenta.info.fundica':'La placenta está en el fondo (parte superior) del útero. Posición tranquila, sin restricciones especiales.',
+  'placenta.info.lateral':'La placenta está en el lateral del útero. Sigue con tu equipo de salud en las consultas.',
+  'placenta.info.previa':'La placenta está cerca del cuello uterino. Sigue estrictamente las indicaciones médicas y evita el esfuerzo físico intenso.',
   'tw.s.malform':'prevención de malformaciones','tw.s.nausea':'náuseas y mareos','tw.s.tired':'cansancio excesivo',
   'tw.s.breast':'sensibilidad en los senos','tw.s.head':'dolor de cabeza','tw.s.moves':'movimientos del bebé',
   'tw.s.anxiety':'ansiedad','tw.s.sleep':'dificultad para dormir','tw.s.swelling':'hinchazón en las piernas',
@@ -4434,20 +4458,17 @@ function atualizarMovimentos(count) {
   } catch(e) {}
 }
 
-var placentaInfos = {
-  anterior:  'A placenta fica na parede frontal do útero. Os movimentos do bebê podem demorar um pouco mais a ser sentidos — isso é normal!',
-  posterior: 'A posição mais comum. Você tende a sentir os movimentos do bebê com mais facilidade.',
-  fúndica:   'A placenta está no fundo (topo) do útero. Posição tranquila, sem restrições especiais.',
-  lateral:   'A placenta está na lateral do útero. Acompanhe com sua equipe de saúde nas consultas.',
-  previa:    'A placenta está próxima ao colo do útero. Siga rigorosamente as orientações médicas e evite esforço físico intenso.'
-};
-
 function selecionarPlacenta(btn, tipo) {
   document.querySelectorAll('.placenta-btn').forEach(function(b){ b.classList.remove('selected'); });
   btn.classList.add('selected');
   try { localStorage.setItem('lua_placenta', tipo); } catch(e) {}
   var infoEl = document.getElementById('placenta-info');
-  if (infoEl) { infoEl.textContent = placentaInfos[tipo] || ''; infoEl.style.display = 'block'; }
+  if (infoEl) {
+    var key = 'placenta.info.' + tipo;
+    infoEl.setAttribute('data-i18n', key);
+    infoEl.textContent = t(key);
+    infoEl.style.display = 'block';
+  }
   if (db && currentUserId) { try { db.from('usuarios').update({ placenta: tipo }).eq('id', currentUserId); } catch(e) {} }
 }
 function toggleFaseTask(el) { el.classList.toggle('done'); el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : ''; }
