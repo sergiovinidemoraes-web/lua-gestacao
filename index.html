@@ -125,20 +125,91 @@ header { padding-top: env(safe-area-inset-top, 0); }
 .admin-nav-item.active { color:#E8C5BC; border-left-color:#C9897A; background:rgba(201,137,122,0.08); }
 .admin-panel-section { display:none; }
 .admin-panel-section.active { display:block; animation:fadeIn 0.3s ease; }
-.admin-stat { background:#1a0f0a; border:1px solid rgba(201,137,122,0.1); border-radius:12px; padding:18px; }
-.admin-stat-val { font-family:'Cormorant Garamond',serif; font-size:36px; color:#C9897A; margin-bottom:4px; }
-.admin-stat-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:rgba(176,154,140,0.5); }
+.admin-stat { 
+  background: linear-gradient(145deg, #1f1410, #140b07); 
+  border: 1px solid rgba(201,137,122,0.15); 
+  border-radius: 16px; 
+  padding: 22px; 
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.admin-stat:hover { transform: translateY(-3px); border-color: rgba(201,137,122,0.3); }
+.admin-stat::after {
+  content: ''; position: absolute; top: -20px; right: -20px; width: 60px; height: 60px;
+  background: radial-gradient(circle, rgba(201,137,122,0.1), transparent 70%);
+}
+.admin-stat-val { font-family:'Cormorant Garamond',serif; font-size:42px; color:#C9897A; margin-bottom:4px; font-weight: 300; }
+.admin-stat-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(176,154,140,0.4); font-weight: 600; }
+.admin-stat-icon { position: absolute; top: 18px; right: 18px; font-size: 20px; opacity: 0.3; }
 .admin-label { font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(201,137,122,0.6); display:block; margin-bottom:6px; }
-.admin-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 14px; font-size:13px; color:rgba(255,255,255,0.8); font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s; }
-.admin-input:focus { border-color:rgba(201,137,122,0.4); }
+.admin-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 16px; font-size:13px; color:rgba(255,255,255,0.8); font-family:'DM Sans',sans-serif; outline:none; transition:all 0.2s; }
+.admin-input:focus { border-color:rgba(201,137,122,0.4); background: rgba(255,255,255,0.06); }
+
+.admin-table-row { transition: background 0.2s; }
+.admin-table-row:hover { background: rgba(201,137,122,0.04) !important; }
+
 .admin-item-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(201,137,122,0.06); }
 .admin-item-row:last-child { border-bottom:none; }
-.admin-del-btn { background:rgba(224,90,90,0.1); border:1px solid rgba(224,90,90,0.2); color:#ff8a8a; padding:4px 12px; border-radius:20px; font-size:11px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.admin-del-btn { background:rgba(224,90,90,0.1); border:1px solid rgba(224,90,90,0.2); color:#ff8a8a; padding:6px 16px; border-radius:20px; font-size:11px; cursor:pointer; font-family:'DM Sans',sans-serif; transition: all 0.2s; }
+.admin-del-btn:hover { background: rgba(224,90,90,0.2); transform: scale(1.05); }
 @media(max-width:768px) {
   #admin-panel > div:last-child { grid-template-columns:1fr !important; }
   #admin-panel > div:last-child > div:first-child { display:none; }
 }
 
+
+/* ─── BABY DRAWER ─── */
+.baby-drawer-overlay {
+  position: fixed; inset: 0; background: rgba(45, 31, 26, 0.4); backdrop-filter: blur(4px);
+  z-index: 2000; display: none; opacity: 0; transition: opacity 0.3s ease;
+}
+.baby-drawer-overlay.active { display: block; opacity: 1; }
+
+.baby-drawer {
+  position: fixed; top: 0; right: -400px; width: 380px; height: 100vh;
+  background: var(--white); z-index: 2001; box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column;
+}
+.baby-drawer.active { right: 0; }
+
+.drawer-header {
+  padding: 24px; border-bottom: 1px solid rgba(122,100,85,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.drawer-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--dark); }
+.drawer-close { cursor: pointer; font-size: 24px; color: var(--mid); opacity: 0.6; transition: opacity 0.2s; }
+.drawer-close:hover { opacity: 1; }
+
+.drawer-content { flex: 1; overflow-y: auto; padding: 24px; }
+
+.baby-fruit-card {
+  background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
+  margin-bottom: 24px; position: relative; overflow: hidden;
+}
+.baby-fruit-emoji { font-size: 64px; margin-bottom: 16px; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+.baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
+.baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
+
+.baby-form-group { margin-bottom: 20px; }
+.baby-form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--earth-light); margin-bottom: 8px; display: block; }
+.baby-input {
+  width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(122,100,85,0.15);
+  font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.2s;
+}
+.baby-input:focus { border-color: var(--rose); }
+
+.baby-save-btn {
+  width: 100%; background: var(--rose); color: white; border: none; padding: 14px;
+  border-radius: 12px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.baby-save-btn:hover { background: #a8685a; transform: translateY(-2px); }
+
+@media (max-width: 480px) {
+  .baby-drawer { width: 100%; right: -100%; }
+}
 
 .lua-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99998; align-items:center; justify-content:center; }
 .lua-modal-overlay.show { display:flex; }
@@ -866,6 +937,7 @@ tr:hover td { background:var(--rose-pale); }
         <nav class="g-nav">
           <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span><span data-i18n="nav.inicio">Início</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><span class="g-nav-icon">🌱</span><span data-i18n="nav.gestacao">Minha Gestação</span></div>
+          <div class="g-nav-item" onclick="abrirBabyDrawer()"><span class="g-nav-icon">👶</span><span>Perfil do Bebê</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><span class="g-nav-icon">✅</span><span data-i18n="nav.tarefas">Tarefas por Fase</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-plano')"><span class="g-nav-icon">📋</span><span data-i18n="nav.plano">Plano de Parto</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span><span data-i18n="nav.contracoes">Contrações</span></div>
@@ -913,6 +985,7 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" id="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more" id="mob-nav-more">
+        <div class="mob-more-item" onclick="abrirBabyDrawer();fecharMobMore()"><span>👶 Perfil do Bebê</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-tarefas');fecharMobMore()"><span>✅ Tarefas</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-plano');fecharMobMore()"><span>📋 Plano de Parto</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-conteudo');fecharMobMore()"><span>📚 Conteúdo</span></div>
@@ -940,7 +1013,20 @@ tr:hover td { background:var(--rose-pale); }
           </div>
           <div style="font-size:11px;opacity:0.7;margin-top:10px;font-style:italic;line-height:1.5;" data-i18n="dash.onboard.dpp.note">A DPP é uma data provável — 40 semanas é uma estimativa, não uma ordem de despejo 😊</div>
         </div>
-        <div class="frases-do-dia">
+          <!-- CARD DO BEBÊ -->
+          <div class="card" onclick="abrirBabyDrawer()" style="cursor:pointer; background:linear-gradient(135deg, #fff, var(--rose-pale)); border:1px solid var(--rose-pale); position:relative; overflow:hidden; transition: transform 0.2s;">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="font-size:40px;" id="dash-baby-emoji">👶</div>
+              <div>
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--rose); font-weight:600; margin-bottom:4px;">Meu Bebê</div>
+                <div style="font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--dark); font-weight:500;" id="dash-baby-name">Meu Bebê</div>
+                <div style="font-size:12px; color:var(--mid); opacity:0.8; margin-top:2px;" id="dash-baby-fruit">Tamanho de uma fruta</div>
+              </div>
+            </div>
+            <div style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:var(--rose); opacity:0.5;">➔</div>
+          </div>
+
+          <div class="frases-do-dia">
             <div class="frase-texto" id="frase-texto">"Você está indo muito bem, mamãe 💛"</div>
             <div class="frase-sub" id="frase-sub" data-i18n="dash.frase.sub">Frase do dia • Semana 18</div>
           </div>
@@ -2931,6 +3017,14 @@ pt: {
   'dash.weeks.until':'Faltam {n} semanas para o parto',
   'dash.trimestre.1':'1º Trimestre','dash.trimestre.2':'2º Trimestre','dash.trimestre.3':'3º Trimestre',
   'dash.acomp.sub':'Você está na semana {n} — {tri} 🌸','dash.frase.sub':'Frase do dia • Semana {n}',
+  'dash.frase.sub.base':'Frase do dia',
+  'dash.dpp.configure.frase':'Configure sua DPP para receber sua frase da semana 🌸',
+  'dash.onboard.dpp.title':'Data prevista do parto',
+  'dash.onboard.dpp.sub':'DPP: {date} — Altere se necessário',
+  'dash.semanas.label':'semanas',
+  'dash.faltam.40':'✨ A hora chegou ou está chegando. Você foi incrível!',
+  'dash.faltam.41':'🌙 Você passou da DPP. Tudo bem! Cada bebê tem seu tempo.',
+  'dash.faltam.42':'💛 Converse com sua equipe — você foi incrível!',
   // Extras
   'extras.title':'Extras Emocionais','extras.sub':'Música, conexão e bem-estar para você e seu bebê',
   'extras.playlist.title':'🎵 Playlist para o Parto',
@@ -3435,6 +3529,14 @@ en: {
   'dash.weeks.until':'Due in {n} weeks',
   'dash.trimestre.1':'1st Trimester','dash.trimestre.2':'2nd Trimester','dash.trimestre.3':'3rd Trimester',
   'dash.acomp.sub':'You are in week {n} — {tri} 🌸','dash.frase.sub':'Quote of the day • Week {n}',
+  'dash.frase.sub.base':'Quote of the day',
+  'dash.dpp.configure.frase':'Set up your due date to receive your weekly quote 🌸',
+  'dash.onboard.dpp.title':'Estimated due date',
+  'dash.onboard.dpp.sub':'EDD: {date} — Change if needed',
+  'dash.semanas.label':'weeks',
+  'dash.faltam.40':'✨ The time has come or is near. You have been incredible!',
+  'dash.faltam.41':'🌙 You\'ve passed your due date. That\'s okay! Every baby has their own timing.',
+  'dash.faltam.42':'💛 Talk to your team — you have been incredible!',
   'extras.title':'Emotional Extras','extras.sub':'Music, connection and wellness for you and your baby',
   'extras.playlist.title':'🎵 Labor Playlist',
   'extras.playlist.sub':'Curated especially to accompany each phase of labor',
@@ -3930,6 +4032,14 @@ es: {
   'dash.weeks.until':'Faltan {n} semanas para el parto',
   'dash.trimestre.1':'1er Trimestre','dash.trimestre.2':'2do Trimestre','dash.trimestre.3':'3er Trimestre',
   'dash.acomp.sub':'Estás en la semana {n} — {tri} 🌸','dash.frase.sub':'Frase del día • Semana {n}',
+  'dash.frase.sub.base':'Frase del día',
+  'dash.dpp.configure.frase':'Configura tu FPP para recibir tu frase semanal 🌸',
+  'dash.onboard.dpp.title':'Fecha probable de parto',
+  'dash.onboard.dpp.sub':'FPP: {date} — Cambia si es necesario',
+  'dash.semanas.label':'semanas',
+  'dash.faltam.40':'✨ ¡Ha llegado o está llegando el momento. Has sido increíble!',
+  'dash.faltam.41':'🌙 Pasaste la FPP. ¡Está bien! Cada bebé tiene su propio tiempo.',
+  'dash.faltam.42':'💛 Habla con tu equipo — ¡has sido increíble!',
   'extras.title':'Extras Emocionales','extras.sub':'Música, conexión y bienestar para ti y tu bebé',
   'extras.playlist.title':'🎵 Playlist para el Parto',
   'extras.playlist.sub':'Curada especialmente para acompañar cada fase del trabajo de parto',
@@ -5929,6 +6039,15 @@ async function carregarUsuario(user) {
         if (solAceita.data) currentDoulaId = solAceita.data.doula_id;
       } catch(e2) {}
     }
+    // Carrega dados do bebê
+    if (res.data) {
+      if (res.data.baby_nome) {
+        localStorage.setItem('lua_baby_nome', res.data.baby_nome);
+      }
+      if (res.data.baby_sexo) {
+        localStorage.setItem('lua_baby_sexo', res.data.baby_sexo);
+      }
+    }
     entrarNoApp(tipo, nome);
     return;
   } catch(e) {}
@@ -6115,9 +6234,17 @@ async function registrarInicioSessao(tipo) {
   if (!db || !currentUserId) return;
   try {
     sessaoInicio = Date.now();
-    var res = await db.from('sessoes').insert({ user_id: currentUserId, tipo: tipo, inicio: new Date().toISOString(), nome: currentNome || null, email: currentEmail || null }).select('id').maybeSingle();
+    // Garante identificação mínima para o admin
+    var nomeParaLog = currentNome || currentEmail || 'Usuário';
+    var res = await db.from('sessoes').insert({ 
+      user_id: currentUserId, 
+      tipo: tipo, 
+      inicio: new Date().toISOString(), 
+      nome: nomeParaLog, 
+      email: currentEmail || null 
+    }).select('id').maybeSingle();
     if (res.data) sessaoAtualId = res.data.id;
-  } catch(e) {}
+  } catch(e) { console.error('Erro ao registrar sessão:', e); }
 }
 
 async function registrarFimSessao() {
@@ -6312,34 +6439,34 @@ function atualizarDashboardGestante(dpp) {
   var card = document.getElementById('onboarding-card');
   card.style.display = 'block';
   if (!dpp) {
-    document.getElementById('onboard-titulo').textContent = 'Configure sua gestacao';
-    document.getElementById('onboard-sub').textContent = 'Informe sua data provavel do parto para acompanharmos sua jornada';
-    try { document.getElementById('frase-texto').textContent = 'Configure sua DPP para receber sua frase da semana 🌸'; } catch(e) {}
-    try { document.getElementById('frase-sub').textContent = 'Frase do dia'; } catch(e) {}
+    document.getElementById('onboard-titulo').textContent = t('dash.onboard.title');
+    document.getElementById('onboard-sub').textContent = t('dash.onboard.sub');
+    try { document.getElementById('frase-texto').textContent = t('dash.dpp.configure.frase'); } catch(e) {}
+    try { document.getElementById('frase-sub').textContent = t('dash.frase.sub.base'); } catch(e) {}
     return;
   }
   var partesDpp = dpp.split('-');
   var dppFormatada = partesDpp[2] + '/' + partesDpp[1] + '/' + partesDpp[0];
-  document.getElementById('onboard-titulo').textContent = 'Data prevista do parto';
-  document.getElementById('onboard-sub').textContent = 'DPP: ' + dppFormatada + ' — Altere se necessario';
+  document.getElementById('onboard-titulo').textContent = t('dash.onboard.dpp.title');
+  document.getElementById('onboard-sub').textContent = t('dash.onboard.dpp.sub').replace('{date}', dppFormatada);
   document.getElementById('dpp-input').value = dpp;
   var info = calcularSemana(dpp);
 
   // Update dashboard semana
-  try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
+  try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>' + t('dash.semanas.label') + '</span>'; } catch(e) {}
 
   // Mensagem de semanas restantes com suporte emocional para 40+ semanas
   try {
     var faltamEl = document.getElementById('g-semanas-faltam');
     if (faltamEl) {
       if (info.semana >= 42) {
-        faltamEl.textContent = '💛 Converse com sua equipe — você foi incrível!';
+        faltamEl.textContent = t('dash.faltam.42');
         faltamEl.style.color = 'var(--rose)';
       } else if (info.semana >= 41) {
-        faltamEl.textContent = '🌙 Você passou da DPP. Tudo bem! Cada bebê tem seu tempo.';
+        faltamEl.textContent = t('dash.faltam.41');
         faltamEl.style.color = 'var(--rose-light)';
       } else if (info.semana >= 40) {
-        faltamEl.textContent = '✨ A hora chegou ou está chegando. Você foi incrível!';
+        faltamEl.textContent = t('dash.faltam.40');
         faltamEl.style.color = 'var(--rose-light)';
       } else {
         faltamEl.textContent = t('dash.weeks.until').replace('{n}', info.faltam > 0 ? info.faltam : 0);
@@ -6356,21 +6483,54 @@ function atualizarDashboardGestante(dpp) {
   try {
     var msgEl = document.getElementById('g-msg-acolhedora');
     if (msgEl) {
-      var msgs = {
-        0:  'Sua jornada está começando. Você não está sozinha 🌱',
-        5:  'O corpo já está trabalhando por dois. Descanse com carinho 💛',
-        9:  'Passando pelas primeiras semanas — isso exige coragem. Você está indo bem 🌸',
-        14: 'Entrando no 2º trimestre! Muitas mamães se sentem com mais energia agora ✨',
-        20: 'Você pode começar a sentir os movimentos do bebê. Que emoção! 🥰',
-        24: 'Mais da metade da jornada! O bebê já responde aos sons da sua voz 🎶',
-        28: 'No 3º trimestre! Cuide do descanso e do movimento do bebê 🌙',
-        32: 'Reta final se aproximando — cada semana é uma conquista 💪',
-        36: 'O bebê está se preparando. Você também está pronta 🌟',
-        38: 'A qualquer momento! Confie no seu corpo e no seu bebê 🤍',
-        40: 'Você chegou à DPP. Cada bebê tem seu tempo — respire fundo 🌙',
-        41: 'Passando da DPP. Isso é normal. Seu corpo e seu bebê sabem a hora certa 💛',
-        42: 'Você foi incrível em cada semana desta jornada. Converse com sua equipe 🌸'
+      var msgsAcolhedora = {
+        pt: {
+          0:  'Sua jornada está começando. Você não está sozinha 🌱',
+          5:  'O corpo já está trabalhando por dois. Descanse com carinho 💛',
+          9:  'Passando pelas primeiras semanas — isso exige coragem. Você está indo bem 🌸',
+          14: 'Entrando no 2º trimestre! Muitas mamães se sentem com mais energia agora ✨',
+          20: 'Você pode começar a sentir os movimentos do bebê. Que emoção! 🥰',
+          24: 'Mais da metade da jornada! O bebê já responde aos sons da sua voz 🎶',
+          28: 'No 3º trimestre! Cuide do descanso e do movimento do bebê 🌙',
+          32: 'Reta final se aproximando — cada semana é uma conquista 💪',
+          36: 'O bebê está se preparando. Você também está pronta 🌟',
+          38: 'A qualquer momento! Confie no seu corpo e no seu bebê 🤍',
+          40: 'Você chegou à DPP. Cada bebê tem seu tempo — respire fundo 🌙',
+          41: 'Passando da DPP. Isso é normal. Seu corpo e seu bebê sabem a hora certa 💛',
+          42: 'Você foi incrível em cada semana desta jornada. Converse com sua equipe 🌸'
+        },
+        en: {
+          0:  'Your journey is beginning. You are not alone 🌱',
+          5:  'Your body is already working for two. Rest with love 💛',
+          9:  'Getting through the first weeks — that takes courage. You\'re doing great 🌸',
+          14: 'Entering the 2nd trimester! Many moms feel more energized now ✨',
+          20: 'You may start feeling your baby\'s movements. How exciting! 🥰',
+          24: 'More than halfway there! Your baby already responds to the sound of your voice 🎶',
+          28: 'In the 3rd trimester! Take care of your rest and your baby\'s movements 🌙',
+          32: 'The final stretch is near — every week is an achievement 💪',
+          36: 'Your baby is getting ready. So are you 🌟',
+          38: 'Any moment now! Trust your body and your baby 🤍',
+          40: 'You\'ve reached your due date. Every baby has their own timing — breathe deeply 🌙',
+          41: 'Past your due date. That\'s normal. Your body and your baby know the right time 💛',
+          42: 'You have been incredible every single week of this journey. Talk to your team 🌸'
+        },
+        es: {
+          0:  'Tu viaje está comenzando. No estás sola 🌱',
+          5:  'Tu cuerpo ya está trabajando por dos. Descansa con cariño 💛',
+          9:  'Pasando las primeras semanas — eso requiere valentía. Lo estás haciendo muy bien 🌸',
+          14: '¡Entrando al 2.º trimestre! Muchas mamás se sienten con más energía ahora ✨',
+          20: 'Puedes empezar a sentir los movimientos de tu bebé. ¡Qué emoción! 🥰',
+          24: '¡Más de la mitad del camino! Tu bebé ya responde a los sonidos de tu voz 🎶',
+          28: '¡En el 3.er trimestre! Cuida tu descanso y los movimientos de tu bebé 🌙',
+          32: 'La recta final se acerca — cada semana es un logro 💪',
+          36: 'Tu bebé se está preparando. Tú también estás lista 🌟',
+          38: '¡En cualquier momento! Confía en tu cuerpo y en tu bebé 🤍',
+          40: 'Llegaste a la FPP. Cada bebé tiene su tiempo — respira profundo 🌙',
+          41: 'Pasando la FPP. Eso es normal. Tu cuerpo y tu bebé saben el momento indicado 💛',
+          42: 'Has sido increíble en cada semana de este viaje. Habla con tu equipo 🌸'
+        }
       };
+      var msgs = msgsAcolhedora[_lang] || msgsAcolhedora['pt'];
       var chave = Math.max.apply(null, Object.keys(msgs).filter(function(k){ return parseInt(k) <= info.semana; }));
       msgEl.textContent = msgs[chave] || '';
       msgEl.style.display = msgEl.textContent ? 'block' : 'none';
@@ -6411,6 +6571,16 @@ function atualizarDashboardGestante(dpp) {
   } catch(e) {}
   try { atualizarSintomas(info.semana); } catch(e) {}
   try { atualizarTarefas(info.semana); } catch(e) {}
+
+  // Atualiza visual do bebê no card e drawer
+  try {
+    var s = info.semana < 4 ? 4 : (info.semana > 42 ? 42 : info.semana);
+    var fruta = _babyFrutas[s] || _babyFrutas[4];
+    var babyNome = localStorage.getItem('lua_baby_nome') || 'Meu Bebê';
+    document.getElementById('dash-baby-name').textContent = babyNome;
+    document.getElementById('dash-baby-emoji').textContent = fruta.e;
+    document.getElementById('dash-baby-fruit').textContent = 'Tamanho de uma ' + fruta.n;
+  } catch(e) {}
 }
 
 function salvarDPP() {
@@ -7552,7 +7722,12 @@ async function carregarEstatisticas() {
     _adminUsuarios.forEach(function(u) { userMap[u.id] = u; });
     _adminSessoesLog = sessoes.map(function(s) {
       var u = userMap[s.user_id] || {};
-      return Object.assign({}, s, { _nome: u.nome || s.nome || u.email || s.email || '(sem nome)', _email: u.email || s.email || '' });
+      var nome = u.nome || s.nome || '';
+      var email = u.email || s.email || '';
+      return Object.assign({}, s, { 
+        _nome: nome || email || '(sem nome)', 
+        _email: email 
+      });
     }).sort(function(a, b) { return new Date(b.inicio) - new Date(a.inicio); });
 
     // ── buscar emails de usuários sem nome via auth.users ──
@@ -7608,21 +7783,21 @@ function renderFrequenciaUsuarios(lista) {
     var cor = tipoColor[u.tipo] || '#C9897A';
     var label = tipoLabel[u.tipo] || u.tipo;
     var ultimo = u.ultimo ? new Date(u.ultimo).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
-    return '<tr style="border-top:1px solid rgba(201,137,122,0.06);">' +
-      '<td style="padding:8px 10px;color:#E8C5BC;">' + u._nome +
-        (u._email ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + u._email + '</div>' : '') + '</td>' +
-      '<td style="padding:8px 10px;"><span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span></td>' +
-      '<td style="padding:8px 10px;text-align:center;color:#E8C5BC;font-weight:600;font-size:15px;">' + u.count + '</td>' +
-      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + ultimo + '</td>' +
+    return '<tr class="admin-table-row" style="border-top:1px solid rgba(201,137,122,0.06);">' +
+      '<td style="padding:10px 12px;color:#E8C5BC;">' + u._nome +
+        (u._email && u._email !== u._nome ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + u._email + '</div>' : '') + '</td>' +
+      '<td style="padding:10px 12px;"><span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:3px 10px;border-radius:20px;border:1px solid ' + cor + '33;">' + label + '</span></td>' +
+      '<td style="padding:10px 12px;text-align:center;color:#E8C5BC;font-weight:600;font-size:15px;">' + u.count + '</td>' +
+      '<td style="padding:10px 12px;color:rgba(176,154,140,0.7);">' + ultimo + '</td>' +
       '</tr>';
   }).join('');
   el.innerHTML = '<div style="overflow-x:auto;">' +
     '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1px;font-size:10px;">' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Usuário</th>' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Perfil</th>' +
-    '<th style="text-align:center;padding:6px 10px;font-weight:600;">Sessões</th>' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Último acesso</th>' +
+    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1.5px;font-size:9px;">' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Usuário / E-mail</th>' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Perfil</th>' +
+    '<th style="text-align:center;padding:10px 12px;font-weight:600;">Sessões</th>' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Último acesso</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table></div>';
 }
 
@@ -7641,21 +7816,21 @@ function renderLogAcessos(lista) {
     var label = tipoLabel[tipo] || tipo;
     var d = s.inicio ? new Date(s.inicio).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
     var dur = s.duracao_ms ? (s.duracao_ms < 60000 ? '< 1 min' : Math.round(s.duracao_ms / 60000) + ' min') : (s.fim ? '< 1 min' : 'em andamento');
-    return '<tr style="border-top:1px solid rgba(201,137,122,0.06);">' +
-      '<td style="padding:8px 10px;color:#E8C5BC;">' + s._nome +
-        (s._email ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + s._email + '</div>' : '') + '</td>' +
-      '<td style="padding:8px 10px;"><span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + label + '</span></td>' +
-      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + d + '</td>' +
-      '<td style="padding:8px 10px;color:rgba(176,154,140,0.7);">' + dur + '</td>' +
+    return '<tr class="admin-table-row" style="border-top:1px solid rgba(201,137,122,0.06);">' +
+      '<td style="padding:10px 12px;color:#E8C5BC;">' + s._nome +
+        (s._email && s._email !== s._nome ? '<div style="font-size:10px;color:rgba(176,154,140,0.4);">' + s._email + '</div>' : '') + '</td>' +
+      '<td style="padding:10px 12px;"><span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:3px 10px;border-radius:20px;border:1px solid ' + cor + '33;">' + label + '</span></td>' +
+      '<td style="padding:10px 12px;color:rgba(176,154,140,0.7);">' + d + '</td>' +
+      '<td style="padding:10px 12px;color:rgba(176,154,140,0.7);">' + dur + '</td>' +
       '</tr>';
   }).join('');
   el.innerHTML = '<div style="overflow-x:auto;">' +
     '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
-    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1px;font-size:10px;">' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Nome</th>' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Perfil</th>' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Data / Hora</th>' +
-    '<th style="text-align:left;padding:6px 10px;font-weight:600;">Duração</th>' +
+    '<thead><tr style="color:rgba(176,154,140,0.5);text-transform:uppercase;letter-spacing:1.5px;font-size:9px;">' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Usuário / E-mail</th>' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Perfil</th>' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Data / Hora</th>' +
+    '<th style="text-align:left;padding:10px 12px;font-weight:600;">Duração</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
     (lista.length > 100 ? '<div style="text-align:center;font-size:11px;color:rgba(176,154,140,0.4);padding:8px;">Mostrando 100 de ' + lista.length + ' sessões</div>' : '') +
     '</div>';
@@ -8164,11 +8339,27 @@ function mostrarToast(msg) {
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Frequência e tempo de uso por perfil — últimos 30 dias</div>
 
         <!-- Cards rápidos -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-total-cad">—</div><div class="admin-stat-label">Total cadastrados</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-hoje">—</div><div class="admin-stat-label">Cadastros hoje</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-sessoes-total">—</div><div class="admin-stat-label">Sessões (30 dias)</div></div>
-          <div class="admin-stat"><div class="admin-stat-val" id="stat-dau">—</div><div class="admin-stat-label">Usuários ativos (30d)</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+          <div class="admin-stat">
+            <div class="admin-stat-icon">👥</div>
+            <div class="admin-stat-val" id="stat-total-cad">—</div>
+            <div class="admin-stat-label">Total cadastrados</div>
+          </div>
+          <div class="admin-stat">
+            <div class="admin-stat-icon">✨</div>
+            <div class="admin-stat-val" id="stat-hoje">—</div>
+            <div class="admin-stat-label">Cadastros hoje</div>
+          </div>
+          <div class="admin-stat">
+            <div class="admin-stat-icon">⏱️</div>
+            <div class="admin-stat-val" id="stat-sessoes-total">—</div>
+            <div class="admin-stat-label">Sessões (30 dias)</div>
+          </div>
+          <div class="admin-stat">
+            <div class="admin-stat-icon">🔥</div>
+            <div class="admin-stat-val" id="stat-dau">—</div>
+            <div class="admin-stat-label">Usuários ativos (30d)</div>
+          </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
           <div class="admin-stat" style="display:none;"><div class="admin-stat-val" id="stat-doulas-total">—</div></div>
@@ -8203,7 +8394,10 @@ function mostrarToast(msg) {
         <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.1);border-radius:14px;padding:18px;margin-bottom:20px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
             <div style="font-size:13px;font-weight:500;color:#E8C5BC;">Log de acessos (individual)</div>
-            <input id="stat-busca-usuario" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarLogAcessos(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;outline:none;width:220px;">
+            <div style="position:relative;">
+              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.4;font-size:12px;">🔍</span>
+              <input id="stat-busca-usuario" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarLogAcessos(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:8px 14px 8px 34px;font-size:12px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;outline:none;width:260px;transition:all 0.2s;">
+            </div>
           </div>
           <div id="admin-log-acessos" style="color:rgba(176,154,140,0.4);font-size:13px;text-align:center;padding:16px;">Carregando...</div>
         </div>
@@ -8327,6 +8521,41 @@ function mostrarToast(msg) {
   <div class="mob-more-item" onclick="mobNavMore('g-extras')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="18" height="18"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     <span data-i18n="mob.more.extras">Extras</span>
+  </div>
+</div>
+
+<!-- ABA LATERAL DO BEBÊ -->
+<div class="baby-drawer-overlay" id="baby-drawer-overlay" onclick="fecharBabyDrawer()"></div>
+<div class="baby-drawer" id="baby-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Perfil do Bebê</div>
+    <div class="drawer-close" onclick="fecharBabyDrawer()">✕</div>
+  </div>
+  <div class="drawer-content">
+    <div id="baby-fruit-container">
+      <div class="baby-fruit-card">
+        <span class="baby-fruit-emoji" id="baby-emoji">🌱</span>
+        <div class="baby-fruit-name" id="baby-fruit-name">Semente</div>
+        <p class="baby-fruit-desc" id="baby-fruit-desc">Carregando informações do bebê...</p>
+      </div>
+    </div>
+
+    <div class="baby-form">
+      <div class="baby-form-group">
+        <label class="baby-form-label">Nome do Bebê</label>
+        <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia..." onchange="salvarDadosBebe()">
+      </div>
+      <div class="baby-form-group">
+        <label class="baby-form-label">Sexo (Opcional)</label>
+        <select id="baby-gender-input" class="baby-input" onchange="salvarDadosBebe()">
+          <option value="">Não definido</option>
+          <option value="menino">Menino 💙</option>
+          <option value="menina">Menina 💖</option>
+          <option value="surpresa">Surpresa 🎁</option>
+        </select>
+      </div>
+      <button class="baby-save-btn" onclick="salvarDadosBebe(); fecharBabyDrawer()">Salvar e Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -8468,10 +8697,102 @@ function _fbMostrarBotao(show) {
   else btn.classList.remove('fb-visible');
 }
 
+
+// ─── ABA LATERAL DO BEBÊ ───
+var _babyFrutas = {
+  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
+  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!' },
+  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!' },
+  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.' },
+  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.' },
+  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!' },
+  10: { n: 'Ameixa Seca', e: '🟣', d: 'Ossos e cartilagens estão se formando.' },
+  11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.' },
+  12: { n: 'Ameixa', e: '🍑', d: 'Quase todos os órgãos estão formados agora.' },
+  13: { n: 'Limão Siciliano', e: '🍋', d: 'O bebê já tem impressões digitais!' },
+  14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.' },
+  15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.' },
+  16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.' },
+  17: { n: 'Romã', e: '🍎', d: 'O bebê está acumulando gordura para se aquecer.' },
+  18: { n: 'Alcachofra', e: '🥦', d: 'O bebê já boceja e faz soluços.' },
+  19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.' },
+  20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.' },
+  21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.' },
+  22: { n: 'Mamão', e: '🍈', d: 'O bebê já parece um recém-nascido em miniatura.' },
+  23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.' },
+  24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.' },
+  25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.' },
+  26: { n: 'Couve', e: '🥬', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
+  27: { n: 'Alface', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
+  28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.' },
+  29: { n: 'Abóbora Bolota', e: '🎃', d: 'O bebê está ganhando peso rapidamente.' },
+  30: { n: 'Pepino', e: '🥒', d: 'O bebê já consegue seguir a luz com os olhos.' },
+  31: { n: 'Abacaxi', e: '🍍', d: 'O bebê está ficando sem espaço para grandes piruetas.' },
+  32: { n: 'Abóbora', e: '🎃', d: 'O bebê está se posicionando para o nascimento.' },
+  33: { n: 'Aipo', e: '🥬', d: 'O sistema imunológico do bebê está se fortalecendo.' },
+  34: { n: 'Abóbora Manteiga', e: '🎃', d: 'O bebê está acumulando cálcio para os ossos.' },
+  35: { n: 'Coco', e: '🥥', d: 'O sistema nervoso está quase totalmente maduro.' },
+  36: { n: 'Alface Romana', e: '🥬', d: 'O bebê está ganhando cerca de 30g por dia!' },
+  37: { n: 'Acelga', e: '🥬', d: 'O bebê já é considerado "a termo precoce".' },
+  38: { n: 'Alho-poró', e: '🥬', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
+  39: { n: 'Melancia', e: '🍉', d: 'O bebê está pronto para conhecer o mundo!' },
+  40: { n: 'Abóbora Moranga', e: '🎃', d: 'O grande momento chegou ou está muito próximo!' },
+  41: { n: 'Jaca', e: '🍈', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
+  42: { n: 'Jaca', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
+};
+
+function abrirBabyDrawer() {
+  document.getElementById('baby-drawer-overlay').classList.add('active');
+  document.getElementById('baby-drawer').classList.add('active');
+  
+  // Carrega dados salvos
+  var nome = localStorage.getItem('lua_baby_nome') || '';
+  var sexo = localStorage.getItem('lua_baby_sexo') || '';
+  document.getElementById('baby-name-input').value = nome;
+  document.getElementById('baby-gender-input').value = sexo;
+  
+  atualizarVisualBebe(window._currentSemana || 4);
+}
+
+function fecharBabyDrawer() {
+  document.getElementById('baby-drawer-overlay').classList.remove('active');
+  document.getElementById('baby-drawer').classList.remove('active');
+}
+
+function salvarDadosBebe() {
+  var nome = document.getElementById('baby-name-input').value;
+  var sexo = document.getElementById('baby-gender-input').value;
+  localStorage.setItem('lua_baby_nome', nome);
+  localStorage.setItem('lua_baby_sexo', sexo);
+  
+  if (db && currentUserId) {
+    db.from('usuarios').update({ baby_nome: nome, baby_sexo: sexo }).eq('id', currentUserId);
+  }
+  
+  // Atualiza dashboard se necessário
+  var dashName = document.getElementById('dash-baby-name');
+  if (dashName) dashName.textContent = nome || 'Meu Bebê';
+}
+
+function atualizarVisualBebe(semana) {
+  var s = parseInt(semana);
+  if (s < 4) s = 4;
+  if (s > 42) s = 42;
+  
+  var fruta = _babyFrutas[s] || _babyFrutas[4];
+  document.getElementById('baby-emoji').textContent = fruta.e;
+  document.getElementById('baby-fruit-name').textContent = fruta.n;
+  
+  var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
+  document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de uma <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('modal-feedback-global').addEventListener('click', function(e) {
     if (e.target === this) fecharFeedbackGlobal();
   });
+  // Fecha drawer do bebê ao clicar no overlay
+  document.getElementById('baby-drawer-overlay').addEventListener('click', fecharBabyDrawer);
 });
 </script>
 
