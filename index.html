@@ -8720,28 +8720,31 @@ function salvarDadosBebe() {
   mostrarToast('✅ Dados do bebê salvos 🌸');
 }
 
+function _twUrl(emoji) {
+  var cp = [];
+  for (var i = 0; i < emoji.length; ) {
+    var code = emoji.codePointAt(i);
+    if (code !== 0xFE0F) cp.push(code.toString(16));
+    i += code > 0xFFFF ? 2 : 1;
+  }
+  return 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/' + cp.join('-') + '.svg';
+}
+
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
   var emojiEl = document.getElementById('baby-emoji');
   if (s <= 0) {
-    emojiEl.textContent = '🌸';
+    emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
     document.getElementById('baby-fruit-name').textContent = 'Configure sua DPP';
     document.getElementById('baby-fruit-desc').textContent = 'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.';
   } else {
     if (s < 4) s = 4;
     if (s > 42) s = 42;
     var fruta = _babyFrutas[s] || _babyFrutas[4];
-    emojiEl.textContent = fruta.e;
+    emojiEl.innerHTML = '<img src="' + _twUrl(fruta.e) + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
     document.getElementById('baby-fruit-name').textContent = fruta.n;
     var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
     document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
-  }
-  if (typeof twemoji !== 'undefined') {
-    twemoji.parse(emojiEl, {
-      base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/',
-      folder: 'svg',
-      ext: '.svg'
-    });
   }
 }
 
