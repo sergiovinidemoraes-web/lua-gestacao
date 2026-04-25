@@ -165,7 +165,8 @@ header { padding-top: env(safe-area-inset-top, 0); }
   background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
   margin-bottom: 24px; position: relative; overflow: hidden;
 }
-.baby-fruit-emoji { font-size: 64px; margin-bottom: 16px; display: block; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+.baby-fruit-emoji { font-size: 64px; margin-bottom: 16px; display: block; }
+.baby-fruit-emoji img { width: 96px; height: 96px; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.18)); display: block; margin: 0 auto; }
 .baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
 .baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
 
@@ -5847,6 +5848,7 @@ async function carregarBackupDoula() {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script>
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
@@ -8720,19 +8722,23 @@ function salvarDadosBebe() {
 
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
+  var emojiEl = document.getElementById('baby-emoji');
   if (s <= 0) {
-    document.getElementById('baby-emoji').textContent = '🌸';
+    emojiEl.textContent = '🌸';
     document.getElementById('baby-fruit-name').textContent = 'Configure sua DPP';
     document.getElementById('baby-fruit-desc').textContent = 'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.';
-    return;
+  } else {
+    if (s < 4) s = 4;
+    if (s > 42) s = 42;
+    var fruta = _babyFrutas[s] || _babyFrutas[4];
+    emojiEl.textContent = fruta.e;
+    document.getElementById('baby-fruit-name').textContent = fruta.n;
+    var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
+    document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
   }
-  if (s < 4) s = 4;
-  if (s > 42) s = 42;
-  var fruta = _babyFrutas[s] || _babyFrutas[4];
-  document.getElementById('baby-emoji').textContent = fruta.e;
-  document.getElementById('baby-fruit-name').textContent = fruta.n;
-  var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
-  document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
+  if (typeof twemoji !== 'undefined') {
+    twemoji.parse(emojiEl, { folder: 'svg', ext: '.svg' });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
