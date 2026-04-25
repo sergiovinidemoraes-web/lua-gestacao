@@ -160,31 +160,7 @@ header { padding-top: env(safe-area-inset-top, 0); }
 }
 
 
-/* ─── BABY DRAWER ─── */
-.baby-drawer-overlay {
-  position: fixed; inset: 0; background: rgba(45, 31, 26, 0.4); backdrop-filter: blur(4px);
-  z-index: 2000; display: none; opacity: 0; transition: opacity 0.3s ease;
-}
-.baby-drawer-overlay.active { display: block; opacity: 1; }
-
-.baby-drawer {
-  position: fixed; top: 0; right: -400px; width: 380px; height: 100vh;
-  background: var(--white); z-index: 2001; box-shadow: -10px 0 40px rgba(0,0,0,0.1);
-  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex; flex-direction: column;
-}
-.baby-drawer.active { right: 0; }
-
-.drawer-header {
-  padding: 24px; border-bottom: 1px solid rgba(122,100,85,0.1);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.drawer-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--dark); }
-.drawer-close { cursor: pointer; font-size: 24px; color: var(--mid); opacity: 0.6; transition: opacity 0.2s; }
-.drawer-close:hover { opacity: 1; }
-
-.drawer-content { flex: 1; overflow-y: auto; padding: 24px; }
-
+/* ─── MEU BEBÊ ─── */
 .baby-fruit-card {
   background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
   margin-bottom: 24px; position: relative; overflow: hidden;
@@ -207,9 +183,6 @@ header { padding-top: env(safe-area-inset-top, 0); }
 }
 .baby-save-btn:hover { background: #a8685a; transform: translateY(-2px); }
 
-@media (max-width: 480px) {
-  .baby-drawer { width: 100%; right: -100%; }
-}
 
 .lua-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99998; align-items:center; justify-content:center; }
 .lua-modal-overlay.show { display:flex; }
@@ -937,7 +910,7 @@ tr:hover td { background:var(--rose-pale); }
         <nav class="g-nav">
           <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span><span data-i18n="nav.inicio">Início</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><span class="g-nav-icon">🌱</span><span data-i18n="nav.gestacao">Minha Gestação</span></div>
-          <div class="g-nav-item" onclick="abrirBabyDrawer()"><span class="g-nav-icon">👶</span><span>Perfil do Bebê</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-bebe')"><span class="g-nav-icon">👶</span><span data-i18n="nav.bebe">Meu Bebê</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><span class="g-nav-icon">✅</span><span data-i18n="nav.tarefas">Tarefas por Fase</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-plano')"><span class="g-nav-icon">📋</span><span data-i18n="nav.plano">Plano de Parto</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span><span data-i18n="nav.contracoes">Contrações</span></div>
@@ -985,7 +958,7 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" id="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more" id="mob-nav-more">
-        <div class="mob-more-item" onclick="abrirBabyDrawer();fecharMobMore()"><span>👶 Perfil do Bebê</span></div>
+        <div class="mob-more-item" onclick="gNavById('g-bebe');fecharMobMore()"><span data-i18n="nav.bebe">👶 Meu Bebê</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-tarefas');fecharMobMore()"><span>✅ Tarefas</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-plano');fecharMobMore()"><span>📋 Plano de Parto</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-conteudo');fecharMobMore()"><span>📚 Conteúdo</span></div>
@@ -1013,18 +986,6 @@ tr:hover td { background:var(--rose-pale); }
           </div>
           <div style="font-size:11px;opacity:0.7;margin-top:10px;font-style:italic;line-height:1.5;" data-i18n="dash.onboard.dpp.note">A DPP é uma data provável — 40 semanas é uma estimativa, não uma ordem de despejo 😊</div>
         </div>
-          <!-- CARD DO BEBÊ -->
-          <div class="card" onclick="abrirBabyDrawer()" style="cursor:pointer; background:linear-gradient(135deg, #fff, var(--rose-pale)); border:1px solid var(--rose-pale); position:relative; overflow:hidden; transition: transform 0.2s;">
-            <div style="display:flex; align-items:center; gap:16px;">
-              <div style="font-size:40px;" id="dash-baby-emoji">👶</div>
-              <div>
-                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--rose); font-weight:600; margin-bottom:4px;">Meu Bebê</div>
-                <div style="font-family:'Cormorant Garamond',serif; font-size:20px; color:var(--dark); font-weight:500;" id="dash-baby-name">Meu Bebê</div>
-                <div style="font-size:12px; color:var(--mid); opacity:0.8; margin-top:2px;" id="dash-baby-fruit">Tamanho de uma fruta</div>
-              </div>
-            </div>
-            <div style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:var(--rose); opacity:0.5;">➔</div>
-          </div>
 
           <div class="frases-do-dia">
             <div class="frase-texto" id="frase-texto">"Você está indo muito bem, mamãe 💛"</div>
@@ -1157,6 +1118,36 @@ tr:hover td { background:var(--rose-pale); }
               <button class="placenta-btn" onclick="selecionarPlacenta(this,'previa')" data-i18n="placenta.previa">Prévia</button>
             </div>
             <div id="placenta-info" style="font-size:13px;color:var(--mid);background:var(--rose-pale);border-radius:10px;padding:12px;line-height:1.6;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- MEU BEBÊ -->
+        <div class="g-panel" id="g-bebe">
+          <div class="panel-title">Meu Bebê 👶</div>
+          <div class="panel-sub" id="g-bebe-sub">Acompanhe o crescimento semana a semana</div>
+
+          <div class="baby-fruit-card">
+            <span class="baby-fruit-emoji" id="baby-emoji">🌸</span>
+            <div class="baby-fruit-name" id="baby-fruit-name">Configure sua DPP</div>
+            <p class="baby-fruit-desc" id="baby-fruit-desc">Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Perfil do Bebê</div>
+            <div class="baby-form-group">
+              <label class="baby-form-label">Nome do Bebê</label>
+              <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia...">
+            </div>
+            <div class="baby-form-group">
+              <label class="baby-form-label">Sexo (Opcional)</label>
+              <select id="baby-gender-input" class="baby-input">
+                <option value="">Não definido</option>
+                <option value="menino">Menino 💙</option>
+                <option value="menina">Menina 💖</option>
+                <option value="surpresa">Surpresa 🎁</option>
+              </select>
+            </div>
+            <button class="baby-save-btn" onclick="salvarDadosBebe()">Salvar</button>
           </div>
         </div>
 
@@ -2673,6 +2664,9 @@ function gNav(el, panelId) {
   if (panelId === 'g-marketplace') {
     try { carregarMarketplace(); } catch(e) {}
   }
+  if (panelId === 'g-bebe') {
+    try { carregarSecaoBebe(); } catch(e) {}
+  }
 }
 
 function toggleMobMore(event) {
@@ -2719,7 +2713,7 @@ pt: {
   // Header
   'hdr.logout':'Sair','hdr.role.gestante':'Gestante','hdr.role.doula':'Doula','hdr.role.pai':'Acompanhante',
   // Nav gestante
-  'nav.inicio':'Início','nav.gestacao':'Minha Gestação','nav.tarefas':'Tarefas por Fase',
+  'nav.inicio':'Início','nav.gestacao':'Minha Gestação','nav.bebe':'Meu Bebê','nav.tarefas':'Tarefas por Fase',
   'nav.plano':'Plano de Parto','nav.contracoes':'Contrações','nav.conteudo':'Conteúdo',
   'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Minha Doula',
   'nav.posparto':'Pós-Parto','nav.diario':'Diário','nav.chat':'Chat com a Lua IA',
@@ -3237,7 +3231,7 @@ en: {
   'frase.welcome':'Welcome to Lua! Set up your due date to get started. 💛',
   'frase.default':'You\'re doing amazing, mama! 💛',
   'hdr.logout':'Sign out','hdr.role.gestante':'Expecting Mother','hdr.role.doula':'Doula','hdr.role.pai':'Companion',
-  'nav.inicio':'Home','nav.gestacao':'My Pregnancy','nav.tarefas':'Phase Tasks',
+  'nav.inicio':'Home','nav.gestacao':'My Pregnancy','nav.bebe':'My Baby','nav.tarefas':'Phase Tasks',
   'nav.plano':'Birth Plan','nav.contracoes':'Contractions','nav.conteudo':'Content',
   'nav.extras':'Extras','nav.encontrar':'Find a Doula','nav.minha.doula':'My Doula',
   'nav.posparto':'Postpartum','nav.diario':'Journal','nav.chat':'Chat with Lua',
@@ -3740,7 +3734,7 @@ es: {
   'frase.welcome':'¡Bienvenida a Lua! Configura tu FPP para comenzar. 💛',
   'frase.default':'¡Lo estás haciendo muy bien, mamá! 💛',
   'hdr.logout':'Salir','hdr.role.gestante':'Embarazada','hdr.role.doula':'Doula','hdr.role.pai':'Acompañante',
-  'nav.inicio':'Inicio','nav.gestacao':'Mi Embarazo','nav.tarefas':'Tareas por Fase',
+  'nav.inicio':'Inicio','nav.gestacao':'Mi Embarazo','nav.bebe':'Mi Bebé','nav.tarefas':'Tareas por Fase',
   'nav.plano':'Plan de Parto','nav.contracoes':'Contracciones','nav.conteudo':'Contenido',
   'nav.extras':'Extras','nav.encontrar':'Encontrar Doula','nav.minha.doula':'Mi Doula',
   'nav.posparto':'Posparto','nav.diario':'Diario','nav.chat':'Hablar con Lua',
@@ -6572,14 +6566,11 @@ function atualizarDashboardGestante(dpp) {
   try { atualizarSintomas(info.semana); } catch(e) {}
   try { atualizarTarefas(info.semana); } catch(e) {}
 
-  // Atualiza visual do bebê no card e drawer
+  // Atualiza visual do bebê se a seção estiver ativa
   try {
-    var s = info.semana < 4 ? 4 : (info.semana > 42 ? 42 : info.semana);
-    var fruta = _babyFrutas[s] || _babyFrutas[4];
-    var babyNome = localStorage.getItem('lua_baby_nome') || 'Meu Bebê';
-    document.getElementById('dash-baby-name').textContent = babyNome;
-    document.getElementById('dash-baby-emoji').textContent = fruta.e;
-    document.getElementById('dash-baby-fruit').textContent = 'Tamanho de uma ' + fruta.n;
+    if (document.getElementById('g-bebe') && document.getElementById('g-bebe').classList.contains('active')) {
+      atualizarVisualBebe(info.semana);
+    }
   } catch(e) {}
 }
 
@@ -8524,40 +8515,7 @@ function mostrarToast(msg) {
   </div>
 </div>
 
-<!-- ABA LATERAL DO BEBÊ -->
-<div class="baby-drawer-overlay" id="baby-drawer-overlay" onclick="fecharBabyDrawer()"></div>
-<div class="baby-drawer" id="baby-drawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Perfil do Bebê</div>
-    <div class="drawer-close" onclick="fecharBabyDrawer()">✕</div>
-  </div>
-  <div class="drawer-content">
-    <div id="baby-fruit-container">
-      <div class="baby-fruit-card">
-        <span class="baby-fruit-emoji" id="baby-emoji">🌱</span>
-        <div class="baby-fruit-name" id="baby-fruit-name">Semente</div>
-        <p class="baby-fruit-desc" id="baby-fruit-desc">Carregando informações do bebê...</p>
-      </div>
-    </div>
-
-    <div class="baby-form">
-      <div class="baby-form-group">
-        <label class="baby-form-label">Nome do Bebê</label>
-        <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia..." onchange="salvarDadosBebe()">
-      </div>
-      <div class="baby-form-group">
-        <label class="baby-form-label">Sexo (Opcional)</label>
-        <select id="baby-gender-input" class="baby-input" onchange="salvarDadosBebe()">
-          <option value="">Não definido</option>
-          <option value="menino">Menino 💙</option>
-          <option value="menina">Menina 💖</option>
-          <option value="surpresa">Surpresa 🎁</option>
-        </select>
-      </div>
-      <button class="baby-save-btn" onclick="salvarDadosBebe(); fecharBabyDrawer()">Salvar e Fechar</button>
-    </div>
-  </div>
-</div>
+<!-- MEU BEBÊ (seção inline, substituiu drawer lateral) -->
 
 <!-- MODAL DE CONFIRMAÇÃO -->
 <div class="lua-modal-overlay" id="lua-modal">
@@ -8741,22 +8699,12 @@ var _babyFrutas = {
   42: { n: 'Jaca', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
 };
 
-function abrirBabyDrawer() {
-  document.getElementById('baby-drawer-overlay').classList.add('active');
-  document.getElementById('baby-drawer').classList.add('active');
-  
-  // Carrega dados salvos
+function carregarSecaoBebe() {
   var nome = localStorage.getItem('lua_baby_nome') || '';
   var sexo = localStorage.getItem('lua_baby_sexo') || '';
   document.getElementById('baby-name-input').value = nome;
   document.getElementById('baby-gender-input').value = sexo;
-  
-  atualizarVisualBebe(window._currentSemana || 4);
-}
-
-function fecharBabyDrawer() {
-  document.getElementById('baby-drawer-overlay').classList.remove('active');
-  document.getElementById('baby-drawer').classList.remove('active');
+  atualizarVisualBebe(window._currentSemana || 0);
 }
 
 function salvarDadosBebe() {
@@ -8764,35 +8712,33 @@ function salvarDadosBebe() {
   var sexo = document.getElementById('baby-gender-input').value;
   localStorage.setItem('lua_baby_nome', nome);
   localStorage.setItem('lua_baby_sexo', sexo);
-  
   if (db && currentUserId) {
     db.from('usuarios').update({ baby_nome: nome, baby_sexo: sexo }).eq('id', currentUserId);
   }
-  
-  // Atualiza dashboard se necessário
-  var dashName = document.getElementById('dash-baby-name');
-  if (dashName) dashName.textContent = nome || 'Meu Bebê';
+  mostrarToast('✅ Dados do bebê salvos 🌸');
 }
 
 function atualizarVisualBebe(semana) {
-  var s = parseInt(semana);
+  var s = parseInt(semana) || 0;
+  if (s <= 0) {
+    document.getElementById('baby-emoji').textContent = '🌸';
+    document.getElementById('baby-fruit-name').textContent = 'Configure sua DPP';
+    document.getElementById('baby-fruit-desc').textContent = 'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.';
+    return;
+  }
   if (s < 4) s = 4;
   if (s > 42) s = 42;
-  
   var fruta = _babyFrutas[s] || _babyFrutas[4];
   document.getElementById('baby-emoji').textContent = fruta.e;
   document.getElementById('baby-fruit-name').textContent = fruta.n;
-  
   var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
-  document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de uma <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
+  document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('modal-feedback-global').addEventListener('click', function(e) {
     if (e.target === this) fecharFeedbackGlobal();
   });
-  // Fecha drawer do bebê ao clicar no overlay
-  document.getElementById('baby-drawer-overlay').addEventListener('click', fecharBabyDrawer);
 });
 </script>
 
