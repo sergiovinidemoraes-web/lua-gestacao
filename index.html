@@ -8737,7 +8737,11 @@ function atualizarVisualBebe(semana) {
     document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
   }
   if (typeof twemoji !== 'undefined') {
-    twemoji.parse(emojiEl, { folder: 'svg', ext: '.svg' });
+    twemoji.parse(emojiEl, {
+      base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/',
+      folder: 'svg',
+      ext: '.svg'
+    });
   }
 }
 
