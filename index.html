@@ -8847,12 +8847,12 @@ function _renderDiarioEntrada(entry, prepend) {
 
 // ─── ABA LATERAL DO BEBÊ ───
 var _babyFrutas = {
-  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
-  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!' },
-  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!' },
-  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.' },
-  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.' },
-  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!' },
+  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!', img: 'fruits/week-4.png' },
+  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!', img: 'fruits/week-5.png' },
+  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!', img: 'fruits/week-6.png' },
+  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.', img: 'fruits/week-7.png' },
+  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.', img: 'fruits/week-8.png' },
+  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!', img: 'fruits/week-9.png' },
   10: { n: 'Ameixa Seca', e: '🟣', d: 'Ossos e cartilagens estão se formando.' },
   11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.' },
   12: { n: 'Ameixa', e: '🍑', d: 'Quase todos os órgãos estão formados agora.' },
@@ -8928,7 +8928,11 @@ function atualizarVisualBebe(semana) {
     if (s < 4) s = 4;
     if (s > 42) s = 42;
     var fruta = _babyFrutas[s] || _babyFrutas[4];
-    emojiEl.innerHTML = '<img src="' + _twUrl(fruta.e) + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    if (fruta.img) {
+      emojiEl.innerHTML = '<img src="' + fruta.img + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    } else {
+      emojiEl.innerHTML = '<img src="' + _twUrl(fruta.e) + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    }
     document.getElementById('baby-fruit-name').textContent = fruta.n;
     var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
     document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
