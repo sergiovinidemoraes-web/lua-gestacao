@@ -8584,9 +8584,9 @@ function mostrarToast(msg) {
 <!-- Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js');
-  });
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => console.log('🚀 SW OK'))
+    .catch(err => console.log('❌ SW Erro:', err));
 }
 </script>
 
