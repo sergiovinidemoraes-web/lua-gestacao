@@ -2658,9 +2658,14 @@ function gNav(el, panelId) {
   }
   if (panelId === 'g-plano') {
     try { preencherCamposPlano(); } catch(e) {}
+    try { carregarPlanoParto(); } catch(e) {}
+  }
+  if (panelId === 'g-diario') {
+    try { carregarDiario(); } catch(e) {}
   }
   if (panelId === 'g-conteudo' || panelId === 'g-posparto') {
     try { carregarConteudos(); } catch(e) {}
+    if (panelId === 'g-conteudo') { try { carregarChecklistMala(); } catch(e) {} }
   }
   if (panelId === 'g-marketplace') {
     try { carregarMarketplace(); } catch(e) {}
@@ -4311,6 +4316,8 @@ function toggleCheck(item) {
   item.classList.toggle('done');
   var box = item.querySelector('.plan-check-box');
   if (box) box.textContent = item.classList.contains('done') ? '✓' : '';
+  clearTimeout(window._planoTimer);
+  window._planoTimer = setTimeout(salvarPlanoParto, 800);
 }
 function toggleTipoParto(btn, tipo) {
   document.getElementById('btn-tipo-vaginal').classList.remove('selected');
@@ -4320,6 +4327,8 @@ function toggleTipoParto(btn, tipo) {
   var bC = document.getElementById('bloco-cesariana');
   if (tipo === 'vaginal') { bV.classList.add('visible'); bC.classList.remove('visible'); }
   else { bC.classList.add('visible'); bV.classList.remove('visible'); }
+  clearTimeout(window._planoTimer);
+  window._planoTimer = setTimeout(salvarPlanoParto, 800);
 }
 
 // Pré-preenche campos do plano com dados do usuário
@@ -4582,8 +4591,18 @@ function selecionarPlacenta(btn, tipo) {
   }
   if (db && currentUserId) { try { db.from('usuarios').update({ placenta: tipo }).eq('id', currentUserId); } catch(e) {} }
 }
-function toggleFaseTask(el) { el.classList.toggle('done'); el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : ''; }
-function toggleChecklist(el) { el.classList.toggle('done'); el.querySelector('.checklist-box').textContent = el.classList.contains('done') ? '✓' : ''; }
+function toggleFaseTask(el) {
+  el.classList.toggle('done');
+  el.querySelector('.fase-task-check').textContent = el.classList.contains('done') ? '✓' : '';
+  clearTimeout(window._tarefasTimer);
+  window._tarefasTimer = setTimeout(salvarTarefasEstado, 800);
+}
+function toggleChecklist(el) {
+  el.classList.toggle('done');
+  el.querySelector('.checklist-box').textContent = el.classList.contains('done') ? '✓' : '';
+  clearTimeout(window._malaTimer);
+  window._malaTimer = setTimeout(salvarChecklistMala, 800);
+}
 function togglePhaseBlock(header) { header.parentElement.classList.toggle('open'); }
 function setBibCat(btn) {
   document.querySelectorAll('.bib-cat').forEach(function(b) { b.classList.remove('active'); });
@@ -4609,17 +4628,23 @@ function filtrarBiblioteca(filtro) {
 function toggleFaq(questionEl) { questionEl.parentElement.classList.toggle('open'); }
 
 // ─── Diary ───
-function saveDiary() {
-  const ta = document.querySelector('.diary-new textarea');
-  const mood = document.querySelector('.mood-btn.selected');
-  if (!ta.value.trim()) return;
-  const entry = document.createElement('div');
-  entry.className = 'diary-entry';
-  const now = new Date();
-  entry.innerHTML = `<div class="diary-date">${now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase()} · SEMANA 18</div><div class="diary-text">${ta.value}</div>${mood?`<div class="diary-mood">${mood.textContent}</div>`:''}`;
-  document.getElementById('diary-entries').prepend(entry);
+async function saveDiary() {
+  var ta = document.querySelector('#g-diario .diary-new textarea');
+  var mood = document.querySelector('#g-diario .mood-btn.selected');
+  if (!ta || !ta.value.trim()) return;
+  var conteudo = ta.value.trim();
+  var humorVal = mood ? mood.textContent : null;
+  var semana = window._currentSemana || 0;
   ta.value = '';
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('#g-diario .mood-btn').forEach(function(b) { b.classList.remove('selected'); });
+  if (db && currentUserId) {
+    try {
+      var res = await db.from('diario_gestante').insert({ gestante_id: currentUserId, conteudo: conteudo, humor: humorVal, semana: semana });
+      if (!res.error) { carregarDiario(); return; }
+    } catch(e) {}
+  }
+  // fallback visual se offline
+  _renderDiarioEntrada({ conteudo: conteudo, humor: humorVal, semana: semana, criado_em: new Date().toISOString() }, true);
 }
 
 // ══════════════════════════════════════
@@ -6035,13 +6060,14 @@ async function carregarUsuario(user) {
         if (solAceita.data) currentDoulaId = solAceita.data.doula_id;
       } catch(e2) {}
     }
-    // Carrega dados do bebê
+    // Carrega dados do bebê e gestação do Supabase (garante sync entre dispositivos)
     if (res.data) {
-      if (res.data.baby_nome) {
-        localStorage.setItem('lua_baby_nome', res.data.baby_nome);
-      }
-      if (res.data.baby_sexo) {
-        localStorage.setItem('lua_baby_sexo', res.data.baby_sexo);
+      if (res.data.baby_nome) localStorage.setItem('lua_baby_nome', res.data.baby_nome);
+      if (res.data.baby_sexo) localStorage.setItem('lua_baby_sexo', res.data.baby_sexo);
+      if (res.data.dpp) localStorage.setItem('lua_dpp', res.data.dpp);
+      if (res.data.placenta) localStorage.setItem('lua_placenta', res.data.placenta);
+      if (res.data.foto_perfil) {
+        try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
       }
     }
     entrarNoApp(tipo, nome);
@@ -6080,6 +6106,7 @@ function entrarNoApp(tipo, nome) {
       setTimeout(function() { try { atualizarTarefas(0); } catch(e) {} }, 400);
     }, 300);
     setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
+    setTimeout(function() { try { carregarTarefasEstado(); } catch(e) {} }, 450);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
@@ -7199,10 +7226,23 @@ function salvarFotoPerfil(input) {
   if (!input.files || !input.files[0]) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    var dataUrl = e.target.result;
-    try { localStorage.setItem('lua_foto_perfil', dataUrl); } catch(err) {}
-    aplicarFotoPerfil(dataUrl);
-    mostrarToast('Foto atualizada!');
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 300;
+      var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      try { localStorage.setItem('lua_foto_perfil', dataUrl); } catch(err) {}
+      aplicarFotoPerfil(dataUrl);
+      if (db && currentUserId) {
+        db.from('usuarios').update({ foto_perfil: dataUrl }).eq('id', currentUserId);
+      }
+      mostrarToast('Foto atualizada!');
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -7221,8 +7261,16 @@ function aplicarFotoPerfil(dataUrl) {
 function carregarFotoPerfil() {
   try {
     var foto = localStorage.getItem('lua_foto_perfil');
-    if (foto) aplicarFotoPerfil(foto);
+    if (foto) { aplicarFotoPerfil(foto); return; }
   } catch(e) {}
+  if (db && currentUserId) {
+    db.from('usuarios').select('foto_perfil').eq('id', currentUserId).maybeSingle().then(function(res) {
+      if (res.data && res.data.foto_perfil) {
+        try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
+        aplicarFotoPerfil(res.data.foto_perfil);
+      }
+    });
+  }
 }
 
 // ── Contato com doula ──
@@ -8658,6 +8706,145 @@ function _fbMostrarBotao(show) {
 }
 
 
+// ─── PERSISTÊNCIA: PLANO DE PARTO ───
+function salvarPlanoParto() {
+  if (!db || !currentUserId) return;
+  var checks = [];
+  document.querySelectorAll('#g-plano .plan-check-item.done').forEach(function(item) {
+    var label = item.querySelector('[data-i18n]');
+    if (label && label.getAttribute('data-i18n')) checks.push(label.getAttribute('data-i18n'));
+  });
+  var options = [];
+  document.querySelectorAll('#g-plano .plan-option.selected').forEach(function(btn) {
+    if (btn.getAttribute('data-i18n')) options.push(btn.getAttribute('data-i18n'));
+  });
+  var tipoParto = (document.getElementById('btn-tipo-cesariana') && document.getElementById('btn-tipo-cesariana').classList.contains('selected')) ? 'cesariana' : 'vaginal';
+  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, checks: checks, options: options } }).eq('id', currentUserId);
+}
+
+function carregarPlanoParto() {
+  if (!db || !currentUserId) return;
+  db.from('usuarios').select('plano_parto_estado').eq('id', currentUserId).maybeSingle().then(function(res) {
+    if (!res.data || !res.data.plano_parto_estado) return;
+    var estado = res.data.plano_parto_estado;
+    if (estado.tipoParto) {
+      var btn = document.getElementById('btn-tipo-' + estado.tipoParto);
+      if (btn) {
+        document.getElementById('btn-tipo-vaginal').classList.remove('selected');
+        document.getElementById('btn-tipo-cesariana').classList.remove('selected');
+        btn.classList.add('selected');
+        var bV = document.getElementById('bloco-vaginal');
+        var bC = document.getElementById('bloco-cesariana');
+        if (estado.tipoParto === 'vaginal') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
+        else { if(bC) bC.classList.add('visible'); if(bV) bV.classList.remove('visible'); }
+      }
+    }
+    if (estado.checks && estado.checks.length) {
+      document.querySelectorAll('#g-plano .plan-check-item').forEach(function(item) {
+        var label = item.querySelector('[data-i18n]');
+        if (label && estado.checks.indexOf(label.getAttribute('data-i18n')) > -1) {
+          item.classList.add('done');
+          var box = item.querySelector('.plan-check-box');
+          if (box) box.textContent = '✓';
+        }
+      });
+    }
+    if (estado.options && estado.options.length) {
+      document.querySelectorAll('#g-plano .plan-option').forEach(function(btn) {
+        if (btn.getAttribute('data-i18n') && estado.options.indexOf(btn.getAttribute('data-i18n')) > -1) {
+          btn.classList.add('selected');
+        }
+      });
+    }
+  });
+}
+
+// ─── PERSISTÊNCIA: TAREFAS/FASES ───
+function salvarTarefasEstado() {
+  if (!db || !currentUserId) return;
+  var done = [];
+  document.querySelectorAll('.fase-task.done .fase-task-text[data-i18n]').forEach(function(el) {
+    done.push(el.getAttribute('data-i18n'));
+  });
+  db.from('usuarios').update({ tarefas_estado: done }).eq('id', currentUserId);
+}
+
+function carregarTarefasEstado() {
+  if (!db || !currentUserId) return;
+  db.from('usuarios').select('tarefas_estado').eq('id', currentUserId).maybeSingle().then(function(res) {
+    if (!res.data || !res.data.tarefas_estado || !res.data.tarefas_estado.length) return;
+    var done = res.data.tarefas_estado;
+    document.querySelectorAll('.fase-task').forEach(function(item) {
+      var text = item.querySelector('.fase-task-text');
+      if (text && text.getAttribute('data-i18n') && done.indexOf(text.getAttribute('data-i18n')) > -1) {
+        item.classList.add('done');
+        var check = item.querySelector('.fase-task-check');
+        if (check) check.textContent = '✓';
+      }
+    });
+  });
+}
+
+// ─── PERSISTÊNCIA: CHECKLIST MALA ───
+function salvarChecklistMala() {
+  if (!db || !currentUserId) return;
+  var done = [];
+  document.querySelectorAll('.checklist-item.done [data-i18n]').forEach(function(el) {
+    done.push(el.getAttribute('data-i18n'));
+  });
+  db.from('usuarios').update({ checklist_mala: done }).eq('id', currentUserId);
+}
+
+function carregarChecklistMala() {
+  if (!db || !currentUserId) return;
+  db.from('usuarios').select('checklist_mala').eq('id', currentUserId).maybeSingle().then(function(res) {
+    if (!res.data || !res.data.checklist_mala || !res.data.checklist_mala.length) return;
+    var done = res.data.checklist_mala;
+    document.querySelectorAll('.checklist-item').forEach(function(item) {
+      var span = item.querySelector('[data-i18n]');
+      if (span && span.getAttribute('data-i18n') && done.indexOf(span.getAttribute('data-i18n')) > -1) {
+        item.classList.add('done');
+        var box = item.querySelector('.checklist-box');
+        if (box) box.textContent = '✓';
+      }
+    });
+  });
+}
+
+// ─── PERSISTÊNCIA: DIÁRIO DA GESTANTE ───
+async function carregarDiario() {
+  var container = document.getElementById('diary-entries');
+  var empty = document.getElementById('diary-empty');
+  if (!container || !db || !currentUserId) return;
+  try {
+    var res = await db.from('diario_gestante')
+      .select('*')
+      .eq('gestante_id', currentUserId)
+      .order('criado_em', { ascending: false })
+      .limit(50);
+    if (res.error || !res.data) return;
+    container.innerHTML = '';
+    if (!res.data.length) {
+      if (empty) container.appendChild(empty);
+      return;
+    }
+    res.data.forEach(function(entry) { _renderDiarioEntrada(entry, false); });
+  } catch(e) {}
+}
+
+function _renderDiarioEntrada(entry, prepend) {
+  var container = document.getElementById('diary-entries');
+  if (!container) return;
+  var div = document.createElement('div');
+  div.className = 'diary-entry';
+  var data = new Date(entry.criado_em);
+  var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
+  var semanaStr = entry.semana ? ' · SEMANA ' + entry.semana : '';
+  var humorHtml = entry.humor ? '<div class="diary-mood">' + entry.humor + '</div>' : '';
+  div.innerHTML = '<div class="diary-date">' + dataStr + semanaStr + '</div><div class="diary-text">' + entry.conteudo + '</div>' + humorHtml;
+  if (prepend) container.prepend(div); else container.appendChild(div);
+}
+
 // ─── ABA LATERAL DO BEBÊ ───
 var _babyFrutas = {
   4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
@@ -8682,19 +8869,19 @@ var _babyFrutas = {
   23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.' },
   24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.' },
   25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.' },
-  26: { n: 'Couve', e: '🥬', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
-  27: { n: 'Alface', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
+  26: { n: 'Cebola Grande', e: '🧅', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
+  27: { n: 'Repolho', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
   28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.' },
   29: { n: 'Abóbora Bolota', e: '🎃', d: 'O bebê está ganhando peso rapidamente.' },
   30: { n: 'Pepino', e: '🥒', d: 'O bebê já consegue seguir a luz com os olhos.' },
   31: { n: 'Abacaxi', e: '🍍', d: 'O bebê está ficando sem espaço para grandes piruetas.' },
   32: { n: 'Abóbora', e: '🎃', d: 'O bebê está se posicionando para o nascimento.' },
-  33: { n: 'Aipo', e: '🥬', d: 'O sistema imunológico do bebê está se fortalecendo.' },
+  33: { n: 'Batata-Doce', e: '🍠', d: 'O sistema imunológico do bebê está se fortalecendo.' },
   34: { n: 'Abóbora Manteiga', e: '🎃', d: 'O bebê está acumulando cálcio para os ossos.' },
   35: { n: 'Coco', e: '🥥', d: 'O sistema nervoso está quase totalmente maduro.' },
-  36: { n: 'Alface Romana', e: '🥬', d: 'O bebê está ganhando cerca de 30g por dia!' },
-  37: { n: 'Acelga', e: '🥬', d: 'O bebê já é considerado "a termo precoce".' },
-  38: { n: 'Alho-poró', e: '🥬', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
+  36: { n: 'Melão', e: '🍈', d: 'O bebê está ganhando cerca de 30g por dia!' },
+  37: { n: 'Melão Verde', e: '🍈', d: 'O bebê já é considerado "a termo precoce".' },
+  38: { n: 'Abobrinha Grande', e: '🥒', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
   39: { n: 'Melancia', e: '🍉', d: 'O bebê está pronto para conhecer o mundo!' },
   40: { n: 'Abóbora Moranga', e: '🎃', d: 'O grande momento chegou ou está muito próximo!' },
   41: { n: 'Jaca', e: '🍈', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
