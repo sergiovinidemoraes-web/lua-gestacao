@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Manga (Mango) -->
+  <path d="M72 82 C56 96 48 120 52 144 C56 166 76 178 100 176 C126 174 150 156 154 132 C158 108 148 82 130 66 C114 52 92 56 80 68 Z" fill="#C9897A"/>
+  <ellipse cx="128" cy="108" rx="28" ry="46" fill="#B07060" opacity="0.3"/>
+  <ellipse cx="78" cy="100" rx="14" ry="24" fill="#E8C5BC" opacity="0.5"/>
+  <path d="M106 68 Q110 52 114 44" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M110 50 Q128 36 138 48 Q122 64 114 56 Z" fill="#5B7A4E"/>
+</svg>

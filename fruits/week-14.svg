@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Pêssego (Peach) -->
+  <circle cx="100" cy="112" r="56" fill="#C9897A"/>
+  <ellipse cx="122" cy="118" rx="32" ry="38" fill="#B07060" opacity="0.35"/>
+  <path d="M100 57 Q95 82 100 112" stroke="#B07060" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="76" cy="84" rx="16" ry="21" fill="#E8C5BC" opacity="0.5"/>
+  <path d="M100 57 Q103 44 106 36" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M106 42 Q124 28 132 40 Q118 56 108 48 Z" fill="#5B7A4E"/>
+</svg>

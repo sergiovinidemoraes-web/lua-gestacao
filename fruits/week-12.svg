@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Ameixa (Plum) -->
+  <circle cx="100" cy="112" r="54" fill="#9B6B7A"/>
+  <ellipse cx="122" cy="118" rx="32" ry="38" fill="#B07080" opacity="0.35"/>
+  <path d="M100 60 Q95 82 100 112" stroke="#7A5568" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="80" cy="87" rx="14" ry="19" fill="#C9897A" opacity="0.45"/>
+  <path d="M100 60 Q104 46 108 38" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

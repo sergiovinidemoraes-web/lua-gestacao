@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Maçã (Apple) -->
+  <circle cx="82" cy="78" r="22" fill="#C9897A"/>
+  <circle cx="118" cy="78" r="22" fill="#C9897A"/>
+  <path d="M100 72 C130 72 158 94 158 124 C158 154 136 170 100 170 C64 170 42 154 42 124 C42 94 70 72 100 72 Z" fill="#C9897A"/>
+  <path d="M100 58 Q96 82 100 124" stroke="#B07060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="76" cy="96" rx="16" ry="22" fill="#E8C5BC" opacity="0.5"/>
+  <path d="M100 58 Q103 44 107 36" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M107 42 Q126 28 134 42 Q120 56 110 48 Z" fill="#5B7A4E"/>
+</svg>

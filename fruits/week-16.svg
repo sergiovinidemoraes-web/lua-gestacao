@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Abacate (Avocado) -->
+  <path d="M100 44 C118 44 146 74 146 114 C146 152 126 172 100 172 C74 172 54 152 54 114 C54 74 82 44 100 44 Z" fill="#4A6A3A"/>
+  <ellipse cx="84" cy="92" rx="12" ry="24" fill="#6B9258" opacity="0.55"/>
+  <path d="M100 44 Q102 32 105 26" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

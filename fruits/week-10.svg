@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Ameixa Seca (Prune) -->
+  <ellipse cx="100" cy="112" rx="44" ry="50" fill="#7A5568"/>
+  <ellipse cx="84" cy="92" rx="10" ry="14" fill="#9B7188" opacity="0.55"/>
+  <path d="M82 90 Q100 83 118 90" stroke="#5A3D4E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M76 108 Q100 100 124 108" stroke="#5A3D4E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M80 126 Q100 118 120 126" stroke="#5A3D4E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M100 63 Q103 52 108 44" stroke="#7A6455" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Banana -->
+  <path d="M52 148 C46 122 54 84 76 62 C98 40 138 38 158 58 C162 62 160 70 154 68 C136 56 104 60 86 80 C68 100 66 138 76 160 C80 172 68 174 64 164 Z" fill="#D4B06A"/>
+  <path d="M80 78 C102 58 138 58 154 68" stroke="#E8C87A" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M156 58 C160 54 166 54 166 62 C166 68 160 70 156 68 Z" fill="#C9897A"/>
+  <path d="M52 148 C46 162 44 174 52 176 C60 178 64 166 64 156 Z" fill="#C9897A"/>
+</svg>

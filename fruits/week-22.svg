@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Espiga de Milho (Corn with Husk) -->
+  <defs>
+    <clipPath id="clip22">
+      <ellipse cx="100" cy="118" rx="32" ry="56"/>
+    </clipPath>
+  </defs>
+  <path d="M76 72 Q40 84 32 116 Q54 124 78 104 Z" fill="#5B7A4E"/>
+  <path d="M76 96 Q36 108 30 140 Q56 146 80 122 Z" fill="#7A9E6A"/>
+  <path d="M124 72 Q160 84 168 116 Q146 124 122 104 Z" fill="#5B7A4E"/>
+  <path d="M124 96 Q164 108 170 140 Q144 146 120 122 Z" fill="#7A9E6A"/>
+  <ellipse cx="100" cy="118" rx="32" ry="56" fill="#D4B06A"/>
+  <g clip-path="url(#clip22)">
+    <line x1="80" y1="62" x2="80" y2="174" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="90" y1="62" x2="90" y2="174" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="100" y1="62" x2="100" y2="174" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="110" y1="62" x2="110" y2="174" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="120" y1="62" x2="120" y2="174" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="78" x2="132" y2="78" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="92" x2="132" y2="92" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="106" x2="132" y2="106" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="120" x2="132" y2="120" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="134" x2="132" y2="134" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="148" x2="132" y2="148" stroke="#BF9A50" stroke-width="1.5"/>
+    <line x1="68" y1="162" x2="132" y2="162" stroke="#BF9A50" stroke-width="1.5"/>
+  </g>
+  <path d="M94 62 Q88 42 84 30" stroke="#E8C5BC" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M100 62 Q100 40 100 28" stroke="#E8C5BC" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M106 62 Q112 42 116 30" stroke="#E8C5BC" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

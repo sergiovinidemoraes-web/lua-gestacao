@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Couve-flor (Cauliflower) -->
+  <path d="M60 136 Q36 124 32 100 Q58 108 66 124 Z" fill="#5B7A4E"/>
+  <path d="M140 136 Q164 124 168 100 Q142 108 134 124 Z" fill="#5B7A4E"/>
+  <path d="M72 148 Q46 140 40 116 Q68 122 74 140 Z" fill="#7A9E6A"/>
+  <path d="M128 148 Q154 140 160 116 Q132 122 126 140 Z" fill="#7A9E6A"/>
+  <path d="M84 156 Q68 150 64 132 Q86 136 88 152 Z" fill="#A3C47E"/>
+  <path d="M116 156 Q132 150 136 132 Q114 136 112 152 Z" fill="#A3C47E"/>
+  <ellipse cx="100" cy="148" rx="50" ry="14" fill="#D4C8B0"/>
+  <circle cx="100" cy="108" r="58" fill="#E8C5BC"/>
+  <circle cx="70" cy="90" r="30" fill="#EDD8D0"/>
+  <circle cx="130" cy="90" r="30" fill="#EDD8D0"/>
+  <circle cx="100" cy="70" r="34" fill="#EDD8D0"/>
+  <circle cx="80" cy="112" r="26" fill="#E8C5BC"/>
+  <circle cx="120" cy="112" r="26" fill="#E8C5BC"/>
+  <circle cx="57" cy="108" r="22" fill="#DDB8AE"/>
+  <circle cx="143" cy="108" r="22" fill="#DDB8AE"/>
+  <circle cx="100" cy="100" r="28" fill="#F0DDD6"/>
+  <circle cx="84" cy="76" r="20" fill="#F0DDD6"/>
+  <circle cx="116" cy="76" r="20" fill="#F0DDD6"/>
+  <circle cx="100" cy="62" r="22" fill="#F0DDD6"/>
+  <circle cx="68" cy="96" r="16" fill="#EDD8D0"/>
+  <circle cx="132" cy="96" r="16" fill="#EDD8D0"/>
+</svg>
