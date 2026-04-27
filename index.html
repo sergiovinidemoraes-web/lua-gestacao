@@ -7180,6 +7180,7 @@ async function carregarClientesDoula() {
         '<td style="padding:14px;display:flex;gap:6px;">' +
         '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
         '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
+        '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
         '</td>' +
         '</tr>';
     }).join('');
@@ -7198,6 +7199,76 @@ async function carregarClientesDoula() {
       }).join('');
     }
   } catch(e) {}
+}
+
+function fecharPlanoDoula() {
+  var modal = document.getElementById('modal-plano-doula');
+  if (modal) modal.style.display = 'none';
+}
+
+async function verPlanoPartoGestante(gestanteId, gestanteNome) {
+  if (!db) return;
+  var modal = document.getElementById('modal-plano-doula');
+  var nomeEl = document.getElementById('modal-plano-doula-nome');
+  var contentEl = document.getElementById('modal-plano-doula-content');
+  if (!modal || !contentEl) return;
+
+  nomeEl.textContent = gestanteNome;
+  contentEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--earth-light);">Carregando...</div>';
+  modal.style.display = 'flex';
+
+  try {
+    var res = await db.from('usuarios').select('plano_parto_estado').eq('id', gestanteId).maybeSingle();
+
+    if (!res.data || !res.data.plano_parto_estado) {
+      contentEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--earth-light);">A gestante ainda não preencheu o plano de parto.</div>';
+      return;
+    }
+
+    var estado = res.data.plano_parto_estado;
+    var tipoParto = estado.tipoParto === 'cesariana' ? '🏥 Cesariana' : '🌸 Parto vaginal';
+
+    var checksNaoFarm = [], checksFarm = [], checksProc = [], checksEspec = [];
+    (estado.checks || []).forEach(function(key) {
+      var txt = t(key);
+      if (key.indexOf('plano.nf.') === 0) checksNaoFarm.push(txt);
+      else if (key.indexOf('plano.f.') === 0) checksFarm.push(txt);
+      else if (key.indexOf('plano.proc.') === 0) checksProc.push(txt);
+      else if (key.indexOf('plano.vag.') === 0 || key.indexOf('plano.ces.') === 0) checksEspec.push(txt);
+    });
+
+    var acompanhantes = [], posParto = [];
+    (estado.options || []).forEach(function(key) {
+      var txt = t(key);
+      if (key.indexOf('plano.acomp.') === 0) acompanhantes.push(txt);
+      else if (key.indexOf('plano.pos.') === 0) posParto.push(txt);
+    });
+
+    function secao(titulo, itens) {
+      if (!itens || !itens.length) return '';
+      return '<div style="margin-bottom:16px;">' +
+        '<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--rose);font-weight:600;margin-bottom:8px;">' + titulo + '</div>' +
+        itens.map(function(i){ return '<div style="font-size:13px;color:var(--dark);padding:4px 0 4px 14px;border-left:2px solid var(--rose-light);">✓ ' + i + '</div>'; }).join('') +
+        '</div>';
+    }
+
+    var html = '<div style="margin-bottom:16px;padding:12px 16px;background:var(--rose-pale);border-radius:12px;font-size:15px;font-weight:600;color:var(--dark);">' + tipoParto + '</div>';
+    html += secao('Alívio da Dor — Não farmacológico', checksNaoFarm);
+    html += secao('Alívio da Dor — Farmacológico', checksFarm);
+    html += secao('Acompanhantes', acompanhantes);
+    html += secao('Pós-Parto', posParto);
+    html += secao('Procedimentos Imediatos', checksProc);
+    var tituloEspec = estado.tipoParto === 'cesariana' ? 'Preferências — Cesariana' : 'Preferências — Parto Vaginal';
+    html += secao(tituloEspec, checksEspec);
+    if (estado.obs) {
+      html += '<div style="margin-bottom:16px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--rose);font-weight:600;margin-bottom:8px;">Observações</div>' +
+        '<div style="font-size:13px;color:var(--dark);background:var(--cream);border-radius:10px;padding:12px;line-height:1.6;">' + estado.obs.replace(/\n/g,'<br>') + '</div></div>';
+    }
+
+    contentEl.innerHTML = html;
+  } catch(e) {
+    contentEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--earth-light);">Erro ao carregar o plano.</div>';
+  }
 }
 
 async function carregarPerfilDoula() {
@@ -8581,6 +8652,16 @@ function mostrarToast(msg) {
 </div>
 
 
+<!-- MODAL PLANO DE PARTO (doula) -->
+<div id="modal-plano-doula" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:var(--white);border-radius:20px;padding:28px;max-width:500px;width:100%;margin:auto;position:relative;">
+    <button onclick="fecharPlanoDoula()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--earth-light);">✕</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--dark);margin-bottom:4px;">📋 Plano de Parto</div>
+    <div id="modal-plano-doula-nome" style="font-size:13px;color:var(--earth-light);margin-bottom:20px;"></div>
+    <div id="modal-plano-doula-content"></div>
+  </div>
+</div>
+
 <!-- Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
@@ -8719,7 +8800,9 @@ function salvarPlanoParto() {
     if (btn.getAttribute('data-i18n')) options.push(btn.getAttribute('data-i18n'));
   });
   var tipoParto = (document.getElementById('btn-tipo-cesariana') && document.getElementById('btn-tipo-cesariana').classList.contains('selected')) ? 'cesariana' : 'vaginal';
-  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, checks: checks, options: options } }).eq('id', currentUserId);
+  var obsEl = document.getElementById('plano-obs');
+  var obs = obsEl ? obsEl.value.trim() : '';
+  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, checks: checks, options: options, obs: obs } }).eq('id', currentUserId);
 }
 
 function carregarPlanoParto() {
@@ -8755,6 +8838,10 @@ function carregarPlanoParto() {
           btn.classList.add('selected');
         }
       });
+    }
+    if (estado.obs) {
+      var obsEl = document.getElementById('plano-obs');
+      if (obsEl) obsEl.value = estado.obs;
     }
   });
 }
