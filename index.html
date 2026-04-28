@@ -1564,7 +1564,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="phase-block-toggle">▼</div>
               </div>
               <div class="phase-block-body" id="content-gestante-inicio">
-                <div class="content-item guia-fixo" onclick="alert(t('content.coming.soon'))" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="mostrarToast(t('content.coming.soon'))" style="cursor:pointer;">
                   <div class="content-icon">📖</div>
                   <div><div class="content-label" data-i18n="dash.guide.weeks.label">Guia das primeiras semanas</div><div class="content-sub" data-i18n="dash.guide.weeks.sub">O que esperar do início da gestação</div></div>
                 </div>
@@ -1572,7 +1572,7 @@ tr:hover td { background:var(--rose-pale); }
                   <div class="content-icon">👶</div>
                   <div><div class="content-label" data-i18n="dash.guide.parents.label">Guia para pais de primeira viagem</div><div class="content-sub" data-i18n="dash.guide.parents.sub">Tudo o que um pai/parceiro precisa saber</div></div>
                 </div>
-                <div class="content-item guia-fixo" onclick="alert(t('content.coming.soon'))" style="cursor:pointer;">
+                <div class="content-item guia-fixo" onclick="mostrarToast(t('content.coming.soon'))" style="cursor:pointer;">
                   <div class="content-icon">🌙</div>
                   <div><div class="content-label" data-i18n="dash.guide.tri3.label">Guia do terceiro trimestre</div><div class="content-sub" data-i18n="dash.guide.tri3.sub">Preparação para o nascimento</div></div>
                 </div>
@@ -2053,19 +2053,19 @@ tr:hover td { background:var(--rose-pale); }
             <div class="form-section">
               <div class="card-title">➕ Nova Cliente — Cadastro & Anamnese</div>
               <div class="form-grid">
-                <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" type="text" placeholder="Nome da gestante"></div>
-                <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
-                <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input class="form-input" type="date"></div>
-                <div class="form-group"><label class="form-label">Semana gestacional atual</label><input class="form-input" type="number" placeholder="Ex: 18"></div>
-                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
-                <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input class="form-input" type="text" placeholder="Nome da instituição"></div>
-                <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
-                <div class="form-group"><label class="form-label">Histórico gestacional</label><select class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
+                <div class="form-group"><label class="form-label">Nome completo</label><input id="nc-nome" class="form-input" type="text" placeholder="Nome da gestante"></div>
+                <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input id="nc-tel" class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
+                <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date"></div>
+                <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Ex: 18"></div>
+                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
+                <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
+                <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
+                <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="nc-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
               </div>
-              <div class="form-group"><label class="form-label">Estado emocional atual</label><textarea class="form-input form-textarea" placeholder="Descreva como a gestante está emocionalmente, medos, expectativas..."></textarea></div>
-              <div class="form-group"><label class="form-label">Observações gerais</label><textarea class="form-input form-textarea" placeholder="Alergias, condições de saúde, preferências especiais..."></textarea></div>
+              <div class="form-group"><label class="form-label">Estado emocional atual</label><textarea id="nc-emocional" class="form-input form-textarea" placeholder="Descreva como a gestante está emocionalmente, medos, expectativas..."></textarea></div>
+              <div class="form-group"><label class="form-label">Observações gerais</label><textarea id="nc-obs" class="form-input form-textarea" placeholder="Alergias, condições de saúde, preferências especiais..."></textarea></div>
               <div style="display:flex;gap:12px;">
-                <button class="btn-primary" onclick="alert('Cliente cadastrada com sucesso! 💛');document.getElementById('nova-cliente-form').style.display='none'">Cadastrar cliente</button>
+                <button class="btn-primary" onclick="cadastrarCliente()">Cadastrar cliente</button>
                 <button class="btn-secondary" onclick="document.getElementById('nova-cliente-form').style.display='none'">Cancelar</button>
               </div>
             </div>
@@ -2118,11 +2118,11 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" data-i18n="doula.agenda.new">➕ Novo agendamento</div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input class="form-input" type="datetime-local"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input id="ag-data-hora" class="form-input" type="datetime-local"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
             </div>
-            <button class="btn-primary" onclick="alert('Consulta agendada! 📅')" data-i18n="doula.agenda.schedule">Agendar</button>
+            <button class="btn-primary" onclick="agendarConsulta()" data-i18n="doula.agenda.schedule">Agendar</button>
           </div>
 
           <div id="agenda-semana" class="agenda-grid">
@@ -2143,12 +2143,12 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" data-i18n="doula.records.new">➕ Novo registro</div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-registros" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.records.date">Data</label><input class="form-input" type="date"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.records.type.labor">Acompanhamento do parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option></select></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.records.date">Data</label><input id="reg-data" class="form-input" type="date"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="reg-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.records.type.labor">Acompanhamento do parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option></select></div>
             </div>
-            <div class="form-group"><label class="form-label" data-i18n="doula.records.notes">Anotações da consulta</label><textarea class="form-input form-textarea" data-i18n-ph="doula.records.notes.ph" placeholder="Descreva o que foi abordado, como a gestante estava, o que foi feito..."></textarea></div>
-            <div class="form-group"><label class="form-label" data-i18n="doula.records.progress">Evolução / Próximos passos</label><textarea class="form-input form-textarea" data-i18n-ph="doula.records.progress.ph" placeholder="Como está a evolução da gestante e o que fazer na próxima consulta..."></textarea></div>
-            <button class="btn-primary" onclick="alert('Registro salvo! 📝')" data-i18n="doula.records.save">Salvar registro</button>
+            <div class="form-group"><label class="form-label" data-i18n="doula.records.notes">Anotações da consulta</label><textarea id="reg-anotacoes" class="form-input form-textarea" data-i18n-ph="doula.records.notes.ph" placeholder="Descreva o que foi abordado, como a gestante estava, o que foi feito..."></textarea></div>
+            <div class="form-group"><label class="form-label" data-i18n="doula.records.progress">Evolução / Próximos passos</label><textarea id="reg-evolucao" class="form-input form-textarea" data-i18n-ph="doula.records.progress.ph" placeholder="Como está a evolução da gestante e o que fazer na próxima consulta..."></textarea></div>
+            <button class="btn-primary" onclick="salvarRegistro()" data-i18n="doula.records.save">Salvar registro</button>
           </div>
 
           <div id="atendimentos-lista">
@@ -2169,16 +2169,16 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" data-i18n="doula.postpartum.new">➕ Novo registro pós-parto</div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-posparto" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.visit.date">Data da visita</label><input class="form-input" type="date"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.days">Dias pós-parto</label><input class="form-input" type="number" data-i18n-ph="doula.postpartum.days.ph" placeholder="Ex: 3"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.visit.date">Data da visita</label><input id="pp-data" class="form-input" type="date"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.days">Dias pós-parto</label><input id="pp-dias" class="form-input" type="number" data-i18n-ph="doula.postpartum.days.ph" placeholder="Ex: 3"></div>
             </div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.breastfeeding">Amamentação</label><textarea class="form-input form-textarea" data-i18n-ph="doula.postpartum.breastfeeding.ph" placeholder="Pega, produção, dificuldades..."></textarea></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.recovery">Recuperação materna</label><textarea class="form-input form-textarea" data-i18n-ph="doula.postpartum.recovery.ph" placeholder="Estado físico e emocional..."></textarea></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.baby">Observações do bebê</label><textarea class="form-input form-textarea" data-i18n-ph="doula.postpartum.baby.ph" placeholder="Peso, sono, cólicas..."></textarea></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.records.progress">Evolução / Próximos passos</label><textarea class="form-input form-textarea" data-i18n-ph="doula.postpartum.progress.ph" placeholder="O que observar e fazer..."></textarea></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.breastfeeding">Amamentação</label><textarea id="pp-amamentacao" class="form-input form-textarea" data-i18n-ph="doula.postpartum.breastfeeding.ph" placeholder="Pega, produção, dificuldades..."></textarea></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.recovery">Recuperação materna</label><textarea id="pp-recuperacao" class="form-input form-textarea" data-i18n-ph="doula.postpartum.recovery.ph" placeholder="Estado físico e emocional..."></textarea></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.postpartum.baby">Observações do bebê</label><textarea id="pp-bebe" class="form-input form-textarea" data-i18n-ph="doula.postpartum.baby.ph" placeholder="Peso, sono, cólicas..."></textarea></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.records.progress">Evolução / Próximos passos</label><textarea id="pp-evolucao" class="form-input form-textarea" data-i18n-ph="doula.postpartum.progress.ph" placeholder="O que observar e fazer..."></textarea></div>
             </div>
-            <button class="btn-primary" onclick="alert('Registro salvo! 👶')" data-i18n="doula.postpartum.save">Salvar</button>
+            <button class="btn-primary" onclick="salvarPosParto()" data-i18n="doula.postpartum.save">Salvar</button>
           </div>
 
           <div id="posparto-lista">
@@ -2221,7 +2221,7 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="card" style="margin-top:24px;">
             <div class="card-title" data-i18n="doula.lib.upload.title">📤 Adicionar novo material</div>
-            <div class="upload-area" onclick="alert('Upload de arquivo')">
+            <div class="upload-area" onclick="mostrarToast('Em desenvolvimento 🔧')">
               <div class="upload-icon"></div>
               <div class="upload-text" data-i18n="doula.lib.upload.text">Clique para fazer upload de PDF, vídeo ou apresentação</div>
             </div>
@@ -2270,14 +2270,18 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" data-i18n="doula.fin.new">➕ Novo contrato</div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-financeiro" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.fin.value">Valor total do serviço</label><input class="form-input" type="text" placeholder="R$ 0,00"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.fin.installments">Número de parcelas</label><input class="form-input" type="number" data-i18n-ph="doula.fin.installments.ph" placeholder="Ex: 3"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.fin.status">Status</label><select class="form-input form-select"><option data-i18n="doula.fin.status.pending">Pendente</option><option data-i18n="doula.fin.status.partial">Parcialmente pago</option><option data-i18n="doula.fin.status.paid">Pago</option></select></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.fin.value">Valor total do serviço</label><input id="fin-valor" class="form-input" type="text" placeholder="R$ 0,00"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.fin.installments">Número de parcelas</label><input id="fin-parcelas" class="form-input" type="number" data-i18n-ph="doula.fin.installments.ph" placeholder="Ex: 3"></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.fin.status">Status</label><select id="fin-status" class="form-input form-select"><option data-i18n="doula.fin.status.pending">Pendente</option><option data-i18n="doula.fin.status.partial">Parcialmente pago</option><option data-i18n="doula.fin.status.paid">Pago</option></select></div>
             </div>
             <div class="form-group"><label class="form-label" data-i18n="doula.fin.contract">Contrato (PDF)</label>
-              <div class="upload-area" onclick="alert('Upload do contrato')"><div class="upload-icon">📄</div><div class="upload-text" data-i18n="doula.fin.upload.text">Clique para fazer upload do contrato assinado</div></div>
+              <div class="upload-area" id="fin-upload-area" onclick="document.getElementById('fin-contrato-file').click()" style="cursor:pointer;">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text" id="fin-upload-text" data-i18n="doula.fin.upload.text">Clique para fazer upload do contrato assinado</div>
+              </div>
+              <input type="file" id="fin-contrato-file" accept=".pdf,.doc,.docx,image/*" style="display:none" onchange="selecionarContrato(this)">
             </div>
-            <button class="btn-primary" onclick="alert('Contrato salvo! 💰')" data-i18n="doula.fin.save">Salvar contrato</button>
+            <button class="btn-primary" onclick="salvarContrato()" data-i18n="doula.fin.save">Salvar contrato</button>
           </div>
 
           <div class="clients-table">
@@ -4530,24 +4534,38 @@ function gerarPDFPlanoParto(enviarEmail) {
     doc.text('Lua Gestação · ' + nomeGestante + ' · ' + new Date().toLocaleDateString('pt-BR') + '  —  Página ' + p + ' de ' + totalPages, margin, 292);
   }
 
-  // Download
   var nomeArquivo = 'PlanoDePartoLua_' + nomeGestante.replace(/\s+/g,'_') + '.pdf';
-  doc.save(nomeArquivo);
 
-  // Abrir e-mail
   if (enviarEmail && emailDoula) {
-    var assunto = encodeURIComponent('Plano de Parto — ' + nomeGestante);
-    var corpo = encodeURIComponent(
-      'Olá!\n\nSegue em anexo meu Plano de Parto gerado pelo app Lua Gestação.\n\n' +
-      '— Gestante: ' + nomeGestante + '\n' +
-      (dppDisplay ? '— DPP: ' + dppDisplay + '\n' : '') +
-      (contato ? '— Contato: ' + contato + '\n' : '') +
-      '\nO arquivo PDF foi baixado automaticamente — por favor, verifique sua pasta de Downloads e anexe-o a este e-mail antes de enviar.\n\n' +
-      'Com carinho 💛\n' + nomeGestante
-    );
-    setTimeout(function(){ window.location.href = 'mailto:' + emailDoula + '?subject=' + assunto + '&body=' + corpo; }, 800);
-    mostrarToast('PDF baixado! Seu e-mail foi aberto — anexe o arquivo e envie 💛');
+    mostrarToast('Enviando e-mail para a doula... 📧');
+    var pdfBase64 = doc.output('datauristring').split(',')[1];
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: emailDoula,
+        nomeGestante: nomeGestante,
+        dppDisplay: dppDisplay,
+        contato: contato,
+        pdfBase64: pdfBase64,
+        filename: nomeArquivo
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.ok) {
+        mostrarToast('E-mail enviado com sucesso para a doula! 💛');
+        doc.save(nomeArquivo);
+      } else {
+        mostrarToast('Erro ao enviar: ' + (data.error || 'tente novamente'));
+      }
+    })
+    .catch(function(){
+      mostrarToast('Falha na conexão. Baixando o PDF para envio manual.');
+      doc.save(nomeArquivo);
+    });
   } else {
+    doc.save(nomeArquivo);
     mostrarToast('PDF baixado com sucesso! 💛');
   }
 }
@@ -7137,17 +7155,23 @@ function ligarDoula() {
 }
 
 // ── Carrega clientes da DOULA ──
-function populateClienteSelects(clientes) {
+function populateClienteSelects(solicitacoes, externos) {
   var ids = ['select-cliente-agenda','select-cliente-registros','select-cliente-posparto','select-cliente-financeiro'];
   ids.forEach(function(id) {
     var sel = document.getElementById(id);
     if (!sel) return;
     var current = sel.value;
     sel.innerHTML = '<option value="">' + t('doula.clients.select') + '</option>';
-    clientes.forEach(function(g) {
+    (solicitacoes || []).forEach(function(g) {
       var opt = document.createElement('option');
-      opt.value = g.gestante_id;
+      opt.value = 'sol|' + g.gestante_id;
       opt.textContent = g.gestante_nome;
+      sel.appendChild(opt);
+    });
+    (externos || []).forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = 'ext|' + c.id;
+      opt.textContent = c.nome;
       sel.appendChild(opt);
     });
     if (current) sel.value = current;
@@ -7159,45 +7183,349 @@ async function carregarClientesDoula() {
   var tbody = document.getElementById('clientes-tbody');
   if (!tbody) return;
   try {
-    var res = await db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentUserId).eq('status', 'aceita');
-    if (res.error || !res.data || !res.data.length) {
+    var results = await Promise.all([
+      db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentUserId).eq('status', 'aceita'),
+      db.from('clientes_doula').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false })
+    ]);
+    var solicitacoes = results[0].data || [];
+    var externos = results[1].data || [];
+    populateClienteSelects(solicitacoes, externos);
+    var total = solicitacoes.length + externos.length;
+    var statEl = document.getElementById('stat-clientes');
+    if (statEl) statEl.textContent = total;
+    if (!total) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">' + t('doula.clients.empty') + '</div><div style="font-size:13px;color:var(--earth-light);">' + t('doula.clients.empty.sub') + '</div></td></tr>';
-      document.getElementById('stat-clientes').textContent = '0';
-      populateClienteSelects([]);
-      return;
+    } else {
+      var linhasSol = solicitacoes.map(function(g) {
+        var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
+        var nome = (g.gestante_nome||'').replace(/'/g,'');
+        return '<tr>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.gestante_nome + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
+          '<td style="padding:14px;display:flex;gap:6px;">' +
+          '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
+          '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
+          '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
+          '</td></tr>';
+      });
+      var linhasExt = externos.map(function(c) {
+        var dppStr = c.dpp ? new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        var semStr = c.semanas_gestacional ? c.semanas_gestacional + ' sem' : '—';
+        return '<tr>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span></td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (c.hospital || '—') + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td></tr>';
+      });
+      tbody.innerHTML = linhasSol.concat(linhasExt).join('');
     }
-    populateClienteSelects(res.data);
-    document.getElementById('stat-clientes').textContent = res.data.length;
-    tbody.innerHTML = res.data.map(function(g) {
-      var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
-      return '<tr>' +
-        '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.gestante_nome + '</td>' +
-        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
-        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
-        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
-        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
-        '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-        '<td style="padding:14px;display:flex;gap:6px;">' +
-        '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
-        '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
-        '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
-        '</td>' +
-        '</tr>';
-    }).join('');
-    // Preenche sidebar de clientes ativas
     var sidebarList = document.getElementById('sidebar-clientes-list');
     if (sidebarList) {
-      sidebarList.innerHTML = res.data.map(function(g) {
-        var inicial = (g.gestante_nome || '?')[0].toUpperCase();
+      var todosSidebar = solicitacoes.map(function(g) { return { nome: g.gestante_nome, tipo: 'sol', id: g.gestante_id }; })
+        .concat(externos.map(function(c) { return { nome: c.nome, tipo: 'ext', id: c.id }; }));
+      sidebarList.innerHTML = todosSidebar.map(function(g) {
+        var inicial = (g.nome || '?')[0].toUpperCase();
         var cores = ['#C9897A','#8A9E8C','#C9A96E','#7A6455'];
-        var cor = cores[g.gestante_nome ? g.gestante_nome.charCodeAt(0) % cores.length : 0];
-        return '<div class="d-client-item" onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + (g.gestante_nome||'').replace(/'/g,'') + '\')">' +
+        var cor = cores[g.nome ? g.nome.charCodeAt(0) % cores.length : 0];
+        var clique = g.tipo === 'sol' ? 'abrirChatComGestante(\'' + g.id + '\',\'' + g.nome.replace(/'/g,'') + '\')' : 'mostrarToast(\'' + g.nome.replace(/'/g,'') + '\')';
+        return '<div class="d-client-item" onclick="' + clique + '">' +
           '<div class="d-client-avatar" style="background:' + cor + ';">' + inicial + '</div>' +
-          '<div><div style="font-size:13px;color:rgba(255,255,255,0.85);font-weight:500;">' + g.gestante_nome + '</div>' +
-          '<div style="font-size:11px;color:rgba(255,255,255,0.35);">' + t('doula.client.active') + '</div></div>' +
-          '</div>';
+          '<div><div style="font-size:13px;color:rgba(255,255,255,0.85);font-weight:500;">' + g.nome + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (g.tipo === 'ext' ? 'cadastro externo' : t('doula.client.active')) + '</div></div></div>';
       }).join('');
     }
+    carregarAgenda();
+    carregarRegistros();
+    carregarPosParto();
+    carregarContratos();
+  } catch(e) {}
+}
+
+async function cadastrarCliente() {
+  if (!db || !currentUserId) return;
+  var nome = (document.getElementById('nc-nome').value || '').trim();
+  if (!nome) { mostrarToast('Informe o nome da gestante'); return; }
+  var dpp = document.getElementById('nc-dpp').value || null;
+  var semanas = parseInt(document.getElementById('nc-semanas').value) || null;
+  if (!dpp && semanas) {
+    var diasRestantes = (40 - semanas) * 7;
+    var dataDpp = new Date(Date.now() + diasRestantes * 86400000);
+    dpp = dataDpp.toISOString().split('T')[0];
+  }
+  var payload = {
+    doula_id: currentUserId,
+    nome: nome,
+    telefone: document.getElementById('nc-tel').value || null,
+    dpp: dpp,
+    semanas_gestacional: semanas,
+    tipo_parto: document.getElementById('nc-tipo-parto').value || null,
+    hospital: document.getElementById('nc-hospital').value || null,
+    medico: document.getElementById('nc-medico').value || null,
+    historico_gestacional: document.getElementById('nc-historico').value || null,
+    estado_emocional: document.getElementById('nc-emocional').value || null,
+    observacoes: document.getElementById('nc-obs').value || null
+  };
+  try {
+    var res = await db.from('clientes_doula').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Cliente cadastrada! 💛');
+    ['nc-nome','nc-tel','nc-semanas','nc-hospital','nc-medico','nc-emocional','nc-obs'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('nc-dpp').value = '';
+    document.getElementById('nova-cliente-form').style.display = 'none';
+    carregarClientesDoula();
+  } catch(e) { mostrarToast('Erro ao cadastrar: ' + e.message); }
+}
+
+async function agendarConsulta() {
+  if (!db || !currentUserId) return;
+  var clienteEl = document.getElementById('select-cliente-agenda');
+  if (!clienteEl.value) { mostrarToast('Selecione uma cliente'); return; }
+  var dataHora = document.getElementById('ag-data-hora').value;
+  if (!dataHora) { mostrarToast('Informe a data e hora'); return; }
+  var partes = clienteEl.value.split('|');
+  var nomeCliente = clienteEl.selectedOptions[0].textContent;
+  var payload = {
+    doula_id: currentUserId,
+    cliente_nome: nomeCliente,
+    cliente_externo_id: partes[0] === 'ext' ? partes[1] : null,
+    gestante_id: partes[0] === 'sol' ? partes[1] : null,
+    data_hora: new Date(dataHora).toISOString(),
+    tipo: document.getElementById('ag-tipo').value,
+    observacoes: document.getElementById('ag-obs').value || null
+  };
+  try {
+    var res = await db.from('consultas_doula').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Consulta agendada! 📅');
+    document.getElementById('ag-data-hora').value = '';
+    document.getElementById('ag-obs').value = '';
+    clienteEl.value = '';
+    carregarAgenda();
+  } catch(e) { mostrarToast('Erro ao agendar: ' + e.message); }
+}
+
+async function carregarAgenda() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('agenda-semana');
+  if (!container) return;
+  try {
+    var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).order('data_hora', { ascending: true });
+    if (res.error || !res.data || !res.data.length) {
+      container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📅</div><div class="empty-title">Agenda vazia</div><div class="empty-sub">Use o formulário acima para agendar suas consultas</div></div>';
+      return;
+    }
+    container.innerHTML = res.data.map(function(c) {
+      var dt = new Date(c.data_hora);
+      var dataStr = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+      var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
+          '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
+          '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
+          (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
+          '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function salvarRegistro() {
+  if (!db || !currentUserId) return;
+  var clienteEl = document.getElementById('select-cliente-registros');
+  if (!clienteEl.value) { mostrarToast('Selecione uma cliente'); return; }
+  var partes = clienteEl.value.split('|');
+  var nomeCliente = clienteEl.selectedOptions[0].textContent;
+  var payload = {
+    doula_id: currentUserId,
+    cliente_nome: nomeCliente,
+    cliente_externo_id: partes[0] === 'ext' ? partes[1] : null,
+    gestante_id: partes[0] === 'sol' ? partes[1] : null,
+    data: document.getElementById('reg-data').value || null,
+    tipo: document.getElementById('reg-tipo').value,
+    anotacoes: document.getElementById('reg-anotacoes').value || null,
+    evolucao: document.getElementById('reg-evolucao').value || null
+  };
+  try {
+    var res = await db.from('registros_atendimento').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Registro salvo! 📝');
+    ['reg-data','reg-anotacoes','reg-evolucao'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    clienteEl.value = '';
+    carregarRegistros();
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+async function carregarRegistros() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('atendimentos-lista');
+  if (!container) return;
+  try {
+    var res = await db.from('registros_atendimento').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
+    if (res.error || !res.data || !res.data.length) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">Nenhum atendimento registrado</div><div class="empty-sub">Use o formulário acima para registrar suas consultas</div></div>';
+      return;
+    }
+    container.innerHTML = res.data.map(function(r) {
+      var dataStr = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
+          '<div style="font-size:14px;font-weight:600;color:var(--dark);">' + r.cliente_nome + '</div>' +
+          '<div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+        '<div style="font-size:12px;color:var(--rose);margin-bottom:6px;">' + (r.tipo || '') + '</div>' +
+        (r.anotacoes ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
+        (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;">' + r.evolucao + '</div>' : '') +
+      '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function salvarPosParto() {
+  if (!db || !currentUserId) return;
+  var clienteEl = document.getElementById('select-cliente-posparto');
+  if (!clienteEl.value) { mostrarToast('Selecione uma cliente'); return; }
+  var partes = clienteEl.value.split('|');
+  var nomeCliente = clienteEl.selectedOptions[0].textContent;
+  var payload = {
+    doula_id: currentUserId,
+    cliente_nome: nomeCliente,
+    cliente_externo_id: partes[0] === 'ext' ? partes[1] : null,
+    gestante_id: partes[0] === 'sol' ? partes[1] : null,
+    data_visita: document.getElementById('pp-data').value || null,
+    dias_posparto: parseInt(document.getElementById('pp-dias').value) || null,
+    amamentacao: document.getElementById('pp-amamentacao').value || null,
+    recuperacao: document.getElementById('pp-recuperacao').value || null,
+    observacoes_bebe: document.getElementById('pp-bebe').value || null,
+    evolucao: document.getElementById('pp-evolucao').value || null
+  };
+  try {
+    var res = await db.from('registros_posparto').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Registro salvo! 👶');
+    ['pp-data','pp-dias','pp-amamentacao','pp-recuperacao','pp-bebe','pp-evolucao'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    clienteEl.value = '';
+    carregarPosParto();
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+async function carregarPosParto() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('posparto-lista');
+  if (!container) return;
+  try {
+    var res = await db.from('registros_posparto').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
+    if (res.error || !res.data || !res.data.length) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">👶</div><div class="empty-title">Nenhum registro pós-parto</div><div class="empty-sub">Os registros aparecerão aqui após o parto das suas clientes</div></div>';
+      return;
+    }
+    container.innerHTML = res.data.map(function(r) {
+      var dataStr = r.data_visita ? new Date(r.data_visita + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
+          '<div style="font-size:14px;font-weight:600;color:var(--dark);">' + r.cliente_nome + '</div>' +
+          '<div style="font-size:12px;color:var(--earth-light);">' + dataStr + (r.dias_posparto ? ' — ' + r.dias_posparto + 'º dia' : '') + '</div></div>' +
+        (r.amamentacao ? '<div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><b>Amamentação:</b> ' + r.amamentacao + '</div>' : '') +
+        (r.recuperacao ? '<div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><b>Recuperação:</b> ' + r.recuperacao + '</div>' : '') +
+        (r.observacoes_bebe ? '<div style="font-size:13px;color:var(--mid);margin-bottom:4px;"><b>Bebê:</b> ' + r.observacoes_bebe + '</div>' : '') +
+        (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;">' + r.evolucao + '</div>' : '') +
+      '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+function selecionarContrato(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var txt = document.getElementById('fin-upload-text');
+  var area = document.getElementById('fin-upload-area');
+  if (txt) txt.textContent = '✓ ' + file.name;
+  if (area) area.style.borderColor = 'var(--sage)';
+}
+
+async function salvarContrato() {
+  if (!db || !currentUserId) return;
+  var clienteEl = document.getElementById('select-cliente-financeiro');
+  if (!clienteEl.value) { mostrarToast('Selecione uma cliente'); return; }
+  var valor = (document.getElementById('fin-valor').value || '').trim();
+  if (!valor) { mostrarToast('Informe o valor do serviço'); return; }
+  var partes = clienteEl.value.split('|');
+  var nomeCliente = clienteEl.selectedOptions[0].textContent;
+  var statusEl = document.getElementById('fin-status');
+  var contratoUrl = null;
+  var fileInput = document.getElementById('fin-contrato-file');
+  if (fileInput && fileInput.files[0]) {
+    var file = fileInput.files[0];
+    var ext = file.name.split('.').pop();
+    var path = currentUserId + '/' + Date.now() + '.' + ext;
+    mostrarToast('Enviando arquivo...');
+    var up = await db.storage.from('contratos').upload(path, file);
+    if (up.error) { mostrarToast('Erro no upload: ' + up.error.message); return; }
+    contratoUrl = db.storage.from('contratos').getPublicUrl(path).data.publicUrl;
+  }
+  var payload = {
+    doula_id: currentUserId,
+    cliente_nome: nomeCliente,
+    cliente_externo_id: partes[0] === 'ext' ? partes[1] : null,
+    gestante_id: partes[0] === 'sol' ? partes[1] : null,
+    valor: valor,
+    parcelas: parseInt(document.getElementById('fin-parcelas').value) || null,
+    status: statusEl ? statusEl.selectedOptions[0].textContent : 'Pendente',
+    contrato_url: contratoUrl
+  };
+  try {
+    var res = await db.from('contratos_doula').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Contrato salvo! 💰');
+    ['fin-valor','fin-parcelas'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    clienteEl.value = '';
+    if (fileInput) fileInput.value = '';
+    var txt = document.getElementById('fin-upload-text');
+    var area = document.getElementById('fin-upload-area');
+    if (txt) { txt.setAttribute('data-i18n','doula.fin.upload.text'); txt.textContent = t('doula.fin.upload.text'); }
+    if (area) area.style.borderColor = '';
+    carregarContratos();
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+async function carregarContratos() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('contratos-lista');
+  if (!container) return;
+  try {
+    var res = await db.from('contratos_doula').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
+    var recebido = 0, pendente = 0;
+    if (res.error || !res.data || !res.data.length) {
+      container.innerHTML = '<div class="empty-state-small">Nenhum contrato cadastrado ainda</div>';
+    } else {
+      res.data.forEach(function(c) {
+        var v = parseFloat((c.valor || '0').replace(/[^\d,]/g,'').replace(',','.')) || 0;
+        if ((c.status || '').toLowerCase().includes('pago')) recebido += v; else pendente += v;
+      });
+      container.innerHTML = res.data.map(function(c) {
+        var dataStr = new Date(c.criado_em).toLocaleDateString('pt-BR');
+        var statusColor = (c.status||'').toLowerCase().includes('pago') ? 'var(--sage)' : (c.status||'').toLowerCase().includes('parcial') ? 'var(--alert)' : 'var(--earth-light)';
+        var linkContrato = c.contrato_url ? '<a href="' + c.contrato_url + '" target="_blank" style="font-size:11px;color:var(--rose);text-decoration:none;">📄 Ver contrato</a>' : '';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
+          '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + (c.parcelas ? ' · ' + c.parcelas + 'x' : '') + '</div>' +
+          (linkContrato ? '<div style="margin-top:4px;">' + linkContrato + '</div>' : '') + '</div>' +
+          '<div style="text-align:right;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.valor + '</div>' +
+          '<div style="font-size:11px;color:' + statusColor + ';">' + (c.status || '—') + '</div></div></div>';
+      }).join('');
+    }
+    var fmt = function(v) { return 'R$ ' + v.toFixed(2).replace('.',','); };
+    var elR = document.getElementById('fin-recebido'); if (elR) elR.textContent = fmt(recebido);
+    var elP = document.getElementById('fin-pendente'); if (elP) elP.textContent = fmt(pendente);
+    var elT = document.getElementById('fin-total'); if (elT) elT.textContent = fmt(recebido + pendente);
   } catch(e) {}
 }
 
