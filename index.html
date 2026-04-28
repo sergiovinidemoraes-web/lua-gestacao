@@ -5891,7 +5891,7 @@ async function carregarBackupDoula() {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script>
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
@@ -9335,7 +9335,7 @@ function _twUrl(emoji) {
     if (code !== 0xFE0F) cp.push(code.toString(16));
     i += code > 0xFFFF ? 2 : 1;
   }
-  return 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/' + cp.join('-') + '.svg';
+  return 'https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/svg/' + cp.join('-') + '.svg';
 }
 
 function atualizarVisualBebe(semana) {
