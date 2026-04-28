@@ -6053,6 +6053,12 @@ async function carregarUsuario(user) {
   currentEmail = user.email || '';
   try {
     var res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
+    if (!res.data) {
+      var tipoMeta = (user.user_metadata && user.user_metadata.tipo) || 'gestante';
+      var nomeMeta = (user.user_metadata && user.user_metadata.nome) || user.email;
+      try { await db.from('usuarios').insert({ id: user.id, nome: nomeMeta, email: user.email || '', tipo: tipoMeta }); } catch(e2) {}
+      res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
+    }
     var tipo = res.data ? res.data.tipo : ((user.user_metadata && user.user_metadata.tipo) || 'gestante');
     var nome = res.data ? res.data.nome : ((user.user_metadata && user.user_metadata.nome) || user.email);
     if (res.data) currentDoulaId = res.data.doula_id || null;
