@@ -1,9 +1,11 @@
-const CACHE_NAME = 'lua-cache-v1';
+const CACHE_NAME = 'lua-cache-v3';
+const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/offline.html',
   '/icons/icon-72x72.png',
   '/icons/icon-96x96.png',
   '/icons/icon-128x128.png',
@@ -14,7 +16,6 @@ const STATIC_ASSETS = [
   '/icons/icon-512x512.png'
 ];
 
-// Install: pre-cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
@@ -22,7 +23,6 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -34,29 +34,41 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: cache-first for assets, network-first for API calls
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Network-first for API calls (Supabase, OpenAI, Vercel functions)
+  // Ignora extensões do Chrome e outros protocolos não-http
+  if (!url.protocol.startsWith('http')) return;
+
+  // Network-only para Supabase e APIs (nunca cachear dados dinâmicos)
   if (
     url.hostname.includes('supabase.co') ||
     url.pathname.startsWith('/api/')
   ) {
+    event.respondWith(fetch(request).catch(() => new Response('', { status: 503 })));
+    return;
+  }
+
+  // Navegação: network-first com fallback para offline.html
+  if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
-        .catch(() => caches.match(request))
+        .then((response) => {
+          const toCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
+          return response;
+        })
+        .catch(() => caches.match(OFFLINE_URL))
     );
     return;
   }
 
-  // Cache-first for everything else
+  // Assets estáticos: cache-first
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        // Only cache valid same-origin or CORS responses
         if (
           !response ||
           response.status !== 200 ||
@@ -67,7 +79,7 @@ self.addEventListener('fetch', (event) => {
         const toCache = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
         return response;
-      });
+      }).catch(() => caches.match(OFFLINE_URL));
     })
   );
 });

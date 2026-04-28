@@ -5,11 +5,13 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#2D1F1A",
   "theme_color": "#2D1F1A",
   "orientation": "portrait",
   "lang": "pt-BR",
-  "description": "Acompanhamento de gestação para doulas e gestantes",
+  "description": "Acompanhamento de gestação para doulas e gestantes. Contrações, plano de parto, diário e conexão com sua doula.",
+  "categories": ["health", "lifestyle", "medical"],
   "icons": [
     { "src": "icons/icon-72x72.png", "sizes": "72x72", "type": "image/png" },
     { "src": "icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" },
@@ -21,5 +23,44 @@
     { "src": "icons/icon-384x384.png", "sizes": "384x384", "type": "image/png" },
     { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot-mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard da gestante"
+    },
+    {
+      "src": "screenshots/screenshot-mobile-2.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Cronômetro de contrações"
+    },
+    {
+      "src": "screenshots/screenshot-desktop-1.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Painel da doula"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Contrações",
+      "short_name": "Contrações",
+      "description": "Iniciar cronômetro de contrações",
+      "url": "/?source=pwa#contracoes",
+      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Plano de Parto",
+      "short_name": "Plano",
+      "description": "Ver meu plano de parto",
+      "url": "/?source=pwa#plano",
+      "icons": [{ "src": "icons/icon-96x96.png", "sizes": "96x96" }]
+    }
   ]
 }
