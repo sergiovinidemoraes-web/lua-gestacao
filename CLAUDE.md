@@ -12,12 +12,36 @@ Sem build, sem bundler — abre direto no browser. Deploy via Vercel (conectado 
 - **admin** — painel oculto (`/admin`) para gerenciar usuários e conteúdos
 
 ### Tabelas Supabase
+
+**Originais:**
 | Tabela | Descrição |
 |---|---|
 | `usuarios` | Perfil do usuário. `id = auth.uid()`. Campos: `nome, email, tipo (gestante/doula), doula_id, whatsapp, cidade, especialidades, bio` |
 | `solicitacoes` | Vínculo gestante↔doula. Campos: `gestante_id, doula_id, gestante_nome, status (pendente/aceita/recusada), criado_em` |
 | `contracoes` | Histórico de contrações da gestante. Campos: `gestante_id, inicio, fim, duracao_ms, intervalo_ms` |
 | `biblioteca` | Materiais da doula (PDF, vídeo, link). Gerenciada pelo admin |
+
+**Criadas (existem no Supabase):**
+| Tabela | Campos principais |
+|---|---|
+| `clientes_doula` | `doula_id, nome, telefone, dpp, semanas_gestacional, tipo_parto, hospital, medico, historico_gestacional, estado_emocional, observacoes, criado_em` |
+| `consultas_doula` | `doula_id, cliente_nome, cliente_externo_id, gestante_id, data_hora, tipo, observacoes` |
+| `registros_atendimento` | `doula_id, cliente_nome, cliente_externo_id, gestante_id, data, tipo, anotacoes, evolucao, criado_em` |
+| `registros_posparto` | `doula_id, cliente_nome, cliente_externo_id, gestante_id, data_visita, dias_posparto, amamentacao, recuperacao, observacoes_bebe, evolucao, criado_em` |
+| `mensagens` | `gestante_id, doula_id, remetente_tipo, texto, criado_em` |
+| `reportes` | `gestante_id, gestante_nome, usuario_nome, tipo_usuario, mensagem_lua, descricao, lido, resposta, criado_em` |
+| `sessoes` | `user_id, tipo, inicio, fim, duracao_ms, nome, email` |
+| `convites_pai` | `gestante_id, codigo, usado` |
+| `diario_gestante` | `gestante_id, conteudo, humor, semana, criado_em` |
+| `diario_pai` | `pai_id, categoria, conteudo, humor, criado_em` |
+| `backup_doulas` | `doula_id, backup_email, perm_agenda, perm_chat, perm_registros` |
+
+**Também existem no Supabase:**
+| Tabela | Campos principais |
+|---|---|
+| `contratos_doula` | `doula_id, cliente_nome, cliente_externo_id, gestante_id, valor, parcelas, status, contrato_url, criado_em` |
+| `avaliacoes_doula` | `gestante_id, doula_id, gestante_nome, nota, tipo_parto, comentario, cidade, modalidade, data_parto, criado_em` |
+| `configuracoes` | `chave (PK), valor` — usada para `admin_senha` |
 
 ### FKs importantes
 - `solicitacoes.gestante_id` e `solicitacoes.doula_id` referenciam **`auth.users(id)`** (não `usuarios`) — gestante pode existir em auth sem ter linha em `usuarios`
