@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lua-cache-v3';
+const CACHE_NAME = 'lua-cache-v4';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -26,9 +26,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      )
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
@@ -38,48 +36,61 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Ignora extensões do Chrome e outros protocolos não-http
   if (!url.protocol.startsWith('http')) return;
 
-  // Network-only para Supabase e APIs (nunca cachear dados dinâmicos)
-  if (
-    url.hostname.includes('supabase.co') ||
-    url.pathname.startsWith('/api/')
-  ) {
-    event.respondWith(fetch(request).catch(() => new Response('', { status: 503 })));
-    return;
-  }
-
-  // Navegação: network-first com fallback para offline.html
-  if (request.mode === 'navigate') {
+  // Network-only: Supabase e APIs
+  if (url.hostname.includes('supabase.co') || url.pathname.startsWith('/api/')) {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const toCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
-          return response;
-        })
-        .catch(() => caches.match(OFFLINE_URL))
+      fetch(request).catch(() => new Response(JSON.stringify({ error: 'offline' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' }
+      }))
     );
     return;
   }
 
-  // Assets estáticos: cache-first
+  // Navegação: cache-first com fallback offline
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request)
+          .then((response) => {
+            const toCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
+            return response;
+          })
+          .catch(() => caches.match(OFFLINE_URL));
+      })
+    );
+    return;
+  }
+
+  // Assets: cache-first com fallback offline
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
-      return fetch(request).then((response) => {
-        if (
-          !response ||
-          response.status !== 200 ||
-          (response.type !== 'basic' && response.type !== 'cors')
-        ) {
+      return fetch(request)
+        .then((response) => {
+          if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+            return response;
+          }
+          const toCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
           return response;
-        }
-        const toCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, toCache));
-        return response;
-      }).catch(() => caches.match(OFFLINE_URL));
+        })
+        .catch(() => caches.match(OFFLINE_URL));
     })
   );
+});
+
+// Background Sync
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'lua-sync') {
+    event.waitUntil(
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) => client.postMessage({ type: 'SYNC_READY' }));
+      })
+    );
+  }
 });
