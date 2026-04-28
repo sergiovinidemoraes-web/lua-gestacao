@@ -8340,9 +8340,9 @@ function initMobileNav(tipo) {
   var nav = document.getElementById('mobile-bottom-nav');
   if (!nav) return;
   var role = tipo || currentRole;
-  // Menu já aparece via CSS (#app.visible .mobile-bottom-nav)
-  // Só precisa trocar conteúdo para doula
+  // Nav global só é usada para doula; gestante e pai têm suas próprias navs dentro da view
   if (role === 'doula') {
+    nav.style.display = 'block';
     nav.querySelector('.mobile-bottom-nav-inner').innerHTML = `
       <div class="mob-nav-item active" id="mob-d-dashboard" onclick="mobNavDoula('d-dashboard','mob-d-dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -8882,8 +8882,8 @@ function mostrarToast(msg) {
 </div>
 
 
-<!-- MOBILE BOTTOM NAV -->
-<div class="mobile-bottom-nav" id="mobile-bottom-nav">
+<!-- MOBILE BOTTOM NAV (usado só para doula via initMobileNav) -->
+<div class="mobile-bottom-nav" id="mobile-bottom-nav" style="display:none">
   <div class="mobile-bottom-nav-inner">
     <div class="mob-nav-item active" id="mob-inicio" onclick="mobNav('g-dashboard','mob-inicio')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
