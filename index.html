@@ -7009,6 +7009,7 @@ async function encerrarVinculo() {
     try {
       var sol = await db.from('solicitacoes').select('id').eq('gestante_id', currentUserId).in('status', ['aceita','pendente']).maybeSingle();
       if (sol.data) await db.from('solicitacoes').update({ status: 'encerrada' }).eq('id', sol.data.id);
+      try { await db.from('usuarios').update({ doula_id: null }).eq('id', currentUserId); } catch(e2) {}
       currentDoulaId = null;
       currentSolicitacaoPendente = null;
       chatDoulaId = null;
