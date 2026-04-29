@@ -1,6 +1,7 @@
 {
   "name": "Lua — Acompanhamento de Gestação",
-  "short_name": "Lua",
+  "version": "2",
+  "short_name": "Lua Materna",
   "id": "com.luagestacao.app",
   "start_url": "/",
   "scope": "/",
