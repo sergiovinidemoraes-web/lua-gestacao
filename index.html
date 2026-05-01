@@ -5931,7 +5931,9 @@ async function enviarReporte() {
     descricao: desc.value.trim(),
     lido: false
   };
-  if (db) { try { await db.from('reportes').insert(payload); } catch(e) { console.warn('Reporte:', e.message); } }
+  if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
+  var res = await db.from('reportes').insert(payload);
+  if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
   fecharModalReporte();
   mostrarToast('\u2691 Reporte enviado! Obrigada pelo feedback \ud83d\udc9b');
 }
@@ -6518,6 +6520,26 @@ async function carregarUsuario(user) {
           var dRes = await db.from('usuarios').select('nome').eq('id', sol.data.doula_id).maybeSingle();
           var nomeDoula = dRes.data ? dRes.data.nome : 'Doula';
           currentSolicitacaoPendente = { id: sol.data.id, doulaId: sol.data.doula_id, nomeDoula: nomeDoula };
+        }
+        if (!sol.data) {
+          var solRecusada = await db.from('solicitacoes')
+            .select('id,doula_id')
+            .eq('gestante_id', user.id)
+            .eq('status', 'recusada')
+            .order('criado_em', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (solRecusada.data) {
+            var vistaKey = 'lua_recusa_vista_' + solRecusada.data.id;
+            if (!localStorage.getItem(vistaKey)) {
+              localStorage.setItem(vistaKey, '1');
+              var dRecRes = await db.from('usuarios').select('nome').eq('id', solRecusada.data.doula_id).maybeSingle();
+              var nomeDoulaRec = dRecRes.data ? dRecRes.data.nome : 'A doula';
+              setTimeout(function() {
+                mostrarToast('😔 ' + nomeDoulaRec + ' não tem disponibilidade no momento. Escolha outra doula.');
+              }, 1200);
+            }
+          }
         }
         var solAceita = await db.from('solicitacoes')
           .select('id,doula_id')
@@ -7720,6 +7742,18 @@ function iniciarRealtimeSolicitacoesDoula() {
       mostrarToast('✨ Nova solicitação de ' + nome + '!');
       carregarSolicitacoesDoula();
     })
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'solicitacoes',
+      filter: 'doula_id=eq.' + currentUserId
+    }, function(payload) {
+      if (payload.new && payload.new.status === 'encerrada') {
+        var nome = payload.new.gestante_nome || 'Uma gestante';
+        mostrarToast('🔔 ' + nome + ' encerrou o vínculo.');
+        carregarClientesDoula();
+      }
+    })
     .subscribe();
 }
 
@@ -7844,7 +7878,8 @@ function abrirChatComGestante(gestanteId, gestanteNome) {
 async function encerrarVinculo() {
   abrirModal('Encerrar vínculo', 'Deseja encerrar o vínculo com sua doula?', async function() {
     try {
-      await db.from('solicitacoes').update({ status: 'encerrada' }).eq('gestante_id', currentUserId).in('status', ['aceita','pendente']);
+      var rEnc = await db.from('solicitacoes').update({ status: 'encerrada' }).eq('gestante_id', currentUserId).in('status', ['aceita','pendente']);
+      if (rEnc.error) throw rEnc.error;
       try { await db.from('usuarios').update({ doula_id: null }).eq('id', currentUserId); } catch(e2) {}
       currentDoulaId = null;
       currentSolicitacaoPendente = null;
@@ -9957,10 +9992,11 @@ async function enviarFeedbackGlobal() {
     descricao: msg,
     lido: false
   };
+  if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
   var res = await db.from('reportes').insert(payload);
   if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
   fecharFeedbackGlobal();
-  mostrarToast('✅ Feedback enviado! Obrigado 💛');
+  mostrarToast('✅ Feedback enviado! Obrigada 💛');
 }
 
 function _fbMostrarBotao(show) {
