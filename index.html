@@ -7572,7 +7572,13 @@ function renderDoulas(doulas) {
       btnVincular.style.cssText = 'flex:1;background:var(--sage);';
     }
     btnVincular.onclick = (function(doula, btnRef) {
-      return function() { vincularDoula(doula.id, doula.nome, btnRef); };
+      return function() {
+        abrirModal(
+          'Confirmar solicitação',
+          'Deseja enviar uma solicitação para ' + doula.nome + '? Após o envio não é possível cancelar.',
+          function() { vincularDoula(doula.id, doula.nome, btnRef); }
+        );
+      };
     })(d, btnVincular);
     btnWrap.appendChild(btn);
     btnWrap.appendChild(btnVincular);
