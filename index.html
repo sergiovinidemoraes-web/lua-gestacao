@@ -2635,7 +2635,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="pos-nav-item active" onclick="posNav(this,'pos-dashboard')"><span class="pos-nav-icon">🏠</span><span>Início</span></div>
           <div class="pos-nav-item" onclick="posNav(this,'pos-amamentacao')"><span class="pos-nav-icon">🤱</span><span>Amamentação</span></div>
           <div class="pos-nav-item" onclick="posNav(this,'pos-rotina')"><span class="pos-nav-icon">🌙</span><span>Rotina</span></div>
-          <div class="pos-nav-item" onclick="posNav(this,'pos-rede')"><span class="pos-nav-icon">💜</span><span>Rede de Apoio</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-bebe')"><span class="pos-nav-icon">👶</span><span>Bebê</span></div>
         </nav>
         <div style="margin:auto 16px 16px;padding:16px;background:linear-gradient(135deg,var(--rose-pale),var(--rose-light));border-radius:14px;text-align:center;">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Bebê</div>
@@ -2658,9 +2658,9 @@ tr:hover td { background:var(--rose-pale); }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             <span>Rotina</span>
           </div>
-          <div class="mob-nav-item" id="pos-nav-rede" onclick="posNav(this,'pos-rede')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <span>Rede</span>
+          <div class="mob-nav-item" id="pos-nav-bebe" onclick="posNav(this,'pos-bebe')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <span>Bebê</span>
           </div>
         </div>
       </nav>
@@ -2672,22 +2672,26 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-title" id="pos-greeting">Olá, Mamãe 🌸</div>
           <div class="panel-sub" id="pos-dias-puerperio">Carregando...</div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
-            <div class="stat-card">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
               <div class="stat-icon">🤱</div>
               <div class="stat-val" id="pos-stat-mamada">—</div>
-              <div class="stat-label">última mamada</div>
+              <div class="stat-label">mamadas hoje</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="cursor:pointer;" onclick="posAbrirFralda()">
               <div class="stat-icon">💧</div>
               <div class="stat-val" id="pos-stat-fralda">—</div>
-              <div class="stat-label">última fralda</div>
+              <div class="stat-label">fraldas hoje</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
               <div class="stat-icon">🌙</div>
               <div class="stat-val" id="pos-stat-sono">—</div>
               <div class="stat-label">sono hoje</div>
             </div>
+          </div>
+          <div style="background:var(--white);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 8px rgba(45,31,26,0.05);margin-bottom:20px;">
+            <div style="font-size:12px;color:var(--earth-light);">⏱ Intervalo entre mamadas</div>
+            <div style="font-size:14px;font-weight:600;color:var(--rose);" id="pos-stat-intervalo">—</div>
           </div>
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,var(--rose-pale),#fff0ec);border:1.5px solid rgba(201,137,122,0.2);" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
@@ -2825,14 +2829,71 @@ tr:hover td { background:var(--rose-pale); }
           </div>
         </div>
 
-        <!-- REDE DE APOIO -->
-        <div class="pos-panel" id="pos-rede">
-          <div class="panel-title">Rede de Apoio</div>
-          <div class="panel-sub">Conecte-se com sua doula ou pediatra</div>
-          <div class="card" style="text-align:center;padding:40px 24px;">
-            <div style="font-size:56px;margin-bottom:16px;">💜</div>
-            <div class="card-title">Em breve</div>
-            <div style="font-size:14px;color:var(--earth-light);line-height:1.7;">A integração com a doula do Lua Gestação estará disponível em breve. Sua rede de apoio continua crescendo com você.</div>
+        <!-- BEBÊ: Dentição + Desenvolvimento -->
+        <div class="pos-panel" id="pos-bebe">
+          <div class="panel-title">👶 Bebê</div>
+
+          <!-- Abas internas -->
+          <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
+            <button class="pos-tab-btn active" id="pos-tab-denticao-btn" onclick="posBebebTab('denticao')" style="flex:1;">🦷 Dentição</button>
+            <button class="pos-tab-btn" id="pos-tab-dev-btn" onclick="posBebebTab('desenvolvimento')" style="flex:1;">🌱 Desenvolvimento</button>
+          </div>
+
+          <!-- ABA: DENTIÇÃO -->
+          <div id="pos-painel-denticao">
+            <div class="panel-sub" style="margin-bottom:16px;">Toque nos dentes para registrar quando nasceram</div>
+
+            <!-- Diagrama de dentes -->
+            <div class="card" style="text-align:center;">
+              <div style="font-size:12px;font-weight:600;color:var(--earth-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Superior</div>
+              <div style="display:flex;justify-content:center;gap:6px;margin-bottom:8px;" id="pos-dentes-sup"></div>
+              <div style="border-top:2px dashed rgba(201,137,122,0.2);margin:8px 0;position:relative;">
+                <span style="position:absolute;left:50%;transform:translateX(-50%);top:-9px;background:var(--white);padding:0 8px;font-size:11px;color:var(--earth-light);">gengiva</span>
+              </div>
+              <div style="display:flex;justify-content:center;gap:6px;margin-top:8px;" id="pos-dentes-inf"></div>
+              <div style="font-size:12px;font-weight:600;color:var(--earth-light);letter-spacing:1px;text-transform:uppercase;margin-top:12px;">Inferior</div>
+              <div style="margin-top:14px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:var(--earth-light);">
+                <span>⬜ Ainda não nasceu</span>
+                <span>🟫 Nasceu</span>
+              </div>
+            </div>
+
+            <!-- Orientações por fase -->
+            <div class="card">
+              <div class="card-title">📋 Orientações por fase</div>
+              <div id="pos-denticao-orientacoes" style="font-size:13px;color:var(--earth-light);line-height:1.7;">Calculando fase...</div>
+            </div>
+
+            <!-- Histórico -->
+            <div class="card">
+              <div class="card-title">Histórico de dentes</div>
+              <div id="pos-denticao-historico"><div style="font-size:13px;color:var(--earth-light);">Nenhum dente registrado ainda.</div></div>
+            </div>
+          </div>
+
+          <!-- ABA: DESENVOLVIMENTO -->
+          <div id="pos-painel-desenvolvimento" style="display:none;">
+
+            <!-- Fase atual -->
+            <div class="card" style="background:linear-gradient(135deg,#f0faf4,#e8f5ee);border:1.5px solid rgba(100,160,120,0.2);">
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--sage);margin-bottom:6px;">Fase atual</div>
+              <div style="font-size:20px;font-weight:600;color:var(--dark);" id="pos-dev-mes">— meses de vida</div>
+              <div style="font-size:15px;font-weight:500;color:var(--sage);margin:4px 0;" id="pos-dev-salto">—</div>
+              <div style="font-size:13px;color:var(--earth-light);line-height:1.6;" id="pos-dev-salto-desc">—</div>
+            </div>
+
+            <!-- Marcos do mês -->
+            <div class="card">
+              <div class="card-title">✨ Marcos esperados</div>
+              <div style="font-size:12px;color:var(--earth-light);margin-bottom:14px;">Marque os que o bebê já conquistou</div>
+              <div id="pos-dev-marcos-lista"></div>
+            </div>
+
+            <!-- Mês a mês accordion -->
+            <div class="card">
+              <div class="card-title">📅 Mês a mês</div>
+              <div id="pos-dev-timeline"></div>
+            </div>
           </div>
         </div>
 
@@ -6615,10 +6676,10 @@ function posNav(el, panelId) {
   document.querySelectorAll('.pos-nav-item').forEach(function(i) { i.classList.remove('active'); });
   document.querySelectorAll('.pos-panel').forEach(function(p) { p.classList.remove('active'); });
   if (el) el.classList.add('active');
-  var navMap = { 'pos-dashboard':'pos-nav-dashboard', 'pos-amamentacao':'pos-nav-amamentacao', 'pos-rotina':'pos-nav-rotina', 'pos-rede':'pos-nav-rede' };
+  var navMap = { 'pos-dashboard':'pos-nav-dashboard', 'pos-amamentacao':'pos-nav-amamentacao', 'pos-rotina':'pos-nav-rotina', 'pos-bebe':'pos-nav-bebe' };
   var mobId = navMap[panelId];
   if (mobId) { var mob = document.getElementById(mobId); if (mob) mob.classList.add('active'); }
-  var sideMap = { 'pos-dashboard':0, 'pos-amamentacao':1, 'pos-rotina':2, 'pos-rede':3 };
+  var sideMap = { 'pos-dashboard':0, 'pos-amamentacao':1, 'pos-rotina':2, 'pos-bebe':3 };
   var sideItems = document.querySelectorAll('.pos-nav-item');
   var idx = sideMap[panelId];
   if (idx !== undefined && sideItems[idx]) sideItems[idx].classList.add('active');
@@ -6626,6 +6687,7 @@ function posNav(el, panelId) {
   if (panel) panel.classList.add('active');
   if (panelId === 'pos-amamentacao') { try { carregarHistoricoMamadas(); } catch(e) {} }
   if (panelId === 'pos-rotina') { try { carregarHistoricoSono(); } catch(e) {} }
+  if (panelId === 'pos-bebe') { try { carregarDenticao(); } catch(e) {} try { carregarDesenvolvimento(); } catch(e) {} }
 }
 
 function posAbrirFralda() {
@@ -6798,36 +6860,47 @@ async function posSalvarSono() {
 
 async function carregarPosDashboard() {
   if (!db || !currentUserId) return;
+  var hoje = new Date().toISOString().split('T')[0];
   try {
     var bebe = await db.from('pos_bebes').select('*').eq('mae_id', currentUserId).maybeSingle();
     if (bebe.data) {
       var dias = bebe.data.data_nascimento ? Math.floor((new Date() - new Date(bebe.data.data_nascimento)) / 86400000) : null;
       var diasEl = document.getElementById('pos-dias-puerperio');
-      if (diasEl) diasEl.textContent = bebe.data.nome + (dias !== null ? ' · ' + dias + ' dias de vida 🌿' : '');
+      if (diasEl && diasEl.textContent !== 'Seu espaço de acompanhamento pós-parto') {
+        diasEl.textContent = bebe.data.nome + (dias !== null ? ' · ' + dias + ' dias de vida 🌿' : '');
+      }
       var sideNome = document.getElementById('pos-sidebar-bebe');
       if (sideNome) sideNome.textContent = bebe.data.nome;
       var sideDias = document.getElementById('pos-sidebar-dias');
       if (sideDias && dias !== null) sideDias.textContent = dias + ' dias de vida';
-      var statSono = document.getElementById('pos-stat-sono');
-      if (statSono) {
-        var hoje = new Date().toISOString().split('T')[0];
-        var sonoRes = await db.from('pos_sono').select('duracao_min').eq('mae_id', currentUserId).gte('inicio', hoje + 'T00:00:00');
-        if (sonoRes.data && sonoRes.data.length) {
-          var totalMin = sonoRes.data.reduce(function(acc, s) { return acc + (s.duracao_min || 0); }, 0);
-          statSono.textContent = totalMin >= 60 ? Math.round(totalMin/60) + 'h' : totalMin + 'min';
-        } else { statSono.textContent = '—'; }
-      }
     }
-    var mamadas = await db.from('pos_amamentacao').select('*').eq('mae_id', currentUserId).order('criado_em', { ascending: false }).limit(1);
+    // Sono hoje
+    var statSono = document.getElementById('pos-stat-sono');
+    if (statSono) {
+      var sonoRes = await db.from('pos_sono').select('duracao_min').eq('mae_id', currentUserId).gte('inicio', hoje + 'T00:00:00');
+      if (sonoRes.data && sonoRes.data.length) {
+        var totalMin = sonoRes.data.reduce(function(acc, s) { return acc + (s.duracao_min || 0); }, 0);
+        statSono.textContent = totalMin >= 60 ? Math.round(totalMin/60) + 'h' : totalMin + 'min';
+      } else { statSono.textContent = '—'; }
+    }
+    // Mamadas hoje — contagem + intervalo
     var elMam = document.getElementById('pos-stat-mamada');
+    var elIntervalo = document.getElementById('pos-stat-intervalo');
+    var mamadas = await db.from('pos_amamentacao').select('criado_em').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
     if (mamadas.data && mamadas.data.length) {
-      if (elMam) elMam.textContent = posTempoRelativo(mamadas.data[0].criado_em);
-    } else { if (elMam) elMam.textContent = '—'; }
-    var fraldas = await db.from('pos_fraldas').select('*').eq('mae_id', currentUserId).order('criado_em', { ascending: false }).limit(1);
+      if (elMam) elMam.textContent = mamadas.data.length;
+      if (elIntervalo && mamadas.data.length >= 2) {
+        var diffMin = Math.round((new Date(mamadas.data[0].criado_em) - new Date(mamadas.data[1].criado_em)) / 60000);
+        elIntervalo.textContent = diffMin >= 60 ? Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'min' : diffMin + 'min';
+      } else if (elIntervalo) { elIntervalo.textContent = '—'; }
+    } else {
+      if (elMam) elMam.textContent = '0';
+      if (elIntervalo) elIntervalo.textContent = '—';
+    }
+    // Fraldas hoje — contagem
     var elFr = document.getElementById('pos-stat-fralda');
-    if (fraldas.data && fraldas.data.length) {
-      if (elFr) elFr.textContent = posTempoRelativo(fraldas.data[0].criado_em);
-    } else { if (elFr) elFr.textContent = '—'; }
+    var fraldas = await db.from('pos_fraldas').select('id').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00');
+    if (elFr) elFr.textContent = (fraldas.data && fraldas.data.length) ? fraldas.data.length : '0';
   } catch(e) {}
 }
 
