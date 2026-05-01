@@ -1833,6 +1833,10 @@ tr:hover td { background:var(--rose-pale); }
             <button onclick="encerrarVinculo()" style="width:100%;background:rgba(255,80,80,0.15);border:1px solid rgba(255,80,80,0.3);color:rgba(255,180,180,1);padding:10px;border-radius:12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;" data-i18n="doula.unlink">Encerrar vínculo com esta doula</button>
             <button onclick="abrirAvaliacaoDoula()" style="width:100%;background:linear-gradient(135deg,var(--rose),#a8685a);border:none;color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:8px;">💛 Avaliar minha doula</button>
           </div>
+          <div id="g-materiais-doula" style="display:none;margin-bottom:20px;">
+            <div class="card-title" style="margin-bottom:12px;">📚 Materiais da minha doula</div>
+            <div id="g-materiais-doula-lista"></div>
+          </div>
           <div class="card">
             <div class="card-title" data-i18n="doula.msgs.title">💬 Mensagens com sua doula</div>
             <div id="msgs-gestante-container" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
@@ -2252,11 +2256,44 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
-          <div class="card" style="margin-top:24px;">
-            <div class="card-title" data-i18n="doula.lib.upload.title">📤 Adicionar novo material</div>
-            <div class="upload-area" onclick="mostrarToast('Em desenvolvimento 🔧')">
-              <div class="upload-icon"></div>
-              <div class="upload-text" data-i18n="doula.lib.upload.text">Clique para fazer upload de PDF, vídeo ou apresentação</div>
+          <!-- Meus materiais -->
+          <div style="margin-top:28px;">
+            <div style="font-size:15px;font-weight:600;color:var(--dark);margin-bottom:14px;">📁 Meus materiais</div>
+            <div id="d-bib-lista" style="margin-bottom:20px;">
+              <div style="font-size:13px;color:var(--earth-light);text-align:center;padding:16px 0;">Nenhum material adicionado ainda.</div>
+            </div>
+
+            <div style="background:var(--rose-pale);border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:20px;">
+              <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:14px;">➕ Adicionar material</div>
+
+              <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+                <button id="d-tab-video" onclick="setDBibTipo('video')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:var(--rose);color:white;border:none;">🎬 Vídeo YouTube</button>
+                <button id="d-tab-link" onclick="setDBibTipo('link')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);">🔗 Link</button>
+                <button id="d-tab-pdf" onclick="setDBibTipo('pdf')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);">📄 PDF</button>
+              </div>
+
+              <input id="d-bib-titulo" type="text" placeholder="Título do material" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:10px;outline:none;">
+
+              <div id="d-bib-area-video" style="margin-bottom:10px;">
+                <input id="d-bib-youtube" type="url" placeholder="Link do YouTube" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
+              </div>
+
+              <div id="d-bib-area-link" style="display:none;margin-bottom:10px;">
+                <input id="d-bib-link-url" type="url" placeholder="URL do link" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
+              </div>
+
+              <div id="d-bib-area-pdf" style="display:none;margin-bottom:10px;">
+                <div onclick="document.getElementById('d-bib-arquivo').click()" style="border:2px dashed rgba(201,137,122,0.35);border-radius:10px;padding:18px;text-align:center;cursor:pointer;font-size:13px;color:var(--earth-light);">📎 Clique para selecionar PDF ou imagem</div>
+                <input type="file" id="d-bib-arquivo" style="display:none" accept=".pdf,.png,.jpg,.jpeg" onchange="previewDBibArquivo(this)">
+                <div id="d-bib-arquivo-preview" style="display:none;font-size:12px;color:var(--earth);margin-top:6px;padding:8px 12px;background:rgba(201,137,122,0.1);border-radius:8px;display:flex;align-items:center;gap:8px;">
+                  <span id="d-bib-arquivo-nome" style="flex:1;"></span>
+                  <button onclick="limparDBibArquivo()" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;">✕</button>
+                </div>
+              </div>
+
+              <input id="d-bib-desc" type="text" placeholder="Descrição breve (opcional)" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:14px;outline:none;">
+
+              <button id="d-bib-btn" onclick="adicionarConteudoDoula()" style="width:100%;background:var(--rose);color:white;border:none;padding:12px;border-radius:12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;">Adicionar material</button>
             </div>
           </div>
         </div>
@@ -3067,6 +3104,7 @@ function dNav(el, panelId) {
   }
 
   document.getElementById(panelId).classList.add('active');
+  if (panelId === 'd-biblioteca') try { carregarBibliotecaDoula(); } catch(e) {}
 }
 
 function irParaClientesDoula() {
@@ -7175,7 +7213,7 @@ function enterApp(role) { entrarNoApp(role, role === 'gestante' ? 'Visitante' : 
 async function carregarConteudos() {
   if (!db) return;
   try {
-    var res = await db.from('biblioteca').select('*').order('criado_em', { ascending: true });
+    var res = await db.from('biblioteca').select('*').is('doula_id', null).order('criado_em', { ascending: true });
     if (res.error || !res.data) return;
 
     var destinos = [
@@ -7904,6 +7942,112 @@ async function encerrarVinculo() {
   });
 }
 
+// ── Biblioteca da Doula (conteúdo próprio) ──
+var dBibTipo = 'video';
+var dBibArquivo = null;
+
+function setDBibTipo(tipo) {
+  dBibTipo = tipo;
+  ['video','link','pdf'].forEach(function(t) {
+    var tab = document.getElementById('d-tab-' + t);
+    var area = document.getElementById('d-bib-area-' + t);
+    if (tab) {
+      tab.style.background = t === tipo ? 'var(--rose)' : 'transparent';
+      tab.style.color = t === tipo ? 'white' : 'var(--earth)';
+      tab.style.border = t === tipo ? 'none' : '1px solid rgba(139,99,80,0.2)';
+    }
+    if (area) area.style.display = t === tipo ? 'block' : 'none';
+  });
+}
+
+function previewDBibArquivo(input) {
+  if (!input.files || !input.files[0]) return;
+  dBibArquivo = input.files[0];
+  var preview = document.getElementById('d-bib-arquivo-preview');
+  if (preview) preview.style.display = 'flex';
+  var nome = document.getElementById('d-bib-arquivo-nome');
+  if (nome) nome.textContent = '📎 ' + dBibArquivo.name;
+}
+
+function limparDBibArquivo() {
+  dBibArquivo = null;
+  var preview = document.getElementById('d-bib-arquivo-preview');
+  if (preview) preview.style.display = 'none';
+  var input = document.getElementById('d-bib-arquivo');
+  if (input) input.value = '';
+}
+
+async function carregarBibliotecaDoula() {
+  if (!db || !currentUserId) return;
+  var lista = document.getElementById('d-bib-lista');
+  if (!lista) return;
+  var res = await db.from('biblioteca').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
+  var data = res.data || [];
+  if (!data.length) {
+    lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);text-align:center;padding:16px 0;">Nenhum material adicionado ainda.</div>';
+    return;
+  }
+  lista.innerHTML = data.map(function(m) {
+    var icon = m.tipo === 'video' ? '🎬' : m.tipo === 'pdf' ? '📄' : '🔗';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-radius:12px;margin-bottom:8px;border:1px solid rgba(201,137,122,0.1);">' +
+      '<div style="font-size:20px;">' + icon + '</div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + (m.titulo || '—') + '</div>' +
+        (m.descricao ? '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">' + m.descricao + '</div>' : '') +
+      '</div>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<a href="' + m.url + '" target="_blank" style="padding:6px 12px;background:var(--rose-pale);border-radius:8px;font-size:12px;color:var(--rose);text-decoration:none;font-family:inherit;">Ver</a>' +
+        '<button onclick="deletarConteudoDoula(\'' + m.id + '\')" style="padding:6px 10px;background:rgba(255,80,80,0.1);border:none;border-radius:8px;font-size:12px;color:rgba(200,50,50,0.8);cursor:pointer;font-family:inherit;">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function adicionarConteudoDoula() {
+  var titulo = (document.getElementById('d-bib-titulo').value || '').trim();
+  if (!titulo) return mostrarToast('Preencha o título');
+  var btn = document.getElementById('d-bib-btn');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  var url = '', tipo = dBibTipo;
+  try {
+    if (dBibTipo === 'video') {
+      url = (document.getElementById('d-bib-youtube').value || '').trim();
+      if (!url) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Cole o link do YouTube'); }
+    } else if (dBibTipo === 'link') {
+      url = (document.getElementById('d-bib-link-url').value || '').trim();
+      if (!url) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Cole o link'); }
+    } else {
+      if (!dBibArquivo) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Selecione um arquivo'); }
+      var nomeArq = Date.now() + '_' + dBibArquivo.name.replace(/\s/g,'_');
+      var upRes = await db.storage.from('materiais').upload(nomeArq, dBibArquivo);
+      if (upRes.error) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Erro no upload: ' + upRes.error.message); }
+      url = db.storage.from('materiais').getPublicUrl(nomeArq).data.publicUrl;
+      tipo = dBibArquivo.name.match(/\.(png|jpg|jpeg)$/i) ? 'imagem' : 'pdf';
+    }
+    var desc = (document.getElementById('d-bib-desc').value || '').trim();
+    var res = await db.from('biblioteca').insert({ titulo: titulo, tipo: tipo, url: url, destino: 'doula', descricao: desc, doula_id: currentUserId });
+    if (res.error) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Erro: ' + res.error.message); }
+    mostrarToast('✅ Material adicionado!');
+    document.getElementById('d-bib-titulo').value = '';
+    document.getElementById('d-bib-desc').value = '';
+    try { document.getElementById('d-bib-youtube').value = ''; } catch(e) {}
+    try { document.getElementById('d-bib-link-url').value = ''; } catch(e) {}
+    limparDBibArquivo();
+    btn.disabled=false; btn.textContent='Adicionar material';
+    carregarBibliotecaDoula();
+  } catch(e) {
+    btn.disabled=false; btn.textContent='Adicionar material';
+    mostrarToast('Erro: ' + e.message);
+  }
+}
+
+async function deletarConteudoDoula(id) {
+  var res = await db.from('biblioteca').delete().eq('id', id).eq('doula_id', currentUserId);
+  if (res.error) return mostrarToast('Erro ao remover: ' + res.error.message);
+  mostrarToast('Material removido.');
+  carregarBibliotecaDoula();
+}
+
 function filtrarDoulas(termo) {
   if (!termo.trim()) { renderDoulas(todasDoulas); return; }
   var t = termo.toLowerCase();
@@ -8014,7 +8158,30 @@ async function carregarMinhaDoula() {
       carregarMensagens(currentUserId, d.id, container, 'gestante');
       iniciarRealtimeMensagens(currentUserId, d.id, container, 'gestante');
     }
+    // Carrega materiais da doula
+    carregarMateriaisDoula(d.id, d.nome);
   } catch(e) {}
+}
+
+async function carregarMateriaisDoula(doulaId, doulaName) {
+  var section = document.getElementById('g-materiais-doula');
+  var lista = document.getElementById('g-materiais-doula-lista');
+  if (!section || !lista || !db) return;
+  var res = await db.from('biblioteca').select('*').eq('doula_id', doulaId).order('criado_em', { ascending: false });
+  var data = res.data || [];
+  if (!data.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  lista.innerHTML = data.map(function(m) {
+    var icon = m.tipo === 'video' ? '🎬' : m.tipo === 'pdf' ? '📄' : '🔗';
+    return '<a href="' + m.url + '" target="_blank" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-radius:12px;margin-bottom:8px;border:1px solid rgba(201,137,122,0.1);text-decoration:none;">' +
+      '<div style="font-size:22px;">' + icon + '</div>' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + (m.titulo || '—') + '</div>' +
+        (m.descricao ? '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">' + m.descricao + '</div>' : '') +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--rose);">Ver →</div>' +
+    '</a>';
+  }).join('');
 }
 
 function falarWhatsappDoula() {
@@ -8788,7 +8955,7 @@ async function adicionarBiblioteca() {
       if (!fileUrl) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('⚠️ Cole o link'); }
       tipo = 'link';
     }
-    var saveRes = await db.from('biblioteca').insert({ titulo: titulo, tipo: tipo, url: fileUrl, destino: destino, descricao: desc });
+    var saveRes = await db.from('biblioteca').insert({ titulo: titulo, tipo: tipo, url: fileUrl, destino: destino, descricao: desc, doula_id: null });
     btn.disabled=false; btn.textContent='Adicionar material'; status.textContent='';
     document.getElementById('upload-progress').style.display='none';
     document.getElementById('upload-bar').style.width='0%';
