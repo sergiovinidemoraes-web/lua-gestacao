@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- v20260405150000 -->
 <!-- Lua App v2.3.3 - 2026-04-05 - Fix: sidebar doula oculta por padrão, Spotify sem lazy -->
 <html lang="pt-BR">
@@ -215,6 +215,31 @@ header {
 /* ─── VIEWS ─── */
 .view { display:none; flex:1; }
 .view.active { display:block; }
+.pos-layout { display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 64px); }
+.pos-sidebar { background:var(--white); border-right:1px solid rgba(201,137,122,0.12); padding:32px 0; display:flex; flex-direction:column; position:sticky; top:64px; height:calc(100vh - 64px); overflow-y:auto; }
+.pos-avatar { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--rose-light),var(--rose)); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:22px; color:white; font-weight:500; margin-bottom:12px; }
+.pos-name { font-size:15px; font-weight:500; color:var(--dark); }
+.pos-role { font-size:13px; color:var(--rose); margin-top:2px; font-weight:500; }
+.pos-profile { padding:0 24px 28px; border-bottom:1px solid rgba(201,137,122,0.1); text-align:center; }
+.pos-nav { padding:16px 0; flex:1; }
+.pos-nav-item { display:flex; align-items:center; gap:12px; padding:12px 24px; cursor:pointer; font-size:14px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
+.pos-nav-item:hover { background:var(--rose-pale); color:var(--rose); }
+.pos-nav-item.active { background:var(--rose-pale); color:var(--rose); border-left-color:var(--rose); font-weight:500; }
+.pos-nav-icon { font-size:18px; width:22px; text-align:center; }
+.pos-panel { display:none; }
+.pos-panel.active { display:block; animation:fadeIn 0.3s ease; }
+.pos-lado-btn { background:var(--rose-pale); color:var(--mid); border:1.5px solid rgba(201,137,122,0.2); border-radius:20px; padding:8px 20px; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.pos-lado-btn.selected { background:var(--rose); color:white; border-color:var(--rose); }
+.pos-tab-btn { flex:1; padding:10px; border:none; border-radius:12px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.pos-tab-btn.active { background:var(--rose); color:white; }
+.pos-tab-btn:not(.active) { background:transparent; color:var(--earth-light); }
+.pos-tipo-btn { flex:1; padding:12px 6px; border:1.5px solid rgba(201,137,122,0.2); border-radius:12px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; background:var(--rose-pale); color:var(--mid); transition:all 0.2s; text-align:center; }
+.pos-tipo-btn.selected { background:var(--rose); color:white; border-color:var(--rose); }
+.pos-history-item { background:var(--cream); border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+@media (max-width: 768px) {
+  .pos-layout { grid-template-columns:1fr !important; }
+  .pos-sidebar { display:none !important; }
+}
 
 /* ══════════════════════════════
    GESTANTE VIEW
@@ -825,12 +850,19 @@ tr:hover td { background:var(--rose-pale); }
           <button class="login-tipo-btn selected" id="tipo-gestante" onclick="selecionarTipo('gestante')">🤰 Gestante</button>
           <button class="login-tipo-btn" id="tipo-doula" onclick="selecionarTipo('doula')">🌙 Doula</button>
           <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">❤️ Acompanhante</button>
+          <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Pós Parto</button>
         </div>
       </div>
       <div id="pai-codigo-campo" style="display:none;">
         <label class="login-label">Código de convite <span style="opacity:0.4;font-size:10px;">(opcional)</span></label>
         <input class="login-input" type="text" id="cad-codigo-pai" placeholder="Ex: AB1C2D" maxlength="6" style="text-transform:uppercase;letter-spacing:3px;">
         <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:6px;">Peça à sua parceira no app dela. Também pode vincular depois.</div>
+      </div>
+      <div id="pos-bebe-campos" style="display:none;">
+        <label class="login-label">Nome do bebê</label>
+        <input class="login-input" type="text" id="cad-bebe-nome" placeholder="Nome do seu bebê">
+        <label class="login-label" style="margin-top:10px;">Data de nascimento</label>
+        <input class="login-input" type="date" id="cad-bebe-nasc">
       </div>
       <div class="login-erro" id="cad-erro"></div>
       <button class="login-btn" id="btn-cadastrar" onclick="fazerCadastro()">Criar conta</button>
@@ -2581,6 +2613,225 @@ tr:hover td { background:var(--rose-pale); }
               <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.4">Apoio emocional</span>
               <span style="background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:20px;font-size:13px;" data-i18n="pai.check.role.5">Defensor das escolhas</span>
             </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ══════ LUA-PÓS VIEW ══════ -->
+  <div class="view" id="view-pos">
+    <div class="pos-layout">
+
+      <aside class="pos-sidebar">
+        <div class="pos-profile">
+          <div class="pos-avatar" id="pos-avatar">M</div>
+          <div class="pos-name" id="pos-profile-name">—</div>
+          <div class="pos-role">🌸 Lua Pós</div>
+        </div>
+        <nav class="pos-nav">
+          <div class="pos-nav-item active" onclick="posNav(this,'pos-dashboard')"><span class="pos-nav-icon">🏠</span><span>Início</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-amamentacao')"><span class="pos-nav-icon">🤱</span><span>Amamentação</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-rotina')"><span class="pos-nav-icon">🌙</span><span>Rotina</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-rede')"><span class="pos-nav-icon">💜</span><span>Rede de Apoio</span></div>
+        </nav>
+        <div style="margin:auto 16px 16px;padding:16px;background:linear-gradient(135deg,var(--rose-pale),var(--rose-light));border-radius:14px;text-align:center;">
+          <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Bebê</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--dark);" id="pos-sidebar-bebe">—</div>
+          <div style="font-size:12px;color:var(--earth-light);margin-top:2px;" id="pos-sidebar-dias">—</div>
+        </div>
+      </aside>
+
+      <nav class="mobile-bottom-nav" id="pos-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+          <div class="mob-nav-item active" id="pos-nav-dashboard" onclick="posNav(this,'pos-dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Início</span>
+          </div>
+          <div class="mob-nav-item" id="pos-nav-amamentacao" onclick="posNav(this,'pos-amamentacao')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Mamar</span>
+          </div>
+          <div class="mob-nav-item" id="pos-nav-rotina" onclick="posNav(this,'pos-rotina')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span>Rotina</span>
+          </div>
+          <div class="mob-nav-item" id="pos-nav-rede" onclick="posNav(this,'pos-rede')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span>Rede</span>
+          </div>
+        </div>
+      </nav>
+
+      <main class="p-main">
+
+        <!-- INÍCIO -->
+        <div class="pos-panel active" id="pos-dashboard">
+          <div class="panel-title" id="pos-greeting">Olá, Mamãe 🌸</div>
+          <div class="panel-sub" id="pos-dias-puerperio">Carregando...</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
+            <div class="stat-card">
+              <div class="stat-icon">🤱</div>
+              <div class="stat-val" id="pos-stat-mamada">—</div>
+              <div class="stat-label">última mamada</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💧</div>
+              <div class="stat-val" id="pos-stat-fralda">—</div>
+              <div class="stat-label">última fralda</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🌙</div>
+              <div class="stat-val" id="pos-stat-sono">—</div>
+              <div class="stat-label">sono hoje</div>
+            </div>
+          </div>
+
+          <div class="card" style="cursor:pointer;background:linear-gradient(135deg,var(--rose-pale),#fff0ec);border:1.5px solid rgba(201,137,122,0.2);" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
+            <div class="card-title">🤱 Registrar Mamada</div>
+            <div style="font-size:13px;color:var(--earth-light);">Mama, bomba ou mamadeira — inicie o timer ou registre o volume.</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posAbrirFralda()">
+              <div style="font-size:28px;margin-bottom:10px;">💧</div>
+              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;">Troca de Fralda</div>
+              <div style="font-size:12px;color:var(--earth-light);">Registrar agora</div>
+            </div>
+            <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
+              <div style="font-size:28px;margin-bottom:10px;">🌙</div>
+              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;">Sono do Bebê</div>
+              <div style="font-size:12px;color:var(--earth-light);">Soneca ou noturno</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AMAMENTAÇÃO -->
+        <div class="pos-panel" id="pos-amamentacao">
+          <div class="panel-title">Amamentação</div>
+          <div class="panel-sub">Registre mama, bomba ou mamadeira</div>
+
+          <div class="card" style="text-align:center;">
+            <div id="pos-timer-display" style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--rose);letter-spacing:4px;line-height:1;margin-bottom:8px;">00:00</div>
+            <div id="pos-timer-lado-label" style="font-size:13px;color:var(--earth-light);margin-bottom:24px;">Selecione um lado para começar</div>
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;">
+              <button class="pos-lado-btn" id="pos-btn-E" onclick="posSelecionarLado('E')">◀ Esquerdo</button>
+              <button class="pos-lado-btn" id="pos-btn-D" onclick="posSelecionarLado('D')">Direito ▶</button>
+            </div>
+            <div style="display:flex;gap:16px;justify-content:center;">
+              <button id="pos-btn-play" onclick="posTimerToggle()" style="background:var(--rose);color:white;border:none;border-radius:50%;width:64px;height:64px;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,137,122,0.35);transition:all 0.2s;">▶</button>
+              <button onclick="posTimerReset()" style="background:var(--rose-pale);color:var(--mid);border:none;border-radius:50%;width:64px;height:64px;font-size:22px;cursor:pointer;">⏹</button>
+              <button onclick="posSalvarMamada('mama')" style="background:var(--sage);color:white;border:none;border-radius:50%;width:64px;height:64px;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(138,158,140,0.3);" title="Salvar">✓</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🫙 Bomba / Mamadeira</div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;">
+              <div style="flex:1;">
+                <label class="form-label">Volume (ml)</label>
+                <input id="pos-bomba-ml" class="form-input" type="number" placeholder="Ex: 60" min="0" max="500">
+              </div>
+              <div style="flex:1;">
+                <label class="form-label">Tipo</label>
+                <select id="pos-bomba-tipo" class="form-input">
+                  <option value="bomba">Bomba</option>
+                  <option value="mamadeira_lm">Mamadeira (LM)</option>
+                  <option value="formula">Fórmula</option>
+                </select>
+              </div>
+            </div>
+            <button onclick="posSalvarMamada('bomba')" class="login-btn">Registrar</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Histórico de hoje</div>
+            <div id="pos-historico-mamadas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+          </div>
+        </div>
+
+        <!-- ROTINA -->
+        <div class="pos-panel" id="pos-rotina">
+          <div class="panel-title">Rotina do Bebê</div>
+          <div class="panel-sub">Sono e fraldas</div>
+
+          <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
+            <button class="pos-tab-btn active" id="pos-tab-sono-btn" onclick="posRotTab('sono')">🌙 Sono</button>
+            <button class="pos-tab-btn" id="pos-tab-fralda-btn" onclick="posRotTab('fralda')">💧 Fraldas</button>
+          </div>
+
+          <div id="pos-painel-sono">
+            <div class="card">
+              <div class="card-title">Novo registro de sono</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+                <button class="pos-tipo-btn" id="pos-sono-dia-btn" onclick="posSelecionarSono('dia')" style="padding:16px 8px;">☀️<br><span style="font-size:12px;margin-top:4px;display:block;">Soneca (Dia)</span></button>
+                <button class="pos-tipo-btn" id="pos-sono-noite-btn" onclick="posSelecionarSono('noite')" style="padding:16px 8px;">🌙<br><span style="font-size:12px;margin-top:4px;display:block;">Sono Noturno</span></button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div>
+                  <label class="form-label">Início</label>
+                  <input id="pos-sono-inicio" class="form-input" type="time">
+                </div>
+                <div>
+                  <label class="form-label">Fim</label>
+                  <input id="pos-sono-fim" class="form-input" type="time">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <label class="form-label">Qualidade</label>
+                <select id="pos-sono-qualidade" class="form-input">
+                  <option value="tranquilo">Tranquilo</option>
+                  <option value="agitado">Agitado</option>
+                  <option value="acordou_varias">Acordou várias vezes</option>
+                </select>
+              </div>
+              <button onclick="posSalvarSono()" class="login-btn">Salvar Registro</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Sono de hoje</div>
+              <div id="pos-historico-sono"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+            </div>
+          </div>
+
+          <div id="pos-painel-fralda" style="display:none;">
+            <div class="card">
+              <div class="card-title">Nova troca</div>
+              <div style="margin-bottom:16px;">
+                <label class="form-label">Tipo de fralda</label>
+                <div style="display:flex;gap:8px;margin-top:8px;">
+                  <button class="pos-tipo-btn" id="pos-fr-xixi" onclick="posSelecionarFralda('xixi')">💧 Xixi</button>
+                  <button class="pos-tipo-btn" id="pos-fr-coco" onclick="posSelecionarFralda('coco')">💩 Cocô</button>
+                  <button class="pos-tipo-btn" id="pos-fr-ambos" onclick="posSelecionarFralda('ambos')">Ambos</button>
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <label class="form-label">Consistência (opcional)</label>
+                <select id="pos-fr-consistencia" class="form-input">
+                  <option value="">Normal</option>
+                  <option value="liquida">Líquida</option>
+                  <option value="pastosa">Pastosa</option>
+                  <option value="seca">Seca</option>
+                </select>
+              </div>
+              <button onclick="posSalvarFralda()" class="login-btn">✓ Registrar Troca</button>
+            </div>
+            <div class="card">
+              <div class="card-title">Fraldas de hoje</div>
+              <div id="pos-historico-fraldas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REDE DE APOIO -->
+        <div class="pos-panel" id="pos-rede">
+          <div class="panel-title">Rede de Apoio</div>
+          <div class="panel-sub">Conecte-se com sua doula ou pediatra</div>
+          <div class="card" style="text-align:center;padding:40px 24px;">
+            <div style="font-size:56px;margin-bottom:16px;">💜</div>
+            <div class="card-title">Em breve</div>
+            <div style="font-size:14px;color:var(--earth-light);line-height:1.7;">A integração com a doula do Lua Gestação estará disponível em breve. Sua rede de apoio continua crescendo com você.</div>
           </div>
         </div>
 
@@ -5932,8 +6183,11 @@ function selecionarTipo(tipo) {
   document.getElementById('tipo-gestante').classList.toggle('selected', tipo === 'gestante');
   document.getElementById('tipo-doula').classList.toggle('selected', tipo === 'doula');
   document.getElementById('tipo-pai').classList.toggle('selected', tipo === 'pai');
+  document.getElementById('tipo-pos').classList.toggle('selected', tipo === 'pos');
   var paiCampo = document.getElementById('pai-codigo-campo');
   if (paiCampo) paiCampo.style.display = tipo === 'pai' ? 'block' : 'none';
+  var posCampos = document.getElementById('pos-bebe-campos');
+  if (posCampos) posCampos.style.display = tipo === 'pos' ? 'block' : 'none';
 }
 
 // ── ENTRAR ──
@@ -6010,6 +6264,15 @@ async function fazerCadastro() {
               await db.from('convites_pai').update({ usado: true }).eq('id', convite.data.id);
             }
           } catch(e2) {}
+        }
+      }
+      if (tipoSelecionado === 'pos') {
+        var bebeNomeEl = document.getElementById('cad-bebe-nome');
+        var bebeNascEl = document.getElementById('cad-bebe-nasc');
+        var bNome = bebeNomeEl ? bebeNomeEl.value.trim() : '';
+        var bNasc = bebeNascEl ? bebeNascEl.value : null;
+        if (bNome) {
+          try { await db.from('pos_bebes').insert({ mae_id: res.data.user.id, nome: bNome, data_nascimento: bNasc || null }); } catch(e3) {}
         }
       }
     }
@@ -6113,10 +6376,11 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-gestante').classList.remove('active');
   document.getElementById('view-doula').classList.remove('active');
   document.getElementById('view-pai').classList.remove('active');
+  document.getElementById('view-pos').classList.remove('active');
   document.getElementById('view-' + tipo).classList.add('active');
   var roleEl = document.getElementById('header-role');
-  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : 'hdr.role.doula';
-  var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : '🌙';
+  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
+  var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : tipo === 'pos' ? '🌸' : '🌙';
   roleEl.setAttribute('data-i18n', roleKey);
   roleEl.textContent = roleEmoji + ' ' + t(roleKey);
   document.getElementById('header-user-name').textContent = nome;
@@ -6188,9 +6452,299 @@ function entrarNoApp(tipo, nome) {
       setTimeout(function() { try { iniciarRealtimePai(paiGestanteId); } catch(e) {} }, 800);
     }
   }
+  if (tipo === 'pos') {
+    var gPos = document.getElementById('pos-greeting');
+    if (gPos) gPos.textContent = saudacao + ', ' + primeiroNome + '! 🌸';
+    var posNome = document.getElementById('pos-profile-name');
+    if (posNome) posNome.textContent = primeiroNome;
+    var posAvatar = document.getElementById('pos-avatar');
+    if (posAvatar) posAvatar.textContent = primeiroNome[0].toUpperCase();
+    setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
+  }
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
   registrarInicioSessao(tipo);
+}
+
+// ══════════════════════════════
+// LUA PÓS — Funções
+// ══════════════════════════════
+
+var posTimerRunning = false;
+var posTimerSeg = 0;
+var posTimerInterval = null;
+var posLadoSelecionado = null;
+var posFraldaTipo = null;
+var posSonoTipo = null;
+
+function posNav(el, panelId) {
+  document.querySelectorAll('#pos-bottom-nav .mob-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('.pos-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('.pos-panel').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var navMap = { 'pos-dashboard':'pos-nav-dashboard', 'pos-amamentacao':'pos-nav-amamentacao', 'pos-rotina':'pos-nav-rotina', 'pos-rede':'pos-nav-rede' };
+  var mobId = navMap[panelId];
+  if (mobId) { var mob = document.getElementById(mobId); if (mob) mob.classList.add('active'); }
+  var sideMap = { 'pos-dashboard':0, 'pos-amamentacao':1, 'pos-rotina':2, 'pos-rede':3 };
+  var sideItems = document.querySelectorAll('.pos-nav-item');
+  var idx = sideMap[panelId];
+  if (idx !== undefined && sideItems[idx]) sideItems[idx].classList.add('active');
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (panelId === 'pos-amamentacao') { try { carregarHistoricoMamadas(); } catch(e) {} }
+  if (panelId === 'pos-rotina') { try { carregarHistoricoSono(); } catch(e) {} }
+}
+
+function posAbrirFralda() {
+  posNav(document.getElementById('pos-nav-rotina'), 'pos-rotina');
+  setTimeout(function() { posRotTab('fralda'); try { carregarHistoricoFraldas(); } catch(e) {} }, 100);
+}
+
+function posRotTab(tab) {
+  var sono = document.getElementById('pos-painel-sono');
+  var fralda = document.getElementById('pos-painel-fralda');
+  var btnSono = document.getElementById('pos-tab-sono-btn');
+  var btnFralda = document.getElementById('pos-tab-fralda-btn');
+  if (tab === 'sono') {
+    if (sono) sono.style.display = 'block';
+    if (fralda) fralda.style.display = 'none';
+    if (btnSono) { btnSono.style.background = 'var(--rose-pale)'; btnSono.style.color = 'var(--dark)'; btnSono.style.fontWeight = '500'; }
+    if (btnFralda) { btnFralda.style.background = 'transparent'; btnFralda.style.color = 'var(--earth-light)'; btnFralda.style.fontWeight = '400'; }
+    try { carregarHistoricoSono(); } catch(e) {}
+  } else {
+    if (sono) sono.style.display = 'none';
+    if (fralda) { fralda.style.display = 'flex'; fralda.style.flexDirection = 'column'; fralda.style.gap = '12px'; }
+    if (btnFralda) { btnFralda.style.background = 'var(--rose-pale)'; btnFralda.style.color = 'var(--dark)'; btnFralda.style.fontWeight = '500'; }
+    if (btnSono) { btnSono.style.background = 'transparent'; btnSono.style.color = 'var(--earth-light)'; btnSono.style.fontWeight = '400'; }
+    try { carregarHistoricoFraldas(); } catch(e) {}
+  }
+}
+
+function posFormatarTimer(seg) {
+  var m = Math.floor(seg / 60).toString().padStart(2, '0');
+  var s = (seg % 60).toString().padStart(2, '0');
+  return m + ':' + s;
+}
+
+function posTempoRelativo(isoStr) {
+  var diff = Math.floor((new Date() - new Date(isoStr)) / 1000);
+  if (diff < 60) return 'Agora';
+  if (diff < 3600) return 'Há ' + Math.floor(diff / 60) + 'min';
+  if (diff < 86400) return 'Há ' + Math.floor(diff / 3600) + 'h';
+  return 'Há ' + Math.floor(diff / 86400) + 'd';
+}
+
+function posSelecionarLado(lado) {
+  posLadoSelecionado = lado;
+  var btnE = document.getElementById('pos-btn-E');
+  var btnD = document.getElementById('pos-btn-D');
+  if (btnE) { btnE.style.borderColor = lado === 'E' ? 'var(--rose)' : 'transparent'; btnE.style.background = lado === 'E' ? 'var(--rose-light)' : 'var(--rose-pale)'; }
+  if (btnD) { btnD.style.borderColor = lado === 'D' ? 'var(--rose)' : 'transparent'; btnD.style.background = lado === 'D' ? 'var(--rose-light)' : 'var(--rose-pale)'; }
+  var label = document.getElementById('pos-timer-lado-label');
+  if (label) label.textContent = lado === 'E' ? 'Peito Esquerdo' : 'Peito Direito';
+  if (!posTimerRunning) posTimerToggle();
+}
+
+function posTimerToggle() {
+  posTimerRunning = !posTimerRunning;
+  var btn = document.getElementById('pos-btn-play');
+  if (posTimerRunning) {
+    if (btn) btn.textContent = '⏸';
+    posTimerInterval = setInterval(function() {
+      posTimerSeg++;
+      var el = document.getElementById('pos-timer-display');
+      if (el) el.textContent = posFormatarTimer(posTimerSeg);
+    }, 1000);
+  } else {
+    if (btn) btn.textContent = '▶';
+    clearInterval(posTimerInterval);
+  }
+}
+
+function posTimerReset() {
+  posTimerRunning = false;
+  clearInterval(posTimerInterval);
+  posTimerSeg = 0;
+  posLadoSelecionado = null;
+  var el = document.getElementById('pos-timer-display');
+  if (el) el.textContent = '00:00';
+  var label = document.getElementById('pos-timer-lado-label');
+  if (label) label.textContent = 'Selecione um lado para começar';
+  var btn = document.getElementById('pos-btn-play');
+  if (btn) btn.textContent = '▶';
+  var btnE = document.getElementById('pos-btn-E');
+  var btnD = document.getElementById('pos-btn-D');
+  if (btnE) { btnE.style.borderColor = 'transparent'; btnE.style.background = 'var(--rose-pale)'; }
+  if (btnD) { btnD.style.borderColor = 'transparent'; btnD.style.background = 'var(--rose-pale)'; }
+}
+
+async function posSalvarMamada(tipo) {
+  if (!db || !currentUserId) return;
+  var registro = { mae_id: currentUserId, tipo: tipo, criado_em: new Date().toISOString() };
+  if (tipo === 'mama') {
+    if (posTimerSeg < 5) { mostrarToast('⚠️ Inicie o timer antes de salvar.'); return; }
+    registro.lado = posLadoSelecionado;
+    registro.duracao_seg = posTimerSeg;
+    posTimerReset();
+  } else {
+    var mlEl = document.getElementById('pos-bomba-ml');
+    var tipoEl = document.getElementById('pos-bomba-tipo');
+    var ml = mlEl ? parseInt(mlEl.value) : 0;
+    registro.tipo = tipoEl ? tipoEl.value : 'bomba';
+    registro.volume_ml = ml || null;
+    if (mlEl) mlEl.value = '';
+  }
+  try {
+    await db.from('pos_amamentacao').insert(registro);
+    mostrarToast('✓ Mamada registrada!');
+    carregarHistoricoMamadas();
+    carregarPosDashboard();
+  } catch(e) { mostrarToast('Erro ao salvar.'); }
+}
+
+function posSelecionarFralda(tipo) {
+  posFraldaTipo = tipo;
+  ['xixi','coco','ambos'].forEach(function(t) {
+    var btn = document.getElementById('pos-fr-' + t);
+    if (btn) { btn.style.borderColor = t === tipo ? 'var(--rose)' : 'transparent'; btn.style.background = t === tipo ? 'var(--rose-light)' : 'var(--rose-pale)'; }
+  });
+}
+
+async function posSalvarFralda() {
+  if (!db || !currentUserId) return;
+  if (!posFraldaTipo) { mostrarToast('Selecione o tipo de fralda.'); return; }
+  var consistEl = document.getElementById('pos-fr-consistencia');
+  try {
+    await db.from('pos_fraldas').insert({ mae_id: currentUserId, tipo: posFraldaTipo, consistencia: consistEl ? consistEl.value || null : null });
+    mostrarToast('✓ Fralda registrada!');
+    posFraldaTipo = null;
+    ['xixi','coco','ambos'].forEach(function(t) {
+      var btn = document.getElementById('pos-fr-' + t);
+      if (btn) { btn.style.borderColor = 'transparent'; btn.style.background = 'var(--rose-pale)'; }
+    });
+    if (consistEl) consistEl.value = '';
+    carregarHistoricoFraldas();
+    carregarPosDashboard();
+  } catch(e) { mostrarToast('Erro ao salvar.'); }
+}
+
+function posSelecionarSono(tipo) {
+  posSonoTipo = tipo;
+  var btnDia = document.getElementById('pos-sono-dia-btn');
+  var btnNoite = document.getElementById('pos-sono-noite-btn');
+  if (btnDia) { btnDia.style.borderColor = tipo === 'dia' ? 'var(--gold)' : 'transparent'; }
+  if (btnNoite) { btnNoite.style.borderColor = tipo === 'noite' ? 'var(--rose)' : 'transparent'; }
+}
+
+async function posSalvarSono() {
+  if (!db || !currentUserId) return;
+  var inicioEl = document.getElementById('pos-sono-inicio');
+  var fimEl = document.getElementById('pos-sono-fim');
+  var qualEl = document.getElementById('pos-sono-qualidade');
+  var inicio = inicioEl ? inicioEl.value : '';
+  var fim = fimEl ? fimEl.value : '';
+  if (!inicio || !fim) { mostrarToast('Informe início e fim do sono.'); return; }
+  var hoje = new Date().toISOString().split('T')[0];
+  var inicioISO = hoje + 'T' + inicio + ':00';
+  var fimISO = hoje + 'T' + fim + ':00';
+  var duracaoMin = Math.round((new Date(fimISO) - new Date(inicioISO)) / 60000);
+  if (duracaoMin <= 0) duracaoMin = null;
+  try {
+    await db.from('pos_sono').insert({ mae_id: currentUserId, tipo: posSonoTipo, inicio: inicioISO, fim: fimISO, duracao_min: duracaoMin, qualidade: qualEl ? qualEl.value : null });
+    mostrarToast('✓ Sono registrado!');
+    if (inicioEl) inicioEl.value = '';
+    if (fimEl) fimEl.value = '';
+    posSonoTipo = null;
+    var btnDia = document.getElementById('pos-sono-dia-btn');
+    var btnNoite = document.getElementById('pos-sono-noite-btn');
+    if (btnDia) btnDia.style.borderColor = 'transparent';
+    if (btnNoite) btnNoite.style.borderColor = 'transparent';
+    carregarHistoricoSono();
+  } catch(e) { mostrarToast('Erro ao salvar.'); }
+}
+
+async function carregarPosDashboard() {
+  if (!db || !currentUserId) return;
+  try {
+    var bebe = await db.from('pos_bebes').select('*').eq('mae_id', currentUserId).maybeSingle();
+    if (bebe.data) {
+      var dias = bebe.data.data_nascimento ? Math.floor((new Date() - new Date(bebe.data.data_nascimento)) / 86400000) : null;
+      var diasEl = document.getElementById('pos-dias-puerperio');
+      if (diasEl) diasEl.textContent = bebe.data.nome + (dias !== null ? ' · ' + dias + ' dias de vida 🌿' : '');
+      var sideNome = document.getElementById('pos-sidebar-bebe');
+      if (sideNome) sideNome.textContent = bebe.data.nome;
+      var sideDias = document.getElementById('pos-sidebar-dias');
+      if (sideDias && dias !== null) sideDias.textContent = dias + ' dias de vida';
+      var statSono = document.getElementById('pos-stat-sono');
+      if (statSono) {
+        var hoje = new Date().toISOString().split('T')[0];
+        var sonoRes = await db.from('pos_sono').select('duracao_min').eq('mae_id', currentUserId).gte('inicio', hoje + 'T00:00:00');
+        if (sonoRes.data && sonoRes.data.length) {
+          var totalMin = sonoRes.data.reduce(function(acc, s) { return acc + (s.duracao_min || 0); }, 0);
+          statSono.textContent = totalMin >= 60 ? Math.round(totalMin/60) + 'h' : totalMin + 'min';
+        } else { statSono.textContent = '—'; }
+      }
+    }
+    var mamadas = await db.from('pos_amamentacao').select('*').eq('mae_id', currentUserId).order('criado_em', { ascending: false }).limit(1);
+    var elMam = document.getElementById('pos-stat-mamada');
+    if (mamadas.data && mamadas.data.length) {
+      if (elMam) elMam.textContent = posTempoRelativo(mamadas.data[0].criado_em);
+    } else { if (elMam) elMam.textContent = '—'; }
+    var fraldas = await db.from('pos_fraldas').select('*').eq('mae_id', currentUserId).order('criado_em', { ascending: false }).limit(1);
+    var elFr = document.getElementById('pos-stat-fralda');
+    if (fraldas.data && fraldas.data.length) {
+      if (elFr) elFr.textContent = posTempoRelativo(fraldas.data[0].criado_em);
+    } else { if (elFr) elFr.textContent = '—'; }
+  } catch(e) {}
+}
+
+async function carregarHistoricoMamadas() {
+  if (!db || !currentUserId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('pos-historico-mamadas');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_amamentacao').select('*').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; return; }
+    el.innerHTML = res.data.map(function(m) {
+      var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var det = m.tipo === 'mama' ? '🤱 Mama ' + (m.lado || '') + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '') : '🫙 ' + (m.tipo === 'formula' ? 'Fórmula' : m.tipo === 'mamadeira_lm' ? 'Mamadeira LM' : 'Bomba') + (m.volume_ml ? ' · ' + m.volume_ml + 'ml' : '');
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + det + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+async function carregarHistoricoFraldas() {
+  if (!db || !currentUserId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('pos-historico-fraldas');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_fraldas').select('*').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma fralda hoje.</div>'; return; }
+    el.innerHTML = res.data.map(function(f) {
+      var hora = new Date(f.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var emoji = f.tipo === 'xixi' ? '💧 Xixi' : f.tipo === 'coco' ? '💩 Cocô' : '💧💩 Ambos';
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + (f.consistencia ? ' · ' + f.consistencia : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+async function carregarHistoricoSono() {
+  if (!db || !currentUserId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('pos-historico-sono');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_sono').select('*').eq('mae_id', currentUserId).gte('inicio', hoje + 'T00:00:00').order('inicio', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum sono registrado hoje.</div>'; return; }
+    el.innerHTML = res.data.map(function(s) {
+      var ini = s.inicio ? new Date(s.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
+      var fim = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
+      var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fim + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
 }
 
 // ── REALTIME CONTRAÇÕES (DOULA) ──
@@ -9074,12 +9628,14 @@ var _fbSecaoMap = {
   'd-chat':'Chat','d-perfil':'Perfil',
   'p-dashboard':'Dashboard Acomp.','p-gestacao':'Gestação Acomp.','p-contracoes':'Contrações Acomp.',
   'p-diario':'Diário Acomp.','p-chat':'Chat Lua Acomp.','p-checklist':'Checklist Acomp.',
+  'pos-dashboard':'Lua Pós › Início','pos-amamentacao':'Lua Pós › Amamentação',
+  'pos-rotina':'Lua Pós › Rotina','pos-rede':'Lua Pós › Rede de Apoio',
   'admin-usuarios':'Admin › Usuários','admin-estatisticas':'Admin › Estatísticas','admin-conteudos':'Admin › Conteúdos',
   'admin-biblioteca':'Admin › Biblioteca'
 };
 
 function _fbGetSecaoAtual() {
-  var active = document.querySelector('.g-panel.active, .d-panel.active');
+  var active = document.querySelector('.g-panel.active, .d-panel.active, .pos-panel.active');
   if (active) return _fbSecaoMap[active.id] || active.id;
   var adminActive = document.querySelector('.admin-panel-section.active');
   if (adminActive) return _fbSecaoMap[adminActive.id] || adminActive.id;
