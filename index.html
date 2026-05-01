@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- v20260405150000 -->
 <!-- Lua App v2.3.3 - 2026-04-05 - Fix: sidebar doula oculta por padrão, Spotify sem lazy -->
 <html lang="pt-BR">
@@ -6494,12 +6494,13 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-pos').classList.remove('active');
   document.getElementById('view-pos-doula').classList.remove('active');
-  document.getElementById('view-' + tipo.replace('_','-')).classList.add('active');
+  var viewId = tipo === 'pos_doula' ? 'view-pos' : 'view-' + tipo.replace('_','-');
+  document.getElementById(viewId).classList.add('active');
   var roleEl = document.getElementById('header-role');
-  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' || tipo === 'pos_doula' ? 'hdr.role.gestante' : 'hdr.role.doula';
+  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
   var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : tipo === 'pos' ? '🌸' : tipo === 'pos_doula' ? '💜' : '🌙';
   roleEl.setAttribute('data-i18n', roleKey);
-  roleEl.textContent = roleEmoji + ' ' + t(roleKey);
+  roleEl.textContent = tipo === 'pos_doula' ? '💜 Doula Pós Parto' : (roleEmoji + ' ' + t(roleKey));
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
@@ -6579,12 +6580,19 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
   }
   if (tipo === 'pos_doula') {
-    var gPosD = document.getElementById('pos-doula-greeting');
+    var gPosD = document.getElementById('pos-greeting');
     if (gPosD) gPosD.textContent = saudacao + ', ' + primeiroNome + '! 💜';
-    var posDNome = document.getElementById('pos-doula-profile-name');
+    var posDNome = document.getElementById('pos-profile-name');
     if (posDNome) posDNome.textContent = primeiroNome;
-    var posDAvatar = document.getElementById('pos-doula-avatar');
+    var posDAvatar = document.getElementById('pos-avatar');
     if (posDAvatar) posDAvatar.textContent = primeiroNome[0].toUpperCase();
+    var posRoleEl = document.querySelector('#view-pos .pos-role');
+    if (posRoleEl) posRoleEl.textContent = '💜 Doula Pós Parto';
+    var posBebeSide = document.querySelector('#view-pos .pos-sidebar > div:last-child');
+    if (posBebeSide) posBebeSide.style.display = 'none';
+    var posDiasEl = document.getElementById('pos-dias-puerperio');
+    if (posDiasEl) posDiasEl.textContent = 'Seu espaço de acompanhamento pós-parto';
+    setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
   }
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
@@ -9865,7 +9873,7 @@ async function enviarFeedbackGlobal() {
   var payload = {
     gestante_id: currentUserId || null,
     usuario_nome: currentNome || 'Usuário',
-    tipo_usuario: tipoSelecionado || null,
+    tipo_usuario: currentRole || tipoSelecionado || null,
     secao: secao,
     tipo_feedback: _fbTipoSelecionado,
     descricao: msg,
