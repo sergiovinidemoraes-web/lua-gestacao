@@ -850,7 +850,8 @@ tr:hover td { background:var(--rose-pale); }
           <button class="login-tipo-btn selected" id="tipo-gestante" onclick="selecionarTipo('gestante')">🤰 Gestante</button>
           <button class="login-tipo-btn" id="tipo-doula" onclick="selecionarTipo('doula')">🌙 Doula</button>
           <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">❤️ Acompanhante</button>
-          <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Pós Parto</button>
+          <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Gestante Pós Parto</button>
+          <button class="login-tipo-btn" id="tipo-pos-doula" onclick="selecionarTipo('pos_doula')" style="margin-top:8px;">💜 Doula Pós Parto</button>
         </div>
       </div>
       <div id="pai-codigo-campo" style="display:none;">
@@ -2832,6 +2833,120 @@ tr:hover td { background:var(--rose-pale); }
             <div style="font-size:56px;margin-bottom:16px;">💜</div>
             <div class="card-title">Em breve</div>
             <div style="font-size:14px;color:var(--earth-light);line-height:1.7;">A integração com a doula do Lua Gestação estará disponível em breve. Sua rede de apoio continua crescendo com você.</div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ══════ LUA-PÓS DOULA VIEW ══════ -->
+  <div class="view" id="view-pos-doula">
+    <div class="pos-layout">
+
+      <aside class="pos-sidebar">
+        <div class="pos-profile">
+          <div class="pos-avatar" id="pos-doula-avatar" style="background:linear-gradient(135deg,#C5B3D9,#9B7BB8);">D</div>
+          <div class="pos-name" id="pos-doula-profile-name">—</div>
+          <div class="pos-role" style="color:#9B7BB8;">💜 Doula Pós Parto</div>
+        </div>
+        <nav class="pos-nav">
+          <div class="pos-nav-item active" onclick="posDNav(this,'posd-dashboard')"><span class="pos-nav-icon">🏠</span><span>Início</span></div>
+          <div class="pos-nav-item" onclick="posDNav(this,'posd-clientes')"><span class="pos-nav-icon">👶</span><span>Clientes</span></div>
+          <div class="pos-nav-item" onclick="posDNav(this,'posd-registros')"><span class="pos-nav-icon">📋</span><span>Registros</span></div>
+        </nav>
+      </aside>
+
+      <nav class="mobile-bottom-nav" id="pos-doula-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+          <div class="mob-nav-item active" onclick="posDNav(this,'posd-dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Início</span>
+          </div>
+          <div class="mob-nav-item" onclick="posDNav(this,'posd-clientes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>Clientes</span>
+          </div>
+          <div class="mob-nav-item" onclick="posDNav(this,'posd-registros')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <span>Registros</span>
+          </div>
+        </div>
+      </nav>
+
+      <main class="p-main">
+
+        <!-- DASHBOARD -->
+        <div class="pos-panel active" id="posd-dashboard">
+          <div class="panel-title" id="pos-doula-greeting">Olá, Doula 💜</div>
+          <div class="panel-sub">Seu espaço de atendimento pós-parto</div>
+
+          <div class="card" style="background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);cursor:pointer;" onclick="posDNav(document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item')[1],'posd-clientes')">
+            <div class="card-title">👶 Clientes Pós Parto</div>
+            <div style="font-size:13px;color:var(--earth-light);">Acompanhe suas mães no puerpério — veja registros de amamentação, sono e fraldas.</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📋 Registros de Visita</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Registre suas visitas e anotações pós-parto.</div>
+            <button onclick="posDNav(document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item')[2],'posd-registros')" class="login-btn" style="background:#9B7BB8;">Novo Registro</button>
+          </div>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="pos-panel" id="posd-clientes">
+          <div class="panel-title">Clientes Pós Parto</div>
+          <div class="panel-sub">Mães vinculadas ao seu atendimento</div>
+          <div class="card" style="text-align:center;padding:40px 24px;">
+            <div style="font-size:48px;margin-bottom:16px;">💜</div>
+            <div class="card-title">Em construção</div>
+            <div style="font-size:14px;color:var(--earth-light);line-height:1.7;">A vinculação entre Doula Pós Parto e Gestante Pós Parto estará disponível em breve.</div>
+          </div>
+        </div>
+
+        <!-- REGISTROS -->
+        <div class="pos-panel" id="posd-registros">
+          <div class="panel-title">Registros de Visita</div>
+          <div class="panel-sub">Suas anotações pós-parto</div>
+          <div class="card">
+            <div class="card-title">Nova visita pós-parto</div>
+            <div style="margin-bottom:14px;">
+              <label class="form-label">Nome da cliente</label>
+              <input id="posd-cliente-nome" class="form-input" type="text" placeholder="Nome da mãe">
+            </div>
+            <div style="margin-bottom:14px;">
+              <label class="form-label">Dias de puerpério</label>
+              <input id="posd-dias-puerperio" class="form-input" type="number" placeholder="Ex: 7" min="1">
+            </div>
+            <div style="margin-bottom:14px;">
+              <label class="form-label">Amamentação</label>
+              <select id="posd-amamentacao" class="form-input">
+                <option value="">Selecione...</option>
+                <option value="exclusivo">Aleitamento exclusivo</option>
+                <option value="misto">Misto (mama + fórmula)</option>
+                <option value="formula">Fórmula</option>
+                <option value="bomba">Bomba + mamadeira</option>
+                <option value="dificuldades">Com dificuldades</option>
+              </select>
+            </div>
+            <div style="margin-bottom:14px;">
+              <label class="form-label">Recuperação da mãe</label>
+              <select id="posd-recuperacao" class="form-input">
+                <option value="">Selecione...</option>
+                <option value="boa">Boa</option>
+                <option value="regular">Regular</option>
+                <option value="dificil">Difícil</option>
+              </select>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label class="form-label">Observações</label>
+              <textarea id="posd-obs" class="form-input" rows="4" style="resize:none;" placeholder="Anote observações da visita..."></textarea>
+            </div>
+            <button onclick="posDSalvarRegistro()" class="login-btn" style="background:#9B7BB8;">Salvar Registro</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Registros recentes</div>
+            <div id="posd-historico-registros"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
           </div>
         </div>
 
@@ -6180,10 +6295,11 @@ function loginTab(tab) {
 
 function selecionarTipo(tipo) {
   tipoSelecionado = tipo;
-  document.getElementById('tipo-gestante').classList.toggle('selected', tipo === 'gestante');
-  document.getElementById('tipo-doula').classList.toggle('selected', tipo === 'doula');
-  document.getElementById('tipo-pai').classList.toggle('selected', tipo === 'pai');
-  document.getElementById('tipo-pos').classList.toggle('selected', tipo === 'pos');
+  ['gestante','doula','pai','pos','pos_doula'].forEach(function(t) {
+    var id = 'tipo-' + t.replace('_','-');
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('selected', t === tipo);
+  });
   var paiCampo = document.getElementById('pai-codigo-campo');
   if (paiCampo) paiCampo.style.display = tipo === 'pai' ? 'block' : 'none';
   var posCampos = document.getElementById('pos-bebe-campos');
@@ -6377,10 +6493,11 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-doula').classList.remove('active');
   document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-pos').classList.remove('active');
-  document.getElementById('view-' + tipo).classList.add('active');
+  document.getElementById('view-pos-doula').classList.remove('active');
+  document.getElementById('view-' + tipo.replace('_','-')).classList.add('active');
   var roleEl = document.getElementById('header-role');
-  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
-  var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : tipo === 'pos' ? '🌸' : '🌙';
+  var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' || tipo === 'pos_doula' ? 'hdr.role.gestante' : 'hdr.role.doula';
+  var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : tipo === 'pos' ? '🌸' : tipo === 'pos_doula' ? '💜' : '🌙';
   roleEl.setAttribute('data-i18n', roleKey);
   roleEl.textContent = roleEmoji + ' ' + t(roleKey);
   document.getElementById('header-user-name').textContent = nome;
@@ -6460,6 +6577,14 @@ function entrarNoApp(tipo, nome) {
     var posAvatar = document.getElementById('pos-avatar');
     if (posAvatar) posAvatar.textContent = primeiroNome[0].toUpperCase();
     setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
+  }
+  if (tipo === 'pos_doula') {
+    var gPosD = document.getElementById('pos-doula-greeting');
+    if (gPosD) gPosD.textContent = saudacao + ', ' + primeiroNome + '! 💜';
+    var posDNome = document.getElementById('pos-doula-profile-name');
+    if (posDNome) posDNome.textContent = primeiroNome;
+    var posDAvatar = document.getElementById('pos-doula-avatar');
+    if (posDAvatar) posDAvatar.textContent = primeiroNome[0].toUpperCase();
   }
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
@@ -6743,6 +6868,74 @@ async function carregarHistoricoSono() {
       var fim = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
       var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fim + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+// ── DOULA PÓS PARTO ──
+function posDNav(el, panelId) {
+  document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#view-pos-doula .pos-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#view-pos-doula .pos-panel').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var sideMap = {'posd-dashboard':0,'posd-clientes':1,'posd-registros':2};
+  var sideItems = document.querySelectorAll('#view-pos-doula .pos-nav-item');
+  var idx = sideMap[panelId];
+  if (idx !== undefined && sideItems[idx]) sideItems[idx].classList.add('active');
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (panelId === 'posd-registros') { try { posDCarregarRegistros(); } catch(e) {} }
+}
+
+async function posDSalvarRegistro() {
+  if (!db || !currentUserId) return;
+  var clienteNome = (document.getElementById('posd-cliente-nome') || {}).value || '';
+  var diasPuerperio = parseInt((document.getElementById('posd-dias-puerperio') || {}).value || '0', 10);
+  var amamentacao = (document.getElementById('posd-amamentacao') || {}).value || '';
+  var recuperacao = (document.getElementById('posd-recuperacao') || {}).value || '';
+  var obs = (document.getElementById('posd-obs') || {}).value || '';
+  if (!clienteNome) { mostrarToast('Informe o nome da cliente.'); return; }
+  try {
+    var { error } = await db.from('registros_posparto').insert({
+      doula_id: currentUserId,
+      cliente_nome: clienteNome,
+      data_visita: new Date().toISOString().split('T')[0],
+      dias_posparto: diasPuerperio || null,
+      amamentacao: amamentacao || null,
+      recuperacao: recuperacao || null,
+      evolucao: obs || null,
+    });
+    if (error) throw error;
+    mostrarToast('✓ Registro salvo!');
+    var cn = document.getElementById('posd-cliente-nome'); if (cn) cn.value = '';
+    var dp = document.getElementById('posd-dias-puerperio'); if (dp) dp.value = '';
+    var am = document.getElementById('posd-amamentacao'); if (am) am.value = '';
+    var rc = document.getElementById('posd-recuperacao'); if (rc) rc.value = '';
+    var ob = document.getElementById('posd-obs'); if (ob) ob.value = '';
+    posDCarregarRegistros();
+  } catch(e) { mostrarToast('Erro ao salvar registro.'); }
+}
+
+async function posDCarregarRegistros() {
+  if (!db || !currentUserId) return;
+  var el = document.getElementById('posd-historico-registros');
+  if (!el) return;
+  try {
+    var res = await db.from('registros_posparto').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false }).limit(20);
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div>'; return; }
+    el.innerHTML = res.data.map(function(r) {
+      var data = r.data_visita ? new Date(r.data_visita + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      var amMap = {'exclusivo':'Exclusivo','misto':'Misto','formula':'Fórmula','nenhum':'Nenhum'};
+      var rcMap = {'otima':'Ótima','boa':'Boa','regular':'Regular','dificil':'Difícil'};
+      return '<div style="background:var(--white);border-radius:12px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,0.04);margin-bottom:10px;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+        + '<span style="font-size:14px;font-weight:600;color:var(--dark);">👶 ' + r.cliente_nome + '</span>'
+        + '<span style="font-size:12px;color:var(--earth-light);">' + data + (r.dias_posparto ? ' · ' + r.dias_posparto + 'º dia' : '') + '</span>'
+        + '</div>'
+        + (r.amamentacao ? '<span style="font-size:12px;color:#9B7BB8;margin-right:10px;">🍼 ' + (amMap[r.amamentacao] || r.amamentacao) + '</span>' : '')
+        + (r.recuperacao ? '<span style="font-size:12px;color:var(--sage);">💚 Recuperação: ' + (rcMap[r.recuperacao] || r.recuperacao) + '</span>' : '')
+        + (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);margin-top:8px;">' + r.evolucao + '</div>' : '')
+        + '</div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
 }
