@@ -6506,8 +6506,8 @@ async function carregarUsuario(user) {
     var nome = res.data ? res.data.nome : ((user.user_metadata && user.user_metadata.nome) || user.email);
     if (res.data) currentDoulaId = res.data.doula_id || null;
     if (res.data && tipo === 'pai') paiGestanteId = res.data.gestante_id || null;
-    // Verifica solicitações sempre que for gestante sem doula vinculada
-    if (!currentDoulaId && tipo === 'gestante') {
+    // Fonte de verdade para vínculo é solicitacoes, não usuarios.doula_id (RLS impede update)
+    if (tipo === 'gestante') {
       try {
         var sol = await db.from('solicitacoes')
           .select('id,doula_id,gestante_nome')
@@ -6524,7 +6524,7 @@ async function carregarUsuario(user) {
           .eq('gestante_id', user.id)
           .eq('status', 'aceita')
           .maybeSingle();
-        if (solAceita.data) currentDoulaId = solAceita.data.doula_id;
+        currentDoulaId = solAceita.data ? solAceita.data.doula_id : null;
       } catch(e2) {}
     }
     // Carrega dados do bebê e gestação do Supabase (garante sync entre dispositivos)
@@ -7838,8 +7838,7 @@ function abrirChatComGestante(gestanteId, gestanteNome) {
 async function encerrarVinculo() {
   abrirModal('Encerrar vínculo', 'Deseja encerrar o vínculo com sua doula?', async function() {
     try {
-      var sol = await db.from('solicitacoes').select('id').eq('gestante_id', currentUserId).in('status', ['aceita','pendente']).maybeSingle();
-      if (sol.data) await db.from('solicitacoes').update({ status: 'encerrada' }).eq('id', sol.data.id);
+      await db.from('solicitacoes').update({ status: 'encerrada' }).eq('gestante_id', currentUserId).in('status', ['aceita','pendente']);
       try { await db.from('usuarios').update({ doula_id: null }).eq('id', currentUserId); } catch(e2) {}
       currentDoulaId = null;
       currentSolicitacaoPendente = null;
