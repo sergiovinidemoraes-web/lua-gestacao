@@ -6045,6 +6045,7 @@ async function enviarReporte() {
   var desc = document.getElementById('reporte-descricao');
   var preview = document.getElementById('reporte-msg-preview');
   if (!desc || !desc.value.trim()) { mostrarToast('Descreva o problema antes de enviar'); return; }
+  if (!db) { mostrarToast('Sem conex\u00e3o. Tente novamente.'); return; }
   var payload = {
     gestante_id: currentUserId || null,
     gestante_nome: currentNome || 'Visitante',
@@ -6054,11 +6055,12 @@ async function enviarReporte() {
     descricao: desc.value.trim(),
     lido: false
   };
-  if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
-  var res = await db.from('reportes').insert(payload);
-  if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
-  fecharModalReporte();
-  mostrarToast('\u2691 Reporte enviado! Obrigada pelo feedback \ud83d\udc9b');
+  try {
+    var res = await db.from('reportes').insert(payload);
+    if (res.error) throw res.error;
+    fecharModalReporte();
+    mostrarToast('\u2691 Reporte enviado! Obrigada pelo feedback \ud83d\udc9b');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
 }
 
 // ─── Admin: carregar reportes ───
@@ -6195,6 +6197,8 @@ function selecionarNotaAvaliacao(nota) {
   if (el) el.value = nota;
 }
 async function salvarAvaliacaoDoula() {
+  if (!db || !currentUserId) return;
+  if (!currentDoulaId) { mostrarToast('Voc\u00ea precisa estar vinculada a uma doula para avaliar'); return; }
   var nota = parseInt((document.getElementById('avaliacao-nota-valor') || {}).value || '0');
   var tipoParto = (document.getElementById('avaliacao-tipo-parto') || {}).value;
   var comentario = ((document.getElementById('avaliacao-comentario') || {}).value || '').trim();
@@ -6202,18 +6206,19 @@ async function salvarAvaliacaoDoula() {
   var modalidade = (document.getElementById('avaliacao-modalidade') || {}).value;
   var dataParto = (document.getElementById('avaliacao-data-parto') || {}).value;
   if (!nota || !tipoParto) { mostrarToast('Preencha o tipo de parto e a nota'); return; }
-  if (db && currentUserId && currentDoulaId) {
-    try {
-      await db.from('avaliacoes_doula').insert({
-        gestante_id: currentUserId, doula_id: currentDoulaId,
-        gestante_nome: currentNome, nota: nota, tipo_parto: tipoParto,
-        comentario: comentario, cidade: cidade, modalidade: modalidade,
-        data_parto: dataParto || null
-      });
-    } catch(e) { console.warn('avaliacao:', e.message); }
-  }
-  fecharAvaliacaoDoula();
-  mostrarToast('\ud83d\udc9b Avalia\u00e7\u00e3o enviada! Obrigada pelo feedback');
+  try {
+    var dup = await db.from('avaliacoes_doula').select('id').eq('gestante_id', currentUserId).eq('doula_id', currentDoulaId).maybeSingle();
+    if (dup.data) { mostrarToast('Voc\u00ea j\u00e1 avaliou esta doula'); fecharAvaliacaoDoula(); return; }
+    var res = await db.from('avaliacoes_doula').insert({
+      gestante_id: currentUserId, doula_id: currentDoulaId,
+      gestante_nome: currentNome, nota: nota, tipo_parto: tipoParto,
+      comentario: comentario, cidade: cidade, modalidade: modalidade,
+      data_parto: dataParto || null
+    });
+    if (res.error) throw res.error;
+    fecharAvaliacaoDoula();
+    mostrarToast('\ud83d\udc9b Avalia\u00e7\u00e3o enviada! Obrigada pelo feedback');
+  } catch(e) { mostrarToast('Erro ao enviar avalia\u00e7\u00e3o: ' + e.message); }
 }
 
 // ─── Backup Doula ───
@@ -6969,14 +6974,14 @@ var posSonoTipo = null;
 
 function posNav(el, panelId) {
   document.querySelectorAll('#pos-bottom-nav .mob-nav-item').forEach(function(i) { i.classList.remove('active'); });
-  document.querySelectorAll('.pos-nav-item').forEach(function(i) { i.classList.remove('active'); });
-  document.querySelectorAll('.pos-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('#view-pos .pos-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#view-pos .pos-panel').forEach(function(p) { p.classList.remove('active'); });
   if (el) el.classList.add('active');
   var navMap = { 'pos-dashboard':'pos-nav-dashboard', 'pos-amamentacao':'pos-nav-amamentacao', 'pos-rotina':'pos-nav-rotina', 'pos-bebe':'pos-nav-bebe' };
   var mobId = navMap[panelId];
   if (mobId) { var mob = document.getElementById(mobId); if (mob) mob.classList.add('active'); }
+  var sideItems = document.querySelectorAll('#view-pos .pos-nav-item');
   var sideMap = { 'pos-dashboard':0, 'pos-amamentacao':1, 'pos-rotina':2, 'pos-bebe':3 };
-  var sideItems = document.querySelectorAll('.pos-nav-item');
   var idx = sideMap[panelId];
   if (idx !== undefined && sideItems[idx]) sideItems[idx].classList.add('active');
   var panel = document.getElementById(panelId);
@@ -8000,20 +8005,27 @@ async function carregarMarketplace() {
   try {
     var res = await db.from('usuarios').select('*').eq('tipo', 'doula');
     if (res.error) {
-      console.error('Marketplace error:', res.error);
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Erro ao carregar. Tente novamente.</div>';
       return;
     }
     todasDoulas = (res.data || []).filter(function(d) { return d.nome; });
-    console.log('Doulas encontradas:', todasDoulas.length);
-    renderDoulas(todasDoulas);
+    var ratingsMap = {};
+    try {
+      var avRes = await db.from('avaliacoes_doula').select('doula_id,nota');
+      (avRes.data || []).forEach(function(a) {
+        if (!ratingsMap[a.doula_id]) ratingsMap[a.doula_id] = { soma: 0, total: 0 };
+        ratingsMap[a.doula_id].soma += a.nota;
+        ratingsMap[a.doula_id].total += 1;
+      });
+    } catch(e2) {}
+    renderDoulas(todasDoulas, ratingsMap);
   } catch(e) {
-    console.error('carregarMarketplace:', e);
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Erro: ' + e.message + '</div>';
   }
 }
 
-function renderDoulas(doulas) {
+function renderDoulas(doulas, ratingsMap) {
+  ratingsMap = ratingsMap || {};
   var grid = document.getElementById('doulas-grid-lista');
   if (!grid) return;
   grid.innerHTML = '';
@@ -8031,11 +8043,22 @@ function renderDoulas(doulas) {
     }).join('');
     var bioText = d.bio ? (d.bio.length > 80 ? d.bio.substring(0,80) + '...' : d.bio) : 'Perfil em preenchimento';
     var loc = d.cidade ? '📍 ' + d.cidade : 'Localização não informada';
+    var rInfo = ratingsMap[d.id];
+    var ratingHtml = '';
+    if (rInfo && rInfo.total > 0) {
+      var avg = (rInfo.soma / rInfo.total).toFixed(1);
+      var stars = '';
+      for (var s = 1; s <= 5; s++) stars += s <= Math.round(rInfo.soma / rInfo.total) ? '★' : '☆';
+      ratingHtml = '<div style="font-size:12px;color:#c9897a;margin-top:2px;">' + stars + ' <span style="font-weight:600;">' + avg + '</span> <span style="color:var(--earth-light);">(' + rInfo.total + ' avaliação' + (rInfo.total > 1 ? 'ões' : '') + ')</span></div>';
+    } else {
+      ratingHtml = '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Sem avaliações ainda</div>';
+    }
     card.innerHTML =
       '<div class="doula-card-top">' +
         '<div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--rose),#a8685a)">' + inicial + '</div>' +
         '<div><div class="doula-mkt-name">' + d.nome + '</div>' +
-        '<div class="doula-mkt-local">' + loc + '</div></div>' +
+        '<div class="doula-mkt-local">' + loc + '</div>' +
+        ratingHtml + '</div>' +
       '</div>' +
       '<div class="doula-mkt-tags">' + tags + '</div>' +
       '<div style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">' + bioText + '</div>';
@@ -9985,7 +10008,7 @@ function mostrarToast(msg) {
 </div>
 
 <!-- MODAL REPORTE -->
-<div id="modal-reporte" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;">
+<div id="modal-reporte" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;align-items:center;justify-content:center;padding:20px;">
   <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:460px;width:100%;position:relative;">
     <div id="reporte-modal-title" style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportar resposta</div>
     <div id="reporte-modal-sub" style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Algo deu errado na resposta da Lua? Nos informe para melhorar!</div>
