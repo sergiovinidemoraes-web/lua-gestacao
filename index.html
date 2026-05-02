@@ -3052,6 +3052,88 @@ tr:hover td { background:var(--rose-pale); }
     </div>
   </div>
 
+  <!-- ══════ DOULA BACKUP VIEW ══════ -->
+  <div class="view" id="view-doula-backup">
+    <div class="doula-layout">
+      <aside class="d-sidebar">
+        <div class="d-sidebar-title">🔄 Doula Backup</div>
+        <div style="margin:0 16px 14px;padding:10px 14px;background:rgba(201,137,122,0.1);border-radius:12px;font-size:12px;color:var(--earth-light);text-align:center;line-height:1.5;">
+          Cobrindo<br><strong id="bk-doula-nome" style="color:var(--rose);font-size:13px;">—</strong>
+        </div>
+        <nav>
+          <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><span class="d-nav-icon">👩</span>Clientes</div>
+          <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><span class="d-nav-icon">📅</span>Agenda</div>
+          <div class="d-nav-item" id="bk-nav-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;"><span class="d-nav-icon">💬</span>Mensagens</div>
+          <div class="d-nav-item" id="bk-nav-registros" onclick="bkNav(this,'bk-registros')" style="display:none;"><span class="d-nav-icon">📝</span>Registros</div>
+        </nav>
+      </aside>
+
+      <nav class="mobile-bottom-nav" id="bk-bottom-nav">
+        <div class="mobile-bottom-nav-inner">
+          <div class="mob-nav-item active" id="bk-mob-clientes" onclick="bkNav(this,'bk-clientes')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span>Clientes</span>
+          </div>
+          <div class="mob-nav-item" id="bk-mob-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Agenda</span>
+          </div>
+          <div class="mob-nav-item" id="bk-mob-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Mensagens</span>
+          </div>
+          <div class="mob-nav-item" id="bk-mob-registros" onclick="bkNav(this,'bk-registros')" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Registros</span>
+          </div>
+        </div>
+      </nav>
+
+      <main class="d-main">
+
+        <!-- CLIENTES -->
+        <div class="d-panel active" id="bk-clientes">
+          <div class="panel-title">Clientes</div>
+          <div class="panel-sub" id="bk-clientes-sub">Clientes ativas da doula que você está cobrindo</div>
+          <div id="bk-clientes-lista"><div class="empty-state-small">Carregando...</div></div>
+        </div>
+
+        <!-- AGENDA -->
+        <div class="d-panel" id="bk-agenda">
+          <div class="panel-title">Agenda</div>
+          <div class="panel-sub">Consultas agendadas</div>
+          <div id="bk-agenda-lista"><div class="empty-state-small">Carregando...</div></div>
+        </div>
+
+        <!-- MENSAGENS -->
+        <div class="d-panel" id="bk-mensagens">
+          <div class="panel-title">Mensagens</div>
+          <div class="panel-sub">Chat com as clientes</div>
+          <div id="bk-chat-lista"><div class="empty-state-small">Selecione uma cliente para ver o chat.</div></div>
+          <div id="bk-chat-area" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+              <button onclick="fecharChatBackup()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--earth-light);">←</button>
+              <div class="card-title" id="bk-chat-titulo" style="margin:0;">—</div>
+            </div>
+            <div id="bk-msgs-container" style="height:320px;overflow-y:auto;padding:8px;background:var(--cream);border-radius:14px;margin-bottom:12px;"></div>
+            <div style="display:flex;gap:8px;">
+              <input id="bk-msg-input" class="form-input" type="text" placeholder="Digite uma mensagem..." style="flex:1;" onkeydown="if(event.key==='Enter')enviarMensagemBackup()">
+              <button onclick="enviarMensagemBackup()" class="btn-primary" style="padding:10px 16px;">Enviar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- REGISTROS -->
+        <div class="d-panel" id="bk-registros">
+          <div class="panel-title">Registros</div>
+          <div class="panel-sub">Histórico de atendimentos</div>
+          <div id="bk-registros-lista"><div class="empty-state-small">Carregando...</div></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -3063,6 +3145,9 @@ let currentDoulaId = null;
 let currentNome = '';
 let currentEmail = '';
 let currentSolicitacaoPendente = null; // { id, doulaId, nomeDoula }
+let currentBackupDoulaId = null;      // ID da doula principal quando logado como backup
+let currentBackupPerms = null;        // { agenda, chat, registros }
+let bkChatGestanteId = null;
 let paiGestanteId = null;
 let paiRealtimeChannel = null;
 let paiTimerInterval = null;
@@ -6140,12 +6225,14 @@ async function salvarBackupDoula() {
     backup_email: email.value.trim().toLowerCase(),
     perm_agenda: !!(document.getElementById('backup-perm-agenda') || {}).checked,
     perm_chat: !!(document.getElementById('backup-perm-chat') || {}).checked,
-    perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked
+    perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked,
+    status: 'pendente',
+    backup_user_id: null
   };
   if (db && currentUserId) {
-    try { await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); mostrarToast('\u2705 Doula backup configurada!'); }
+    try { await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); mostrarToast('\u2705 Backup configurado! Pe\u00e7a para ela entrar no app com o e-mail cadastrado.'); }
     catch(e) { mostrarToast('Erro: ' + e.message); }
-  } else { mostrarToast('\u2705 Configura\u00e7\u00e3o salva'); }
+  }
 }
 async function carregarBackupDoula() {
   if (!db || !currentUserId) return;
@@ -6157,6 +6244,126 @@ async function carregarBackupDoula() {
     var pa = document.getElementById('backup-perm-agenda'); if (pa) pa.checked = !!res.data.perm_agenda;
     var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
     var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
+  } catch(e) {}
+}
+
+// \u2500\u2500\u2500 Backup Doula \u2014 Navega\u00e7\u00e3o e carregamentos \u2500\u2500\u2500
+function bkNav(el, panelId) {
+  document.querySelectorAll('#view-doula-backup .d-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#bk-bottom-nav .mob-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  document.querySelectorAll('#view-doula-backup .d-panel').forEach(function(p) { p.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (panelId === 'bk-agenda') carregarAgendaBackup();
+  if (panelId === 'bk-mensagens') carregarListaChatBackup();
+  if (panelId === 'bk-registros') carregarRegistrosBackup();
+}
+
+async function carregarClientesBackup() {
+  if (!db || !currentBackupDoulaId) return;
+  var el = document.getElementById('bk-clientes-lista');
+  if (!el) return;
+  try {
+    var res = await db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentBackupDoulaId).eq('status', 'aceita');
+    if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhuma cliente ativa.</div>'; return; }
+    el.innerHTML = res.data.map(function(s) {
+      var data = new Date(s.criado_em).toLocaleDateString('pt-BR');
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
+        '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + s.gestante_nome + '</div>' +
+        '<div style="font-size:11px;color:var(--earth-light);">Desde ' + data + '</div></div>' +
+        (currentBackupPerms && currentBackupPerms.chat ? '<button onclick="abrirChatBackup(\'' + s.gestante_id + '\',\'' + s.gestante_nome.replace(/'/g,'') + '\')" style="background:var(--sage);color:white;border:none;padding:6px 12px;border-radius:10px;font-size:12px;cursor:pointer;font-family:inherit;">\ud83d\udcac Chat</button>' : '') +
+        '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function carregarAgendaBackup() {
+  if (!db || !currentBackupDoulaId) return;
+  var el = document.getElementById('bk-agenda-lista');
+  if (!el) return;
+  try {
+    var res = await db.from('consultas_doula').select('*').eq('doula_id', currentBackupDoulaId).order('data_hora', { ascending: true }).limit(30);
+    if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhum agendamento.</div>'; return; }
+    el.innerHTML = res.data.map(function(c) {
+      var dt = new Date(c.data_hora);
+      var dataStr = dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
+        '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
+        '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + (c.tipo ? ' \u00b7 ' + c.tipo : '') + '</div>' +
+        (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') +
+        '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+async function carregarListaChatBackup() {
+  if (!db || !currentBackupDoulaId) return;
+  var lista = document.getElementById('bk-chat-lista');
+  var area = document.getElementById('bk-chat-area');
+  if (!lista || !area) return;
+  lista.style.display = '';
+  area.style.display = 'none';
+  try {
+    var res = await db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentBackupDoulaId).eq('status', 'aceita');
+    if (!res.data || !res.data.length) { lista.innerHTML = '<div class="empty-state-small">Nenhuma cliente para conversar.</div>'; return; }
+    lista.innerHTML = '<div class="panel-sub" style="margin-bottom:12px;">Selecione uma cliente:</div>' +
+      res.data.map(function(s) {
+        return '<div onclick="abrirChatBackup(\'' + s.gestante_id + '\',\'' + s.gestante_nome.replace(/'/g,'') + '\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--white);margin-bottom:8px;cursor:pointer;box-shadow:0 1px 6px rgba(45,31,26,0.05);">' +
+          '<div style="width:40px;height:40px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">' + s.gestante_nome[0].toUpperCase() + '</div>' +
+          '<div style="font-size:14px;font-weight:500;color:var(--dark);">' + s.gestante_nome + '</div>' +
+          '</div>';
+      }).join('');
+  } catch(e) {}
+}
+
+function abrirChatBackup(gestanteId, gestanteNome) {
+  bkChatGestanteId = gestanteId;
+  var lista = document.getElementById('bk-chat-lista');
+  var area = document.getElementById('bk-chat-area');
+  var titulo = document.getElementById('bk-chat-titulo');
+  if (lista) lista.style.display = 'none';
+  if (area) area.style.display = '';
+  if (titulo) titulo.textContent = gestanteNome;
+  var container = document.getElementById('bk-msgs-container');
+  if (container) carregarMensagens(gestanteId, currentBackupDoulaId, container, 'doula');
+}
+
+function fecharChatBackup() {
+  bkChatGestanteId = null;
+  var lista = document.getElementById('bk-chat-lista');
+  var area = document.getElementById('bk-chat-area');
+  if (lista) lista.style.display = '';
+  if (area) area.style.display = 'none';
+}
+
+async function enviarMensagemBackup() {
+  if (!db || !bkChatGestanteId || !currentBackupDoulaId) return;
+  var input = document.getElementById('bk-msg-input');
+  var texto = (input ? input.value : '').trim();
+  if (!texto) return;
+  input.value = '';
+  try {
+    await db.from('mensagens').insert({ gestante_id: bkChatGestanteId, doula_id: currentBackupDoulaId, remetente_tipo: 'doula', texto: texto });
+    var container = document.getElementById('bk-msgs-container');
+    if (container) carregarMensagens(bkChatGestanteId, currentBackupDoulaId, container, 'doula');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
+}
+
+async function carregarRegistrosBackup() {
+  if (!db || !currentBackupDoulaId) return;
+  var el = document.getElementById('bk-registros-lista');
+  if (!el) return;
+  try {
+    var res = await db.from('registros_atendimento').select('*').eq('doula_id', currentBackupDoulaId).order('data', { ascending: false }).limit(30);
+    if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhum registro ainda.</div>'; return; }
+    el.innerHTML = res.data.map(function(r) {
+      return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
+        '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + r.cliente_nome + '</div>' +
+        '<div style="font-size:11px;color:var(--earth-light);">' + (r.data || '') + (r.tipo ? ' \u00b7 ' + r.tipo : '') + '</div>' +
+        (r.anotacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
+        '</div>';
+    }).join('');
   } catch(e) {}
 }
 
@@ -6597,6 +6804,27 @@ async function carregarUsuario(user) {
         try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
       }
     }
+    // Verifica se é doula backup de outra doula
+    if (tipo === 'doula') {
+      try {
+        var bkRes = await db.from('backup_doulas').select('*').eq('backup_email', user.email).maybeSingle();
+        if (bkRes.data) {
+          if (bkRes.data.status === 'pendente') {
+            await db.from('backup_doulas').update({ backup_user_id: user.id, status: 'ativo' }).eq('id', bkRes.data.id);
+          }
+          var mainRes = await db.from('usuarios').select('nome').eq('id', bkRes.data.doula_id).maybeSingle();
+          currentBackupDoulaId = bkRes.data.doula_id;
+          currentBackupPerms = {
+            nomeDoula: mainRes.data ? mainRes.data.nome : 'Doula',
+            agenda: !!bkRes.data.perm_agenda,
+            chat: !!bkRes.data.perm_chat,
+            registros: !!bkRes.data.perm_registros
+          };
+          entrarNoApp('doula_backup', nome);
+          return;
+        }
+      } catch(e2) {}
+    }
     entrarNoApp(tipo, nome);
     return;
   } catch(e) {}
@@ -6615,7 +6843,8 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-pai').classList.remove('active');
   document.getElementById('view-pos').classList.remove('active');
   document.getElementById('view-pos-doula').classList.remove('active');
-  var viewId = tipo === 'pos_doula' ? 'view-pos' : 'view-' + tipo.replace('_','-');
+  document.getElementById('view-doula-backup').classList.remove('active');
+  var viewId = 'view-' + tipo.replace('_','-');
   document.getElementById(viewId).classList.add('active');
   var roleEl = document.getElementById('header-role');
   var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
@@ -6661,6 +6890,7 @@ function entrarNoApp(tipo, nome) {
     var emoji2 = hora < 12 ? '☀️' : hora < 18 ? '🌤️' : '🌙';
     if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ' + emoji2;
     // Carrega clientes, solicitações e busca gestante vinculada para realtime
+    setTimeout(function() { try { carregarBackupDoula(); } catch(e) {} }, 750);
     setTimeout(function() { try { carregarSolicitacoesDoula(); } catch(e) {} }, 850);
     setTimeout(function() { try { iniciarRealtimeSolicitacoesDoula(); } catch(e) {} }, 1000);
     setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
@@ -6701,19 +6931,25 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
   }
   if (tipo === 'pos_doula') {
-    var gPosD = document.getElementById('pos-greeting');
+    var gPosD = document.getElementById('pos-doula-greeting');
     if (gPosD) gPosD.textContent = saudacao + ', ' + primeiroNome + '! 💜';
-    var posDNome = document.getElementById('pos-profile-name');
+    var posDNome = document.getElementById('pos-doula-profile-name');
     if (posDNome) posDNome.textContent = primeiroNome;
-    var posDAvatar = document.getElementById('pos-avatar');
+    var posDAvatar = document.getElementById('pos-doula-avatar');
     if (posDAvatar) posDAvatar.textContent = primeiroNome[0].toUpperCase();
-    var posRoleEl = document.querySelector('#view-pos .pos-role');
-    if (posRoleEl) posRoleEl.textContent = '💜 Doula Pós Parto';
-    var posBebeSide = document.querySelector('#view-pos .pos-sidebar > div:last-child');
-    if (posBebeSide) posBebeSide.style.display = 'none';
-    var posDiasEl = document.getElementById('pos-dias-puerperio');
-    if (posDiasEl) posDiasEl.textContent = 'Seu espaço de acompanhamento pós-parto';
-    setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
+  }
+  if (tipo === 'doula_backup') {
+    var bkAvatar = document.getElementById('bk-avatar');
+    if (bkAvatar) bkAvatar.textContent = primeiroNome[0].toUpperCase();
+    var bkNomeSidebar = document.getElementById('bk-doula-nome');
+    if (bkNomeSidebar && currentBackupPerms) bkNomeSidebar.textContent = currentBackupPerms.nomeDoula;
+    // Mostra nav items conforme permissões
+    if (currentBackupPerms) {
+      if (currentBackupPerms.agenda) { var el = document.getElementById('bk-nav-agenda'); if (el) el.style.display = ''; var em = document.getElementById('bk-mob-agenda'); if (em) em.style.display = ''; }
+      if (currentBackupPerms.chat)   { var el = document.getElementById('bk-nav-mensagens'); if (el) el.style.display = ''; var em = document.getElementById('bk-mob-mensagens'); if (em) em.style.display = ''; }
+      if (currentBackupPerms.registros) { var el = document.getElementById('bk-nav-registros'); if (el) el.style.display = ''; var em = document.getElementById('bk-mob-registros'); if (em) em.style.display = ''; }
+    }
+    setTimeout(function() { try { carregarClientesBackup(); } catch(e) {} }, 400);
   }
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
@@ -6923,6 +7159,7 @@ async function carregarPosDashboard() {
   var hoje = new Date().toISOString().split('T')[0];
   try {
     var bebe = await db.from('pos_bebes').select('*').eq('mae_id', currentUserId).maybeSingle();
+    if (bebe.data && bebe.data.data_nascimento) _bebeNascimento = new Date(bebe.data.data_nascimento);
     if (bebe.data) {
       var dias = bebe.data.data_nascimento ? Math.floor((new Date() - new Date(bebe.data.data_nascimento)) / 86400000) : null;
       var diasEl = document.getElementById('pos-dias-puerperio');
@@ -7011,6 +7248,201 @@ async function carregarHistoricoSono() {
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fim + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+// ── BEBÊ: Dentição + Desenvolvimento ──
+
+var _bebeNascimento = null; // data_nascimento do bebê (Date)
+
+function posBebebTab(aba) {
+  var pd = document.getElementById('pos-painel-denticao');
+  var pv = document.getElementById('pos-painel-desenvolvimento');
+  var bd = document.getElementById('pos-tab-denticao-btn');
+  var bv = document.getElementById('pos-tab-dev-btn');
+  if (!pd || !pv) return;
+  pd.style.display = aba === 'denticao' ? '' : 'none';
+  pv.style.display = aba === 'desenvolvimento' ? '' : 'none';
+  if (bd) bd.classList.toggle('active', aba === 'denticao');
+  if (bv) bv.classList.toggle('active', aba === 'desenvolvimento');
+  if (aba === 'desenvolvimento') carregarDesenvolvimento();
+}
+
+var _DENTES = [
+  // [id, label, arcada]
+  ['sup_m2d','2º Molar','sup'],['sup_m1d','1º Molar','sup'],['sup_cd','Canino','sup'],['sup_lid','Inc. Lateral','sup'],['sup_cid','Inc. Central','sup'],
+  ['sup_cie','Inc. Central','sup'],['sup_lie','Inc. Lateral','sup'],['sup_ce','Canino','sup'],['sup_m1e','1º Molar','sup'],['sup_m2e','2º Molar','sup'],
+  ['inf_m2d','2º Molar','inf'],['inf_m1d','1º Molar','inf'],['inf_cd','Canino','inf'],['inf_lid','Inc. Lateral','inf'],['inf_cid','Inc. Central','inf'],
+  ['inf_cie','Inc. Central','inf'],['inf_lie','Inc. Lateral','inf'],['inf_ce','Canino','inf'],['inf_m1e','1º Molar','inf'],['inf_m2e','2º Molar','inf']
+];
+
+var _DENTES_IDADES = {
+  'sup_cid':10,'sup_cie':10,'sup_lid':11,'sup_lie':11,'sup_cd':19,'sup_ce':19,'sup_m1d':16,'sup_m1e':16,'sup_m2d':29,'sup_m2e':29,
+  'inf_cid':8,'inf_cie':8,'inf_lid':13,'inf_lie':13,'inf_cd':20,'inf_ce':20,'inf_m1d':16,'inf_m1e':16,'inf_m2d':27,'inf_m2e':27
+};
+
+async function carregarDenticao() {
+  if (!db || !currentUserId) return;
+  try {
+    // Carrega dentes registrados
+    var res = await db.from('pos_dentes').select('*').eq('mae_id', currentUserId);
+    var registrados = {};
+    (res.data || []).forEach(function(d) { registrados[d.dente_id] = d.data_nascimento; });
+
+    // Renderiza diagrama
+    var sup = document.getElementById('pos-dentes-sup');
+    var inf = document.getElementById('pos-dentes-inf');
+    if (!sup || !inf) return;
+
+    function renderDente(d) {
+      var nasceu = !!registrados[d[0]];
+      return '<div onclick="toggleDente(\'' + d[0] + '\',\'' + d[1] + '\')" style="width:34px;height:44px;border-radius:6px 6px 10px 10px;background:' +
+        (nasceu ? 'var(--earth)' : 'var(--cream)') + ';border:1.5px solid ' + (nasceu ? 'var(--earth)' : 'rgba(122,100,85,0.2)') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:' +
+        (nasceu ? 'white' : 'var(--earth-light)') + ';text-align:center;padding:2px;line-height:1.2;transition:all 0.2s;" title="' + d[1] + '">' +
+        (nasceu ? '🟫' : '') + '</div>';
+    }
+
+    sup.innerHTML = _DENTES.filter(function(d){ return d[2]==='sup'; }).map(renderDente).join('');
+    inf.innerHTML = _DENTES.filter(function(d){ return d[2]==='inf'; }).map(renderDente).join('');
+
+    // Orientações por fase
+    var idadeMeses = _bebeNascimento ? Math.floor((new Date() - _bebeNascimento) / (30.44 * 24 * 3600 * 1000)) : null;
+    var oriEl = document.getElementById('pos-denticao-orientacoes');
+    if (oriEl && idadeMeses !== null) {
+      var ori = '';
+      if (idadeMeses < 6) ori = 'Ainda não é esperado nenhum dente. Mantenha higiene das gengivas com gaze umedecida.';
+      else if (idadeMeses < 12) ori = 'Fase dos primeiros incisivos! É normal o bebê ficar irritado, babar mais e querer morder. Ofereça mordedor gelado e massageie as gengivas.';
+      else if (idadeMeses < 18) ori = 'Chegada dos molares pode causar mais desconforto. Faça higiene com dedeira ou escovinha macia após cada refeição.';
+      else if (idadeMeses < 24) ori = 'Caninos surgem nessa fase. Higiene 2x ao dia com escova infantil e pasta com flúor (tamanho de um grão de arroz).';
+      else ori = 'Fase dos últimos molares. Dentição quase completa! Consulte o dentista pediátrico se ainda não foi.';
+      oriEl.textContent = ori;
+    }
+
+    // Histórico
+    var histEl = document.getElementById('pos-denticao-historico');
+    if (histEl) {
+      var lista = Object.keys(registrados);
+      if (!lista.length) { histEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum dente registrado ainda.</div>'; }
+      else {
+        histEl.innerHTML = lista.map(function(id) {
+          var info = _DENTES.find(function(d){ return d[0]===id; });
+          var label = info ? info[1] + ' (' + (info[2]==='sup'?'Superior':'Inferior') + ')' : id;
+          return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.08);font-size:13px;">' +
+            '<span style="color:var(--dark);">🦷 ' + label + '</span>' +
+            '<span style="color:var(--earth-light);">' + (registrados[id] ? new Date(registrados[id]).toLocaleDateString('pt-BR') : '—') + '</span>' +
+            '</div>';
+        }).join('');
+      }
+    }
+  } catch(e) {}
+}
+
+async function toggleDente(denteId, label) {
+  if (!db || !currentUserId) return;
+  try {
+    var check = await db.from('pos_dentes').select('id').eq('mae_id', currentUserId).eq('dente_id', denteId).maybeSingle();
+    if (check.data) {
+      await db.from('pos_dentes').delete().eq('id', check.data.id);
+      mostrarToast('🦷 ' + label + ' removido do registro');
+    } else {
+      var hoje = new Date().toISOString().split('T')[0];
+      await db.from('pos_dentes').insert({ mae_id: currentUserId, dente_id: denteId, data_nascimento: hoje });
+      mostrarToast('🦷 ' + label + ' registrado!');
+    }
+    carregarDenticao();
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+var _MARCOS = {
+  1:  ['Fixa o olhar no rosto','Reage a sons altos','Faz pequenos sons guturais'],
+  2:  ['Sorri socialmente','Segue objetos com os olhos','Levanta a cabeça brevemente'],
+  3:  ['Vocaliza e balbucia','Segura objetos por instantes','Sustenta cabeça com apoio'],
+  4:  ['Ri alto','Sustenta a cabeça firme','Leva objetos à boca'],
+  5:  ['Rola de barriga para cima','Reconhece rosto familiar','Alcança objetos'],
+  6:  ['Senta com apoio','Transfere objeto entre as mãos','Responde ao próprio nome'],
+  7:  ['Rasteja ou arrasta','Bate palmas imitando','Estranha pessoas desconhecidas'],
+  8:  ['Senta sem apoio','Pinça com os dedos','Fala "mamama" ou "bababa"'],
+  9:  ['Engatinha','Puxa para ficar em pé','Imita gestos simples'],
+  10: ['Fica em pé com apoio','Entende "não"','Acena tchau'],
+  11: ['Dá passos com apoio','Fala 1-2 palavras com sentido','Aponta para o que quer'],
+  12: ['Primeiros passos sozinho','Usa colher com ajuda','Diz "mamã" e "papá" com sentido'],
+  15: ['Caminha bem','Empilha 2 blocos','Vocabulário de 5-10 palavras'],
+  18: ['Corre (com quedas)','Nomeia objetos conhecidos','Imita tarefas domésticas'],
+  24: ['Sobe escadas com apoio','Frases de 2 palavras','Brinca de faz-de-conta']
+};
+
+var _SALTOS = {
+  1:'🌿 Mundo das Sensações',2:'🌿 Mundo das Sensações',
+  3:'🌊 Mundo dos Padrões',4:'🌊 Mundo dos Padrões',
+  5:'🔄 Mundo das Transições',6:'🔄 Mundo das Transições',
+  7:'🎯 Mundo dos Eventos',8:'🎯 Mundo dos Eventos',
+  9:'🤝 Mundo das Relações',10:'🤝 Mundo das Relações',
+  11:'🗺️ Mundo das Sequências',12:'🗺️ Mundo das Sequências'
+};
+
+async function carregarDesenvolvimento() {
+  if (!db || !currentUserId) return;
+  try {
+    // Idade do bebê
+    var bebe = await db.from('pos_bebes').select('data_nascimento,nome').eq('mae_id', currentUserId).maybeSingle();
+    if (!bebe.data || !bebe.data.data_nascimento) {
+      var mesEl = document.getElementById('pos-dev-mes');
+      if (mesEl) mesEl.textContent = 'Cadastre o bebê para ver o desenvolvimento';
+      return;
+    }
+    _bebeNascimento = new Date(bebe.data.data_nascimento);
+    var meses = Math.floor((new Date() - _bebeNascimento) / (30.44 * 24 * 3600 * 1000));
+    var mesEl = document.getElementById('pos-dev-mes'); if (mesEl) mesEl.textContent = bebe.data.nome + ' — ' + meses + ' meses de vida';
+    var saltoEl = document.getElementById('pos-dev-salto'); if (saltoEl) saltoEl.textContent = _SALTOS[meses] || '';
+    var descEl = document.getElementById('pos-dev-salto-desc');
+    if (descEl) descEl.textContent = meses <= 12 ? 'Semana de salto mental! O bebê pode estar mais agitado e precisar de mais colo — é fase de crescimento cognitivo.' : '';
+
+    // Marcos do mês atual
+    var marcosRes = await db.from('pos_marcos').select('*').eq('mae_id', currentUserId);
+    var conquistados = {};
+    (marcosRes.data || []).forEach(function(m) { conquistados[m.mes + '_' + m.marco] = true; });
+
+    var mesChave = [1,2,3,4,5,6,7,8,9,10,11,12,15,18,24].reduce(function(prev, curr) { return Math.abs(curr - meses) < Math.abs(prev - meses) ? curr : prev; });
+    var marcosLista = _MARCOS[mesChave] || [];
+    var marcosEl = document.getElementById('pos-dev-marcos-lista');
+    if (marcosEl) {
+      marcosEl.innerHTML = marcosLista.map(function(m) {
+        var key = mesChave + '_' + m;
+        var ok = !!conquistados[key];
+        return '<label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.06);cursor:pointer;">' +
+          '<input type="checkbox" ' + (ok ? 'checked' : '') + ' onchange="toggleMarco(' + mesChave + ',\'' + m.replace(/'/g,'') + '\',this)" style="accent-color:var(--sage);width:16px;height:16px;flex-shrink:0;">' +
+          '<span style="font-size:13px;color:' + (ok ? 'var(--sage)' : 'var(--dark)') + ';' + (ok ? 'text-decoration:line-through;opacity:0.6;' : '') + '">' + m + '</span>' +
+          '</label>';
+      }).join('');
+    }
+
+    // Timeline mês a mês
+    var tlEl = document.getElementById('pos-dev-timeline');
+    if (tlEl) {
+      tlEl.innerHTML = Object.keys(_MARCOS).map(function(mes) {
+        var lista = _MARCOS[mes];
+        var passado = parseInt(mes) <= meses;
+        return '<div style="border-radius:12px;overflow:hidden;margin-bottom:8px;">' +
+          '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'\':\'none\'" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:' + (passado ? 'var(--sage)' : 'var(--cream)') + ';cursor:pointer;">' +
+          '<span style="font-size:13px;font-weight:500;color:' + (passado ? 'white' : 'var(--dark)') + ';">' + (parseInt(mes) === 1 ? '1 mês' : mes + ' meses') + '</span>' +
+          '<span style="font-size:11px;color:' + (passado ? 'rgba(255,255,255,0.7)' : 'var(--earth-light)') + ';">▼</span>' +
+          '</div>' +
+          '<div style="display:none;padding:12px 14px;background:var(--white);border:1px solid rgba(122,100,85,0.08);border-top:none;">' +
+          lista.map(function(m) { return '<div style="font-size:13px;color:var(--mid);padding:4px 0;">• ' + m + '</div>'; }).join('') +
+          '</div></div>';
+      }).join('');
+    }
+  } catch(e) {}
+}
+
+async function toggleMarco(mes, marco, checkbox) {
+  if (!db || !currentUserId) return;
+  try {
+    if (checkbox.checked) {
+      await db.from('pos_marcos').upsert({ mae_id: currentUserId, mes: mes, marco: marco, conquistado: true }, { onConflict: 'mae_id,mes,marco' });
+    } else {
+      await db.from('pos_marcos').delete().eq('mae_id', currentUserId).eq('mes', mes).eq('marco', marco);
+    }
+  } catch(e) { checkbox.checked = !checkbox.checked; }
 }
 
 // ── DOULA PÓS PARTO ──
@@ -7636,7 +8068,8 @@ function renderDoulas(doulas) {
         abrirModal(
           'Confirmar solicitação',
           'Deseja enviar uma solicitação para ' + doula.nome + '? Após o envio não é possível cancelar.',
-          function() { vincularDoula(doula.id, doula.nome, btnRef); }
+          function() { vincularDoula(doula.id, doula.nome, btnRef); },
+          'Enviar solicitação'
         );
       };
     })(d, btnVincular);
@@ -7851,8 +8284,15 @@ function renderMensagens(lista, containerEl, tipoLogado) {
     return;
   }
   containerEl.innerHTML = lista.map(function(m) {
-    var enviada = m.remetente_tipo === tipoLogado;
     var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    if (m.remetente_tipo === 'app') {
+      return '<div style="display:flex;flex-direction:column;align-items:center;margin:10px 0;">' +
+        '<div style="max-width:88%;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1px solid rgba(155,123,184,0.25);color:var(--dark);font-size:13px;line-height:1.5;word-break:break-word;text-align:center;">' +
+        '<div style="font-size:10px;font-weight:600;color:#9B7BB8;letter-spacing:0.5px;margin-bottom:4px;">💜 LUA MATERNA</div>' + m.texto + '</div>' +
+        '<div style="font-size:10px;opacity:0.4;margin-top:2px;">' + hora + '</div>' +
+        '</div>';
+    }
+    var enviada = m.remetente_tipo === tipoLogado;
     return '<div style="display:flex;flex-direction:column;align-items:' + (enviada ? 'flex-end' : 'flex-start') + ';margin-bottom:6px;">' +
       '<div style="max-width:76%;padding:10px 14px;border-radius:18px;' + (enviada ? 'border-bottom-right-radius:4px;background:var(--rose);color:white;' : 'border-bottom-left-radius:4px;background:white;color:var(--dark);box-shadow:0 1px 3px rgba(0,0,0,0.08);') + 'font-size:14px;line-height:1.4;word-break:break-word;">' + m.texto + '</div>' +
       '<div style="font-size:10px;opacity:0.45;margin-top:2px;">' + hora + '</div>' +
@@ -8568,10 +9008,12 @@ async function carregarContratos() {
         var dataStr = new Date(c.criado_em).toLocaleDateString('pt-BR');
         var statusColor = (c.status||'').toLowerCase().includes('pago') ? 'var(--sage)' : (c.status||'').toLowerCase().includes('parcial') ? 'var(--alert)' : 'var(--earth-light)';
         var linkContrato = c.contrato_url ? '<a href="' + c.contrato_url + '" target="_blank" style="font-size:11px;color:var(--rose);text-decoration:none;">📄 Ver contrato</a>' : '';
+        var btnCobrar = c.gestante_id ? '<button onclick="enviarCobranca(\'' + c.gestante_id + '\',\'' + currentUserId + '\')" style="margin-top:6px;background:var(--alert);color:white;border:none;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">💰 Cobrar</button>' : '';
         return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
           '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
           '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + (c.parcelas ? ' · ' + c.parcelas + 'x' : '') + '</div>' +
-          (linkContrato ? '<div style="margin-top:4px;">' + linkContrato + '</div>' : '') + '</div>' +
+          (linkContrato ? '<div style="margin-top:4px;">' + linkContrato + '</div>' : '') +
+          (btnCobrar ? '<div>' + btnCobrar + '</div>' : '') + '</div>' +
           '<div style="text-align:right;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.valor + '</div>' +
           '<div style="font-size:11px;color:' + statusColor + ';">' + (c.status || '—') + '</div></div></div>';
       }).join('');
@@ -8583,6 +9025,19 @@ async function carregarContratos() {
     var elLabel = document.getElementById('fin-recebido-label');
     if (elLabel) elLabel.textContent = 'Recebido em ' + new Date().toLocaleDateString('pt-BR', { month: 'long' });
   } catch(e) {}
+}
+
+async function enviarCobranca(gestanteId, doulaId) {
+  if (!db) return;
+  try {
+    await db.from('mensagens').insert({
+      gestante_id: gestanteId,
+      doula_id: doulaId,
+      remetente_tipo: 'app',
+      texto: 'Olá! O Lua Materna está te avisando que há um pagamento pendente com sua doula. 💜'
+    });
+    mostrarToast('Lembrete de cobrança enviado!');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
 }
 
 function fecharPlanoDoula() {
@@ -9368,11 +9823,13 @@ async function alterarSenhaAdmin() {
 
 // ── Modal de confirmacao ──
 var modalCallback = null;
-function abrirModal(titulo, sub, callback) {
+function abrirModal(titulo, sub, callback, btnLabel) {
   modalCallback = callback;
   document.getElementById('modal-title').textContent = titulo;
   document.getElementById('modal-sub').textContent = sub;
-  document.getElementById('modal-confirm-btn').onclick = function() {
+  var btnEl = document.getElementById('modal-confirm-btn');
+  btnEl.textContent = btnLabel || 'Remover';
+  btnEl.onclick = function() {
     var cb = modalCallback;
     fecharModal();
     if (cb) cb();
@@ -10025,7 +10482,6 @@ function mostrarToast(msg) {
 <!-- MODAL DE CONFIRMAÇÃO -->
 <div class="lua-modal-overlay" id="lua-modal">
   <div class="lua-modal">
-    <div class="lua-modal-icon">🗑️</div>
     <div class="lua-modal-title" id="modal-title" data-i18n="modal.delete.title">Remover material?</div>
     <div class="lua-modal-sub" id="modal-sub" data-i18n="modal.delete.sub">Esta ação não pode ser desfeita.</div>
     <div class="lua-modal-btns">
