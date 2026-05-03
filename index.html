@@ -9917,7 +9917,19 @@ async function carregarUsuariosAdmin() {
 
 async function deletarUsuario(id, nome) {
   abrirModal('Remover usuário?', nome + ' será removido do app.', async function() {
-    try { await db.from('usuarios').delete().eq('id', id); mostrarToast('Removido!'); carregarUsuariosAdmin(); } catch(e) {}
+    try {
+      var res = await fetch('/api/admin-delete-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: id, adminSenha: adminSenha })
+      });
+      var data = await res.json();
+      if (!res.ok) { mostrarToast('Erro: ' + (data.error || 'Falha ao remover')); return; }
+      mostrarToast('Removido!');
+      carregarUsuariosAdmin();
+    } catch(e) {
+      mostrarToast('Erro ao remover usuário');
+    }
   });
 }
 
