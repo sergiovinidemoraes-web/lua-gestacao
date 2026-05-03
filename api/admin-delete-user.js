@@ -26,13 +26,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    const delRes = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?id=eq.${userId}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/usuarios?id=eq.${userId}`, {
       method: 'DELETE',
       headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` }
     });
-    if (!delRes.ok) {
-      const err = await delRes.json().catch(() => ({}));
-      return res.status(delRes.status).json({ error: err.message || 'Erro ao remover' });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+
+  try {
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` }
+    });
+    if (!authRes.ok) {
+      const err = await authRes.json().catch(() => ({}));
+      return res.status(authRes.status).json({ error: err.message || 'Erro ao remover do Auth' });
     }
     return res.status(200).json({ ok: true });
   } catch (e) {
