@@ -43,8 +43,25 @@ Sem build, sem bundler — abre direto no browser. Deploy via Vercel (conectado 
 | `avaliacoes_doula` | `gestante_id, doula_id, gestante_nome, nota, tipo_parto, comentario, cidade, modalidade, data_parto, criado_em` |
 | `configuracoes` | `chave (PK), valor` — usada para `admin_senha` |
 
+**Tabelas da Lua Pós-Parto (view-pos / view-pos-doula):**
+| Tabela | Campos principais |
+|---|---|
+| `pos_bebes` | `mae_id (PK), nome, data_nascimento` — único por gestante (upsert) |
+| `pos_dentes` | `id, mae_id, dente_id, data_nascimento` — registro de dente nascido |
+| `pos_marcos` | `mae_id, mes, marco, conquistado` — marcos de desenvolvimento (upsert, conflict em `mae_id,mes,marco`) |
+| `pos_amamentacao` | `mae_id, tipo, lado, duracao_seg, volume_ml, criado_em` |
+| `pos_sono` | `mae_id, tipo, inicio, fim, duracao_min, qualidade` |
+| `pos_fraldas` | `mae_id, tipo, consistencia, criado_em` |
+
 ### FKs importantes
 - `solicitacoes.gestante_id` e `solicitacoes.doula_id` referenciam **`auth.users(id)`** (não `usuarios`) — gestante pode existir em auth sem ter linha em `usuarios`
+
+## Vínculo Gestante Pós ↔ Doula Pós
+- Reutiliza a tabela `solicitacoes` — `gestante_id` é a gestante pós (`tipo='pos'`), `doula_id` é a doula pós (`tipo='pos_doula'`)
+- Gestante pós encontra doula pós via marketplace no dashboard (filtra `usuarios` onde `tipo='pos_doula'`)
+- Doula pós vê e aceita/recusa na seção Clientes do painel
+- Dados de bebê (`pos_bebes`, `pos_dentes`, `pos_marcos`) são compartilhados: doula lê/escreve usando `mae_id = gestante_id`
+- **RLS necessária para funcionar**: nas tabelas `pos_bebes`, `pos_dentes` e `pos_marcos`, criar políticas que permitam SELECT/INSERT/DELETE quando existe `solicitacoes` aceita entre `mae_id` e a doula logada
 
 ## Regras de RLS conhecidas
 - **Doula NÃO pode fazer UPDATE em `usuarios` de outra pessoa** — tentativa de atualizar `doula_id` na linha da gestante falha silenciosamente
