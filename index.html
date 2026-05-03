@@ -6865,7 +6865,8 @@ async function fazerCadastro() {
 async function reenviarEmail() {
   var el = document.getElementById('confirmacao-email');
   if (!el || !db) return;
-  try { await db.auth.resend({ type: 'signup', email: el.textContent }); mostrarToast('📬 E-mail reenviado!'); } catch(e) {}
+  var res = await db.auth.resend({ type: 'signup', email: el.textContent.trim() });
+  if (res.error) { mostrarToast('Erro: ' + res.error.message); } else { mostrarToast('📬 E-mail reenviado!'); }
 }
 
 // ── VERIFICAR CONFIRMAÇÃO ──
