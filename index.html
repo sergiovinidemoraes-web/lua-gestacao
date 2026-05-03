@@ -3305,6 +3305,7 @@ let contractions = [];
 let realtimeChannel = null;
 let realtimeChannelSolicitacoes = null;
 let realtimeChannelMensagens = null;
+let realtimeChannelPosDoula = null;
 let chatDoulaId = null;
 let chatGestanteIdDoula = null;
 let chatGestanteNomeDoula = null;
@@ -7673,6 +7674,7 @@ async function toggleMarco(mes, marco, checkbox) {
 
 // ── GESTANTE PÓS: vínculo com doula pós ──
 var _posDoulaPosMostrandoMercado = false;
+var _posPendenteSol = null;
 
 function posToggleDoulaPos() {
   _posDoulaPosMostrandoMercado = !_posDoulaPosMostrandoMercado;
@@ -7686,7 +7688,7 @@ async function posCarregarDoulaPosDashboard() {
   var statusEl = document.getElementById('pos-doula-pos-status');
   if (!statusEl) return;
   try {
-    var res = await db.from('solicitacoes').select('doula_id,status').eq('gestante_id', currentUserId).in('status', ['pendente','aceita']);
+    var res = await db.from('solicitacoes').select('id,doula_id,status').eq('gestante_id', currentUserId).in('status', ['pendente','aceita']);
     if (!res.data || !res.data.length) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; return; }
     var ids = res.data.map(function(s) { return s.doula_id; });
     var doulas = await db.from('usuarios').select('id,nome,tipo').in('id', ids).eq('tipo', 'pos_doula');
@@ -7697,6 +7699,10 @@ async function posCarregarDoulaPosDashboard() {
       statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doula.nome + '</span> — vinculada';
     } else {
       statusEl.innerHTML = 'Aguardando <span style="color:#9B7BB8;">' + doula.nome + '</span> aceitar';
+      if (sol) {
+        _posPendenteSol = { id: sol.id, doulaNome: doula.nome };
+        iniciarRealtimeSolicitacoesPos(sol.id);
+      }
     }
   } catch(e) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; }
 }
@@ -7730,11 +7736,15 @@ async function posEnviarSolicitacaoDoulaPos(doulaId, nomeDoula) {
       mostrarToast(check.data.status === 'aceita' ? 'Você já está vinculada a esta doula.' : 'Solicitação já enviada, aguarde a confirmação.');
       return;
     }
-    await db.from('solicitacoes').insert({ gestante_id: currentUserId, doula_id: doulaId, gestante_nome: currentNome, status: 'pendente' });
+    var ins = await db.from('solicitacoes').insert({ gestante_id: currentUserId, doula_id: doulaId, gestante_nome: currentNome, status: 'pendente' }).select('id').single();
     mostrarToast('✓ Solicitação enviada para ' + nomeDoula + '!');
     var el = document.getElementById('pos-doula-pos-marketplace');
     if (el) el.style.display = 'none';
     _posDoulaPosMostrandoMercado = false;
+    if (ins.data && ins.data.id) {
+      _posPendenteSol = { id: ins.data.id, doulaNome: nomeDoula };
+      iniciarRealtimeSolicitacoesPos(ins.data.id);
+    }
     posCarregarDoulaPosDashboard();
   } catch(e) { mostrarToast('Erro ao enviar solicitação.'); }
 }
@@ -8868,6 +8878,35 @@ function iniciarRealtimeSolicitacoesGestante(solicitacaoId) {
         if (btnEncontrar) btnEncontrar.style.display = '';
         carregarMarketplace();
         if (realtimeChannelSolicitacoes) db.removeChannel(realtimeChannelSolicitacoes);
+      }
+    })
+    .subscribe();
+}
+
+function iniciarRealtimeSolicitacoesPos(solId) {
+  if (!db || !solId) return;
+  if (realtimeChannelPosDoula) db.removeChannel(realtimeChannelPosDoula);
+  realtimeChannelPosDoula = db.channel('sol-pos-' + solId)
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'solicitacoes',
+      filter: 'id=eq.' + solId
+    }, function(payload) {
+      var status = payload.new && payload.new.status;
+      var nome = (_posPendenteSol && _posPendenteSol.doulaNome) || 'Sua doula pós-parto';
+      if (status === 'aceita') {
+        _posPendenteSol = null;
+        mostrarToast('🎉 ' + nome + ' aceitou sua solicitação!');
+        posCarregarDoulaPosDashboard();
+        db.removeChannel(realtimeChannelPosDoula);
+        realtimeChannelPosDoula = null;
+      } else if (status === 'recusada') {
+        _posPendenteSol = null;
+        mostrarToast('😔 ' + nome + ' não tem disponibilidade. Escolha outra doula.');
+        posCarregarDoulaPosDashboard();
+        db.removeChannel(realtimeChannelPosDoula);
+        realtimeChannelPosDoula = null;
       }
     })
     .subscribe();
