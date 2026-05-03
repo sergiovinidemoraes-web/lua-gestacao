@@ -9871,11 +9871,15 @@ function adminNav(el, sectionId) {
 }
 
 async function carregarUsuariosAdmin() {
-  if (!db) return;
   try {
-    var res = await db.from('usuarios').select('*').order('criado_em', { ascending: false });
-    if (res.error) return;
-    var data = res.data;
+    var r = await fetch('/api/admin-get-users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminSenha: adminSenha })
+    });
+    var json = await r.json();
+    if (!r.ok) { console.error('carregarUsuariosAdmin:', json.error); return; }
+    var data = json.users;
     _adminUsuarios = data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante'; });
