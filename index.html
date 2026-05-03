@@ -2753,6 +2753,16 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" style="color:#9B7BB8;">💜 Minha Doula Pós-Parto</div>
             <div id="pos-doula-pos-status" style="font-size:13px;color:var(--earth-light);">Carregando...</div>
           </div>
+          <div id="pos-doula-escolha" style="display:none;margin-top:4px;">
+            <div class="card" style="border:1.5px solid rgba(155,123,184,0.2);">
+              <div class="card-title" style="color:#9B7BB8;">Continuar com sua doula?</div>
+              <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;"><span id="pos-doula-escolha-nome" style="color:#9B7BB8;font-weight:500;"></span> acompanhou sua gestação. Quer continuar com ela no pós-parto também?</div>
+              <div style="display:flex;gap:10px;">
+                <button onclick="posUsarMesmaDoula()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:20px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Sim, continuar com ela</button>
+                <button onclick="posEscolherOutraDoula()" style="flex:1;background:rgba(122,100,85,0.1);color:var(--mid);border:none;border-radius:20px;padding:10px;font-size:13px;cursor:pointer;font-family:inherit;">Escolher outra</button>
+              </div>
+            </div>
+          </div>
           <div id="pos-doula-pos-marketplace" style="display:none;margin-top:4px;">
             <div class="card">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -7675,12 +7685,48 @@ async function toggleMarco(mes, marco, checkbox) {
 // ── GESTANTE PÓS: vínculo com doula pós ──
 var _posDoulaPosMostrandoMercado = false;
 var _posPendenteSol = null;
+var _posDoulaDeGestacao = null;
 
 function posToggleDoulaPos() {
+  var choice = localStorage.getItem('lua_pos_doula_choice');
+  var escolhaEl = document.getElementById('pos-doula-escolha');
+  var mktEl = document.getElementById('pos-doula-pos-marketplace');
+  // Já escolheu mesma doula — sem ação
+  if (choice === 'same') return;
+  // Tem doula de gestação mas ainda não escolheu — exibe painel de escolha
+  if (_posDoulaDeGestacao && !choice) {
+    var nomeEl = document.getElementById('pos-doula-escolha-nome');
+    if (nomeEl) nomeEl.textContent = _posDoulaDeGestacao.nome;
+    var showing = escolhaEl && escolhaEl.style.display !== 'none';
+    if (escolhaEl) escolhaEl.style.display = showing ? 'none' : '';
+    if (mktEl) mktEl.style.display = 'none';
+    _posDoulaPosMostrandoMercado = false;
+    return;
+  }
+  // Caso padrão: abre/fecha marketplace
   _posDoulaPosMostrandoMercado = !_posDoulaPosMostrandoMercado;
-  var el = document.getElementById('pos-doula-pos-marketplace');
-  if (el) el.style.display = _posDoulaPosMostrandoMercado ? '' : 'none';
+  if (mktEl) mktEl.style.display = _posDoulaPosMostrandoMercado ? '' : 'none';
+  if (escolhaEl) escolhaEl.style.display = 'none';
   if (_posDoulaPosMostrandoMercado) posCarregarMercadoDoulaPos();
+}
+
+function posUsarMesmaDoula() {
+  localStorage.setItem('lua_pos_doula_choice', 'same');
+  var escolhaEl = document.getElementById('pos-doula-escolha');
+  if (escolhaEl) escolhaEl.style.display = 'none';
+  posCarregarDoulaPosDashboard();
+}
+
+function posEscolherOutraDoula() {
+  localStorage.setItem('lua_pos_doula_choice', 'other');
+  _posDoulaDeGestacao = null;
+  var escolhaEl = document.getElementById('pos-doula-escolha');
+  if (escolhaEl) escolhaEl.style.display = 'none';
+  posCarregarDoulaPosDashboard();
+  _posDoulaPosMostrandoMercado = true;
+  var mktEl = document.getElementById('pos-doula-pos-marketplace');
+  if (mktEl) mktEl.style.display = '';
+  posCarregarMercadoDoulaPos();
 }
 
 async function posCarregarDoulaPosDashboard() {
@@ -7688,22 +7734,45 @@ async function posCarregarDoulaPosDashboard() {
   var statusEl = document.getElementById('pos-doula-pos-status');
   if (!statusEl) return;
   try {
+    // 1. Verifica vínculo com doula pós-parto
     var res = await db.from('solicitacoes').select('id,doula_id,status').eq('gestante_id', currentUserId).in('status', ['pendente','aceita']);
-    if (!res.data || !res.data.length) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; return; }
-    var ids = res.data.map(function(s) { return s.doula_id; });
-    var doulas = await db.from('usuarios').select('id,nome,tipo').in('id', ids).eq('tipo', 'pos_doula');
-    if (!doulas.data || !doulas.data.length) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; return; }
-    var doula = doulas.data[0];
-    var sol = res.data.find(function(s) { return s.doula_id === doula.id; });
-    if (sol && sol.status === 'aceita') {
-      statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doula.nome + '</span> — vinculada';
-    } else {
-      statusEl.innerHTML = 'Aguardando <span style="color:#9B7BB8;">' + doula.nome + '</span> aceitar';
-      if (sol) {
-        _posPendenteSol = { id: sol.id, doulaNome: doula.nome };
-        iniciarRealtimeSolicitacoesPos(sol.id);
+    if (res.data && res.data.length) {
+      var ids = res.data.map(function(s) { return s.doula_id; });
+      var doulas = await db.from('usuarios').select('id,nome,tipo').in('id', ids).eq('tipo', 'pos_doula');
+      if (doulas.data && doulas.data.length) {
+        var doula = doulas.data[0];
+        var sol = res.data.find(function(s) { return s.doula_id === doula.id; });
+        if (sol && sol.status === 'aceita') {
+          statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doula.nome + '</span> — vinculada';
+        } else {
+          statusEl.innerHTML = 'Aguardando <span style="color:#9B7BB8;">' + doula.nome + '</span> aceitar';
+          if (sol) {
+            _posPendenteSol = { id: sol.id, doulaNome: doula.nome };
+            iniciarRealtimeSolicitacoesPos(sol.id);
+          }
+        }
+        return;
       }
     }
+    // 2. Sem doula pós — verifica se tem doula de gestação e preferência salva
+    var choice = localStorage.getItem('lua_pos_doula_choice');
+    if (choice !== 'other') {
+      var regRes = await db.from('solicitacoes').select('doula_id').eq('gestante_id', currentUserId).eq('status', 'aceita');
+      if (regRes.data && regRes.data.length) {
+        var regIds = regRes.data.map(function(s) { return s.doula_id; });
+        var doulaReg = await db.from('usuarios').select('id,nome').in('id', regIds).eq('tipo', 'doula').maybeSingle();
+        if (doulaReg.data) {
+          _posDoulaDeGestacao = { id: doulaReg.data.id, nome: doulaReg.data.nome };
+          if (choice === 'same') {
+            statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doulaReg.data.nome + '</span> — sua doula de gestação';
+          } else {
+            statusEl.textContent = 'Toque para configurar sua doula pós-parto.';
+          }
+          return;
+        }
+      }
+    }
+    statusEl.textContent = 'Toque para encontrar uma doula pós-parto.';
   } catch(e) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; }
 }
 
