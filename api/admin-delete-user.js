@@ -34,6 +34,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 
+  // Troca o email por um placeholder antes de deletar para liberar o email original.
+  // O Supabase mantém tombstone do email deletado, bloqueando re-cadastro com o mesmo email.
+  try {
+    await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: `deleted_${Date.now()}_${userId.slice(0,8)}@removed.invalid` })
+    });
+  } catch (e) { /* ignora — o delete ainda prossegue */ }
+
   try {
     const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method: 'DELETE',
