@@ -546,6 +546,9 @@ header {
 .d-main { background:var(--cream); padding:32px; overflow-y:auto; }
 .d-panel { display:none; }
 .d-panel.active { display:block; animation:fadeIn 0.3s ease; }
+.pcli-tab { background:var(--cream);border:1.5px solid transparent;border-radius:20px;padding:7px 16px;font-size:12px;cursor:pointer;color:var(--earth-light);font-family:inherit;white-space:nowrap;transition:all .15s; }
+.pcli-tab.active { background:var(--rose);color:white;border-color:var(--rose); }
+.pcli-tab:hover:not(.active) { border-color:var(--rose-light);color:var(--rose); }
 
 /* ─ Stats ─ */
 .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
@@ -2096,8 +2099,8 @@ tr:hover td { background:var(--rose-pale); }
               <div class="form-grid">
                 <div class="form-group"><label class="form-label">Nome completo</label><input id="nc-nome" class="form-input" type="text" placeholder="Nome da gestante"></div>
                 <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input id="nc-tel" class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
-                <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date"></div>
-                <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Ex: 18"></div>
+                <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp()"></div>
+                <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Calculada pela DPP"></div>
                 <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
                 <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
                 <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
@@ -2148,6 +2151,31 @@ tr:hover td { background:var(--rose-pale); }
               <button class="chat-send" onclick="enviarMensagemParaGestante()">➤</button>
             </div>
           </div>
+        </div>
+
+        <!-- PERFIL COMPLETO DA CLIENTE -->
+        <div class="d-panel" id="d-cliente-perfil">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+            <button onclick="irParaClientesDoula()" style="background:var(--cream);border:none;padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;color:var(--dark);font-family:inherit;flex-shrink:0;">← Voltar</button>
+            <div>
+              <div class="panel-title" id="perfil-cli-nome" style="margin:0;line-height:1.2;">—</div>
+              <div id="perfil-cli-sub" style="font-size:12px;color:var(--earth-light);margin-top:3px;"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;overflow-x:auto;padding:4px 0 20px;scrollbar-width:none;-ms-overflow-style:none;">
+            <button class="pcli-tab active" onclick="pcliTab(this,'pcli-resumo')">Resumo</button>
+            <button class="pcli-tab" onclick="pcliTab(this,'pcli-consultas')">Consultas</button>
+            <button class="pcli-tab" onclick="pcliTab(this,'pcli-registros')">Registros</button>
+            <button class="pcli-tab" onclick="pcliTab(this,'pcli-contracoes')">Contrações</button>
+            <button class="pcli-tab" onclick="pcliTab(this,'pcli-posparto')">Pós-Parto</button>
+            <button class="pcli-tab" onclick="pcliTab(this,'pcli-contrato')">Contrato</button>
+          </div>
+          <div id="pcli-resumo"></div>
+          <div id="pcli-consultas" style="display:none;"></div>
+          <div id="pcli-registros" style="display:none;"></div>
+          <div id="pcli-contracoes" style="display:none;"></div>
+          <div id="pcli-posparto" style="display:none;"></div>
+          <div id="pcli-contrato" style="display:none;"></div>
         </div>
 
         <!-- AGENDA -->
@@ -9487,24 +9515,66 @@ async function carregarClientesDoula() {
     ]);
     var solicitacoes = results[0].data || [];
     var externos = results[1].data || [];
+    // Busca DPP das gestantes internas direto de usuarios
+    var dppMapSol = {};
+    if (solicitacoes.length) {
+      var idsGest = solicitacoes.map(function(g) { return g.gestante_id; });
+      var resDppSol = await db.from('usuarios').select('id,dpp').in('id', idsGest);
+      (resDppSol.data || []).forEach(function(u) { if (u.dpp) dppMapSol[u.id] = u.dpp; });
+    }
     populateClienteSelects(solicitacoes, externos);
     var total = solicitacoes.length + externos.length;
     var statEl = document.getElementById('stat-clientes');
     if (statEl) statEl.textContent = total;
+    var agoraDpp = new Date();
+    var mesAtual = agoraDpp.getMonth(), anoAtual = agoraDpp.getFullYear();
+    var comDppMesExt = externos.filter(function(c) {
+      if (!c.dpp) return false;
+      var d = new Date(c.dpp + 'T12:00:00');
+      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    }).map(function(c) { return { nome: c.nome, dpp: c.dpp }; });
+    var comDppMesInt = solicitacoes.filter(function(g) {
+      var dpp = dppMapSol[g.gestante_id];
+      if (!dpp) return false;
+      var d = new Date(dpp + 'T12:00:00');
+      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    }).map(function(g) { return { nome: g.gestante_nome, dpp: dppMapSol[g.gestante_id] }; });
+    var comDppMes = comDppMesExt.concat(comDppMesInt);
+    var statPartos = document.getElementById('stat-partos');
+    if (statPartos) statPartos.textContent = comDppMes.length;
+    var partosMesEl = document.getElementById('partos-mes');
+    if (partosMesEl) {
+      partosMesEl.innerHTML = comDppMes.length ? comDppMes.map(function(c) {
+        var dppStr = new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short'});
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
+          '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.nome + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">DPP: ' + dppStr + '</div></div>' +
+          '<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:10px;flex-shrink:0;">Previsto</span>' +
+        '</div>';
+      }).join('') : '<div class="empty-state-small">Nenhum parto previsto este mês</div>';
+    }
     if (!total) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">' + t('doula.clients.empty') + '</div><div style="font-size:13px;color:var(--earth-light);">' + t('doula.clients.empty.sub') + '</div></td></tr>';
     } else {
       var linhasSol = solicitacoes.map(function(g) {
+        var dpp = dppMapSol[g.gestante_id] || null;
+        var dppStr = dpp ? new Date(dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        var semStr = '—';
+        if (dpp) {
+          var diasRest = (new Date(dpp + 'T12:00:00') - new Date()) / 86400000;
+          var sem = Math.round(40 - diasRest / 7);
+          if (sem >= 1 && sem <= 45) semStr = sem + ' sem';
+        }
         var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
         var nome = (g.gestante_nome||'').replace(/'/g,'');
         return '<tr>' +
-          '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + g.gestante_nome + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')">' + g.gestante_nome + ' <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-          '<td style="padding:14px;display:flex;gap:6px;">' +
+          '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
           '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
           '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
           '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
@@ -9514,7 +9584,7 @@ async function carregarClientesDoula() {
         var dppStr = c.dpp ? new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
         var semStr = c.semanas_gestacional ? c.semanas_gestacional + ' sem' : '—';
         return '<tr>' +
-          '<td style="padding:14px 20px;font-size:14px;font-weight:500;">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span></td>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + c.id + '\',\'ext\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span> <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (c.hospital || '—') + '</td>' +
@@ -9544,6 +9614,238 @@ async function carregarClientesDoula() {
     carregarPosParto();
     carregarContratos();
   } catch(e) {}
+}
+
+async function verHistoricoCliente(id, tipo, nome) {
+  var modal = document.createElement('div');
+  modal.className = 'hist-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;overflow-y:auto;padding:20px;';
+  modal.innerHTML = '<div style="background:var(--white);max-width:600px;margin:0 auto;border-radius:20px;padding:24px;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;color:var(--dark);">📋 Histórico — ' + nome + '</div>' +
+    '<button onclick="document.querySelector(\'.hist-modal\').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--earth-light);line-height:1;">×</button></div>' +
+    '<div id="hist-content" style="font-size:13px;color:var(--earth-light);">Carregando...</div></div>';
+  document.body.appendChild(modal);
+  try {
+    var campo = tipo === 'ext' ? 'cliente_externo_id' : 'gestante_id';
+    var results = await Promise.all([
+      db.from('consultas_doula').select('*').eq('doula_id', currentUserId).eq(campo, id).order('data_hora', { ascending: false }),
+      db.from('registros_atendimento').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false }),
+      db.from('registros_posparto').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false })
+    ]);
+    var consultas = results[0].data || [], registros = results[1].data || [], pos = results[2].data || [];
+    var s = '';
+    s += '<div style="font-weight:600;color:var(--rose);margin-bottom:8px;">📅 Consultas (' + consultas.length + ')</div>';
+    s += consultas.length ? consultas.map(function(c) {
+      var dt = new Date(c.data_hora);
+      return '<div style="background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:6px;">' +
+        '<div style="font-weight:500;color:var(--dark);">' + dt.toLocaleString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) + ' — ' + (c.tipo||'Consulta') + '</div>' +
+        (c.observacoes ? '<div style="color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>';
+    }).join('') : '<div style="margin-bottom:12px;color:var(--earth-light);">Nenhuma consulta registrada</div>';
+    s += '<div style="font-weight:600;color:var(--rose);margin:16px 0 8px;">📝 Registros de atendimento (' + registros.length + ')</div>';
+    s += registros.length ? registros.map(function(r) {
+      var dataStr = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return '<div style="background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:6px;">' +
+        '<div style="font-weight:500;color:var(--dark);">' + dataStr + ' — ' + (r.tipo||'') + '</div>' +
+        (r.anotacoes ? '<div style="color:var(--mid);margin-top:4px;">' + r.anotacoes + '</div>' : '') +
+        (r.evolucao ? '<div style="color:var(--earth-light);font-style:italic;margin-top:2px;">' + r.evolucao + '</div>' : '') + '</div>';
+    }).join('') : '<div style="margin-bottom:12px;color:var(--earth-light);">Nenhum registro de atendimento</div>';
+    if (pos.length) {
+      s += '<div style="font-weight:600;color:var(--rose);margin:16px 0 8px;">🌸 Pós-parto (' + pos.length + ')</div>';
+      s += pos.map(function(p) {
+        var dataStr = p.data_visita ? new Date(p.data_visita + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        return '<div style="background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:6px;">' +
+          '<div style="font-weight:500;color:var(--dark);">Visita: ' + dataStr + (p.dias_posparto ? ' (D+' + p.dias_posparto + ')' : '') + '</div>' +
+          (p.amamentacao ? '<div style="color:var(--mid);margin-top:4px;">Amamentação: ' + p.amamentacao + '</div>' : '') +
+          (p.recuperacao ? '<div style="color:var(--earth-light);margin-top:2px;">' + p.recuperacao + '</div>' : '') + '</div>';
+      }).join('');
+    }
+    document.getElementById('hist-content').innerHTML = s;
+  } catch(e) { document.getElementById('hist-content').innerHTML = 'Erro ao carregar histórico.'; }
+}
+
+var _pcliAtual = null;
+
+function abrirPerfilCliente(id, tipo, nome) {
+  _pcliAtual = { id: id, tipo: tipo, nome: nome };
+  document.getElementById('perfil-cli-nome').textContent = nome;
+  document.getElementById('perfil-cli-sub').textContent = tipo === 'ext' ? 'Cadastro externo' : 'Gestante vinculada';
+  document.querySelectorAll('.pcli-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('.pcli-tab').classList.add('active');
+  document.querySelectorAll('#d-cliente-perfil [id^="pcli-"]').forEach(function(el) { el.style.display = 'none'; delete el.dataset.loaded; });
+  document.getElementById('pcli-resumo').style.display = 'block';
+  document.querySelectorAll('#view-doula .d-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('d-cliente-perfil').classList.add('active');
+  _pcliCarregar('pcli-resumo', id, tipo);
+}
+
+function pcliTab(btn, tabId) {
+  if (!_pcliAtual) return;
+  document.querySelectorAll('.pcli-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('#d-cliente-perfil [id^="pcli-"]').forEach(function(el) { el.style.display = 'none'; });
+  btn.classList.add('active');
+  var el = document.getElementById(tabId);
+  el.style.display = 'block';
+  if (!el.dataset.loaded) _pcliCarregar(tabId, _pcliAtual.id, _pcliAtual.tipo);
+}
+
+function _pcliCarregar(tabId, id, tipo) {
+  var el = document.getElementById(tabId);
+  if (!el || el.dataset.loaded) return;
+  el.dataset.loaded = '1';
+  el.innerHTML = '<div style="color:var(--earth-light);font-size:13px;padding:24px 0;text-align:center;">Carregando...</div>';
+  var campo = tipo === 'ext' ? 'cliente_externo_id' : 'gestante_id';
+  if (tabId === 'pcli-resumo') _pcliResumo(el, id, tipo, campo);
+  else if (tabId === 'pcli-consultas') _pcliConsultas(el, id, campo);
+  else if (tabId === 'pcli-registros') _pcliRegistros(el, id, campo);
+  else if (tabId === 'pcli-contracoes') _pcliContracoes(el, id, tipo);
+  else if (tabId === 'pcli-posparto') _pcliPosParto(el, id, campo);
+  else if (tabId === 'pcli-contrato') _pcliContrato(el, id, campo);
+}
+
+async function _pcliResumo(el, id, tipo, campo) {
+  try {
+    var info = null;
+    if (tipo === 'ext') {
+      var r = await db.from('clientes_doula').select('*').eq('id', id).maybeSingle();
+      info = r.data;
+    }
+    var counts = await Promise.all([
+      db.from('consultas_doula').select('id', { count: 'exact', head: true }).eq('doula_id', currentUserId).eq(campo, id),
+      db.from('registros_atendimento').select('id', { count: 'exact', head: true }).eq('doula_id', currentUserId).eq(campo, id),
+      db.from('registros_posparto').select('id', { count: 'exact', head: true }).eq('doula_id', currentUserId).eq(campo, id)
+    ]);
+    var nConsultas = counts[0].count || 0;
+    var nRegistros = counts[1].count || 0;
+    var nPos = counts[2].count || 0;
+    var s = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">' +
+      '<div style="background:var(--white);border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(45,31,26,0.05);"><div style="font-size:24px;font-weight:700;color:var(--rose);">' + nConsultas + '</div><div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Consultas</div></div>' +
+      '<div style="background:var(--white);border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(45,31,26,0.05);"><div style="font-size:24px;font-weight:700;color:var(--rose);">' + nRegistros + '</div><div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Registros</div></div>' +
+      '<div style="background:var(--white);border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(45,31,26,0.05);"><div style="font-size:24px;font-weight:700;color:var(--rose);">' + nPos + '</div><div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Pós-Parto</div></div>' +
+    '</div>';
+    if (info) {
+      var dppStr = info.dpp ? new Date(info.dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      var campos = [
+        ['Telefone', info.telefone], ['DPP', dppStr],
+        ['Semana gestacional', info.semanas_gestacional ? info.semanas_gestacional + ' semanas' : null],
+        ['Tipo de parto', info.tipo_parto], ['Hospital', info.hospital],
+        ['Médico(a)', info.medico], ['Histórico gestacional', info.historico_gestacional]
+      ];
+      s += '<div class="card" style="margin-bottom:16px;"><div class="card-title">Dados cadastrais</div><div style="display:grid;gap:10px;">';
+      campos.forEach(function(c) {
+        if (!c[1]) return;
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">' + c[0] + '</span><span style="color:var(--dark);font-weight:500;">' + c[1] + '</span></div>';
+      });
+      s += '</div></div>';
+      if (info.estado_emocional) s += '<div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:8px;">Estado emocional</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.estado_emocional + '</div></div>';
+      if (info.observacoes) s += '<div class="card"><div class="card-title" style="margin-bottom:8px;">Observações</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.observacoes + '</div></div>';
+    } else {
+      s += '<div class="card"><div style="font-size:13px;color:var(--earth-light);">Gestante vinculada via app — dados de perfil gerenciados pela própria gestante.</div></div>';
+    }
+    el.innerHTML = s;
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar resumo.</div>'; }
+}
+
+async function _pcliConsultas(el, id, campo) {
+  try {
+    var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).eq(campo, id).order('data_hora', { ascending: false });
+    var dados = res.data || [];
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">Nenhuma consulta registrada</div></div>'; return; }
+    el.innerHTML = dados.map(function(c) {
+      var dt = new Date(c.data_hora);
+      var dataStr = dt.toLocaleDateString('pt-BR', {day:'2-digit',month:'short',year:'numeric'});
+      var horaStr = dt.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
+        '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + (c.tipo || 'Consulta') + '</div>' +
+        (c.observacoes ? '<div style="font-size:13px;color:var(--mid);margin-top:6px;line-height:1.5;">' + c.observacoes + '</div>' : '') + '</div>' +
+        '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div><div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div></div></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+async function _pcliRegistros(el, id, campo) {
+  try {
+    var res = await db.from('registros_atendimento').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false });
+    var dados = res.data || [];
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">Nenhum registro de atendimento</div></div>'; return; }
+    el.innerHTML = dados.map(function(r) {
+      var dataStr = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:var(--rose);">' + (r.tipo || '') + '</div><div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+        (r.anotacoes ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
+        (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;border-top:1px solid var(--cream);padding-top:8px;margin-top:6px;">' + r.evolucao + '</div>' : '') + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+async function _pcliContracoes(el, id, tipo) {
+  if (tipo === 'ext') {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">⏱</div><div class="empty-title">Contrações não disponíveis</div><div class="empty-sub">Contrações são registradas apenas por gestantes vinculadas via app</div></div>';
+    return;
+  }
+  try {
+    var res = await db.from('contracoes').select('*').eq('gestante_id', id).order('inicio', { ascending: false }).limit(50);
+    var dados = res.data || [];
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">⏱</div><div class="empty-title">Nenhuma contração registrada</div></div>'; return; }
+    el.innerHTML = '<div style="font-size:12px;color:var(--earth-light);margin-bottom:12px;">Últimas ' + dados.length + ' contrações</div>' +
+      dados.map(function(c) {
+        var inicio = new Date(c.inicio);
+        var dataStr = inicio.toLocaleDateString('pt-BR', {day:'2-digit',month:'short'});
+        var horaStr = inicio.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+        var durSeg = c.duracao_ms ? Math.round(c.duracao_ms / 1000) : null;
+        var intSeg = c.intervalo_ms ? Math.round(c.intervalo_ms / 1000) : null;
+        return '<div style="background:var(--white);border-radius:12px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(45,31,26,0.05);">' +
+          '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + dataStr + ' · ' + horaStr + '</div>' +
+          (intSeg ? '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Intervalo: ' + intSeg + 's</div>' : '') + '</div>' +
+          (durSeg ? '<div style="font-size:13px;font-weight:600;color:var(--rose);">' + durSeg + 's</div>' : '') + '</div>';
+      }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+async function _pcliPosParto(el, id, campo) {
+  try {
+    var res = await db.from('registros_posparto').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false });
+    var dados = res.data || [];
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🌸</div><div class="empty-title">Nenhum registro pós-parto</div></div>'; return; }
+    el.innerHTML = dados.map(function(p) {
+      var dataStr = p.data_visita ? new Date(p.data_visita + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid #c9a6d4;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:8px;">Visita: ' + dataStr + (p.dias_posparto ? ' <span style="font-size:11px;background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:10px;margin-left:6px;">D+' + p.dias_posparto + '</span>' : '') + '</div>' +
+        (p.amamentacao ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;"><span style="color:var(--earth-light);">Amamentação: </span>' + p.amamentacao + '</div>' : '') +
+        (p.recuperacao ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;">' + p.recuperacao + '</div>' : '') +
+        (p.observacoes_bebe ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;">Bebê: ' + p.observacoes_bebe + '</div>' : '') +
+        (p.evolucao ? '<div style="font-size:12px;color:var(--earth-light);border-top:1px solid var(--cream);padding-top:8px;margin-top:8px;font-style:italic;">' + p.evolucao + '</div>' : '') + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+async function _pcliContrato(el, id, campo) {
+  try {
+    var res = await db.from('contratos_doula').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false });
+    var dados = res.data || [];
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><div class="empty-title">Nenhum contrato registrado</div></div>'; return; }
+    el.innerHTML = dados.map(function(ct) {
+      var dataStr = ct.criado_em ? new Date(ct.criado_em).toLocaleDateString('pt-BR') : '—';
+      var statusColor = ct.status === 'pago' ? '#16a34a' : ct.status === 'pendente' ? '#e65100' : 'var(--earth-light)';
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+        '<div style="font-size:14px;font-weight:600;color:var(--dark);">Contrato · ' + dataStr + '</div>' +
+        '<span style="font-size:11px;background:' + (ct.status === 'pago' ? '#dcfce7' : '#fff3e0') + ';color:' + statusColor + ';padding:3px 10px;border-radius:10px;font-weight:500;">' + (ct.status || '—') + '</span></div>' +
+        (ct.valor ? '<div style="font-size:13px;color:var(--mid);">Valor: <b>R$ ' + Number(ct.valor).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</b>' + (ct.parcelas ? ' em ' + ct.parcelas + 'x' : '') + '</div>' : '') +
+        (ct.contrato_url ? '<div style="margin-top:10px;"><a href="' + ct.contrato_url + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;">📎 Ver documento</a></div>' : '') + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+function calcSemanasFromDpp() {
+  var dppVal = document.getElementById('nc-dpp').value;
+  var semanasEl = document.getElementById('nc-semanas');
+  if (!dppVal) { semanasEl.value = ''; return; }
+  var dpp = new Date(dppVal + 'T12:00:00');
+  var diasRestantes = (dpp - new Date()) / 86400000;
+  var semanas = Math.round(40 - diasRestantes / 7);
+  if (semanas >= 1 && semanas <= 45) semanasEl.value = semanas;
 }
 
 async function cadastrarCliente() {
@@ -9626,11 +9928,28 @@ async function carregarAgenda() {
   if (!container) return;
   try {
     var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).order('data_hora', { ascending: true });
-    if (res.error || !res.data || !res.data.length) {
+    var todas = res.data || [];
+    var agoraRef = new Date();
+    var hY = agoraRef.getFullYear(), hM = agoraRef.getMonth(), hD = agoraRef.getDate();
+    var statConsultasEl = document.getElementById('stat-consultas');
+    if (statConsultasEl) statConsultasEl.textContent = todas.filter(function(c) { var d = new Date(c.data_hora); return d.getFullYear()===hY && d.getMonth()===hM && d.getDate()===hD; }).length;
+    var proximasEl = document.getElementById('proximas-consultas-doula');
+    if (proximasEl) {
+      var futuras = todas.filter(function(c) { return new Date(c.data_hora) >= agoraRef; }).slice(0, 5);
+      proximasEl.innerHTML = futuras.length ? futuras.map(function(c) {
+        var dt = new Date(c.data_hora);
+        return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
+          '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + (c.tipo || 'Consulta') + '</div></div>' +
+          '<div style="text-align:right;min-width:56px;"><div style="font-size:12px;font-weight:500;color:var(--rose);">' + dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) + '</div></div></div>';
+      }).join('') : '<div class="empty-state-small" data-i18n="doula.appts.empty">Nenhuma consulta agendada ainda</div>';
+    }
+    if (res.error || !todas.length) {
       container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📅</div><div class="empty-title">Agenda vazia</div><div class="empty-sub">Use o formulário acima para agendar suas consultas</div></div>';
       return;
     }
-    container.innerHTML = res.data.map(function(c) {
+    container.innerHTML = todas.map(function(c) {
       var dt = new Date(c.data_hora);
       var dataStr = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
       var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
