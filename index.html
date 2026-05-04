@@ -7833,12 +7833,16 @@ function posDNav(el, panelId) {
   if (idx !== undefined && sideItems[idx]) sideItems[idx].classList.add('active');
   var panel = document.getElementById(panelId);
   if (panel) panel.classList.add('active');
-  if (panelId === 'posd-registros') { try { posDCarregarRegistros(); } catch(e) {} }
-  if (panelId === 'posd-clientes') { try { posDCarregarClientes(); } catch(e) {} }
+  if (panelId === 'posd-registros') posDCarregarRegistros().catch(function(){});
+  if (panelId === 'posd-clientes') posDCarregarClientes().catch(function(){});
 }
 
 async function posDCarregarClientes() {
   if (!db || !currentUserId) return;
+  var listaView = document.getElementById('posd-clientes-view');
+  var detalhe = document.getElementById('posd-cliente-detalhe');
+  if (listaView) listaView.style.display = '';
+  if (detalhe) detalhe.style.display = 'none';
   try {
     var solRes = await db.from('solicitacoes').select('id,gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'pendente');
     var solCard = document.getElementById('posd-sol-card');
