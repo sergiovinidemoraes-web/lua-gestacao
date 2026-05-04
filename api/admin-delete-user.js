@@ -35,14 +35,20 @@ export default async function handler(req, res) {
   }
 
   // Troca o email por um placeholder antes de deletar para liberar o email original.
-  // O Supabase mantém tombstone do email deletado, bloqueando re-cadastro com o mesmo email.
+  // email_confirm:true evita que o Supabase tente enviar confirmação pro placeholder.
   try {
-    await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+    const swapRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
       method: 'PUT',
       headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: `deleted_${Date.now()}_${userId.slice(0,8)}@removed.invalid` })
+      body: JSON.stringify({ email: `deleted_${Date.now()}_${userId.slice(0,8)}@removed.invalid`, email_confirm: true })
     });
-  } catch (e) { /* ignora — o delete ainda prossegue */ }
+    if (!swapRes.ok) {
+      const swapErr = await swapRes.json().catch(() => ({}));
+      console.warn('email swap falhou:', swapErr.message);
+    }
+  } catch (e) {
+    console.warn('email swap erro:', e.message);
+  }
 
   try {
     const authRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
