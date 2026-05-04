@@ -852,6 +852,7 @@ tr:hover td { background:var(--rose-pale); }
           <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">❤️ Acompanhante</button>
           <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Gestante Pós Parto</button>
           <button class="login-tipo-btn" id="tipo-pos-doula" onclick="selecionarTipo('pos_doula')" style="margin-top:8px;">💜 Doula Pós Parto</button>
+          <button class="login-tipo-btn" id="tipo-doula-backup" onclick="selecionarTipo('doula_backup')" style="margin-top:8px; width:100%;">🛡️ Sou Backup</button>
         </div>
       </div>
       <div id="pai-codigo-campo" style="display:none;">
@@ -1943,6 +1944,9 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
         </nav>
+        <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
+        </div>
         <div class="d-sidebar-clients">
           <div class="d-clients-title">Clientes Ativas</div>
           <div id="sidebar-clientes-list">
@@ -3006,6 +3010,9 @@ tr:hover td { background:var(--rose-pale); }
           <div class="pos-nav-item" onclick="posDNav(this,'posd-clientes')"><span class="pos-nav-icon">👶</span><span>Clientes</span></div>
           <div class="pos-nav-item" onclick="posDNav(this,'posd-registros')"><span class="pos-nav-icon">📋</span><span>Registros</span></div>
         </nav>
+        <div id="btn-switch-to-backup-pos" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
+        </div>
       </aside>
 
       <nav class="mobile-bottom-nav" id="pos-doula-bottom-nav">
@@ -3214,6 +3221,9 @@ tr:hover td { background:var(--rose-pale); }
         <div style="margin:0 16px 14px;padding:10px 14px;background:rgba(201,137,122,0.1);border-radius:12px;font-size:12px;color:var(--earth-light);text-align:center;line-height:1.5;">
           Cobrindo<br><strong id="bk-doula-nome" style="color:var(--rose);font-size:13px;">—</strong>
         </div>
+        <div id="btn-switch-to-main" style="display:none; margin:0 16px 14px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">⬅️ Voltar ao Meu Painel</div>
+        </div>
         <nav>
           <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><span class="d-nav-icon">👩</span>Clientes</div>
           <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><span class="d-nav-icon">📅</span>Agenda</div>
@@ -3244,6 +3254,13 @@ tr:hover td { background:var(--rose-pale); }
       </nav>
 
       <main class="d-main">
+
+        <!-- BANNER DE UPGRADE -->
+        <div id="bk-upgrade-banner" style="display:none; background:linear-gradient(135deg,var(--rose) 0%,#a8685a 100%); border-radius:16px; padding:20px; color:white; margin-bottom:24px; box-shadow:0 4px 16px rgba(201,137,122,0.3);">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:22px; margin-bottom:8px;">Pronta para ter suas próprias clientes?</div>
+          <div style="font-size:13px; opacity:0.9; margin-bottom:16px; line-height:1.5;">Faça o upgrade da sua conta e torne-se uma Doula titular no app. Você continuará sendo backup desta colega!</div>
+          <button onclick="mostrarModalUpgradeBackup()" style="background:var(--white); color:var(--rose); border:none; padding:10px 24px; border-radius:30px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit;">Fazer Upgrade Agora</button>
+        </div>
 
         <!-- CLIENTES -->
         <div class="d-panel active" id="bk-clientes">
@@ -3289,6 +3306,22 @@ tr:hover td { background:var(--rose-pale); }
   </div>
 
 </div>
+
+  <!-- MODAL UPGRADE BACKUP -->
+  <div class="lua-modal-overlay" id="modal-upgrade-backup">
+    <div class="lua-modal">
+      <div class="lua-modal-icon">🌟</div>
+      <div class="lua-modal-title">Escolha seu Perfil</div>
+      <div class="lua-modal-sub">Deseja atuar no app como Doula de Gestação ou Doula Pós-parto? (Você continuará com acesso ao painel de backup da sua colega).</div>
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+        <button onclick="confirmarUpgradeBackup('doula')" style="background:var(--rose-pale); color:var(--rose); border:1.5px solid var(--rose-light); padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;">🌙 Doula de Gestação</button>
+        <button onclick="confirmarUpgradeBackup('pos_doula')" style="background:#f3e8f5; color:#784587; border:1.5px solid #dcbce3; padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;">💜 Doula Pós-parto</button>
+      </div>
+      <div class="lua-modal-btns">
+        <button class="lua-modal-cancel" onclick="document.getElementById('modal-upgrade-backup').classList.remove('show')">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
 <script>
 
@@ -6380,9 +6413,10 @@ async function salvarAvaliacaoDoula() {
 async function salvarBackupDoula() {
   var email = document.getElementById('backup-doula-email');
   if (!email || !email.value.trim()) { mostrarToast('Informe o e-mail da doula backup'); return; }
+  var newEmail = email.value.trim().toLowerCase();
   var payload = {
     doula_id: currentUserId,
-    backup_email: email.value.trim().toLowerCase(),
+    backup_email: newEmail,
     perm_agenda: !!(document.getElementById('backup-perm-agenda') || {}).checked,
     perm_chat: !!(document.getElementById('backup-perm-chat') || {}).checked,
     perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked,
@@ -6390,7 +6424,15 @@ async function salvarBackupDoula() {
     backup_user_id: null
   };
   if (db && currentUserId) {
-    try { await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); mostrarToast('\u2705 Backup configurado! Pe\u00e7a para ela entrar no app com o e-mail cadastrado.'); }
+    try { 
+      var existing = await db.from('backup_doulas').select('*').eq('doula_id', currentUserId).maybeSingle();
+      if (existing.data && existing.data.backup_email === newEmail) {
+        payload.status = existing.data.status;
+        payload.backup_user_id = existing.data.backup_user_id;
+      }
+      await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); 
+      mostrarToast('\u2705 Configurações de backup salvas!'); 
+    }
     catch(e) { mostrarToast('Erro: ' + e.message); }
   }
 }
@@ -6405,6 +6447,25 @@ async function carregarBackupDoula() {
     var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
     var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
   } catch(e) {}
+}
+
+function mostrarModalUpgradeBackup() {
+  var m = document.getElementById('modal-upgrade-backup');
+  if (m) m.classList.add('show');
+}
+
+function confirmarUpgradeBackup(novoTipo) {
+  if (!db || !currentUserId) return;
+  var m = document.getElementById('modal-upgrade-backup');
+  if (m) m.classList.remove('show');
+  db.from('usuarios').update({ tipo: novoTipo }).eq('id', currentUserId).then(function(res) {
+    if (!res.error) {
+      mostrarToast('\u2705 Conta atualizada! Recarregando...');
+      setTimeout(function() { window.location.reload(); }, 1500);
+    } else {
+      mostrarToast('Erro: ' + res.error.message);
+    }
+  });
 }
 
 // \u2500\u2500\u2500 Backup Doula \u2014 Navega\u00e7\u00e3o e carregamentos \u2500\u2500\u2500
@@ -6440,6 +6501,7 @@ async function carregarClientesBackup() {
 
 async function carregarAgendaBackup() {
   if (!db || !currentBackupDoulaId) return;
+  if (!currentBackupPerms || !currentBackupPerms.agenda) return;
   var el = document.getElementById('bk-agenda-lista');
   if (!el) return;
   try {
@@ -6459,6 +6521,7 @@ async function carregarAgendaBackup() {
 
 async function carregarListaChatBackup() {
   if (!db || !currentBackupDoulaId) return;
+  if (!currentBackupPerms || !currentBackupPerms.chat) return;
   var lista = document.getElementById('bk-chat-lista');
   var area = document.getElementById('bk-chat-area');
   if (!lista || !area) return;
@@ -6499,6 +6562,7 @@ function fecharChatBackup() {
 
 async function enviarMensagemBackup() {
   if (!db || !bkChatGestanteId || !currentBackupDoulaId) return;
+  if (!currentBackupPerms || !currentBackupPerms.chat) return;
   var input = document.getElementById('bk-msg-input');
   var texto = (input ? input.value : '').trim();
   if (!texto) return;
@@ -6512,6 +6576,7 @@ async function enviarMensagemBackup() {
 
 async function carregarRegistrosBackup() {
   if (!db || !currentBackupDoulaId) return;
+  if (!currentBackupPerms || !currentBackupPerms.registros) return;
   var el = document.getElementById('bk-registros-lista');
   if (!el) return;
   try {
@@ -6763,8 +6828,8 @@ function loginTab(tab) {
 
 function selecionarTipo(tipo) {
   tipoSelecionado = tipo;
-  ['gestante','doula','pai','pos','pos_doula'].forEach(function(t) {
-    var id = 'tipo-' + t.replace('_','-');
+  ['gestante','doula','pai','pos','pos_doula','doula_backup'].forEach(function(t) {
+    var id = 'tipo-' + t.replace(/_/g,'-');
     var el = document.getElementById(id);
     if (el) el.classList.toggle('selected', t === tipo);
   });
@@ -6965,8 +7030,9 @@ async function carregarUsuario(user) {
         try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
       }
     }
-    // Verifica se é doula backup de outra doula
-    if (tipo === 'doula') {
+    // Verifica se tem convite como backup
+    window.hasBackupAccess = false;
+    if (tipo === 'doula' || tipo === 'pos_doula' || tipo === 'doula_backup') {
       try {
         var bkRes = await db.from('backup_doulas').select('*').eq('backup_email', user.email).maybeSingle();
         if (bkRes.data) {
@@ -6981,10 +7047,17 @@ async function carregarUsuario(user) {
             chat: !!bkRes.data.perm_chat,
             registros: !!bkRes.data.perm_registros
           };
-          entrarNoApp('doula_backup', nome);
-          return;
+          window.hasBackupAccess = true;
+        } else if (tipo === 'doula_backup') {
+          currentBackupDoulaId = null;
+          currentBackupPerms = null;
         }
       } catch(e2) {}
+    }
+    
+    if (tipo === 'doula_backup') {
+      entrarNoApp('doula_backup', nome);
+      return;
     }
     entrarNoApp(tipo, nome);
     return;
@@ -7005,7 +7078,7 @@ function entrarNoApp(tipo, nome) {
   document.getElementById('view-pos').classList.remove('active');
   document.getElementById('view-pos-doula').classList.remove('active');
   document.getElementById('view-doula-backup').classList.remove('active');
-  var viewId = 'view-' + tipo.replace('_','-');
+  var viewId = 'view-' + tipo.replace(/_/g,'-');
   document.getElementById(viewId).classList.add('active');
   var roleEl = document.getElementById('header-role');
   var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
@@ -7100,11 +7173,30 @@ function entrarNoApp(tipo, nome) {
     if (posDAvatar) posDAvatar.textContent = primeiroNome[0].toUpperCase();
     setTimeout(function() { try { posDCarregarClientes(); } catch(e) {} }, 400);
   }
+  
+  if (!window.currentRoleOriginal && tipo !== 'doula_backup') {
+    window.currentRoleOriginal = tipo;
+  }
+  
+  if (tipo === 'doula' || tipo === 'pos_doula') {
+    var b1 = document.getElementById('btn-switch-to-backup-doula');
+    if (b1) b1.style.display = window.hasBackupAccess ? 'block' : 'none';
+    var b2 = document.getElementById('btn-switch-to-backup-pos');
+    if (b2) b2.style.display = window.hasBackupAccess ? 'block' : 'none';
+  }
+  
   if (tipo === 'doula_backup') {
     var bkAvatar = document.getElementById('bk-avatar');
     if (bkAvatar) bkAvatar.textContent = primeiroNome[0].toUpperCase();
     var bkNomeSidebar = document.getElementById('bk-doula-nome');
     if (bkNomeSidebar && currentBackupPerms) bkNomeSidebar.textContent = currentBackupPerms.nomeDoula;
+    
+    var banner = document.getElementById('bk-upgrade-banner');
+    if (banner) banner.style.display = 'block';
+    
+    var bMain = document.getElementById('btn-switch-to-main');
+    if (bMain) bMain.style.display = window.currentRoleOriginal ? 'block' : 'none';
+
     // Mostra nav items conforme permissões
     if (currentBackupPerms) {
       if (currentBackupPerms.agenda) { var el = document.getElementById('bk-nav-agenda'); if (el) el.style.display = ''; var em = document.getElementById('bk-mob-agenda'); if (em) em.style.display = ''; }
