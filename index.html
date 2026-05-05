@@ -853,7 +853,7 @@ tr:hover td { background:var(--rose-pale); }
           <button class="login-tipo-btn selected" id="tipo-gestante" onclick="selecionarTipo('gestante')">🤰 Gestante</button>
           <button class="login-tipo-btn" id="tipo-doula" onclick="selecionarTipo('doula')">🌙 Doula</button>
           <button class="login-tipo-btn" id="tipo-pai" onclick="selecionarTipo('pai')" style="margin-top:8px;">❤️ Acompanhante</button>
-          <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Gestante Pós Parto</button>
+          <button class="login-tipo-btn" id="tipo-pos" onclick="selecionarTipo('pos')" style="margin-top:8px;">🌸 Mãe (Pós-Parto)</button>
           <button class="login-tipo-btn" id="tipo-pos-doula" onclick="selecionarTipo('pos_doula')" style="margin-top:8px;">💜 Doula Pós Parto</button>
           <button class="login-tipo-btn" id="tipo-doula-backup" onclick="selecionarTipo('doula_backup')" style="margin-top:8px; width:100%;">🛡️ Sou Backup</button>
         </div>
@@ -2710,7 +2710,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="pos-profile">
           <div class="pos-avatar" id="pos-avatar">M</div>
           <div class="pos-name" id="pos-profile-name">—</div>
-          <div class="pos-role">🌸 Lua Pós</div>
+          <div class="pos-role">🌸 Mãe Pós-Parto</div>
         </div>
         <nav class="pos-nav">
           <div class="pos-nav-item active" onclick="posNav(this,'pos-dashboard')"><span class="pos-nav-icon">🏠</span><span>Início</span></div>
@@ -2888,21 +2888,19 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div id="pos-painel-sono">
-            <div class="card">
-              <div class="card-title">Novo registro de sono</div>
+            <!-- Sono ativo: timer em andamento -->
+            <div id="pos-sono-ativo-card" style="display:none;background:linear-gradient(135deg,#e8f4ff,#d0e8ff);border:1.5px solid rgba(100,150,220,0.25);border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;">
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#4a80c4;margin-bottom:6px;">Sono em andamento</div>
+              <div id="pos-sono-ativo-tipo" style="font-size:14px;color:var(--dark);font-weight:500;margin-bottom:8px;">—</div>
+              <div id="pos-sono-ativo-timer" style="font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:#4a80c4;letter-spacing:3px;line-height:1;margin-bottom:16px;">00:00:00</div>
+              <button onclick="posFinalizarSono()" class="login-btn" style="background:#4a80c4;">■ Finalizar Sono</button>
+            </div>
+            <!-- Iniciar novo sono -->
+            <div id="pos-sono-iniciar-card" class="card">
+              <div class="card-title">Novo sono</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
                 <button class="pos-tipo-btn" id="pos-sono-dia-btn" onclick="posSelecionarSono('dia')" style="padding:16px 8px;">☀️<br><span style="font-size:12px;margin-top:4px;display:block;">Soneca (Dia)</span></button>
                 <button class="pos-tipo-btn" id="pos-sono-noite-btn" onclick="posSelecionarSono('noite')" style="padding:16px 8px;">🌙<br><span style="font-size:12px;margin-top:4px;display:block;">Sono Noturno</span></button>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-                <div>
-                  <label class="form-label">Início</label>
-                  <input id="pos-sono-inicio" class="form-input" type="time">
-                </div>
-                <div>
-                  <label class="form-label">Fim</label>
-                  <input id="pos-sono-fim" class="form-input" type="time">
-                </div>
               </div>
               <div style="margin-bottom:16px;">
                 <label class="form-label">Qualidade</label>
@@ -2912,7 +2910,7 @@ tr:hover td { background:var(--rose-pale); }
                   <option value="acordou_varias">Acordou várias vezes</option>
                 </select>
               </div>
-              <button onclick="posSalvarSono()" class="login-btn">Salvar Registro</button>
+              <button onclick="posIniciarSono()" class="login-btn">▶ Iniciar Sono</button>
             </div>
             <div class="card">
               <div class="card-title">Sono de hoje</div>
@@ -3115,6 +3113,7 @@ tr:hover td { background:var(--rose-pale); }
             <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
               <button class="pos-tab-btn active" id="posd-tab-resumo-btn" onclick="posDDetalheTab('resumo')" style="flex:1;">📋 Resumo</button>
               <button class="pos-tab-btn" id="posd-tab-bebe-btn" onclick="posDDetalheTab('bebe')" style="flex:1;">👶 Bebê</button>
+              <button class="pos-tab-btn" id="posd-tab-rotina-btn" onclick="posDDetalheTab('rotina')" style="flex:1;">🌙 Rotina</button>
             </div>
 
             <!-- RESUMO -->
@@ -3198,6 +3197,124 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
 
               </div>
+            </div>
+
+            <!-- ROTINA -->
+            <div id="posd-painel-rotina" style="display:none;">
+              <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
+                <button class="pos-tab-btn active" id="posd-rtab-mamada-btn" onclick="posDRotinaTab('mamada')" style="flex:1;">🤱 Mamadas</button>
+                <button class="pos-tab-btn" id="posd-rtab-sono-btn" onclick="posDRotinaTab('sono')" style="flex:1;">🌙 Sono</button>
+                <button class="pos-tab-btn" id="posd-rtab-fralda-btn" onclick="posDRotinaTab('fralda')" style="flex:1;">💧 Fraldas</button>
+              </div>
+
+              <!-- MAMADAS -->
+              <div id="posd-rot-mamada">
+                <div class="card">
+                  <div class="card-title">Registrar mamada</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+                    <button class="pos-lado-btn" id="posd-mam-btn-E" onclick="posDSelecionarLadoMamada('E')">◀ Esquerdo</button>
+                    <button class="pos-lado-btn" id="posd-mam-btn-D" onclick="posDSelecionarLadoMamada('D')">Direito ▶</button>
+                  </div>
+                  <div style="text-align:center;margin-bottom:16px;">
+                    <div id="posd-mam-timer-display" style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--rose);letter-spacing:2px;line-height:1;margin-bottom:12px;">00:00</div>
+                    <div style="display:flex;gap:12px;justify-content:center;">
+                      <button id="posd-mam-btn-play" onclick="posDMamadaTimerToggle()" style="background:var(--rose);color:white;border:none;border-radius:50%;width:48px;height:48px;font-size:18px;cursor:pointer;box-shadow:0 4px 16px rgba(201,137,122,0.35);">▶</button>
+                      <button onclick="posDMamadaTimerReset()" style="background:var(--rose-pale);color:var(--mid);border:none;border-radius:50%;width:48px;height:48px;font-size:16px;cursor:pointer;">⏹</button>
+                      <button onclick="posDSalvarMamada('mama')" style="background:var(--sage);color:white;border:none;border-radius:50%;width:48px;height:48px;font-size:18px;cursor:pointer;" title="Salvar">✓</button>
+                    </div>
+                  </div>
+                  <div style="border-top:1px solid rgba(122,100,85,0.1);padding-top:16px;margin-top:4px;">
+                    <div class="card-title" style="margin-bottom:12px;">🫙 Bomba / Mamadeira</div>
+                    <div style="margin-bottom:12px;">
+                      <select id="posd-mam-bomba-tipo" class="form-input">
+                        <option value="mamadeira_lm">Mamadeira (LM)</option>
+                        <option value="formula">Fórmula</option>
+                        <option value="bomba">Bomba</option>
+                      </select>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                      <label class="form-label">Volume (ml)</label>
+                      <input id="posd-mam-volume" class="form-input" type="number" placeholder="Ex: 60" min="0" max="500">
+                    </div>
+                    <button onclick="posDSalvarMamada('bomba')" class="login-btn" style="background:#9B7BB8;">Registrar</button>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-title">Mamadas de hoje</div>
+                  <div id="posd-historico-mamadas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+                </div>
+              </div>
+
+              <!-- SONO -->
+              <div id="posd-rot-sono" style="display:none;">
+                <div id="posd-sono-ativo-card" style="display:none;background:linear-gradient(135deg,#e8f4ff,#d0e8ff);border:1.5px solid rgba(100,150,220,0.25);border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;">
+                  <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#4a80c4;margin-bottom:6px;">Sono em andamento</div>
+                  <div id="posd-sono-ativo-tipo" style="font-size:14px;color:var(--dark);font-weight:500;margin-bottom:8px;">—</div>
+                  <div id="posd-sono-ativo-timer" style="font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:#4a80c4;letter-spacing:2px;line-height:1;margin-bottom:16px;">00:00:00</div>
+                  <button onclick="posDFinalizarSono()" class="login-btn" style="background:#4a80c4;">■ Finalizar Sono</button>
+                </div>
+                <div id="posd-sono-iniciar-card" class="card">
+                  <div class="card-title">Iniciar sono</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                    <button class="pos-tipo-btn" id="posd-sono-dia-btn" onclick="posDSelecionarSono('dia')" style="padding:16px 8px;">☀️<br><span style="font-size:12px;margin-top:4px;display:block;">Soneca</span></button>
+                    <button class="pos-tipo-btn" id="posd-sono-noite-btn" onclick="posDSelecionarSono('noite')" style="padding:16px 8px;">🌙<br><span style="font-size:12px;margin-top:4px;display:block;">Noturno</span></button>
+                  </div>
+                  <div style="margin-bottom:16px;">
+                    <label class="form-label">Qualidade</label>
+                    <select id="posd-sono-qualidade" class="form-input">
+                      <option value="tranquilo">Tranquilo</option>
+                      <option value="agitado">Agitado</option>
+                      <option value="acordou_varias">Acordou várias vezes</option>
+                    </select>
+                  </div>
+                  <button onclick="posDIniciarSono()" class="login-btn" style="background:#9B7BB8;">▶ Iniciar Sono</button>
+                </div>
+                <div class="card">
+                  <div class="card-title">Sono de hoje</div>
+                  <div id="posd-historico-sono"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+                </div>
+              </div>
+
+              <!-- FRALDAS -->
+              <div id="posd-rot-fralda" style="display:none;">
+                <div class="card">
+                  <div class="card-title">Nova troca</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                    <button class="pos-tipo-btn" id="posd-fr-seca" onclick="posDSelecionarFralda('seca')">✓ Seca</button>
+                    <button class="pos-tipo-btn" id="posd-fr-xixi" onclick="posDSelecionarFralda('xixi')">💧 Molhada</button>
+                    <button class="pos-tipo-btn" id="posd-fr-coco" onclick="posDSelecionarFralda('coco')">💩 Com fezes</button>
+                    <button class="pos-tipo-btn" id="posd-fr-ambos" onclick="posDSelecionarFralda('ambos')">Combinada</button>
+                  </div>
+                  <div id="posd-fr-fezes-campos" style="display:none;margin-top:12px;">
+                    <div style="margin-bottom:12px;">
+                      <label class="form-label">Consistência (opcional)</label>
+                      <select id="posd-fr-consistencia" class="form-input">
+                        <option value="">Normal</option>
+                        <option value="liquida">Líquida</option>
+                        <option value="pastosa">Pastosa</option>
+                        <option value="seca">Seca</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="form-label">Cor das fezes (opcional)</label>
+                      <select id="posd-fr-cor" class="form-input">
+                        <option value="">Não informado</option>
+                        <option value="preta">Preta / Verde escuro (mecônio)</option>
+                        <option value="verde">Verde</option>
+                        <option value="amarelo">Amarelo ouro</option>
+                        <option value="laranja">Laranja</option>
+                        <option value="marrom">Marrom</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button onclick="posDRegistrarFralda()" class="login-btn" style="background:#9B7BB8;margin-top:16px;">✓ Registrar Troca</button>
+                </div>
+                <div class="card">
+                  <div class="card-title">Fraldas de hoje</div>
+                  <div id="posd-historico-fraldas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -7124,7 +7241,7 @@ function entrarNoApp(tipo, nome) {
   var roleKey = tipo === 'gestante' ? 'hdr.role.gestante' : tipo === 'pai' ? 'hdr.role.pai' : tipo === 'pos' ? 'hdr.role.gestante' : 'hdr.role.doula';
   var roleEmoji = tipo === 'gestante' ? '🤰' : tipo === 'pai' ? '❤️' : tipo === 'pos' ? '🌸' : tipo === 'pos_doula' ? '💜' : '🌙';
   roleEl.setAttribute('data-i18n', roleKey);
-  roleEl.textContent = tipo === 'pos_doula' ? '💜 Doula Pós Parto' : (roleEmoji + ' ' + t(roleKey));
+  roleEl.textContent = tipo === 'pos_doula' ? '💜 Doula Pós Parto' : tipo === 'pos' ? '🌸 Mãe Pós-Parto' : (roleEmoji + ' ' + t(roleKey));
   document.getElementById('header-user-name').textContent = nome;
   try { var gp = document.getElementById('g-profile-name'); if (gp) gp.textContent = primeiroNome; } catch(e) {}
   currentRole = tipo;
@@ -7298,7 +7415,7 @@ function posRotTab(tab) {
     if (fralda) fralda.style.display = 'none';
     if (btnSono) { btnSono.style.background = 'var(--rose-pale)'; btnSono.style.color = 'var(--dark)'; btnSono.style.fontWeight = '500'; }
     if (btnFralda) { btnFralda.style.background = 'transparent'; btnFralda.style.color = 'var(--earth-light)'; btnFralda.style.fontWeight = '400'; }
-    try { carregarHistoricoSono(); } catch(e) {}
+    try { posVerificarSonoAtivo(); carregarHistoricoSono(); } catch(e) {}
   } else {
     if (sono) sono.style.display = 'none';
     if (fralda) { fralda.style.display = 'flex'; fralda.style.flexDirection = 'column'; fralda.style.gap = '12px'; }
@@ -7493,31 +7610,82 @@ function posSelecionarSono(tipo) {
   if (btnNoite) { btnNoite.style.borderColor = tipo === 'noite' ? 'var(--rose)' : 'transparent'; }
 }
 
-async function posSalvarSono() {
+var _posSonoAtivoId = null;
+var _posSonoAtivoInicio = null;
+var _posSonoInterval = null;
+
+async function posVerificarSonoAtivo() {
   if (!db || !currentUserId) return;
-  var inicioEl = document.getElementById('pos-sono-inicio');
-  var fimEl = document.getElementById('pos-sono-fim');
-  var qualEl = document.getElementById('pos-sono-qualidade');
-  var inicio = inicioEl ? inicioEl.value : '';
-  var fim = fimEl ? fimEl.value : '';
-  if (!inicio || !fim) { mostrarToast('Informe início e fim do sono.'); return; }
-  var hoje = new Date().toISOString().split('T')[0];
-  var inicioISO = hoje + 'T' + inicio + ':00';
-  var fimISO = hoje + 'T' + fim + ':00';
-  var duracaoMin = Math.round((new Date(fimISO) - new Date(inicioISO)) / 60000);
-  if (duracaoMin <= 0) duracaoMin = null;
   try {
-    await db.from('pos_sono').insert({ mae_id: currentUserId, tipo: posSonoTipo, inicio: inicioISO, fim: fimISO, duracao_min: duracaoMin, qualidade: qualEl ? qualEl.value : null });
-    mostrarToast('✓ Sono registrado!');
-    if (inicioEl) inicioEl.value = '';
-    if (fimEl) fimEl.value = '';
+    var res = await db.from('pos_sono').select('id,tipo,inicio').eq('mae_id', currentUserId).is('fim', null).maybeSingle();
+    if (res.data) {
+      _posSonoAtivoId = res.data.id;
+      _posSonoAtivoInicio = new Date(res.data.inicio);
+      posSonoTipo = res.data.tipo;
+      posMostrarSonoAtivo();
+    } else {
+      posEsconderSonoAtivo();
+    }
+  } catch(e) {}
+}
+
+function posMostrarSonoAtivo() {
+  var ativoCard = document.getElementById('pos-sono-ativo-card');
+  var iniciarCard = document.getElementById('pos-sono-iniciar-card');
+  if (ativoCard) ativoCard.style.display = '';
+  if (iniciarCard) iniciarCard.style.display = 'none';
+  var tipoEl = document.getElementById('pos-sono-ativo-tipo');
+  if (tipoEl) tipoEl.textContent = posSonoTipo === 'noite' ? '🌙 Sono noturno' : '☀️ Soneca do dia';
+  if (_posSonoInterval) clearInterval(_posSonoInterval);
+  _posSonoInterval = setInterval(posAtualizarTimerSono, 1000);
+  posAtualizarTimerSono();
+}
+
+function posEsconderSonoAtivo() {
+  var ativoCard = document.getElementById('pos-sono-ativo-card');
+  var iniciarCard = document.getElementById('pos-sono-iniciar-card');
+  if (ativoCard) ativoCard.style.display = 'none';
+  if (iniciarCard) iniciarCard.style.display = '';
+  if (_posSonoInterval) { clearInterval(_posSonoInterval); _posSonoInterval = null; }
+}
+
+function posAtualizarTimerSono() {
+  if (!_posSonoAtivoInicio) return;
+  var diff = Math.floor((Date.now() - _posSonoAtivoInicio.getTime()) / 1000);
+  var h = Math.floor(diff / 3600), m = Math.floor((diff % 3600) / 60), s = diff % 60;
+  var timer = document.getElementById('pos-sono-ativo-timer');
+  if (timer) timer.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+async function posIniciarSono() {
+  if (!db || !currentUserId) return;
+  if (!posSonoTipo) { mostrarToast('Selecione o tipo de sono.'); return; }
+  var qualEl = document.getElementById('pos-sono-qualidade');
+  try {
+    var res = await db.from('pos_sono').insert({ mae_id: currentUserId, tipo: posSonoTipo, inicio: new Date().toISOString(), qualidade: qualEl ? qualEl.value : null }).select('id').single();
+    _posSonoAtivoId = res.data.id;
+    _posSonoAtivoInicio = new Date();
+    posMostrarSonoAtivo();
+    mostrarToast('▶ Sono iniciado!');
+  } catch(e) { mostrarToast('Erro ao iniciar sono.'); }
+}
+
+async function posFinalizarSono() {
+  if (!db || !_posSonoAtivoId) return;
+  var fim = new Date();
+  var duracaoMin = Math.round((fim - _posSonoAtivoInicio) / 60000);
+  try {
+    await db.from('pos_sono').update({ fim: fim.toISOString(), duracao_min: duracaoMin }).eq('id', _posSonoAtivoId);
+    _posSonoAtivoId = null;
+    _posSonoAtivoInicio = null;
+    posEsconderSonoAtivo();
     posSonoTipo = null;
-    var btnDia = document.getElementById('pos-sono-dia-btn');
-    var btnNoite = document.getElementById('pos-sono-noite-btn');
-    if (btnDia) btnDia.style.borderColor = 'transparent';
-    if (btnNoite) btnNoite.style.borderColor = 'transparent';
+    var btnDia = document.getElementById('pos-sono-dia-btn'); if (btnDia) btnDia.style.borderColor = 'transparent';
+    var btnNoite = document.getElementById('pos-sono-noite-btn'); if (btnNoite) btnNoite.style.borderColor = 'transparent';
+    mostrarToast('✓ Sono finalizado: ' + duracaoMin + ' min');
     carregarHistoricoSono();
-  } catch(e) { mostrarToast('Erro ao salvar.'); }
+    carregarPosDashboard();
+  } catch(e) { mostrarToast('Erro ao finalizar sono.'); }
 }
 
 async function carregarPosDashboard() {
@@ -7612,9 +7780,9 @@ async function carregarHistoricoSono() {
     if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum sono registrado hoje.</div>'; return; }
     el.innerHTML = res.data.map(function(s) {
       var ini = s.inicio ? new Date(s.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
-      var fim = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
+      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '⏱ em andamento';
       var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
-      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fim + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fimText + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
 }
@@ -8043,14 +8211,19 @@ function posDVoltarClientes() {
 function posDDetalheTab(aba) {
   var rPanel = document.getElementById('posd-painel-resumo');
   var bPanel = document.getElementById('posd-painel-bebe');
+  var rotPanel = document.getElementById('posd-painel-rotina');
   var rBtn = document.getElementById('posd-tab-resumo-btn');
   var bBtn = document.getElementById('posd-tab-bebe-btn');
+  var rotBtn = document.getElementById('posd-tab-rotina-btn');
   if (rPanel) rPanel.style.display = aba === 'resumo' ? '' : 'none';
   if (bPanel) bPanel.style.display = aba === 'bebe' ? '' : 'none';
+  if (rotPanel) rotPanel.style.display = aba === 'rotina' ? '' : 'none';
   if (rBtn) rBtn.classList.toggle('active', aba === 'resumo');
   if (bBtn) bBtn.classList.toggle('active', aba === 'bebe');
+  if (rotBtn) rotBtn.classList.toggle('active', aba === 'rotina');
   if (aba === 'resumo') posDCarregarResumo();
   if (aba === 'bebe') posDCarregarBebe();
+  if (aba === 'rotina') posDCarregarRotina();
 }
 
 async function posDCarregarResumo() {
@@ -8315,6 +8488,257 @@ async function posDCarregarRegistros() {
         + (r.recuperacao ? '<span style="font-size:12px;color:var(--sage);">💚 Recuperação: ' + (rcMap[r.recuperacao] || r.recuperacao) + '</span>' : '')
         + (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);margin-top:8px;">' + r.evolucao + '</div>' : '')
         + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+// ── DOULA PÓS: ROTINA (Mamadas, Sono, Fraldas) ──
+
+var _posDMamadaLado = null;
+var _posDMamadaTimer = 0;
+var _posDMamadaTimerRunning = false;
+var _posDMamadaTimerInterval = null;
+var _posDFraldaTipo = null;
+var _posDSonoAtivoId = null;
+var _posDSonoAtivoInicio = null;
+var _posDSonoAtivoTipo = null;
+var _posDSonoInterval = null;
+
+function posDRotinaTab(aba) {
+  ['mamada','sono','fralda'].forEach(function(t) {
+    var panel = document.getElementById('posd-rot-' + t);
+    var btn = document.getElementById('posd-rtab-' + t + '-btn');
+    if (panel) panel.style.display = t === aba ? '' : 'none';
+    if (btn) btn.classList.toggle('active', t === aba);
+  });
+  if (aba === 'mamada') posDCarregarMamadas();
+  if (aba === 'sono') posDVerificarSonoAtivo();
+  if (aba === 'fralda') posDCarregarFraldas();
+}
+
+async function posDCarregarRotina() {
+  posDRotinaTab('mamada');
+}
+
+function posDSelecionarLadoMamada(lado) {
+  _posDMamadaLado = lado;
+  ['E','D'].forEach(function(l) {
+    var btn = document.getElementById('posd-mam-btn-' + l);
+    if (btn) { btn.style.borderColor = lado === l ? 'var(--rose)' : 'transparent'; btn.style.background = lado === l ? 'var(--rose-light)' : 'var(--rose-pale)'; }
+  });
+}
+
+function posDMamadaTimerToggle() {
+  _posDMamadaTimerRunning = !_posDMamadaTimerRunning;
+  var btn = document.getElementById('posd-mam-btn-play');
+  if (_posDMamadaTimerRunning) {
+    if (btn) btn.textContent = '⏸';
+    _posDMamadaTimerInterval = setInterval(function() {
+      _posDMamadaTimer++;
+      var el = document.getElementById('posd-mam-timer-display');
+      if (el) el.textContent = posFormatarTimer(_posDMamadaTimer);
+    }, 1000);
+  } else {
+    if (btn) btn.textContent = '▶';
+    clearInterval(_posDMamadaTimerInterval);
+  }
+}
+
+function posDMamadaTimerReset() {
+  _posDMamadaTimerRunning = false;
+  clearInterval(_posDMamadaTimerInterval);
+  _posDMamadaTimer = 0;
+  var el = document.getElementById('posd-mam-timer-display');
+  if (el) el.textContent = '00:00';
+  var btn = document.getElementById('posd-mam-btn-play');
+  if (btn) btn.textContent = '▶';
+}
+
+async function posDSalvarMamada(modo) {
+  if (!db || !_posDClienteId) return;
+  var registro = { mae_id: _posDClienteId, criado_em: new Date().toISOString() };
+  if (modo === 'mama') {
+    if (!_posDMamadaLado) { mostrarToast('Selecione o lado.'); return; }
+    if (_posDMamadaTimer <= 0) { mostrarToast('Inicie o timer da mamada.'); return; }
+    registro.tipo = 'mama';
+    registro.lado = _posDMamadaLado;
+    registro.duracao_seg = _posDMamadaTimer;
+    posDMamadaTimerReset();
+    _posDMamadaLado = null;
+    ['E','D'].forEach(function(l) { var b = document.getElementById('posd-mam-btn-' + l); if (b) { b.style.borderColor='transparent'; b.style.background='var(--rose-pale)'; } });
+  } else {
+    var tipoEl = document.getElementById('posd-mam-bomba-tipo');
+    var volEl = document.getElementById('posd-mam-volume');
+    registro.tipo = tipoEl ? tipoEl.value : 'mamadeira_lm';
+    registro.volume_ml = volEl && volEl.value ? parseInt(volEl.value, 10) : null;
+    if (volEl) volEl.value = '';
+  }
+  try {
+    await db.from('pos_amamentacao').insert(registro);
+    mostrarToast('✓ Mamada registrada!');
+    posDCarregarMamadas();
+  } catch(e) { mostrarToast('Erro ao registrar. Verifique permissões no Supabase.'); }
+}
+
+async function posDCarregarMamadas() {
+  if (!db || !_posDClienteId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('posd-historico-mamadas');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_amamentacao').select('*').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; return; }
+    var tipoLabel = { 'mama':'Mama', 'bomba':'Bomba', 'mamadeira_lm':'Mamadeira (LM)', 'formula':'Fórmula' };
+    el.innerHTML = res.data.map(function(m) {
+      var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var label = tipoLabel[m.tipo] || m.tipo;
+      if (m.tipo === 'mama') label += (m.lado ? ' (' + (m.lado === 'E' ? 'Esq' : 'Dir') + ')' : '') + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '');
+      else if (m.volume_ml) label += ' · ' + m.volume_ml + 'ml';
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">🤱 ' + label + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+async function posDVerificarSonoAtivo() {
+  if (!db || !_posDClienteId) return;
+  try {
+    var res = await db.from('pos_sono').select('id,tipo,inicio').eq('mae_id', _posDClienteId).is('fim', null).maybeSingle();
+    if (res.data) {
+      _posDSonoAtivoId = res.data.id;
+      _posDSonoAtivoInicio = new Date(res.data.inicio);
+      _posDSonoAtivoTipo = res.data.tipo;
+      posDMostrarSonoAtivo();
+    } else {
+      _posDSonoAtivoId = null; _posDSonoAtivoInicio = null; _posDSonoAtivoTipo = null;
+      posDEsconderSonoAtivo();
+    }
+  } catch(e) {}
+  posDCarregarSono();
+}
+
+function posDMostrarSonoAtivo() {
+  var ativoCard = document.getElementById('posd-sono-ativo-card');
+  var iniciarCard = document.getElementById('posd-sono-iniciar-card');
+  if (ativoCard) ativoCard.style.display = '';
+  if (iniciarCard) iniciarCard.style.display = 'none';
+  var tipoEl = document.getElementById('posd-sono-ativo-tipo');
+  if (tipoEl) tipoEl.textContent = _posDSonoAtivoTipo === 'noite' ? '🌙 Sono noturno' : '☀️ Soneca do dia';
+  if (_posDSonoInterval) clearInterval(_posDSonoInterval);
+  _posDSonoInterval = setInterval(posDUpdateTimerSono, 1000);
+  posDUpdateTimerSono();
+}
+
+function posDEsconderSonoAtivo() {
+  var ativoCard = document.getElementById('posd-sono-ativo-card');
+  var iniciarCard = document.getElementById('posd-sono-iniciar-card');
+  if (ativoCard) ativoCard.style.display = 'none';
+  if (iniciarCard) iniciarCard.style.display = '';
+  if (_posDSonoInterval) { clearInterval(_posDSonoInterval); _posDSonoInterval = null; }
+}
+
+function posDUpdateTimerSono() {
+  if (!_posDSonoAtivoInicio) return;
+  var diff = Math.floor((Date.now() - _posDSonoAtivoInicio.getTime()) / 1000);
+  var h = Math.floor(diff / 3600), m = Math.floor((diff % 3600) / 60), s = diff % 60;
+  var timer = document.getElementById('posd-sono-ativo-timer');
+  if (timer) timer.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function posDSelecionarSono(tipo) {
+  _posDSonoAtivoTipo = tipo;
+  var btnDia = document.getElementById('posd-sono-dia-btn');
+  var btnNoite = document.getElementById('posd-sono-noite-btn');
+  if (btnDia) btnDia.style.borderColor = tipo === 'dia' ? 'var(--gold)' : 'transparent';
+  if (btnNoite) btnNoite.style.borderColor = tipo === 'noite' ? 'var(--rose)' : 'transparent';
+}
+
+async function posDIniciarSono() {
+  if (!db || !_posDClienteId) return;
+  if (!_posDSonoAtivoTipo) { mostrarToast('Selecione o tipo de sono.'); return; }
+  var qualEl = document.getElementById('posd-sono-qualidade');
+  try {
+    var res = await db.from('pos_sono').insert({ mae_id: _posDClienteId, tipo: _posDSonoAtivoTipo, inicio: new Date().toISOString(), qualidade: qualEl ? qualEl.value : null }).select('id').single();
+    _posDSonoAtivoId = res.data.id;
+    _posDSonoAtivoInicio = new Date();
+    posDMostrarSonoAtivo();
+    mostrarToast('▶ Sono iniciado!');
+  } catch(e) { mostrarToast('Erro ao iniciar sono. Verifique permissões no Supabase.'); }
+}
+
+async function posDFinalizarSono() {
+  if (!db || !_posDSonoAtivoId) return;
+  var fim = new Date();
+  var duracaoMin = Math.round((fim - _posDSonoAtivoInicio) / 60000);
+  try {
+    await db.from('pos_sono').update({ fim: fim.toISOString(), duracao_min: duracaoMin }).eq('id', _posDSonoAtivoId);
+    _posDSonoAtivoId = null; _posDSonoAtivoInicio = null; _posDSonoAtivoTipo = null;
+    posDEsconderSonoAtivo();
+    var btnDia = document.getElementById('posd-sono-dia-btn'); if (btnDia) btnDia.style.borderColor = 'transparent';
+    var btnNoite = document.getElementById('posd-sono-noite-btn'); if (btnNoite) btnNoite.style.borderColor = 'transparent';
+    mostrarToast('✓ Sono finalizado: ' + duracaoMin + ' min');
+    posDCarregarSono();
+  } catch(e) { mostrarToast('Erro ao finalizar sono. Verifique permissões no Supabase.'); }
+}
+
+async function posDCarregarSono() {
+  if (!db || !_posDClienteId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('posd-historico-sono');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_sono').select('*').eq('mae_id', _posDClienteId).gte('inicio', hoje + 'T00:00:00').order('inicio', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum sono hoje.</div>'; return; }
+    el.innerHTML = res.data.map(function(s) {
+      var ini = new Date(s.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '⏱ em andamento';
+      var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fimText + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+function posDSelecionarFralda(tipo) {
+  _posDFraldaTipo = tipo;
+  ['seca','xixi','coco','ambos'].forEach(function(t) {
+    var btn = document.getElementById('posd-fr-' + t);
+    if (btn) { btn.style.borderColor = tipo === t ? 'var(--rose)' : 'transparent'; btn.style.background = tipo === t ? 'var(--rose-light)' : 'var(--rose-pale)'; }
+  });
+  var fezesCampos = document.getElementById('posd-fr-fezes-campos');
+  if (fezesCampos) fezesCampos.style.display = (tipo === 'coco' || tipo === 'ambos') ? 'block' : 'none';
+}
+
+async function posDRegistrarFralda() {
+  if (!db || !_posDClienteId) return;
+  if (!_posDFraldaTipo) { mostrarToast('Selecione o tipo de fralda.'); return; }
+  var consistEl = document.getElementById('posd-fr-consistencia');
+  var corEl = document.getElementById('posd-fr-cor');
+  var registro = { mae_id: _posDClienteId, tipo: _posDFraldaTipo, consistencia: consistEl ? consistEl.value || null : null };
+  if (corEl && corEl.value) registro.cor = corEl.value;
+  try {
+    await db.from('pos_fraldas').insert(registro);
+    mostrarToast('✓ Fralda registrada!');
+    _posDFraldaTipo = null;
+    ['seca','xixi','coco','ambos'].forEach(function(t) { var b = document.getElementById('posd-fr-' + t); if (b) { b.style.borderColor='transparent'; b.style.background='var(--rose-pale)'; } });
+    var ff = document.getElementById('posd-fr-fezes-campos'); if (ff) ff.style.display = 'none';
+    posDCarregarFraldas();
+  } catch(e) { mostrarToast('Erro ao registrar fralda. Verifique permissões no Supabase.'); }
+}
+
+async function posDCarregarFraldas() {
+  if (!db || !_posDClienteId) return;
+  var hoje = new Date().toISOString().split('T')[0];
+  var el = document.getElementById('posd-historico-fraldas');
+  if (!el) return;
+  try {
+    var res = await db.from('pos_fraldas').select('*').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma fralda hoje.</div>'; return; }
+    var labels = { 'seca':'✓ Seca', 'xixi':'💧 Molhada', 'coco':'💩 Com fezes', 'ambos':'Combinada' };
+    el.innerHTML = res.data.map(function(f) {
+      var hora = new Date(f.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var label = labels[f.tipo] || f.tipo;
+      if (f.consistencia) label += ' · ' + f.consistencia;
+      if (f.cor) label += ' · ' + f.cor;
+      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">' + label + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
 }
