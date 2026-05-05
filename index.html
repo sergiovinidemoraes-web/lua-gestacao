@@ -235,6 +235,8 @@ header {
 .pos-tab-btn:not(.active) { background:transparent; color:var(--earth-light); }
 .pos-tipo-btn { flex:1; padding:12px 6px; border:1.5px solid rgba(201,137,122,0.2); border-radius:12px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; background:var(--rose-pale); color:var(--mid); transition:all 0.2s; text-align:center; }
 .pos-tipo-btn.selected { background:var(--rose); color:white; border-color:var(--rose); }
+.sugestao-chip { background:var(--rose-pale); color:var(--rose); border:1.5px solid rgba(201,137,122,0.3); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.sugestao-chip:hover { background:var(--rose); color:white; border-color:var(--rose); }
 .pos-history-item { background:var(--cream); border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
 @media (max-width: 768px) {
   .pos-layout { grid-template-columns:1fr !important; }
@@ -2068,6 +2070,7 @@ tr:hover td { background:var(--rose-pale); }
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à Agenda</label>
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso ao Chat</label>
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso aos Registros</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> ↳ Ver histórico de dias anteriores</label>
                 </div>
               </div>
               <button onclick="salvarBackupDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">✅ Salvar configuração de backup</button>
@@ -2717,6 +2720,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="pos-nav-item" onclick="posNav(this,'pos-amamentacao')"><span class="pos-nav-icon">🤱</span><span>Amamentação</span></div>
           <div class="pos-nav-item" onclick="posNav(this,'pos-rotina')"><span class="pos-nav-icon">🌙</span><span>Rotina</span></div>
           <div class="pos-nav-item" onclick="posNav(this,'pos-bebe')"><span class="pos-nav-icon">👶</span><span>Bebê</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-mensagens');carregarPosMensagens()"><span class="pos-nav-icon">💬</span><span>Mensagens</span></div>
         </nav>
         <div style="margin:auto 16px 16px;padding:16px;background:linear-gradient(135deg,var(--rose-pale),var(--rose-light));border-radius:14px;text-align:center;">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Bebê</div>
@@ -2742,6 +2746,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="mob-nav-item" id="pos-nav-bebe" onclick="posNav(this,'pos-bebe')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
             <span>Bebê</span>
+          </div>
+          <div class="mob-nav-item" id="pos-nav-msg" onclick="posNav(this,'pos-mensagens');carregarPosMensagens()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Chat</span>
           </div>
         </div>
       </nav>
@@ -2883,8 +2891,9 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub">Sono e fraldas</div>
 
           <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-            <button class="pos-tab-btn active" id="pos-tab-sono-btn" onclick="posRotTab('sono')">🌙 Sono</button>
-            <button class="pos-tab-btn" id="pos-tab-fralda-btn" onclick="posRotTab('fralda')">💧 Fraldas</button>
+            <button class="pos-tab-btn active" id="pos-tab-sono-btn" onclick="posRotTab('sono')" style="font-size:12px;">🌙 Sono</button>
+            <button class="pos-tab-btn" id="pos-tab-fralda-btn" onclick="posRotTab('fralda')" style="font-size:12px;">💧 Fraldas</button>
+            <button class="pos-tab-btn" id="pos-tab-plan-btn" onclick="posRotTab('planejamento')" style="font-size:12px;">📈 Plan.</button>
           </div>
 
           <div id="pos-painel-sono">
@@ -2959,11 +2968,70 @@ tr:hover td { background:var(--rose-pale); }
               <div id="pos-historico-fraldas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
             </div>
           </div>
+
+          <!-- PLANEJAMENTO (mãe) -->
+          <div id="pos-painel-planejamento" style="display:none;">
+            <div class="card" style="background:linear-gradient(135deg,#eef0ff,#f4eeff);border:1.5px solid rgba(102,102,204,0.15);">
+              <div class="card-title">🌙 Dream Feed</div>
+              <div id="pos-dream-feed-info"><div style="font-size:13px;color:var(--earth-light);">Registre mamadas para calcular o horário ideal.</div></div>
+            </div>
+            <div class="card" style="margin-top:4px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div class="card-title" style="margin-bottom:0;">🍼 Ingestão hoje</div>
+                <div id="pos-ingestao-hoje" style="font-size:18px;font-weight:700;color:var(--sage);font-family:'Cormorant Garamond',serif;">—</div>
+              </div>
+              <div style="background:rgba(122,100,85,0.08);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;">
+                <div id="pos-ingestao-barra" style="height:100%;background:var(--sage);border-radius:8px;transition:width 0.5s;width:0%;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <div style="font-size:11px;color:var(--earth-light);">Meta: 500ml</div>
+                <div style="font-size:11px;color:var(--earth-light);" id="pos-ingestao-pct">0%</div>
+              </div>
+            </div>
+            <div class="card" style="margin-top:4px;">
+              <div class="card-title">📊 Últimos 7 dias</div>
+              <div style="font-size:11px;color:var(--earth-light);margin-bottom:12px;">Ingestão estimada vs. sono total</div>
+              <div id="pos-grafico-planejamento"><div style="font-size:12px;color:var(--earth-light);">Nenhum dado.</div></div>
+              <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+                <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#7BAB8B;display:inline-block;"></span>Ingestão</span>
+                <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#6699CC;display:inline-block;"></span>Sono</span>
+              </div>
+              <div style="margin-top:10px;padding:8px;background:rgba(122,100,85,0.04);border-radius:8px;">
+                <div style="font-size:10px;color:var(--earth-light);">* Mama no peito estimado em 15ml/min. Bomba/mamadeira usa volume real registrado.</div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- BEBÊ: Dentição + Desenvolvimento -->
         <div class="pos-panel" id="pos-bebe">
           <div class="panel-title">👶 Bebê</div>
+
+          <!-- Card de cadastro / info do bebê -->
+          <div id="pos-bebe-cadastro-card" class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);">
+            <div id="pos-bebe-info-bloco">
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#9B7BB8;margin-bottom:6px;">Seu bebê</div>
+              <div style="font-size:20px;font-weight:600;color:var(--dark);margin-bottom:2px;" id="pos-bebe-nome-exibir">—</div>
+              <div style="font-size:13px;color:var(--earth-light);" id="pos-bebe-dias-exibir">—</div>
+              <button onclick="posAbrirFormBebe()" style="margin-top:10px;background:none;border:1px solid rgba(155,123,184,0.4);color:#9B7BB8;border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;">✏️ Editar</button>
+            </div>
+            <div id="pos-bebe-form-bloco" style="display:none;">
+              <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#9B7BB8;margin-bottom:12px;">Cadastrar bebê</div>
+              <div style="margin-bottom:10px;">
+                <label class="form-label">Nome do bebê</label>
+                <input id="pos-bebe-nome-input" class="form-input" type="text" placeholder="Nome do bebê">
+              </div>
+              <div style="margin-bottom:14px;">
+                <label class="form-label">Data de nascimento</label>
+                <input id="pos-bebe-nasc-input" class="form-input" type="date">
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onclick="posFecharFormBebe()" style="flex:1;background:rgba(122,100,85,0.1);color:var(--mid);border:none;border-radius:12px;padding:10px;font-size:13px;cursor:pointer;font-family:inherit;">Cancelar</button>
+                <button onclick="posSalvarBebe()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">✓ Salvar</button>
+              </div>
+            </div>
+          </div>
 
           <!-- Abas internas -->
           <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
@@ -3025,6 +3093,17 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card">
               <div class="card-title">📅 Mês a mês</div>
               <div id="pos-dev-timeline"></div>
+            </div>
+          </div>
+        <!-- MENSAGENS MÃE PÓS ↔ DOULA PÓS -->
+        <div class="pos-panel" id="pos-mensagens">
+          <div class="panel-title">💬 Mensagens</div>
+          <div id="pos-msg-doula-info" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Carregando...</div>
+          <div class="card" id="pos-msg-card" style="display:none;">
+            <div id="pos-msgs-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;"></div>
+            <div style="display:flex;gap:8px;">
+              <input id="pos-msg-input" class="form-input" type="text" style="flex:1;" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')posMaeEnviarMensagem()">
+              <button onclick="posMaeEnviarMensagem()" style="background:var(--rose);color:white;border:none;border-radius:12px;padding:10px 16px;cursor:pointer;font-size:16px;">➤</button>
             </div>
           </div>
         </div>
@@ -3111,9 +3190,10 @@ tr:hover td { background:var(--rose-pale); }
             <div class="panel-title" id="posd-detalhe-nome" style="margin-bottom:4px;">—</div>
 
             <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-              <button class="pos-tab-btn active" id="posd-tab-resumo-btn" onclick="posDDetalheTab('resumo')" style="flex:1;">📋 Resumo</button>
-              <button class="pos-tab-btn" id="posd-tab-bebe-btn" onclick="posDDetalheTab('bebe')" style="flex:1;">👶 Bebê</button>
-              <button class="pos-tab-btn" id="posd-tab-rotina-btn" onclick="posDDetalheTab('rotina')" style="flex:1;">🌙 Rotina</button>
+              <button class="pos-tab-btn active" id="posd-tab-resumo-btn" onclick="posDDetalheTab('resumo')" style="flex:1;font-size:12px;">📋 Resumo</button>
+              <button class="pos-tab-btn" id="posd-tab-bebe-btn" onclick="posDDetalheTab('bebe')" style="flex:1;font-size:12px;">👶 Bebê</button>
+              <button class="pos-tab-btn" id="posd-tab-rotina-btn" onclick="posDDetalheTab('rotina')" style="flex:1;font-size:12px;">🌙 Rotina</button>
+              <button class="pos-tab-btn" id="posd-tab-chat-btn" onclick="posDDetalheTab('chat')" style="flex:1;font-size:12px;">💬 Chat</button>
             </div>
 
             <!-- RESUMO -->
@@ -3124,6 +3204,17 @@ tr:hover td { background:var(--rose-pale); }
                 <div id="posd-resumo-visitas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
               </div>
               <button onclick="posDNav(document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item')[2],'posd-registros')" class="login-btn" style="background:#9B7BB8;">+ Novo registro</button>
+            </div>
+
+            <!-- CHAT DOULA PÓS ↔ MÃE -->
+            <div id="posd-painel-chat" style="display:none;">
+              <div class="card">
+                <div id="posd-chat-msgs" style="height:340px;overflow-y:auto;padding:8px;background:var(--cream);border-radius:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:2px;"><div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Carregando...</div></div>
+                <div style="display:flex;gap:8px;">
+                  <input id="posd-chat-input" class="form-input" type="text" style="flex:1;" placeholder="Mensagem para a mãe..." onkeydown="if(event.key==='Enter')posDEnviarMensagemCliente()">
+                  <button onclick="posDEnviarMensagemCliente()" style="background:var(--rose);color:white;border:none;border-radius:12px;padding:10px 16px;cursor:pointer;font-size:16px;">➤</button>
+                </div>
+              </div>
             </div>
 
             <!-- BEBÊ -->
@@ -3202,9 +3293,10 @@ tr:hover td { background:var(--rose-pale); }
             <!-- ROTINA -->
             <div id="posd-painel-rotina" style="display:none;">
               <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-                <button class="pos-tab-btn active" id="posd-rtab-mamada-btn" onclick="posDRotinaTab('mamada')" style="flex:1;">🤱 Mamadas</button>
-                <button class="pos-tab-btn" id="posd-rtab-sono-btn" onclick="posDRotinaTab('sono')" style="flex:1;">🌙 Sono</button>
-                <button class="pos-tab-btn" id="posd-rtab-fralda-btn" onclick="posDRotinaTab('fralda')" style="flex:1;">💧 Fraldas</button>
+                <button class="pos-tab-btn active" id="posd-rtab-mamada-btn" onclick="posDRotinaTab('mamada')" style="flex:1;font-size:12px;">🤱 Mama</button>
+                <button class="pos-tab-btn" id="posd-rtab-sono-btn" onclick="posDRotinaTab('sono')" style="flex:1;font-size:12px;">🌙 Sono</button>
+                <button class="pos-tab-btn" id="posd-rtab-fralda-btn" onclick="posDRotinaTab('fralda')" style="flex:1;font-size:12px;">💧 Fraldas</button>
+                <button class="pos-tab-btn" id="posd-rtab-plan-btn" onclick="posDRotinaTab('planejamento')" style="flex:1;font-size:12px;">📈 Plan.</button>
               </div>
 
               <!-- MAMADAS -->
@@ -3242,6 +3334,19 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="card">
                   <div class="card-title">Mamadas de hoje</div>
                   <div id="posd-historico-mamadas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+                </div>
+                <div class="card" style="margin-top:4px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <div class="card-title" style="margin-bottom:0;">📊 Últimos 7 dias</div>
+                    <button onclick="posDModalSugestao()" style="background:var(--rose);color:white;border:none;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;">💡 Sugestão</button>
+                  </div>
+                  <div id="posd-grafico-mamadas"><div style="font-size:12px;color:var(--earth-light);">Nenhum dado ainda.</div></div>
+                  <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#C98A7A;display:inline-block;"></span>Esq</span>
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#7BAB8B;display:inline-block;"></span>Dir</span>
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#9B7BB8;display:inline-block;"></span>Outro</span>
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:#D4880A;"><span style="width:10px;height:10px;border-radius:50%;background:#D4880A;display:inline-block;"></span>Sessões curtas</span>
+                  </div>
                 </div>
               </div>
 
@@ -3312,6 +3417,37 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="card">
                   <div class="card-title">Fraldas de hoje</div>
                   <div id="posd-historico-fraldas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
+                </div>
+              <!-- PLANEJAMENTO -->
+              <div id="posd-rot-planejamento" style="display:none;">
+                <div class="card" style="background:linear-gradient(135deg,#eef0ff,#f4eeff);border:1.5px solid rgba(102,102,204,0.15);">
+                  <div class="card-title">🌙 Dream Feed</div>
+                  <div id="posd-dream-feed-info"><div style="font-size:13px;color:var(--earth-light);">Registre mamadas para calcular o horário ideal.</div></div>
+                </div>
+                <div class="card" style="margin-top:4px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <div class="card-title" style="margin-bottom:0;">🍼 Ingestão hoje</div>
+                    <div id="posd-ingestao-hoje" style="font-size:18px;font-weight:700;color:var(--sage);font-family:'Cormorant Garamond',serif;">—</div>
+                  </div>
+                  <div style="background:rgba(122,100,85,0.08);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;">
+                    <div id="posd-ingestao-barra" style="height:100%;background:var(--sage);border-radius:8px;transition:width 0.5s;width:0%;"></div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;">
+                    <div style="font-size:11px;color:var(--earth-light);">Meta: 500ml</div>
+                    <div style="font-size:11px;color:var(--earth-light);" id="posd-ingestao-pct">0%</div>
+                  </div>
+                </div>
+                <div class="card" style="margin-top:4px;">
+                  <div class="card-title">📊 Últimos 7 dias</div>
+                  <div style="font-size:11px;color:var(--earth-light);margin-bottom:12px;">Ingestão estimada vs. sono total</div>
+                  <div id="posd-grafico-planejamento"><div style="font-size:12px;color:var(--earth-light);">Nenhum dado.</div></div>
+                  <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#7BAB8B;display:inline-block;"></span>Ingestão</span>
+                    <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mid);"><span style="width:10px;height:10px;border-radius:2px;background:#6699CC;display:inline-block;"></span>Sono</span>
+                  </div>
+                  <div style="margin-top:10px;padding:8px;background:rgba(122,100,85,0.04);border-radius:8px;">
+                    <div style="font-size:10px;color:var(--earth-light);">* Mama no peito estimado em 15ml/min. Bomba/mamadeira usa volume real registrado.</div>
+                  </div>
                 </div>
               </div>
 
@@ -6577,6 +6713,7 @@ async function salvarBackupDoula() {
     perm_agenda: !!(document.getElementById('backup-perm-agenda') || {}).checked,
     perm_chat: !!(document.getElementById('backup-perm-chat') || {}).checked,
     perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked,
+    perm_historico: !!(document.getElementById('backup-perm-historico') || {}).checked,
     status: 'pendente',
     backup_user_id: null
   };
@@ -6603,6 +6740,7 @@ async function carregarBackupDoula() {
     var pa = document.getElementById('backup-perm-agenda'); if (pa) pa.checked = !!res.data.perm_agenda;
     var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
     var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
+    var ph = document.getElementById('backup-perm-historico'); if (ph) ph.checked = !!res.data.perm_historico;
   } catch(e) {}
 }
 
@@ -6737,15 +6875,43 @@ async function carregarRegistrosBackup() {
   var el = document.getElementById('bk-registros-lista');
   if (!el) return;
   try {
-    var res = await db.from('registros_atendimento').select('*').eq('doula_id', currentBackupDoulaId).order('data', { ascending: false }).limit(30);
-    if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhum registro ainda.</div>'; return; }
-    el.innerHTML = res.data.map(function(r) {
-      return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
-        '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + r.cliente_nome + '</div>' +
-        '<div style="font-size:11px;color:var(--earth-light);">' + (r.data || '') + (r.tipo ? ' \u00b7 ' + r.tipo : '') + '</div>' +
-        (r.anotacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
-        '</div>';
-    }).join('');
+    var query = db.from('registros_atendimento').select('*').eq('doula_id', currentBackupDoulaId).order('data', { ascending: false });
+    if (!currentBackupPerms.historico) {
+      var hoje = new Date().toISOString().slice(0, 10);
+      query = query.eq('data', hoje);
+    } else {
+      query = query.limit(60);
+    }
+    var res = await query;
+    if (!res.data || !res.data.length) {
+      el.innerHTML = '<div class="empty-state-small">' + (currentBackupPerms.historico ? 'Nenhum registro encontrado.' : 'Nenhum registro para hoje.') + '</div>';
+      return;
+    }
+    if (!currentBackupPerms.historico) {
+      el.innerHTML = res.data.map(function(r) {
+        return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
+          '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + r.cliente_nome + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + (r.tipo || '') + '</div>' +
+          (r.anotacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
+          '</div>';
+      }).join('');
+    } else {
+      var porDia = {};
+      res.data.forEach(function(r) { var d = r.data || 'Sem data'; if (!porDia[d]) porDia[d] = []; porDia[d].push(r); });
+      el.innerHTML = Object.keys(porDia).map(function(dia) {
+        var dataFmt = dia !== 'Sem data' ? new Date(dia + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }) : 'Sem data';
+        var itens = porDia[dia].map(function(r) {
+          return '<div style="padding:10px 8px;border-bottom:1px solid rgba(122,100,85,0.06);">' +
+            '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + r.cliente_nome + '</div>' +
+            '<div style="font-size:11px;color:var(--earth-light);">' + (r.tipo || '') + '</div>' +
+            (r.anotacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
+            '</div>';
+        }).join('');
+        return '<div style="margin-bottom:12px;">' +
+          '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--rose-light);padding:8px 8px 4px;background:rgba(201,137,122,0.06);border-radius:8px 8px 0 0;">' + dataFmt + '</div>' +
+          itens + '</div>';
+      }).join('');
+    }
   } catch(e) {}
 }
 
@@ -7202,7 +7368,8 @@ async function carregarUsuario(user) {
             nomeDoula: mainRes.data ? mainRes.data.nome : 'Doula',
             agenda: !!bkRes.data.perm_agenda,
             chat: !!bkRes.data.perm_chat,
-            registros: !!bkRes.data.perm_registros
+            registros: !!bkRes.data.perm_registros,
+            historico: !!bkRes.data.perm_historico
           };
           window.hasBackupAccess = true;
         } else if (tipo === 'doula_backup') {
@@ -7320,6 +7487,12 @@ function entrarNoApp(tipo, nome) {
     var posAvatar = document.getElementById('pos-avatar');
     if (posAvatar) posAvatar.textContent = primeiroNome[0].toUpperCase();
     setTimeout(function() { try { carregarPosDashboard(); } catch(e) {} }, 300);
+    setTimeout(function() {
+      if (db && currentUserId) {
+        db.from('solicitacoes').select('doula_id').eq('gestante_id', currentUserId).eq('status', 'aceita').limit(1).maybeSingle()
+          .then(function(r) { if (r.data) chatDoulaId = r.data.doula_id; });
+      }
+    }, 600);
   }
   if (tipo === 'pos_doula') {
     var gPosD = document.getElementById('pos-doula-greeting');
@@ -7397,6 +7570,7 @@ function posNav(el, panelId) {
   if (panel) panel.classList.add('active');
   if (panelId === 'pos-amamentacao') { try { carregarHistoricoMamadas(); } catch(e) {} }
   if (panelId === 'pos-rotina') { try { carregarHistoricoSono(); } catch(e) {} }
+  if (panelId === 'pos-bebe') { try { posCarregarInfoBebe(); } catch(e) {} }
   if (panelId === 'pos-bebe') { try { carregarDenticao(); } catch(e) {} try { carregarDesenvolvimento(); } catch(e) {} }
 }
 
@@ -7408,21 +7582,22 @@ function posAbrirFralda() {
 function posRotTab(tab) {
   var sono = document.getElementById('pos-painel-sono');
   var fralda = document.getElementById('pos-painel-fralda');
+  var plan = document.getElementById('pos-painel-planejamento');
   var btnSono = document.getElementById('pos-tab-sono-btn');
   var btnFralda = document.getElementById('pos-tab-fralda-btn');
-  if (tab === 'sono') {
-    if (sono) sono.style.display = 'block';
-    if (fralda) fralda.style.display = 'none';
-    if (btnSono) { btnSono.style.background = 'var(--rose-pale)'; btnSono.style.color = 'var(--dark)'; btnSono.style.fontWeight = '500'; }
-    if (btnFralda) { btnFralda.style.background = 'transparent'; btnFralda.style.color = 'var(--earth-light)'; btnFralda.style.fontWeight = '400'; }
-    try { posVerificarSonoAtivo(); carregarHistoricoSono(); } catch(e) {}
-  } else {
-    if (sono) sono.style.display = 'none';
-    if (fralda) { fralda.style.display = 'flex'; fralda.style.flexDirection = 'column'; fralda.style.gap = '12px'; }
-    if (btnFralda) { btnFralda.style.background = 'var(--rose-pale)'; btnFralda.style.color = 'var(--dark)'; btnFralda.style.fontWeight = '500'; }
-    if (btnSono) { btnSono.style.background = 'transparent'; btnSono.style.color = 'var(--earth-light)'; btnSono.style.fontWeight = '400'; }
-    try { carregarHistoricoFraldas(); } catch(e) {}
-  }
+  var btnPlan = document.getElementById('pos-tab-plan-btn');
+  var ativos = { 'background': 'var(--rose-pale)', 'color': 'var(--dark)', 'fontWeight': '500' };
+  var inativos = { 'background': 'transparent', 'color': 'var(--earth-light)', 'fontWeight': '400' };
+  function aplicar(btn, estilo) { if (btn) { btn.style.background = estilo.background; btn.style.color = estilo.color; btn.style.fontWeight = estilo.fontWeight; } }
+  if (sono) sono.style.display = tab === 'sono' ? 'block' : 'none';
+  if (fralda) { fralda.style.display = tab === 'fralda' ? 'flex' : 'none'; if (tab === 'fralda') { fralda.style.flexDirection = 'column'; fralda.style.gap = '12px'; } }
+  if (plan) plan.style.display = tab === 'planejamento' ? 'block' : 'none';
+  aplicar(btnSono, tab === 'sono' ? ativos : inativos);
+  aplicar(btnFralda, tab === 'fralda' ? ativos : inativos);
+  aplicar(btnPlan, tab === 'planejamento' ? ativos : inativos);
+  if (tab === 'sono') { try { posVerificarSonoAtivo(); carregarHistoricoSono(); } catch(e) {} }
+  if (tab === 'fralda') { try { carregarHistoricoFraldas(); } catch(e) {} }
+  if (tab === 'planejamento') { try { posCarregarPlanejamento(); } catch(e) {} }
 }
 
 function posFormatarTimer(seg) {
@@ -7791,6 +7966,56 @@ async function carregarHistoricoSono() {
 
 var _bebeNascimento = null; // data_nascimento do bebê (Date)
 
+async function posCarregarInfoBebe() {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('pos_bebes').select('nome,data_nascimento').eq('mae_id', currentUserId).maybeSingle();
+    var infoBloco = document.getElementById('pos-bebe-info-bloco');
+    var formBloco = document.getElementById('pos-bebe-form-bloco');
+    var nomeEx = document.getElementById('pos-bebe-nome-exibir');
+    var diasEx = document.getElementById('pos-bebe-dias-exibir');
+    if (res.data && res.data.nome) {
+      var dias = res.data.data_nascimento ? Math.floor((new Date() - new Date(res.data.data_nascimento)) / 86400000) : null;
+      if (nomeEx) nomeEx.textContent = '👶 ' + res.data.nome;
+      if (diasEx) diasEx.textContent = dias !== null ? dias + ' dias de vida 🌿' : '';
+      if (infoBloco) infoBloco.style.display = '';
+      if (formBloco) formBloco.style.display = 'none';
+      var inp = document.getElementById('pos-bebe-nome-input'); if (inp) inp.value = res.data.nome;
+      var inpN = document.getElementById('pos-bebe-nasc-input'); if (inpN) inpN.value = res.data.data_nascimento || '';
+    } else {
+      if (infoBloco) infoBloco.style.display = 'none';
+      if (formBloco) formBloco.style.display = '';
+    }
+  } catch(e) {}
+}
+
+function posAbrirFormBebe() {
+  var i = document.getElementById('pos-bebe-info-bloco');
+  var f = document.getElementById('pos-bebe-form-bloco');
+  if (i) i.style.display = 'none';
+  if (f) f.style.display = '';
+}
+
+function posFecharFormBebe() {
+  var i = document.getElementById('pos-bebe-info-bloco');
+  var f = document.getElementById('pos-bebe-form-bloco');
+  if (i) i.style.display = '';
+  if (f) f.style.display = 'none';
+}
+
+async function posSalvarBebe() {
+  if (!db || !currentUserId) return;
+  var nome = (document.getElementById('pos-bebe-nome-input') || {}).value || '';
+  var nasc = (document.getElementById('pos-bebe-nasc-input') || {}).value || '';
+  if (!nome || !nasc) { mostrarToast('Informe nome e data de nascimento.'); return; }
+  try {
+    await db.from('pos_bebes').upsert({ mae_id: currentUserId, nome: nome, data_nascimento: nasc }, { onConflict: 'mae_id' });
+    mostrarToast('✓ Bebê cadastrado!');
+    posCarregarInfoBebe();
+    carregarPosDashboard();
+  } catch(e) { mostrarToast('Erro ao salvar. Verifique as permissões no Supabase.'); }
+}
+
 function posBebebTab(aba) {
   var pd = document.getElementById('pos-painel-denticao');
   var pv = document.getElementById('pos-painel-desenvolvimento');
@@ -7991,7 +8216,9 @@ function posToggleDoulaPos() {
   var choice = localStorage.getItem('lua_pos_doula_choice');
   var escolhaEl = document.getElementById('pos-doula-escolha');
   var mktEl = document.getElementById('pos-doula-pos-marketplace');
-  // Já escolheu mesma doula — sem ação
+  // Já tem doula vinculada — card mostra botões, não abre marketplace
+  var statusEl = document.getElementById('pos-doula-pos-status');
+  if (statusEl && statusEl.querySelector('a,button')) return;
   if (choice === 'same') return;
   // Tem doula de gestação mas ainda não escolheu — exibe painel de escolha
   if (_posDoulaDeGestacao && !choice) {
@@ -8038,12 +8265,23 @@ async function posCarregarDoulaPosDashboard() {
     var res = await db.from('solicitacoes').select('id,doula_id,status').eq('gestante_id', currentUserId).in('status', ['pendente','aceita']);
     if (res.data && res.data.length) {
       var ids = res.data.map(function(s) { return s.doula_id; });
-      var doulas = await db.from('usuarios').select('id,nome,tipo').in('id', ids).eq('tipo', 'pos_doula');
+      var doulas = await db.from('usuarios').select('id,nome,tipo,whatsapp,cidade').in('id', ids).eq('tipo', 'pos_doula');
       if (doulas.data && doulas.data.length) {
         var doula = doulas.data[0];
         var sol = res.data.find(function(s) { return s.doula_id === doula.id; });
         if (sol && sol.status === 'aceita') {
-          statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doula.nome + '</span> — vinculada';
+          var waNome = encodeURIComponent('Olá ' + (doula.nome ? doula.nome.split(' ')[0] : '') + '! Sou sua cliente no app Lua 🌙');
+          var waLink = doula.whatsapp ? 'https://wa.me/55' + doula.whatsapp.replace(/\D/g,'') + '?text=' + waNome : null;
+          statusEl.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+              '<div style="width:38px;height:38px;border-radius:50%;background:#9B7BB8;color:white;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">' + (doula.nome||'D')[0].toUpperCase() + '</div>' +
+              '<div><div style="font-size:14px;font-weight:600;color:#7B5EA7;">' + doula.nome + '</div>' +
+              (doula.cidade ? '<div style="font-size:11px;color:var(--earth-light);">📍 ' + doula.cidade + '</div>' : '') + '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;">' +
+              (waLink ? '<a href="' + waLink + '" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:white;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;text-decoration:none;">📱 WhatsApp</a>' : '') +
+              '<button onclick="posNav(document.getElementById(\'pos-nav-msg\'),\'pos-mensagens\');carregarPosMensagens()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 Chat</button>' +
+            '</div>';
         } else {
           statusEl.innerHTML = 'Aguardando <span style="color:#9B7BB8;">' + doula.nome + '</span> aceitar';
           if (sol) {
@@ -8209,21 +8447,16 @@ function posDVoltarClientes() {
 }
 
 function posDDetalheTab(aba) {
-  var rPanel = document.getElementById('posd-painel-resumo');
-  var bPanel = document.getElementById('posd-painel-bebe');
-  var rotPanel = document.getElementById('posd-painel-rotina');
-  var rBtn = document.getElementById('posd-tab-resumo-btn');
-  var bBtn = document.getElementById('posd-tab-bebe-btn');
-  var rotBtn = document.getElementById('posd-tab-rotina-btn');
-  if (rPanel) rPanel.style.display = aba === 'resumo' ? '' : 'none';
-  if (bPanel) bPanel.style.display = aba === 'bebe' ? '' : 'none';
-  if (rotPanel) rotPanel.style.display = aba === 'rotina' ? '' : 'none';
-  if (rBtn) rBtn.classList.toggle('active', aba === 'resumo');
-  if (bBtn) bBtn.classList.toggle('active', aba === 'bebe');
-  if (rotBtn) rotBtn.classList.toggle('active', aba === 'rotina');
+  ['resumo','bebe','rotina','chat'].forEach(function(t) {
+    var p = document.getElementById('posd-painel-' + t);
+    var b = document.getElementById('posd-tab-' + t + '-btn');
+    if (p) p.style.display = t === aba ? '' : 'none';
+    if (b) b.classList.toggle('active', t === aba);
+  });
   if (aba === 'resumo') posDCarregarResumo();
   if (aba === 'bebe') posDCarregarBebe();
   if (aba === 'rotina') posDCarregarRotina();
+  if (aba === 'chat') posDCarregarChatCliente();
 }
 
 async function posDCarregarResumo() {
@@ -8505,7 +8738,7 @@ var _posDSonoAtivoTipo = null;
 var _posDSonoInterval = null;
 
 function posDRotinaTab(aba) {
-  ['mamada','sono','fralda'].forEach(function(t) {
+  ['mamada','sono','fralda','planejamento'].forEach(function(t) {
     var panel = document.getElementById('posd-rot-' + t);
     var btn = document.getElementById('posd-rtab-' + t + '-btn');
     if (panel) panel.style.display = t === aba ? '' : 'none';
@@ -8514,10 +8747,64 @@ function posDRotinaTab(aba) {
   if (aba === 'mamada') posDCarregarMamadas();
   if (aba === 'sono') posDVerificarSonoAtivo();
   if (aba === 'fralda') posDCarregarFraldas();
+  if (aba === 'planejamento') posDCarregarPlanejamento();
 }
 
 async function posDCarregarRotina() {
   posDRotinaTab('mamada');
+}
+
+async function posDCarregarChatCliente() {
+  if (!db || !_posDClienteId) return;
+  var container = document.getElementById('posd-chat-msgs');
+  if (!container) return;
+  await carregarMensagens(_posDClienteId, currentUserId, container, 'doula');
+  iniciarRealtimeMensagens(_posDClienteId, currentUserId, container, 'doula');
+}
+
+async function posDEnviarMensagemCliente() {
+  if (!db || !_posDClienteId) return;
+  var input = document.getElementById('posd-chat-input');
+  var texto = (input ? input.value : '').trim();
+  if (!texto) return;
+  input.value = '';
+  try {
+    await db.from('mensagens').insert({ gestante_id: _posDClienteId, doula_id: currentUserId, remetente_tipo: 'doula', texto: texto });
+    var container = document.getElementById('posd-chat-msgs');
+    if (container) carregarMensagens(_posDClienteId, currentUserId, container, 'doula');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
+}
+
+async function carregarPosMensagens() {
+  if (!db || !currentUserId) return;
+  var infoEl = document.getElementById('pos-msg-doula-info');
+  var card = document.getElementById('pos-msg-card');
+  var container = document.getElementById('pos-msgs-container');
+  if (!infoEl || !card || !container) return;
+  try {
+    var sol = await db.from('solicitacoes').select('doula_id').eq('gestante_id', currentUserId).eq('status', 'aceita').limit(1).maybeSingle();
+    if (!sol.data) { infoEl.textContent = 'Você ainda não tem uma doula pós-parto vinculada.'; return; }
+    chatDoulaId = sol.data.doula_id;
+    var doulaRes = await db.from('usuarios').select('nome').eq('id', chatDoulaId).maybeSingle();
+    var nomeDoula = doulaRes.data ? doulaRes.data.nome : 'Sua doula';
+    infoEl.textContent = 'Conversa com ' + nomeDoula;
+    card.style.display = 'block';
+    await carregarMensagens(currentUserId, chatDoulaId, container, 'gestante');
+    iniciarRealtimeMensagens(currentUserId, chatDoulaId, container, 'gestante');
+  } catch(e) { if (infoEl) infoEl.textContent = 'Erro ao carregar mensagens.'; }
+}
+
+async function posMaeEnviarMensagem() {
+  if (!chatDoulaId || !currentUserId) return;
+  var input = document.getElementById('pos-msg-input');
+  var texto = (input ? input.value : '').trim();
+  if (!texto) return;
+  input.value = '';
+  try {
+    await db.from('mensagens').insert({ gestante_id: currentUserId, doula_id: chatDoulaId, remetente_tipo: 'gestante', texto: texto });
+    var container = document.getElementById('pos-msgs-container');
+    if (container) carregarMensagens(currentUserId, chatDoulaId, container, 'gestante');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
 }
 
 function posDSelecionarLadoMamada(lado) {
@@ -8587,16 +8874,231 @@ async function posDCarregarMamadas() {
   if (!el) return;
   try {
     var res = await db.from('pos_amamentacao').select('*').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; return; }
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; posDCarregarGraficoMamadas(); return; }
     var tipoLabel = { 'mama':'Mama', 'bomba':'Bomba', 'mamadeira_lm':'Mamadeira (LM)', 'formula':'Fórmula' };
     el.innerHTML = res.data.map(function(m) {
       var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       var label = tipoLabel[m.tipo] || m.tipo;
+      var curta = m.tipo === 'mama' && m.duracao_seg > 0 && m.duracao_seg < 300;
       if (m.tipo === 'mama') label += (m.lado ? ' (' + (m.lado === 'E' ? 'Esq' : 'Dir') + ')' : '') + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '');
       else if (m.volume_ml) label += ' · ' + m.volume_ml + 'ml';
-      return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">🤱 ' + label + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
+      var bg = curta ? 'background:rgba(212,136,10,0.08);border:1px solid rgba(212,136,10,0.25);' : 'background:var(--white);box-shadow:0 1px 6px rgba(0,0,0,0.03);';
+      var aviso = curta ? '<span style="font-size:10px;color:#D4880A;margin-left:6px;">⚠ curta</span>' : '';
+      return '<div style="' + bg + 'border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">🤱 ' + label + aviso + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  posDCarregarGraficoMamadas();
+}
+
+async function posDCarregarGraficoMamadas() {
+  if (!db || !_posDClienteId) return;
+  var el = document.getElementById('posd-grafico-mamadas');
+  if (!el) return;
+  try {
+    var dias = 7;
+    var inicio = new Date(); inicio.setDate(inicio.getDate() - (dias - 1)); inicio.setHours(0,0,0,0);
+    var res = await db.from('pos_amamentacao').select('tipo,lado,duracao_seg,criado_em').eq('mae_id', _posDClienteId).gte('criado_em', inicio.toISOString()).order('criado_em', { ascending: true });
+    var porDia = {};
+    for (var i = 0; i < dias; i++) {
+      var d = new Date(); d.setDate(d.getDate() - (dias - 1 - i));
+      var key = d.toISOString().slice(0, 10);
+      porDia[key] = { E: 0, D: 0, outro: 0, total: 0, mamaCount: 0, mamaShort: 0 };
+    }
+    (res.data || []).forEach(function(m) {
+      var key = m.criado_em.slice(0, 10);
+      if (!porDia[key]) return;
+      var seg = m.duracao_seg || 0;
+      if (m.tipo === 'mama') {
+        if (m.lado === 'E') porDia[key].E += seg;
+        else porDia[key].D += seg;
+        porDia[key].mamaCount++;
+        if (seg > 0 && seg < 300) porDia[key].mamaShort++;
+      } else {
+        porDia[key].outro += seg || 60;
+      }
+      porDia[key].total += seg || 60;
+    });
+    var maxTotal = Math.max(1, Math.max.apply(null, Object.values(porDia).map(function(d) { return d.total; })));
+    var maxH = 80;
+    var dias7 = Object.keys(porDia);
+    var diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    el.innerHTML = '<div style="display:flex;gap:4px;align-items:flex-end;height:' + (maxH + 24) + 'px;">' +
+      dias7.map(function(key) {
+        var d = porDia[key];
+        var totalH = Math.round((d.total / maxTotal) * maxH);
+        var eH = totalH > 0 ? Math.round((d.E / d.total) * totalH) : 0;
+        var dH = totalH > 0 ? Math.round((d.D / d.total) * totalH) : 0;
+        var oH = Math.max(0, totalH - eH - dH);
+        var semCurtas = d.mamaCount > 0 && d.mamaShort === d.mamaCount;
+        var diaN = new Date(key + 'T12:00:00').getDay();
+        var hoje = new Date().toISOString().slice(0, 10);
+        var isHoje = key === hoje;
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">' +
+          (semCurtas ? '<div style="font-size:9px;color:#D4880A;" title="Todas as sessões foram curtas">●</div>' : '<div style="font-size:9px;"> </div>') +
+          '<div style="display:flex;flex-direction:column-reverse;align-items:center;width:100%;height:' + maxH + 'px;justify-content:flex-start;gap:1px;">' +
+            (oH > 0 ? '<div style="width:80%;height:' + oH + 'px;background:#9B7BB8;border-radius:3px 3px 0 0;"></div>' : '') +
+            (dH > 0 ? '<div style="width:80%;height:' + dH + 'px;background:#7BAB8B;border-radius:' + (oH ? '0' : '3px 3px 0 0') + ';"></div>' : '') +
+            (eH > 0 ? '<div style="width:80%;height:' + eH + 'px;background:#C98A7A;border-radius:' + (dH || oH ? '0' : '3px 3px 0 0') + ';"></div>' : '') +
+            (totalH === 0 ? '<div style="width:80%;height:3px;background:rgba(122,100,85,0.12);border-radius:2px;"></div>' : '') +
+          '</div>' +
+          '<div style="font-size:10px;color:' + (isHoje ? 'var(--rose)' : 'var(--earth-light)') + ';font-weight:' + (isHoje ? '700' : '400') + ';">' + diasSemana[diaN] + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+  } catch(e) { el.innerHTML = '<div style="font-size:12px;color:var(--earth-light);">Erro ao carregar gráfico.</div>'; }
+}
+
+function posDModalSugestao() {
+  var modal = document.getElementById('modal-sugestao-mamada');
+  var nomeEl = document.getElementById('sugestao-cliente-nome');
+  if (nomeEl) nomeEl.textContent = _posDClienteNome || '';
+  var txt = document.getElementById('sugestao-texto');
+  if (txt) txt.value = '';
+  if (modal) { modal.style.display = 'flex'; }
+}
+
+function fecharModalSugestao() {
+  var modal = document.getElementById('modal-sugestao-mamada');
+  if (modal) modal.style.display = 'none';
+}
+
+function posDSelecionarSugestao(texto) {
+  var txt = document.getElementById('sugestao-texto');
+  if (txt) txt.value = texto;
+}
+
+async function posDEnviarSugestao() {
+  if (!db || !_posDClienteId) return;
+  var txt = (document.getElementById('sugestao-texto') || {}).value || '';
+  if (!txt.trim()) { mostrarToast('Escreva uma sugestão antes de enviar.'); return; }
+  try {
+    await db.from('mensagens').insert({ gestante_id: _posDClienteId, doula_id: currentUserId, remetente_tipo: 'doula', texto: '💡 Sugestão da doula: ' + txt.trim() });
+    fecharModalSugestao();
+    mostrarToast('✅ Sugestão enviada para a mãe!');
+  } catch(e) { mostrarToast('Erro ao enviar: ' + e.message); }
+}
+
+function calcularIngestaoMl(dados) {
+  return (dados || []).reduce(function(total, m) {
+    if (m.tipo === 'mama') return total + Math.round((m.duracao_seg || 0) / 60 * 15);
+    return total + (m.volume_ml || 0);
+  }, 0);
+}
+
+async function renderizarGraficoPlanejamento(elId, maeId) {
+  var el = document.getElementById(elId);
+  if (!el || !db || !maeId) return;
+  try {
+    var dias = 7;
+    var inicio = new Date(); inicio.setDate(inicio.getDate() - (dias - 1)); inicio.setHours(0,0,0,0);
+    var resMam = await db.from('pos_amamentacao').select('tipo,lado,duracao_seg,volume_ml,criado_em').eq('mae_id', maeId).gte('criado_em', inicio.toISOString());
+    var resSono = await db.from('pos_sono').select('duracao_min,inicio').eq('mae_id', maeId).gte('inicio', inicio.toISOString()).not('fim', 'is', null);
+    var porDia = {};
+    var diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    for (var i = 0; i < dias; i++) {
+      var d = new Date(); d.setDate(d.getDate() - (dias - 1 - i));
+      var key = d.toISOString().slice(0, 10);
+      porDia[key] = { ml: 0, sonoMin: 0, diaSem: diasSemana[d.getDay()], isHoje: key === new Date().toISOString().slice(0, 10) };
+    }
+    (resMam.data || []).forEach(function(m) {
+      var key = m.criado_em.slice(0, 10);
+      if (porDia[key]) porDia[key].ml += m.tipo === 'mama' ? Math.round((m.duracao_seg || 0) / 60 * 15) : (m.volume_ml || 0);
+    });
+    (resSono.data || []).forEach(function(s) {
+      var key = s.inicio.slice(0, 10);
+      if (porDia[key]) porDia[key].sonoMin += s.duracao_min || 0;
+    });
+    var maxMl = Math.max(500, Math.max.apply(null, Object.values(porDia).map(function(d) { return d.ml; })));
+    var maxSono = Math.max(1, Math.max.apply(null, Object.values(porDia).map(function(d) { return d.sonoMin; })));
+    var maxH = 70;
+    el.innerHTML = '<div style="display:flex;gap:3px;align-items:flex-end;height:' + (maxH + 28) + 'px;">' +
+      Object.keys(porDia).map(function(key) {
+        var d = porDia[key];
+        var mlH = Math.round((d.ml / maxMl) * maxH);
+        var sonoH = Math.round((d.sonoMin / maxSono) * maxH);
+        var sonoLabel = d.sonoMin >= 60 ? Math.floor(d.sonoMin / 60) + 'h' : (d.sonoMin ? d.sonoMin + 'm' : '');
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">' +
+          '<div style="display:flex;gap:2px;align-items:flex-end;height:' + maxH + 'px;">' +
+            '<div title="Ingestão: ' + d.ml + 'ml" style="width:45%;height:' + (mlH || 2) + 'px;background:' + (d.ml >= 500 ? '#7BAB8B' : d.ml >= 300 ? '#D4B20A' : '#C98A7A') + ';border-radius:3px 3px 0 0;"></div>' +
+            '<div title="Sono: ' + sonoLabel + '" style="width:45%;height:' + (sonoH || 2) + 'px;background:#6699CC;border-radius:3px 3px 0 0;"></div>' +
+          '</div>' +
+          '<div style="font-size:10px;color:' + (d.isHoje ? 'var(--rose)' : 'var(--earth-light)') + ';font-weight:' + (d.isHoje ? '700' : '400') + ';margin-top:3px;">' + d.diaSem + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+  } catch(e) { var el2 = document.getElementById(elId); if (el2) el2.innerHTML = '<div style="font-size:12px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+}
+
+async function posDCarregarPlanejamento() {
+  if (!db || !_posDClienteId) return;
+  var meta = 500;
+  var hoje = new Date().toISOString().slice(0, 10);
+  try {
+    var ult = await db.from('pos_amamentacao').select('criado_em').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false }).limit(1).maybeSingle();
+    var dfEl = document.getElementById('posd-dream-feed-info');
+    if (dfEl) {
+      if (ult.data) {
+        var dtU = new Date(ult.data.criado_em);
+        var hU = dtU.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        var dfMin = new Date(dtU.getTime() + 2.5 * 3600000);
+        var dfMax = new Date(dtU.getTime() + 3 * 3600000);
+        var hMin = dfMin.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        var hMax = dfMax.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">Última mamada hoje</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
+          '<div style="background:rgba(102,102,204,0.1);border-radius:12px;padding:12px;text-align:center;">' +
+          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Dream Feed sugerido</div>' +
+          '<div style="font-size:24px;font-weight:700;color:#5555BB;font-family:\'Cormorant Garamond\',serif;">' + hMin + ' – ' + hMax + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Alimente sem despertar completamente o bebê</div></div>';
+      } else {
+        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma mamada registrada hoje. O horário do dream feed será calculado assim que houver registros.</div>';
+      }
+    }
+  } catch(e) {}
+  try {
+    var mamHoje = await db.from('pos_amamentacao').select('tipo,duracao_seg,volume_ml').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00');
+    var mlHoje = calcularIngestaoMl(mamHoje.data);
+    var pct = Math.min(100, Math.round((mlHoje / meta) * 100));
+    var ingEl = document.getElementById('posd-ingestao-hoje'); if (ingEl) ingEl.textContent = mlHoje + 'ml';
+    var barEl = document.getElementById('posd-ingestao-barra');
+    if (barEl) { barEl.style.width = pct + '%'; barEl.style.background = pct >= 100 ? '#7BAB8B' : pct >= 60 ? '#D4B20A' : 'var(--rose)'; }
+    var pctEl = document.getElementById('posd-ingestao-pct'); if (pctEl) pctEl.textContent = pct + '% da meta';
+  } catch(e) {}
+  await renderizarGraficoPlanejamento('posd-grafico-planejamento', _posDClienteId);
+}
+
+async function posCarregarPlanejamento() {
+  if (!db || !currentUserId) return;
+  var meta = 500;
+  var hoje = new Date().toISOString().slice(0, 10);
+  try {
+    var ult = await db.from('pos_amamentacao').select('criado_em').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false }).limit(1).maybeSingle();
+    var dfEl = document.getElementById('pos-dream-feed-info');
+    if (dfEl) {
+      if (ult.data) {
+        var dtU = new Date(ult.data.criado_em);
+        var hU = dtU.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        var dfMin = new Date(dtU.getTime() + 2.5 * 3600000);
+        var dfMax = new Date(dtU.getTime() + 3 * 3600000);
+        var hMin = dfMin.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        var hMax = dfMax.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">Última mamada hoje</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
+          '<div style="background:rgba(102,102,204,0.1);border-radius:12px;padding:12px;text-align:center;">' +
+          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Dream Feed sugerido</div>' +
+          '<div style="font-size:24px;font-weight:700;color:#5555BB;font-family:\'Cormorant Garamond\',serif;">' + hMin + ' – ' + hMax + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Alimente sem despertar completamente o bebê</div></div>';
+      } else {
+        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma mamada registrada hoje. O horário do dream feed será calculado assim que houver registros.</div>';
+      }
+    }
+  } catch(e) {}
+  try {
+    var mamHoje = await db.from('pos_amamentacao').select('tipo,duracao_seg,volume_ml').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00');
+    var mlHoje = calcularIngestaoMl(mamHoje.data);
+    var pct = Math.min(100, Math.round((mlHoje / meta) * 100));
+    var ingEl = document.getElementById('pos-ingestao-hoje'); if (ingEl) ingEl.textContent = mlHoje + 'ml';
+    var barEl = document.getElementById('pos-ingestao-barra');
+    if (barEl) { barEl.style.width = pct + '%'; barEl.style.background = pct >= 100 ? '#7BAB8B' : pct >= 60 ? '#D4B20A' : 'var(--rose)'; }
+    var pctEl = document.getElementById('pos-ingestao-pct'); if (pctEl) pctEl.textContent = pct + '% da meta';
+  } catch(e) {}
+  await renderizarGraficoPlanejamento('pos-grafico-planejamento', currentUserId);
 }
 
 async function posDVerificarSonoAtivo() {
@@ -11608,6 +12110,25 @@ function mostrarToast(msg) {
     <div style="display:flex;gap:12px;">
       <button onclick="fecharModalReporte()" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
       <button onclick="enviarReporte()" style="flex:2;background:var(--rose);color:white;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;">⚑ Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUGESTÃO MAMADA -->
+<div id="modal-sugestao-mamada" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--white);border-radius:20px;padding:24px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--dark);margin-bottom:4px;">💡 Sugestão para a mãe</div>
+    <div id="sugestao-cliente-nome" style="font-size:12px;color:var(--earth-light);margin-bottom:16px;"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      <button class="sugestao-chip" onclick="posDSelecionarSugestao('Block feeding recomendado para garantir que o bebê também receba o hindmilk. Ofereça o mesmo peito por 2–3 horas consecutivas.')">Block feeding</button>
+      <button class="sugestao-chip" onclick="posDSelecionarSugestao('Verifique a pega no peito — uma pega rasa pode fazer o bebê sugar menos eficientemente e largar o seio antes de chegar ao hindmilk.')">Pega no peito</button>
+      <button class="sugestao-chip" onclick="posDSelecionarSugestao('Experimente trocar de lado apenas quando o bebê soltar o seio espontaneamente, sem tempo fixo por lado.')">Trocar de lado</button>
+      <button class="sugestao-chip" onclick="posDSelecionarSugestao('Sessões curtas podem indicar que o bebê está recebendo apenas o foremilk (mais aquoso e açucarado), o que pode causar gases e cólicas. Encoraje sessões mais longas para ele também receber o hindmilk, rico em gordura.')">Foremilk / Hindmilk</button>
+    </div>
+    <textarea id="sugestao-texto" class="form-input" rows="4" placeholder="Escreva ou edite a sugestão..." style="resize:vertical;width:100%;box-sizing:border-box;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button onclick="fecharModalSugestao()" style="flex:1;background:var(--rose-pale);color:var(--mid);border:none;padding:12px;border-radius:12px;font-size:14px;cursor:pointer;font-family:inherit;">Cancelar</button>
+      <button onclick="posDEnviarSugestao()" style="flex:1;background:var(--rose);color:white;border:none;padding:12px;border-radius:12px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;">Enviar 💬</button>
     </div>
   </div>
 </div>
