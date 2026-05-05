@@ -2098,7 +2098,18 @@ tr:hover td { background:var(--rose-pale); }
               <div class="card-title">➕ Nova Cliente — Cadastro & Anamnese</div>
               <div class="form-grid">
                 <div class="form-group"><label class="form-label">Nome completo</label><input id="nc-nome" class="form-input" type="text" placeholder="Nome da gestante"></div>
-                <div class="form-group"><label class="form-label">Telefone / WhatsApp</label><input id="nc-tel" class="form-input" type="tel" placeholder="(11) 99999-9999"></div>
+                <div class="form-group">
+                  <label class="form-label">Telefone / WhatsApp</label>
+                  <div style="display:flex;">
+                    <select id="nc-tel-pais" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 10px;background:var(--bg);color:var(--dark);font-size:13px;cursor:pointer;height:44px;">
+                      <option value="+55">🇧🇷 +55</option>
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+351">🇵🇹 +351</option>
+                      <option value="+54">🇦🇷 +54</option>
+                    </select>
+                    <input id="nc-tel" class="form-input" type="tel" placeholder="(11) 99999-9999" style="border-radius:0 10px 10px 0;flex:1;">
+                  </div>
+                </div>
                 <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp()"></div>
                 <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Calculada pela DPP"></div>
                 <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
@@ -2189,6 +2200,7 @@ tr:hover td { background:var(--rose-pale); }
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input id="ag-data-hora" class="form-input" type="datetime-local"></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
+              <div class="form-group"><label class="form-label">Local / Endereço</label><input id="ag-local" class="form-input" type="text" placeholder="Ex: Casa da cliente, Parque Ibirapuera, Consultório..."></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
             </div>
             <button class="btn-primary" onclick="agendarConsulta()" data-i18n="doula.agenda.schedule">Agendar</button>
@@ -9758,6 +9770,7 @@ async function _pcliConsultas(el, id, campo) {
       return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
         '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + (c.tipo || 'Consulta') + '</div>' +
+        (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:3px;">📍 ' + c.local + '</div>' : '') +
         (c.observacoes ? '<div style="font-size:13px;color:var(--mid);margin-top:6px;line-height:1.5;">' + c.observacoes + '</div>' : '') + '</div>' +
         '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div><div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div></div></div>';
     }).join('');
@@ -9862,7 +9875,7 @@ async function cadastrarCliente() {
   var payload = {
     doula_id: currentUserId,
     nome: nome,
-    telefone: document.getElementById('nc-tel').value || null,
+    telefone: ((document.getElementById('nc-tel-pais').value || '') + ' ' + (document.getElementById('nc-tel').value || '')).trim() || null,
     dpp: dpp,
     semanas_gestacional: semanas,
     tipo_parto: document.getElementById('nc-tipo-parto').value || null,
@@ -9900,6 +9913,7 @@ async function agendarConsulta() {
     gestante_id: partes[0] === 'sol' ? partes[1] : null,
     data_hora: new Date(dataHora).toISOString(),
     tipo: document.getElementById('ag-tipo').value,
+    local: document.getElementById('ag-local').value || null,
     observacoes: document.getElementById('ag-obs').value || null
   };
   try {
@@ -9907,6 +9921,7 @@ async function agendarConsulta() {
     if (res.error) throw res.error;
     mostrarToast('Consulta agendada! 📅');
     document.getElementById('ag-data-hora').value = '';
+    document.getElementById('ag-local').value = '';
     document.getElementById('ag-obs').value = '';
     clienteEl.value = '';
     carregarAgenda();
@@ -9940,7 +9955,7 @@ async function carregarAgenda() {
         var dt = new Date(c.data_hora);
         return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
           '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);">' + (c.tipo || 'Consulta') + '</div></div>' +
+          '<div style="font-size:11px;color:var(--earth-light);">' + (c.tipo || 'Consulta') + (c.local ? ' · 📍 ' + c.local : '') + '</div></div>' +
           '<div style="text-align:right;min-width:56px;"><div style="font-size:12px;font-weight:500;color:var(--rose);">' + dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) + '</div>' +
           '<div style="font-size:11px;color:var(--earth-light);">' + dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) + '</div></div></div>';
       }).join('') : '<div class="empty-state-small" data-i18n="doula.appts.empty">Nenhuma consulta agendada ainda</div>';
@@ -9957,6 +9972,7 @@ async function carregarAgenda() {
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
           '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
           '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
+          (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">📍 ' + c.local + '</div>' : '') +
           (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
           '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div>' +
           '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div>' +
