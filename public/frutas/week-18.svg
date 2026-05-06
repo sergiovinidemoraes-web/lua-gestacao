@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Pimentão (Bell Pepper) -->
+  <path d="M100 62 C140 62 162 92 162 124 C162 154 138 174 100 174 C62 174 38 154 38 124 C38 92 60 62 100 62 Z" fill="#C9897A"/>
+  <ellipse cx="124" cy="126" rx="34" ry="42" fill="#B07060" opacity="0.3"/>
+  <path d="M74 118 Q100 108 126 118" stroke="#A06050" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M66 146 Q100 134 134 146" stroke="#A06050" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <ellipse cx="74" cy="88" rx="14" ry="22" fill="#E8C5BC" opacity="0.4"/>
+  <ellipse cx="100" cy="64" rx="18" ry="9" fill="#5B7A4E"/>
+  <path d="M100 56 Q103 42 105 34" stroke="#4A6640" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M105 40 Q120 26 130 36 Q116 50 108 44 Z" fill="#5B7A4E"/>
+  <path d="M96 40 Q80 24 68 34 Q82 48 94 42 Z" fill="#7A9E6A"/>
+</svg>

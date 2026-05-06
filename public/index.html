@@ -2037,6 +2037,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-faq');fecharMobMore()"><span>💡 Guia Prático</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-financeiro');fecharMobMore()"><span>💰 Financeiro</span></div>
+        <div class="mob-more-item" id="mob-more-backup" style="display:none;" onclick="entrarNoApp('doula_backup', currentNome);fecharMobMore()"><span>🛡️ Painel Backup</span></div>
       </div>
 
       <main class="d-main">
@@ -3612,6 +3613,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="mob-nav-item" id="bk-mob-registros" onclick="bkNav(this,'bk-registros')" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             <span>Registros</span>
+          </div>
+          <div class="mob-nav-item" id="bk-mob-main" style="display:none;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Meu Painel</span>
           </div>
         </div>
       </nav>
@@ -7741,19 +7746,23 @@ function entrarNoApp(tipo, nome) {
     if (b1) b1.style.display = window.hasBackupAccess ? 'block' : 'none';
     var b2 = document.getElementById('btn-switch-to-backup-pos');
     if (b2) b2.style.display = window.hasBackupAccess ? 'block' : 'none';
+    var b3 = document.getElementById('mob-more-backup');
+    if (b3) b3.style.display = window.hasBackupAccess ? 'flex' : 'none';
   }
-  
+
   if (tipo === 'doula_backup') {
     var bkAvatar = document.getElementById('bk-avatar');
     if (bkAvatar) bkAvatar.textContent = primeiroNome[0].toUpperCase();
     var bkNomeSidebar = document.getElementById('bk-doula-nome');
     if (bkNomeSidebar && currentBackupPerms) bkNomeSidebar.textContent = currentBackupPerms.nomeDoula;
-    
+
     var banner = document.getElementById('bk-upgrade-banner');
-    if (banner) banner.style.display = 'block';
-    
+    if (banner) banner.style.display = window.currentRoleOriginal ? 'none' : 'block';
+
     var bMain = document.getElementById('btn-switch-to-main');
     if (bMain) bMain.style.display = window.currentRoleOriginal ? 'block' : 'none';
+    var bkMobMain = document.getElementById('bk-mob-main');
+    if (bkMobMain) bkMobMain.style.display = window.currentRoleOriginal ? 'flex' : 'none';
 
     // Mostra nav items conforme permissões
     if (currentBackupPerms) {
@@ -13326,28 +13335,28 @@ function _renderDiarioEntrada(entry, prepend) {
 
 // ─── ABA LATERAL DO BEBÊ ───
 var _babyFrutas = {
-  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!', img: 'fruits/week-4.png' },
-  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!', img: 'fruits/week-5.png' },
-  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!', img: 'fruits/week-6.png' },
-  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.', img: 'fruits/week-7.png' },
-  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.', img: 'fruits/week-8.png' },
-  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!', img: 'fruits/week-9.png' },
-  10: { n: 'Ameixa Seca', e: '🟣', d: 'Ossos e cartilagens estão se formando.', img: 'fruits/week-10.svg' },
-  11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.', img: 'fruits/week-11.svg' },
-  12: { n: 'Ameixa', e: '🍑', d: 'Quase todos os órgãos estão formados agora.', img: 'fruits/week-12.svg' },
-  13: { n: 'Limão Siciliano', e: '🍋', d: 'O bebê já tem impressões digitais!', img: 'fruits/week-13.svg' },
-  14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.', img: 'fruits/week-14.svg' },
-  15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.', img: 'fruits/week-15.svg' },
-  16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.', img: 'fruits/week-16.svg' },
-  17: { n: 'Romã', e: '🍎', d: 'O bebê está acumulando gordura para se aquecer.', img: 'fruits/week-17.svg' },
-  18: { n: 'Alcachofra', e: '🥦', d: 'O bebê já boceja e faz soluços.', img: 'fruits/week-18.svg' },
-  19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.', img: 'fruits/week-19.svg' },
-  20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.', img: 'fruits/week-20.svg' },
-  21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.', img: 'fruits/week-21.svg' },
-  22: { n: 'Mamão', e: '🍈', d: 'O bebê já parece um recém-nascido em miniatura.', img: 'fruits/week-22.svg' },
-  23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.', img: 'fruits/week-23.svg' },
-  24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.', img: 'fruits/week-24.svg' },
-  25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.', img: 'fruits/week-25.svg' },
+  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!', img: 'frutas/week-4.png' },
+  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!', img: 'frutas/week-5.png' },
+  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!', img: 'frutas/week-6.png' },
+  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.', img: 'frutas/week-7.png' },
+  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.', img: 'frutas/week-8.png' },
+  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!', img: 'frutas/week-9.png' },
+  10: { n: 'Ameixa Seca', e: '🟣', d: 'Ossos e cartilagens estão se formando.', img: 'frutas/week-10.svg' },
+  11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.', img: 'frutas/week-11.svg' },
+  12: { n: 'Ameixa', e: '🍑', d: 'Quase todos os órgãos estão formados agora.', img: 'frutas/week-12.svg' },
+  13: { n: 'Limão Siciliano', e: '🍋', d: 'O bebê já tem impressões digitais!', img: 'frutas/week-13.svg' },
+  14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.', img: 'frutas/week-14.svg' },
+  15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.', img: 'frutas/week-15.svg' },
+  16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.', img: 'frutas/week-16.svg' },
+  17: { n: 'Romã', e: '🍎', d: 'O bebê está acumulando gordura para se aquecer.', img: 'frutas/week-17.svg' },
+  18: { n: 'Alcachofra', e: '🥦', d: 'O bebê já boceja e faz soluços.', img: 'frutas/week-18.svg' },
+  19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.', img: 'frutas/week-19.svg' },
+  20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.', img: 'frutas/week-20.svg' },
+  21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.', img: 'frutas/week-21.svg' },
+  22: { n: 'Mamão', e: '🍈', d: 'O bebê já parece um recém-nascido em miniatura.', img: 'frutas/week-22.svg' },
+  23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.', img: 'frutas/week-23.svg' },
+  24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.', img: 'frutas/week-24.svg' },
+  25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.', img: 'frutas/week-25.svg' },
   26: { n: 'Cebola Grande', e: '🧅', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
   27: { n: 'Repolho', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
   28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.' },
