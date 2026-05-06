@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Cenoura (Carrot) -->
+  <path d="M88 66 L112 66 L104 172 L96 172 Z" fill="#C9897A"/>
+  <ellipse cx="100" cy="68" rx="20" ry="11" fill="#C9897A"/>
+  <ellipse cx="100" cy="68" rx="20" ry="11" fill="#B07060" opacity="0.3"/>
+  <path d="M91 92 Q100 88 109 92" stroke="#A06050" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M90 114 Q100 110 110 114" stroke="#A06050" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M91 136 Q100 132 109 136" stroke="#A06050" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M92 66 L88 164" stroke="#E8C5BC" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.35"/>
+  <path d="M96 66 Q92 44 84 32" stroke="#5B7A4E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M100 64 Q98 40 98 26" stroke="#5B7A4E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M104 64 Q108 42 110 28" stroke="#7A9E6A" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M108 66 Q116 46 122 34" stroke="#5B7A4E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M92 66 Q82 48 76 40" stroke="#7A9E6A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

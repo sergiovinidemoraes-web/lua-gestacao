@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Limão Siciliano (Sicilian Lemon) -->
+  <ellipse cx="100" cy="108" rx="56" ry="44" fill="#A3C47E"/>
+  <ellipse cx="46" cy="108" rx="11" ry="9" fill="#8BAD6E"/>
+  <ellipse cx="154" cy="108" rx="11" ry="9" fill="#8BAD6E"/>
+  <ellipse cx="80" cy="92" rx="15" ry="11" fill="#C4DC9E" opacity="0.55"/>
+  <path d="M100 65 Q102 55 105 48" stroke="#7A6455" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M105 54 Q120 42 128 50 Q116 64 108 58 Z" fill="#5B7A4E"/>
+</svg>

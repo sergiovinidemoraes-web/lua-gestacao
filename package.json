@@ -1,24 +1,5 @@
 {
-  "name": "lua-gestacao",
-  "version": "1.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sergiovinidemoraes-web/lua-gestacao.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/sergiovinidemoraes-web/lua-gestacao/issues"
-  },
-  "homepage": "https://github.com/sergiovinidemoraes-web/lua-gestacao#readme",
   "devDependencies": {
-    "sharp": "^0.34.5"
+    "react-scripts": "5.0.1"
   }
 }
