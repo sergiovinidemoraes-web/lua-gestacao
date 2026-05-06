@@ -2033,6 +2033,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-faq');fecharMobMore()"><span>💡 Guia Prático</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-financeiro');fecharMobMore()"><span>💰 Financeiro</span></div>
+        <div class="mob-more-item" id="mob-more-backup" style="display:none;" onclick="entrarNoApp('doula_backup', currentNome);fecharMobMore()"><span>🛡️ Painel Backup</span></div>
       </div>
 
       <main class="d-main">
@@ -3582,6 +3583,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="mob-nav-item" id="bk-mob-registros" onclick="bkNav(this,'bk-registros')" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             <span>Registros</span>
+          </div>
+          <div class="mob-nav-item" id="bk-mob-main" style="display:none;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Meu Painel</span>
           </div>
         </div>
       </nav>
@@ -7554,19 +7559,23 @@ function entrarNoApp(tipo, nome) {
     if (b1) b1.style.display = window.hasBackupAccess ? 'block' : 'none';
     var b2 = document.getElementById('btn-switch-to-backup-pos');
     if (b2) b2.style.display = window.hasBackupAccess ? 'block' : 'none';
+    var b3 = document.getElementById('mob-more-backup');
+    if (b3) b3.style.display = window.hasBackupAccess ? 'flex' : 'none';
   }
-  
+
   if (tipo === 'doula_backup') {
     var bkAvatar = document.getElementById('bk-avatar');
     if (bkAvatar) bkAvatar.textContent = primeiroNome[0].toUpperCase();
     var bkNomeSidebar = document.getElementById('bk-doula-nome');
     if (bkNomeSidebar && currentBackupPerms) bkNomeSidebar.textContent = currentBackupPerms.nomeDoula;
-    
+
     var banner = document.getElementById('bk-upgrade-banner');
-    if (banner) banner.style.display = 'block';
-    
+    if (banner) banner.style.display = window.currentRoleOriginal ? 'none' : 'block';
+
     var bMain = document.getElementById('btn-switch-to-main');
     if (bMain) bMain.style.display = window.currentRoleOriginal ? 'block' : 'none';
+    var bkMobMain = document.getElementById('bk-mob-main');
+    if (bkMobMain) bkMobMain.style.display = window.currentRoleOriginal ? 'flex' : 'none';
 
     // Mostra nav items conforme permissões
     if (currentBackupPerms) {
