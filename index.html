@@ -1174,20 +1174,33 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="card">
             <div class="card-title">Perfil do Bebê</div>
-            <div class="baby-form-group">
-              <label class="baby-form-label">Nome do Bebê</label>
-              <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia...">
+
+            <!-- Pergunta: nasceu? -->
+            <div style="margin-bottom:18px;">
+              <label class="baby-form-label" style="margin-bottom:10px;display:block;">Seu bebê já nasceu?</label>
+              <div style="display:flex;gap:8px;">
+                <button id="g-bebe-sim-btn" onclick="gBebeRespostaNasceu(true)" style="flex:1;padding:11px 8px;border:1.5px solid rgba(212,178,10,0.3);border-radius:12px;background:var(--rose-pale);color:var(--mid);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">Sim, nasceu! 🎉</button>
+                <button id="g-bebe-nao-btn" onclick="gBebeRespostaNasceu(false)" style="flex:1;padding:11px 8px;border:1.5px solid var(--rose);border-radius:12px;background:var(--rose);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">Ainda não 🤰</button>
+              </div>
             </div>
-            <div class="baby-form-group">
-              <label class="baby-form-label">Sexo (Opcional)</label>
-              <select id="baby-gender-input" class="baby-input">
-                <option value="">Não definido</option>
-                <option value="menino">Menino 💙</option>
-                <option value="menina">Menina 💖</option>
-                <option value="surpresa">Surpresa 🎁</option>
-              </select>
+
+            <!-- Campos do perfil (visíveis quando "Ainda não") -->
+            <div id="g-bebe-campos-perfil">
+              <div class="baby-form-group">
+                <label class="baby-form-label">Nome do Bebê</label>
+                <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia...">
+              </div>
+              <div class="baby-form-group">
+                <label class="baby-form-label">Sexo (Opcional)</label>
+                <select id="baby-gender-input" class="baby-input">
+                  <option value="">Não definido</option>
+                  <option value="menino">Menino 💙</option>
+                  <option value="menina">Menina 💖</option>
+                  <option value="surpresa">Surpresa 🎁</option>
+                </select>
+              </div>
+              <button class="baby-save-btn" onclick="salvarDadosBebe()">Salvar</button>
             </div>
-            <button class="baby-save-btn" onclick="salvarDadosBebe()">Salvar</button>
           </div>
         </div>
 
@@ -1733,6 +1746,12 @@ tr:hover td { background:var(--rose-pale); }
             <div class="pos-hero-emoji">💛</div>
             <div class="pos-hero-title" data-i18n="pos.title">Bem-vinda ao pós-parto</div>
             <div class="pos-hero-sub" data-i18n="pos.sub">Você acabou de fazer algo extraordinário. Agora vamos cuidar de você e do seu bebê.</div>
+          </div>
+
+          <div class="card" style="background:linear-gradient(135deg,#fff8e8,#fff3d6);border:1.5px solid rgba(212,178,10,0.25);margin-bottom:20px;text-align:center;cursor:pointer;" onclick="abrirModalNascimento()">
+            <div style="font-size:36px;margin-bottom:8px;">🎉</div>
+            <div style="font-size:17px;font-weight:600;color:#8B6914;margin-bottom:6px;">Meu bebê nasceu!</div>
+            <div style="font-size:13px;color:#A07820;line-height:1.5;">Registre o nascimento e acesse o acompanhamento completo de mãe pós-parto — com a mesma conta.</div>
           </div>
           <div class="content-phases">
 
@@ -8956,6 +8975,57 @@ function posDModalSugestao() {
   if (modal) { modal.style.display = 'flex'; }
 }
 
+function gBebeRespostaNasceu(nasceu) {
+  var simBtn = document.getElementById('g-bebe-sim-btn');
+  var naoBtn = document.getElementById('g-bebe-nao-btn');
+  var campos = document.getElementById('g-bebe-campos-perfil');
+  if (nasceu) {
+    if (simBtn) { simBtn.style.background = '#D4A820'; simBtn.style.color = 'white'; simBtn.style.borderColor = '#D4A820'; }
+    if (naoBtn) { naoBtn.style.background = 'var(--rose-pale)'; naoBtn.style.color = 'var(--mid)'; naoBtn.style.borderColor = 'rgba(122,100,85,0.2)'; }
+    if (campos) campos.style.display = 'none';
+    abrirModalNascimento();
+  } else {
+    if (naoBtn) { naoBtn.style.background = 'var(--rose)'; naoBtn.style.color = 'white'; naoBtn.style.borderColor = 'var(--rose)'; }
+    if (simBtn) { simBtn.style.background = 'var(--rose-pale)'; simBtn.style.color = 'var(--mid)'; simBtn.style.borderColor = 'rgba(122,100,85,0.2)'; }
+    if (campos) campos.style.display = '';
+  }
+}
+
+function abrirModalNascimento() {
+  var modal = document.getElementById('modal-nascimento');
+  if (modal) modal.style.display = 'flex';
+  var dataEl = document.getElementById('nasc-bebe-data');
+  if (dataEl && !dataEl.value) dataEl.value = new Date().toISOString().slice(0, 10);
+}
+
+function fecharModalNascimento() {
+  var modal = document.getElementById('modal-nascimento');
+  if (modal) modal.style.display = 'none';
+  gBebeRespostaNasceu(false);
+}
+
+async function confirmarNascimento() {
+  var nome = (document.getElementById('nasc-bebe-nome') || {}).value || '';
+  var data = (document.getElementById('nasc-bebe-data') || {}).value || '';
+  var migrar = (document.getElementById('nasc-migrar-check') || {}).checked;
+  if (!nome.trim()) { mostrarToast('Informe o nome do bebê.'); return; }
+  if (!data) { mostrarToast('Informe a data de nascimento.'); return; }
+  if (!db || !currentUserId) return;
+  try {
+    await db.from('pos_bebes').upsert({ mae_id: currentUserId, nome: nome.trim(), data_nascimento: data }, { onConflict: 'mae_id' });
+    if (migrar) {
+      await db.from('usuarios').update({ tipo: 'pos' }).eq('id', currentUserId);
+      try { await db.auth.updateUser({ data: { tipo: 'pos' } }); } catch(e2) {}
+      fecharModalNascimento();
+      mostrarToast('🎉 Bem-vinda, mamãe! Migrando seu perfil...');
+      setTimeout(function() { entrarNoApp('pos', currentNome); }, 1200);
+    } else {
+      fecharModalNascimento();
+      mostrarToast('✓ Nascimento do bebê registrado!');
+    }
+  } catch(e) { mostrarToast('Erro ao registrar: ' + e.message); }
+}
+
 function fecharModalSugestao() {
   var modal = document.getElementById('modal-sugestao-mamada');
   if (modal) modal.style.display = 'none';
@@ -12110,6 +12180,38 @@ function mostrarToast(msg) {
     <div style="display:flex;gap:12px;">
       <button onclick="fecharModalReporte()" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.7);padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;">Cancelar</button>
       <button onclick="enviarReporte()" style="flex:2;background:var(--rose);color:white;border:none;padding:10px;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;">⚑ Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NASCIMENTO DO BEBÊ -->
+<div id="modal-nascimento" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--white);border-radius:24px;padding:28px;max-width:400px;width:100%;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:48px;margin-bottom:8px;">🎉</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--dark);margin-bottom:6px;">Parabéns, mamãe!</div>
+      <div style="font-size:13px;color:var(--earth-light);line-height:1.6;">Registre o nascimento do seu bebê e, se quiser, acesse agora o acompanhamento completo de pós-parto — com a mesma conta e email.</div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label class="form-label">Nome do bebê</label>
+      <input id="nasc-bebe-nome" class="form-input" type="text" placeholder="Nome do bebê">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label class="form-label">Data de nascimento</label>
+      <input id="nasc-bebe-data" class="form-input" type="date">
+    </div>
+    <div id="nasc-migrar-opcao" style="background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.3);border-radius:16px;padding:16px;margin-bottom:20px;">
+      <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
+        <input id="nasc-migrar-check" type="checkbox" checked style="accent-color:#9B7BB8;width:18px;height:18px;margin-top:2px;flex-shrink:0;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#7B5EA7;margin-bottom:3px;">Migrar para Mãe Pós-Parto 🌸</div>
+          <div style="font-size:12px;color:var(--earth-light);line-height:1.5;">Mesma conta, mesmo email. Você terá acesso ao rastreamento de amamentação, sono, fraldas, bebê e muito mais.</div>
+        </div>
+      </label>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="fecharModalNascimento()" style="flex:1;background:var(--rose-pale);color:var(--mid);border:none;padding:13px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;">Agora não</button>
+      <button onclick="confirmarNascimento()" style="flex:2;background:linear-gradient(135deg,#D4A820,#E8C040);color:white;border:none;padding:13px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">🎉 Confirmar nascimento</button>
     </div>
   </div>
 </div>
