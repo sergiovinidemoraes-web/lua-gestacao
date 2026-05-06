@@ -958,6 +958,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-nav-item" onclick="gNav(this,'g-extras')"><span class="g-nav-icon">🎧</span><span data-i18n="nav.extras">Extras</span></div>
           <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span><span data-i18n="nav.encontrar">Encontrar Doula</span></div>
           <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span><span data-i18n="nav.minha.doula">Minha Doula</span></div>
+          <div class="g-nav-item" id="nav-minha-doula-pos" style="display:none;" onclick="gNav(this,'g-minha-doula-pos')"><span class="g-nav-icon">💜</span><span>Minha Doula Pós</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span><span data-i18n="nav.posparto">Pós-Parto</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span><span data-i18n="nav.diario">Diário</span></div>
           <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><span class="g-nav-icon">❤️</span><span data-i18n="nav.parceiro">Acompanhante</span></div>
@@ -1005,6 +1006,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mob-more-item" onclick="gNav(this,'g-extras');fecharMobMore()"><span>🎧 Extras</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-marketplace');fecharMobMore()"><span>🔍 Encontrar Doula</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-minha-doula');fecharMobMore()" id="mob-more-minha-doula" style="display:none;"><span>💜 Minha Doula</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula-pos');fecharMobMore()" id="mob-more-minha-doula-pos" style="display:none;"><span>💜 Minha Doula Pós</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-parceiro');fecharMobMore()"><span data-i18n="mob.more.parceiro">❤️ Acompanhante</span></div>
         <div class="mob-more-item" onclick="gNav(this,'g-chat');fecharMobMore()"><span>🌙 Conversar</span></div>
@@ -1870,6 +1872,25 @@ tr:hover td { background:var(--rose-pale); }
             <div style="display:flex;gap:8px;">
               <input id="msg-gestante-input" class="chat-input" style="flex:1;" data-i18n-ph="doula.msg.ph" placeholder="Mensagem para sua doula..." onkeydown="if(event.key==='Enter')enviarMensagemParaDoula()">
               <button class="chat-send" onclick="enviarMensagemParaDoula()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MINHA DOULA PÓS-PARTO -->
+        <div class="g-panel" id="g-minha-doula-pos">
+          <div class="panel-title">Minha Doula Pós-Parto</div>
+          <div style="background:linear-gradient(135deg,#3a2952,#4d3870);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">Sua Doula Pós-Parto</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+              <div id="g-doula-pos-avatar" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#C5B3D9,#9B7BB8);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:white;flex-shrink:0;">D</div>
+              <div>
+                <div id="g-doula-pos-nome" style="font-size:16px;font-weight:500;">—</div>
+                <div id="g-doula-pos-cidade" style="font-size:12px;opacity:0.6;margin-top:2px;">—</div>
+              </div>
+            </div>
+            <div id="g-doula-pos-bio" style="font-size:13px;opacity:0.7;margin-bottom:14px;line-height:1.5;"></div>
+            <div style="display:flex;gap:10px;">
+              <button id="g-doula-pos-wpp" onclick="gDoulaPosFalarWpp()" style="flex:1;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:none;">📱 WhatsApp</button>
             </div>
           </div>
         </div>
@@ -7447,6 +7468,7 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
     setTimeout(function() { try { carregarMinhaDoula(); } catch(e) {} }, 900);
+    setTimeout(function() { try { carregarMinhaDoulaPos(); } catch(e) {} }, 1100);
     setTimeout(function() {
       try {
         if (currentSolicitacaoPendente && !currentDoulaId) {
@@ -10452,6 +10474,41 @@ async function carregarMinhaDoula() {
   } catch(e) {}
 }
 
+async function carregarMinhaDoulaPos() {
+  if (!db || !currentUserId) return;
+  try {
+    var solRes = await db.from('solicitacoes').select('doula_id').eq('gestante_id', currentUserId).eq('status', 'aceita');
+    if (!solRes.data || !solRes.data.length) return;
+    var ids = solRes.data.map(function(r) { return r.doula_id; });
+    var dRes = await db.from('usuarios').select('id,nome,cidade,bio,whatsapp').in('id', ids).eq('tipo', 'pos_doula').maybeSingle();
+    if (!dRes.data) return;
+    var d = dRes.data;
+    window._minhaDoulaPosDados = d;
+    var navEl = document.getElementById('nav-minha-doula-pos');
+    if (navEl) navEl.style.display = '';
+    var mobEl = document.getElementById('mob-more-minha-doula-pos');
+    if (mobEl) mobEl.style.display = '';
+    var avEl = document.getElementById('g-doula-pos-avatar');
+    if (avEl) avEl.textContent = (d.nome || 'D')[0].toUpperCase();
+    var nmEl = document.getElementById('g-doula-pos-nome');
+    if (nmEl) nmEl.textContent = d.nome || '—';
+    var cidEl = document.getElementById('g-doula-pos-cidade');
+    if (cidEl) cidEl.textContent = d.cidade ? '📍 ' + d.cidade : '—';
+    var bioEl = document.getElementById('g-doula-pos-bio');
+    if (bioEl) bioEl.textContent = d.bio || '';
+    var wppBtn = document.getElementById('g-doula-pos-wpp');
+    if (wppBtn) wppBtn.style.display = d.whatsapp ? '' : 'none';
+  } catch(e) {}
+}
+
+function gDoulaPosFalarWpp() {
+  var d = window._minhaDoulaPosDados;
+  if (!d || !d.whatsapp) { mostrarToast('WhatsApp não cadastrado.'); return; }
+  var num = '55' + d.whatsapp.replace(/\D/g,'');
+  var msg = encodeURIComponent('Olá ' + (d.nome || 'doula') + ', sou sua cliente pelo Lua Materna! 💛');
+  window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
+}
+
 async function carregarMateriaisDoula(doulaId, doulaName) {
   var section = document.getElementById('g-materiais-doula');
   var lista = document.getElementById('g-materiais-doula-lista');
@@ -11384,6 +11441,10 @@ async function verificarAdmin() {
 
 function adminSimularPerfil(tipo) {
   window.adminSimulando = true;
+  if (tipo === 'doula_backup') {
+    currentBackupPerms = { agenda: true, chat: true, registros: true, historico: true, nomeDoula: 'Doula Principal (simulação)' };
+    if (!window.currentRoleOriginal) window.currentRoleOriginal = 'doula';
+  }
   document.getElementById('admin-panel').style.display = 'none';
   document.getElementById('admin-sim-pill').style.display = 'block';
   var nome = currentNome || 'Admin';
@@ -11426,18 +11487,16 @@ function adminNav(el, sectionId) {
 }
 
 async function carregarUsuariosAdmin() {
+  var lista = document.getElementById('admin-usuarios-lista');
+  if (lista) lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
   try {
-    var r = await fetch('/api/admin-get-users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ adminSenha: adminSenha })
-    });
-    var json = await r.json();
-    if (!r.ok) { console.error('carregarUsuariosAdmin:', json.error); return; }
-    var data = json.users;
+    if (!db) return;
+    var res = await db.from('usuarios').select('id, nome, email, tipo, criado_em, created_at, whatsapp, cidade').order('criado_em', { ascending: false, nullsFirst: false });
+    if (res.error) { console.error('carregarUsuariosAdmin:', res.error); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro ao carregar usuários.</div>'; return; }
+    var data = res.data || [];
     _adminUsuarios = data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
-    var gestantes = data.filter(function(u) { return u.tipo === 'gestante'; });
+    var gestantes = data.filter(function(u) { return u.tipo === 'gestante' || u.tipo === 'pos'; });
     try { document.getElementById('total-usuarios').textContent = data.length; } catch(e) {}
     try { document.getElementById('total-doulas').textContent = doulas.length; } catch(e) {}
     try { document.getElementById('total-gestantes').textContent = gestantes.length; } catch(e) {}
@@ -11445,24 +11504,21 @@ async function carregarUsuariosAdmin() {
     try { document.getElementById('stat-doulas-total').textContent = doulas.length; } catch(e) {}
     try { document.getElementById('stat-gest-total').textContent = gestantes.length; } catch(e) {}
     var hoje = new Date().toDateString();
-    var hojeCount = data.filter(function(u) { return new Date(u.criado_em).toDateString() === hoje; }).length;
+    var hojeCount = data.filter(function(u) { var d = u.criado_em || u.created_at; return d && new Date(d).toDateString() === hoje; }).length;
     try { document.getElementById('stat-hoje').textContent = hojeCount; } catch(e) {}
-    var lista = document.getElementById('admin-usuarios-lista');
     if (!lista) return;
-    if (!data.length) {
-      lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;">Nenhum usuario ainda</div>';
-      return;
-    }
+    if (!data.length) { lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(176,154,140,0.4);">Nenhum usuário ainda</div>'; return; }
     lista.innerHTML = '';
+    var tipoLabel = { gestante:'Gestante', doula:'Doula', pos:'Mãe Pós-Parto', pos_doula:'Doula Pós', pai:'Acompanhante', doula_backup:'Backup' };
     for (var i = 0; i < data.length; i++) {
       (function(u) {
-        var tipo = u.tipo === 'doula' ? 'Doula' : 'Gestante';
+        var tipo = tipoLabel[u.tipo] || u.tipo || '—';
         var row = document.createElement('div');
         row.className = 'admin-item-row';
         var info = document.createElement('div');
         info.innerHTML =
-          '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + u.nome + '</div>' +
-          '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + u.email + ' - ' + tipo + '</div>';
+          '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + (u.nome || '—') + '</div>' +
+          '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (u.email || '—') + ' · ' + tipo + (u.cidade ? ' · ' + u.cidade : '') + '</div>';
         var btn = document.createElement('button');
         btn.className = 'admin-del-btn';
         btn.textContent = 'Remover';
@@ -11472,7 +11528,7 @@ async function carregarUsuariosAdmin() {
         lista.appendChild(row);
       })(data[i]);
     }
-  } catch(e) { console.error('carregarUsuariosAdmin:', e); }
+  } catch(e) { console.error('carregarUsuariosAdmin:', e); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro: ' + e.message + '</div>'; }
 }
 
 async function adminConfirmarEmail() {
@@ -12648,6 +12704,11 @@ function mostrarToast(msg) {
             <div style="font-size:28px;margin-bottom:8px;">❤️</div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Acompanhante</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Diário, contrações ao vivo</div>
+          </button>
+          <button onclick="adminSimularPerfil('doula_backup')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">🛡️</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula Backup</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Todas as permissões ativas</div>
           </button>
         </div>
         <div style="background:rgba(201,137,122,0.05);border:1px solid rgba(201,137,122,0.12);border-radius:12px;padding:14px 18px;font-size:12px;color:rgba(176,154,140,0.45);line-height:1.6;">
