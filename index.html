@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- v20260405150000 -->
 <!-- Lua App v2.3.3 - 2026-04-05 - Fix: sidebar doula oculta por padrão, Spotify sem lazy -->
 <html lang="pt-BR">
@@ -1981,6 +1981,8 @@ tr:hover td { background:var(--rose-pale); }
         <nav>
           <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><span class="d-nav-icon">📊</span><span data-i18n="doula.nav.dashboard">Dashboard</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span><span data-i18n="doula.nav.clients">Clientes</span><span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-convite');carregarConviteDoula()"><span class="d-nav-icon">🔗</span><span>Enviar Convite</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-backup');carregarBackupDoula()"><span class="d-nav-icon">🛡️</span><span>Minha Backup</span></div>
           <div class="d-nav-item" id="nav-mensagens-doula" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span><span data-i18n="doula.nav.messages">Mensagens</span><span id="badge-msgs" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-agenda')"><span class="d-nav-icon">📅</span><span data-i18n="doula.nav.schedule">Agenda</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span><span data-i18n="doula.nav.records">Registros</span></div>
@@ -2028,6 +2030,8 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more">
+        <div class="mob-more-item" onclick="dNav(this,'d-convite');carregarConviteDoula();fecharMobMore()"><span>🔗 Enviar Convite</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span>🛡️ Minha Backup</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-registros');fecharMobMore()"><span>📋 Registros</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
@@ -2092,28 +2096,6 @@ tr:hover td { background:var(--rose-pale); }
               <input id="doula-especialidades" class="form-input" type="text" data-i18n-ph="doula.perfil.esp" placeholder="Especialidades separadas por virgula">
               <textarea id="doula-bio" class="form-input form-textarea" data-i18n-ph="doula.perfil.bio" placeholder="Sua bio curta — quem voce e e como trabalha..." style="height:80px;resize:none;"></textarea>
               <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;" data-i18n="doula.perfil.save">Salvar e aparecer no marketplace</button>
-            </div>
-          </div>
-
-          <!-- BACKUP DOULA -->
-          <div class="card" style="margin-top:20px;background:linear-gradient(135deg,rgba(30,18,12,0.9),rgba(40,25,15,0.9));border:1px solid rgba(201,137,122,0.2);">
-            <div class="card-title">🔄 Doula Backup</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Configure uma doula de backup para atender suas clientes quando você não estiver disponível</div>
-            <div style="display:grid;gap:10px;">
-              <div>
-                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;">E-mail da doula backup</label>
-                <input id="backup-doula-email" class="form-input" type="email" placeholder="backup@doula.com">
-              </div>
-              <div>
-                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:8px;">Permissões concedidas</label>
-                <div style="display:flex;flex-direction:column;gap:8px;">
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à Agenda</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso ao Chat</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso aos Registros</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> ↳ Ver histórico de dias anteriores</label>
-                </div>
-              </div>
-              <button onclick="salvarBackupDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">✅ Salvar configuração de backup</button>
             </div>
           </div>
 
@@ -2188,6 +2170,54 @@ tr:hover td { background:var(--rose-pale); }
                 </td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- CONVITE DOULA -->
+        <div class="d-panel" id="d-convite">
+          <div class="panel-title">Enviar Convite</div>
+          <div class="panel-sub">Compartilhe um link com sua gestante — ela se cadastra e já entra vinculada a você automaticamente.</div>
+          <div class="card">
+            <div class="card-title">🔗 Seu link de convite</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:20px;line-height:1.6;">Gere um link único e envie pelo WhatsApp, Instagram ou e-mail. Qualquer gestante que se cadastrar por este link será vinculada a você automaticamente.</div>
+            <button id="btn-gerar-convite-doula" onclick="gerarConviteDoula()" style="background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;">🔗 Gerar meu link de convite</button>
+            <div id="convite-doula-card" style="display:none;margin-top:20px;">
+              <div style="background:var(--cream);border:1.5px solid rgba(122,100,85,0.15);border-radius:14px;padding:14px 16px;word-break:break-all;font-size:13px;color:var(--dark);margin-bottom:14px;line-height:1.6;" id="convite-doula-link-texto"></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button onclick="copiarLinkConviteDoula()" style="flex:1;background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">📋 Copiar link</button>
+                <button onclick="compartilharWppConviteDoula()" style="flex:1;background:#e8f5e9;color:#2e7d32;border:1.5px solid #a5d6a7;padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
+              </div>
+              <div style="text-align:center;margin-top:12px;">
+                <button onclick="gerarConviteDoula(true)" style="background:none;border:none;color:var(--earth-light);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;">↺ Gerar novo link</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACKUP DOULA -->
+        <div class="d-panel" id="d-backup">
+          <div class="panel-title">Minha Backup</div>
+          <div class="panel-sub">Configure uma colega de confiança para cobrir você quando precisar.</div>
+          <div class="card" style="background:linear-gradient(135deg,rgba(30,18,12,0.9),rgba(40,25,15,0.9));border:1px solid rgba(201,137,122,0.2);">
+            <div class="card-title">🛡️ Doula Backup</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;">Configure uma doula de backup para atender suas clientes quando você não estiver disponível. Você pode avisar ela pelo app ou enviar um link de convite.</div>
+            <div style="display:grid;gap:10px;">
+              <div>
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;">E-mail da doula backup</label>
+                <input id="backup-doula-email" class="form-input" type="email" placeholder="backup@doula.com">
+              </div>
+              <div>
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:8px;">Permissões concedidas</label>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à Agenda</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso ao Chat</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso aos Registros</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> ↳ Ver histórico de dias anteriores</label>
+                </div>
+              </div>
+              <button onclick="salvarBackupDoula()" id="btn-salvar-backup" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">✅ Salvar e verificar</button>
+            </div>
+            <div id="backup-resultado" style="display:none;margin-top:20px;"></div>
           </div>
         </div>
 
@@ -5792,6 +5822,59 @@ function copiarCodigoConvite() {
   navigator.clipboard.writeText(texto.textContent).then(function() { mostrarToast('Código copiado! 💛'); }).catch(function() { mostrarToast('Código: ' + texto.textContent); });
 }
 
+// ── Convite Doula ──
+async function carregarConviteDoula() {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('convites_doula').select('codigo').eq('doula_id', currentUserId).maybeSingle();
+    if (res.data) mostrarLinkConviteDoula(res.data.codigo);
+  } catch(e) {}
+}
+
+async function gerarConviteDoula(forcarNovo) {
+  if (!db || !currentUserId) return;
+  var btn = document.getElementById('btn-gerar-convite-doula');
+  if (btn) { btn.textContent = 'Gerando...'; btn.disabled = true; }
+  try {
+    if (!forcarNovo) {
+      var existing = await db.from('convites_doula').select('codigo').eq('doula_id', currentUserId).maybeSingle();
+      if (existing.data) {
+        mostrarLinkConviteDoula(existing.data.codigo);
+        if (btn) { btn.textContent = '🔗 Gerar meu link de convite'; btn.disabled = false; }
+        return;
+      }
+    } else {
+      await db.from('convites_doula').delete().eq('doula_id', currentUserId);
+    }
+    var codigo = Math.random().toString(36).substring(2, 8).toUpperCase();
+    var res = await db.from('convites_doula').insert({ doula_id: currentUserId, doula_nome: currentNome, codigo: codigo });
+    if (!res.error) { mostrarLinkConviteDoula(codigo); } else { mostrarToast('Erro ao gerar link. Tente novamente.'); }
+  } catch(e) { mostrarToast('Erro de conexão.'); }
+  if (btn) { btn.textContent = '🔗 Gerar meu link de convite'; btn.disabled = false; }
+}
+
+function mostrarLinkConviteDoula(codigo) {
+  var card = document.getElementById('convite-doula-card');
+  var btn = document.getElementById('btn-gerar-convite-doula');
+  var linkEl = document.getElementById('convite-doula-link-texto');
+  if (linkEl) linkEl.textContent = 'https://luamaterna.com?convite=' + codigo;
+  if (card) card.style.display = 'block';
+  if (btn) btn.style.display = 'none';
+}
+
+function copiarLinkConviteDoula() {
+  var linkEl = document.getElementById('convite-doula-link-texto');
+  if (!linkEl) return;
+  navigator.clipboard.writeText(linkEl.textContent).then(function() { mostrarToast('Link copiado! 🔗'); }).catch(function() { mostrarToast('Link: ' + linkEl.textContent); });
+}
+
+function compartilharWppConviteDoula() {
+  var linkEl = document.getElementById('convite-doula-link-texto');
+  if (!linkEl) return;
+  var msg = 'Olá! Te convidei para o Lua Materna 🌙 — o app que vamos usar juntas durante a sua gestação. Clique para criar sua conta:\n' + linkEl.textContent;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
 // ── Pai: Vincular com gestante usando código ──
 async function vincularGestantePai() {
   var input = document.getElementById('p-codigo-input');
@@ -6744,9 +6827,14 @@ async function salvarAvaliacaoDoula() {
 
 // ─── Backup Doula ───
 async function salvarBackupDoula() {
-  var email = document.getElementById('backup-doula-email');
-  if (!email || !email.value.trim()) { mostrarToast('Informe o e-mail da doula backup'); return; }
-  var newEmail = email.value.trim().toLowerCase();
+  var emailEl = document.getElementById('backup-doula-email');
+  if (!emailEl || !emailEl.value.trim()) { mostrarToast('Informe o e-mail da doula backup'); return; }
+  var newEmail = emailEl.value.trim().toLowerCase();
+  var btn = document.getElementById('btn-salvar-backup');
+  var resultDiv = document.getElementById('backup-resultado');
+  if (btn) { btn.textContent = 'Verificando...'; btn.disabled = true; }
+  if (resultDiv) resultDiv.style.display = 'none';
+
   var payload = {
     doula_id: currentUserId,
     backup_email: newEmail,
@@ -6757,18 +6845,66 @@ async function salvarBackupDoula() {
     status: 'pendente',
     backup_user_id: null
   };
-  if (db && currentUserId) {
-    try { 
-      var existing = await db.from('backup_doulas').select('*').eq('doula_id', currentUserId).maybeSingle();
-      if (existing.data && existing.data.backup_email === newEmail) {
-        payload.status = existing.data.status;
-        payload.backup_user_id = existing.data.backup_user_id;
-      }
-      await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' }); 
-      mostrarToast('\u2705 Configurações de backup salvas!'); 
+
+  if (!db || !currentUserId) { if (btn) { btn.textContent = 'Salvar e verificar'; btn.disabled = false; } return; }
+  try {
+    var existing = await db.from('backup_doulas').select('*').eq('doula_id', currentUserId).maybeSingle();
+    if (existing.data && existing.data.backup_email === newEmail) {
+      payload.status = existing.data.status;
+      payload.backup_user_id = existing.data.backup_user_id;
     }
-    catch(e) { mostrarToast('Erro: ' + e.message); }
-  }
+    await db.from('backup_doulas').upsert(payload, { onConflict: 'doula_id' });
+
+    var userRes = await db.from('usuarios').select('id, nome').eq('email', newEmail).maybeSingle();
+    if (userRes.data) {
+      await db.from('backup_doulas').update({ backup_user_id: userRes.data.id }).eq('doula_id', currentUserId);
+      var nomeBk = userRes.data.nome || newEmail;
+      if (resultDiv) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML =
+          '<div style="background:rgba(144,179,167,0.15);border:1.5px solid rgba(144,179,167,0.4);border-radius:14px;padding:16px;margin-bottom:12px;">' +
+            '<div style="font-size:14px;font-weight:600;color:#90B3A7;margin-bottom:6px;">Perfil encontrado!</div>' +
+            '<div style="font-size:13px;color:var(--mid);line-height:1.6;"><strong>' + nomeBk + '</strong> ja tem conta no Lua. Ela vera uma notificacao na proxima vez que abrir o app.</div>' +
+          '</div>' +
+          '<div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;">Prefere avisar agora pelo WhatsApp tambem?</div>' +
+          '<button onclick="compartilharWppBackupApp(\'' + nomeBk.replace(/\x27/g,"&#39;") + '\')" style="width:100%;background:#e8f5e9;color:#2e7d32;border:1.5px solid #a5d6a7;padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Avisar pelo WhatsApp</button>';
+      }
+    } else {
+      var link = 'https://luamaterna.com?convite_backup=' + encodeURIComponent(currentUserId);
+      window._backupConviteLink = link;
+      if (resultDiv) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML =
+          '<div style="background:rgba(201,137,122,0.1);border:1.5px solid rgba(201,137,122,0.3);border-radius:14px;padding:16px;margin-bottom:12px;">' +
+            '<div style="font-size:14px;font-weight:600;color:var(--rose);margin-bottom:6px;">Sem conta cadastrada</div>' +
+            '<div style="font-size:13px;color:var(--mid);line-height:1.6;"><strong>' + newEmail + '</strong> ainda nao tem perfil no Lua. Compartilhe o link abaixo para ela se cadastrar:</div>' +
+          '</div>' +
+          '<div style="background:var(--cream);border:1.5px solid rgba(122,100,85,0.15);border-radius:12px;padding:12px 14px;word-break:break-all;font-size:12px;color:var(--dark);margin-bottom:12px;">' + link + '</div>' +
+          '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+            '<button onclick="copiarLinkBackup()" style="flex:1;background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:10px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">Copiar link</button>' +
+            '<button onclick="compartilharWppBackupLink()" style="flex:1;background:#e8f5e9;color:#2e7d32;border:1.5px solid #a5d6a7;padding:10px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">WhatsApp</button>' +
+          '</div>';
+      }
+    }
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+  if (btn) { btn.textContent = 'Salvar e verificar'; btn.disabled = false; }
+}
+
+function copiarLinkBackup() {
+  var link = window._backupConviteLink || '';
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(function() { mostrarToast('Link copiado!'); }).catch(function() { mostrarToast('Link: ' + link); });
+}
+
+function compartilharWppBackupApp(nomeBackup) {
+  var msg = 'Ola ' + nomeBackup + '! Te configurei como minha doula backup no Lua Materna. Quando abrir o app voce vera o acesso ao painel de backup na barra lateral.';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function compartilharWppBackupLink() {
+  var link = window._backupConviteLink || '';
+  var msg = 'Ola! Te convidei para ser minha doula backup no Lua Materna. Crie sua conta pelo link abaixo e voce ja vai entrar conectada ao meu painel:\n' + link;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 async function carregarBackupDoula() {
   if (!db || !currentUserId) return;
@@ -7177,6 +7313,43 @@ window.addEventListener('load', function() {
 
   }
   try { adminSenha = localStorage.getItem('lua_admin_senha') || 'lua_admin_2026'; } catch(e) {}
+
+  // Convite de backup via URL ?convite_backup=DOULA_ID
+  var _conviteBackupParam = new URLSearchParams(window.location.search).get('convite_backup');
+  if (_conviteBackupParam) {
+    loginTab('cadastrar');
+    selecionarTipo('doula_backup');
+    ['tipo-gestante','tipo-doula','tipo-pai','tipo-pos','tipo-pos-doula'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    var formCadBk = document.getElementById('form-cadastrar');
+    if (formCadBk) {
+      var bannerBk = document.createElement('div');
+      bannerBk.style.cssText = 'background:linear-gradient(135deg,rgba(144,179,167,0.15),rgba(144,179,167,0.05));border:1.5px solid rgba(144,179,167,0.4);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--mid);line-height:1.6;';
+      bannerBk.innerHTML = '🛡️ <strong>Você foi convidada como doula backup!</strong><br>Crie sua conta abaixo e você já vai entrar conectada ao painel da sua colega.';
+      formCadBk.insertBefore(bannerBk, formCadBk.firstChild);
+    }
+  }
+
+  // Convite de doula via URL ?convite=CODIGO
+  var _conviteParam = new URLSearchParams(window.location.search).get('convite');
+  if (_conviteParam) {
+    window._conviteDoulaParam = _conviteParam.toUpperCase();
+    loginTab('cadastrar');
+    selecionarTipo('gestante');
+    ['tipo-doula','tipo-pai','tipo-pos','tipo-pos-doula'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    var formCad = document.getElementById('form-cadastrar');
+    if (formCad) {
+      var banner = document.createElement('div');
+      banner.style.cssText = 'background:linear-gradient(135deg,var(--rose-pale),#fce8e0);border:1.5px solid var(--rose-light);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--dark);line-height:1.6;';
+      banner.innerHTML = '🌙 <strong>Você foi convidada pela sua doula!</strong><br>Crie sua conta abaixo e entre já conectada a ela.';
+      formCad.insertBefore(banner, formCad.firstChild);
+    }
+  }
 });
 
 // ── Tabs ──
@@ -7286,6 +7459,16 @@ async function fazerCadastro() {
         if (bNome) {
           try { await db.from('pos_bebes').insert({ mae_id: res.data.user.id, nome: bNome, data_nascimento: bNasc || null }); } catch(e3) {}
         }
+      }
+      if (tipoSelecionado === 'gestante' && window._conviteDoulaParam) {
+        try {
+          var convDoula = await db.from('convites_doula').select('doula_id').eq('codigo', window._conviteDoulaParam).maybeSingle();
+          if (convDoula.data) {
+            var doulaId = convDoula.data.doula_id;
+            await db.from('solicitacoes').insert({ gestante_id: res.data.user.id, doula_id: doulaId, gestante_nome: nome, status: 'aceita' });
+            try { await db.from('usuarios').update({ doula_id: doulaId }).eq('id', res.data.user.id); } catch(e5) {}
+          }
+        } catch(e4) {}
       }
     }
     document.getElementById('form-cadastrar').style.display = 'none';
@@ -7399,10 +7582,14 @@ async function carregarUsuario(user) {
       try {
         var bkRes = await db.from('backup_doulas').select('*').eq('backup_email', user.email).maybeSingle();
         if (bkRes.data) {
-          if (bkRes.data.status === 'pendente') {
+          var _eraPendente = bkRes.data.status === 'pendente';
+          if (_eraPendente) {
             await db.from('backup_doulas').update({ backup_user_id: user.id, status: 'ativo' }).eq('id', bkRes.data.id);
           }
           var mainRes = await db.from('usuarios').select('nome').eq('id', bkRes.data.doula_id).maybeSingle();
+          if (_eraPendente && mainRes.data) {
+            setTimeout(function() { mostrarToast('🛡️ ' + mainRes.data.nome + ' te adicionou como doula backup!'); }, 1200);
+          }
           currentBackupDoulaId = bkRes.data.doula_id;
           currentBackupPerms = {
             nomeDoula: mainRes.data ? mainRes.data.nome : 'Doula',
