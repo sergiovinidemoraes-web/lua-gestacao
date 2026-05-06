@@ -11382,6 +11382,26 @@ async function verificarAdmin() {
   }
 }
 
+function adminSimularPerfil(tipo) {
+  window.adminSimulando = true;
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-sim-pill').style.display = 'block';
+  var nome = currentNome || 'Admin';
+  entrarNoApp(tipo, nome);
+}
+
+function adminVoltarDoSimulador() {
+  window.adminSimulando = false;
+  document.getElementById('admin-sim-pill').style.display = 'none';
+  // Esconde todas as views do app
+  ['view-gestante','view-doula','view-pai','view-pos','view-pos-doula','view-doula-backup'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('admin-panel').style.display = 'block';
+}
+
 function adminNav(el, sectionId) {
   document.querySelectorAll('.admin-nav-item').forEach(function(i) { i.classList.remove('active'); });
   document.querySelectorAll('.admin-panel-section').forEach(function(p) { p.classList.remove('active'); });
@@ -12312,6 +12332,7 @@ function mostrarToast(msg) {
         <div class="admin-nav-item" onclick="adminNav(this,'admin-reportes');carregarReportesAdmin()">⚑ Reportes <span id="badge-reportes" style="display:none;background:var(--rose);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px;"></span></div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-estatisticas')">📊 Estatísticas</div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-config')">⚙️ Configurações</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-simulacao')">👁 Simular Perfil</div>
       </div>
     </div>
 
@@ -12598,6 +12619,42 @@ function mostrarToast(msg) {
         <button onclick="carregarEstatisticas()" style="background:var(--rose);color:white;border:none;padding:10px 24px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">↻ Atualizar</button>
       </div>
 
+      <!-- SIMULAR PERFIL -->
+      <div class="admin-panel-section" id="admin-simulacao">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Simular Perfil</div>
+        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Veja o app como cada tipo de usuário — sem precisar criar uma conta separada.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
+          <button onclick="adminSimularPerfil('gestante')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">🤰</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Gestante</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Contações, bebê, plano de parto</div>
+          </button>
+          <button onclick="adminSimularPerfil('doula')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">🌙</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Clientes, agenda, registros</div>
+          </button>
+          <button onclick="adminSimularPerfil('pos')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">🌸</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Mãe Pós-Parto</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Bebê, rotina, amamentação</div>
+          </button>
+          <button onclick="adminSimularPerfil('pos_doula')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">💜</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula Pós</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Clientes pós-parto, rotina</div>
+          </button>
+          <button onclick="adminSimularPerfil('pai')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
+            <div style="font-size:28px;margin-bottom:8px;">❤️</div>
+            <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Acompanhante</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Diário, contrações ao vivo</div>
+          </button>
+        </div>
+        <div style="background:rgba(201,137,122,0.05);border:1px solid rgba(201,137,122,0.12);border-radius:12px;padding:14px 18px;font-size:12px;color:rgba(176,154,140,0.45);line-height:1.6;">
+          ℹ️ A simulação mostra a interface de cada perfil. Dados reais só carregam se você tiver uma conta Supabase vinculada. Um botão flutuante "🔙 Admin" ficará visível para voltar a qualquer momento.
+        </div>
+      </div>
+
       <!-- CONFIGURAÇÕES -->
       <div class="admin-panel-section" id="admin-config">
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Configurações</div>
@@ -12628,6 +12685,10 @@ function mostrarToast(msg) {
   </div>
 </div>
 
+<!-- Admin simulation return pill -->
+<div id="admin-sim-pill" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9000;">
+  <button onclick="adminVoltarDoSimulador()" style="background:#1a0f0a;border:1.5px solid rgba(201,137,122,0.45);color:#C9897A;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 24px rgba(0,0,0,0.55);display:flex;align-items:center;gap:8px;">🔙 Voltar ao Admin</button>
+</div>
 
 <!-- MOBILE BOTTOM NAV (usado só para doula via initMobileNav) -->
 <div class="mobile-bottom-nav" id="mobile-bottom-nav" style="display:none">
