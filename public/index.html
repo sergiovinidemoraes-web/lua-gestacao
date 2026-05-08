@@ -13166,16 +13166,16 @@ async function enviarFeedbackGlobal() {
   var secao = document.getElementById('fb-secao').value || '—';
   var payload = {
     gestante_id: currentUserId || null,
+    gestante_nome: currentNome || 'Usuário',
     usuario_nome: currentNome || 'Usuário',
     tipo_usuario: currentRole || tipoSelecionado || null,
-    secao: secao,
-    tipo_feedback: _fbTipoSelecionado,
+    mensagem_lua: '[' + _fbTipoSelecionado + '] Seção: ' + secao,
     descricao: msg,
     lido: false
   };
   if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
   var res = await db.from('reportes').insert(payload);
-  if (res.error) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
+  if (res.error) { mostrarToast('Erro ao enviar: ' + res.error.message); return; }
   fecharFeedbackGlobal();
   mostrarToast('✅ Feedback enviado! Obrigada 💛');
 }
