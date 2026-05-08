@@ -1731,7 +1731,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" data-i18n="market.sub">Doulas verificadas prontas para te acompanhar</div>
 
           <div class="doulas-search">
-            <input type="text" data-i18n-ph="market.search.ph" placeholder="🔍 Buscar por cidade ou especialidade...">
+            <input type="text" id="doulas-search-input" data-i18n-ph="market.search.ph" placeholder="🔍 Buscar por cidade ou especialidade..." oninput="filtrarDoulas(this.value)" onkeydown="if(event.key==='Enter')filtrarDoulas(this.value)">
           </div>
 
           <div class="doulas-grid" id="doulas-grid-lista">
