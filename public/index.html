@@ -11686,10 +11686,14 @@ async function carregarUsuariosAdmin() {
   var lista = document.getElementById('admin-usuarios-lista');
   if (lista) lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
   try {
-    if (!db) return;
-    var res = await db.from('usuarios').select('id, nome, email, tipo, criado_em, whatsapp, cidade').order('criado_em', { ascending: false, nullsFirst: false });
-    if (res.error) { console.error('carregarUsuariosAdmin:', res.error); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro ao carregar usuários.</div>'; return; }
-    var data = res.data || [];
+    var apiRes = await fetch('/api/admin-get-users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminSenha: adminSenha })
+    });
+    var apiData = await apiRes.json();
+    if (!apiRes.ok) { console.error('carregarUsuariosAdmin:', apiData.error); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro ao carregar usuários.</div>'; return; }
+    var data = apiData.users || [];
     _adminUsuarios = data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante' || u.tipo === 'pos'; });
