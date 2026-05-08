@@ -6656,13 +6656,9 @@ async function enviarReporte() {
   if (!desc || !desc.value.trim()) { mostrarToast('Descreva o problema antes de enviar'); return; }
   if (!db) { mostrarToast('Sem conex\u00e3o. Tente novamente.'); return; }
   var payload = {
-    gestante_id: currentUserId || null,
-    gestante_nome: currentNome || 'Visitante',
-    usuario_nome: currentNome || 'Visitante',
+    user_id: currentUserId || null,
     tipo_usuario: _reporteTipo || tipoSelecionado || 'gestante',
-    mensagem_lua: preview ? preview.textContent : '',
-    mensagem: desc.value.trim(),
-    lido: false
+    mensagem: desc.value.trim()
   };
   try {
     var res = await db.from('reportes').insert(payload);
@@ -6709,14 +6705,14 @@ async function carregarReportesAdmin() {
       var op = r.lido ? 'opacity:0.55;' : '';
       var borda = r.lido ? '0.08' : '0.25';
       var perfil = r.tipo_usuario || 'gestante';
-      var nome = r.usuario_nome || r.gestante_nome || 'Usuário';
       var cor = tipoColor[perfil] || '#C9897A';
       var perfilLabel = tipoLabel[perfil] || perfil;
       var fbTag = r.tipo_feedback ? (fbLabel[r.tipo_feedback] || r.tipo_feedback) : null;
       var secao = r.secao || null;
 
-      var uid = r.gestante_id;
+      var uid = r.user_id;
       var u = uid ? userMap[uid] : null;
+      var nome = u ? (u.nome || 'Usuário') : 'Usuário';
       var email = u ? (u.email || '') : '';
       var whatsapp = u ? (u.whatsapp || '') : '';
       var waTel = whatsapp.replace(/\D/g, '');
@@ -6749,11 +6745,10 @@ async function carregarReportesAdmin() {
         (secao ? '<span style="font-size:10px;color:rgba(176,154,140,0.45);">📍 ' + secao + '</span>' : '') +
         '</div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0;">' +
-        (r.lido ? '' : '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">✓ Lido</button>') +
+        '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">✓ Lido</button>' +
         (!r.resposta ? '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'block\'" style="background:rgba(144,179,167,0.15);border:none;color:#90B3A7;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">↩ Responder</button>' : '') +
         '</div></div>' +
         '<div style="font-size:11px;color:rgba(176,154,140,0.4);margin-bottom:8px;">' + d + ' · ' + nome + '</div>' +
-        (r.mensagem_lua ? '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:8px;font-style:italic;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px 10px;">"' + r.mensagem_lua.substring(0,200) + '"</div>' : '') +
         '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.mensagem || '') + '</div>' +
         contatoHtml + respostaHtml + '</div>';
     }).join('');
@@ -6765,7 +6760,7 @@ async function enviarRespostaReporte(id, waTel) {
   if (!txt) { mostrarToast('Escreva a resposta antes de enviar'); return; }
   if (!db || !id) return;
   try {
-    await db.from('reportes').update({ resposta: txt, lido: true }).eq('id', id);
+    await db.from('reportes').update({ resposta: txt }).eq('id', id);
     mostrarToast('✅ Resposta salva!');
     if (waTel) {
       var msg = encodeURIComponent('Olá! Recebemos seu feedback no Lua Gestação e gostaríamos de responder:\n\n' + txt);
@@ -6777,7 +6772,7 @@ async function enviarRespostaReporte(id, waTel) {
 
 async function marcarRepLido(id, btn) {
   if (!db || !id) return;
-  try { await db.from('reportes').update({ lido: true }).eq('id', id); } catch(e) {}
+  // coluna 'lido' não existe na tabela — marcação é visual-only
   var card = document.getElementById('rep-card-' + id);
   if (card) card.style.opacity = '0.55';
   if (btn) btn.remove();
@@ -13169,13 +13164,11 @@ async function enviarFeedbackGlobal() {
   if (!msg) { mostrarToast('✏️ Escreva sua mensagem'); return; }
   var secao = document.getElementById('fb-secao').value || '—';
   var payload = {
-    gestante_id: currentUserId || null,
-    gestante_nome: currentNome || 'Usuário',
-    usuario_nome: currentNome || 'Usuário',
+    user_id: currentUserId || null,
     tipo_usuario: currentRole || tipoSelecionado || null,
-    mensagem_lua: '[' + _fbTipoSelecionado + '] Seção: ' + secao,
-    mensagem: msg,
-    lido: false
+    tipo_feedback: _fbTipoSelecionado,
+    secao: secao,
+    mensagem: msg
   };
   if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
   var res = await db.from('reportes').insert(payload);
