@@ -6661,7 +6661,7 @@ async function enviarReporte() {
     usuario_nome: currentNome || 'Visitante',
     tipo_usuario: _reporteTipo || tipoSelecionado || 'gestante',
     mensagem_lua: preview ? preview.textContent : '',
-    descricao: desc.value.trim(),
+    mensagem: desc.value.trim(),
     lido: false
   };
   try {
@@ -6754,7 +6754,7 @@ async function carregarReportesAdmin() {
         '</div></div>' +
         '<div style="font-size:11px;color:rgba(176,154,140,0.4);margin-bottom:8px;">' + d + ' · ' + nome + '</div>' +
         (r.mensagem_lua ? '<div style="font-size:12px;color:rgba(176,154,140,0.6);margin-bottom:8px;font-style:italic;background:rgba(255,255,255,0.03);border-radius:8px;padding:8px 10px;">"' + r.mensagem_lua.substring(0,200) + '"</div>' : '') +
-        '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.descricao || '') + '</div>' +
+        '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.mensagem || '') + '</div>' +
         contatoHtml + respostaHtml + '</div>';
     }).join('');
   } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
@@ -13174,7 +13174,7 @@ async function enviarFeedbackGlobal() {
     usuario_nome: currentNome || 'Usuário',
     tipo_usuario: currentRole || tipoSelecionado || null,
     mensagem_lua: '[' + _fbTipoSelecionado + '] Seção: ' + secao,
-    descricao: msg,
+    mensagem: msg,
     lido: false
   };
   if (!db) { mostrarToast('Erro ao enviar. Tente novamente.'); return; }
