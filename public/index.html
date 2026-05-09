@@ -10063,9 +10063,10 @@ function renderDoulas(doulas, ratingsMap) {
     } else {
       ratingHtml = '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Sem avaliações ainda</div>';
     }
+    var avatarBg = _doulaAvatarColor(d.nome);
     card.innerHTML =
       '<div class="doula-card-top">' +
-        '<div class="doula-avatar-mkt" style="background:linear-gradient(135deg,var(--rose),#a8685a)">' + inicial + '</div>' +
+        '<div class="doula-avatar-mkt" style="background:' + avatarBg + ';font-family:\'Cormorant Garamond\',serif;">' + inicial + '</div>' +
         '<div><div class="doula-mkt-name">' + d.nome + '</div>' +
         '<div class="doula-mkt-local">' + loc + '</div>' +
         ratingHtml + '</div>' +
@@ -10576,6 +10577,13 @@ function verPerfilDoula(d) {
   });
   var confirmBtn = document.getElementById('modal-confirm-btn');
   if (confirmBtn) confirmBtn.textContent = whats ? 'Falar no WhatsApp' : 'Fechar';
+  var wrap = document.getElementById('modal-avatar-wrap');
+  if (wrap) {
+    var inicial = (d.nome || 'D')[0].toUpperCase();
+    var bg = _doulaAvatarColor(d.nome);
+    wrap.innerHTML = '<div style="width:64px;height:64px;border-radius:50%;background:' + bg + ';display:flex;align-items:center;justify-content:center;font-family:\'Cormorant Garamond\',serif;font-size:26px;color:white;font-weight:500;">' + inicial + '</div>';
+    wrap.style.display = 'flex';
+  }
 }
 
 // ── Perfil da Doula ──
@@ -12290,6 +12298,8 @@ function abrirModal(titulo, sub, callback, btnLabel) {
 function fecharModal() {
   document.getElementById('lua-modal').classList.remove('show');
   modalCallback = null;
+  var wrap = document.getElementById('modal-avatar-wrap');
+  if (wrap) { wrap.style.display = 'none'; wrap.innerHTML = ''; }
 }
 
 // ── Mobile Bottom Nav ──
@@ -13039,6 +13049,7 @@ function mostrarToast(msg) {
 <!-- MODAL DE CONFIRMAÇÃO -->
 <div class="lua-modal-overlay" id="lua-modal">
   <div class="lua-modal">
+    <div id="modal-avatar-wrap" style="display:none;justify-content:center;margin-bottom:14px;"></div>
     <div class="lua-modal-title" id="modal-title" data-i18n="modal.delete.title">Remover material?</div>
     <div class="lua-modal-sub" id="modal-sub" data-i18n="modal.delete.sub">Esta ação não pode ser desfeita.</div>
     <div class="lua-modal-btns">
@@ -13330,47 +13341,62 @@ function _renderDiarioEntrada(entry, prepend) {
   if (prepend) container.prepend(div); else container.appendChild(div);
 }
 
+// ── Cor de avatar para doulas ──
+var _doulaAvatarPalette = [
+  'linear-gradient(135deg,#c9897a,#a8685a)',
+  'linear-gradient(135deg,#9B7BB8,#7a5a99)',
+  'linear-gradient(135deg,#6a9e8a,#4e7a6a)',
+  'linear-gradient(135deg,#c9a05a,#a87e3a)',
+  'linear-gradient(135deg,#7a8ec9,#5a6ea8)',
+  'linear-gradient(135deg,#c97a9b,#a85a7a)',
+];
+function _doulaAvatarColor(nome) {
+  var n = 0;
+  for (var i = 0; i < (nome || '').length; i++) n += (nome || '').charCodeAt(i);
+  return _doulaAvatarPalette[n % _doulaAvatarPalette.length];
+}
+
 // ─── ABA LATERAL DO BEBÊ ───
 var _babyFrutas = {
-  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!', img: 'frutas/week-4.png' },
-  5:  { n: 'Gergelim', e: '🍊', d: 'O coração do bebê começa a bater esta semana. Que emoção!', img: 'frutas/week-5.png' },
-  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!', img: 'frutas/week-6.png' },
-  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.', img: 'frutas/week-7.png' },
-  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.', img: 'frutas/week-8.png' },
-  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!', img: 'frutas/semana09.png' },
-  10: { n: 'Ameixa Seca', e: '🟣', d: 'Ossos e cartilagens estão se formando.', img: 'frutas/semana10.png' },
-  11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.', img: 'frutas/semana11.png' },
-  12: { n: 'Ameixa', e: '🍑', d: 'Quase todos os órgãos estão formados agora.', img: 'frutas/semana12.png' },
-  13: { n: 'Limão Siciliano', e: '🍋', d: 'O bebê já tem impressões digitais!', img: 'frutas/semana13.png' },
-  14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.', img: 'frutas/semana14.png' },
-  15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.', img: 'frutas/semana15.png' },
-  16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.', img: 'frutas/semana16.png' },
-  17: { n: 'Romã', e: '🍎', d: 'O bebê está acumulando gordura para se aquecer.', img: 'frutas/semana17.png' },
-  18: { n: 'Alcachofra', e: '🥦', d: 'O bebê já boceja e faz soluços.', img: 'frutas/semana18.png' },
-  19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.', img: 'frutas/semana19.png' },
-  20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.', img: 'frutas/semana20.png' },
-  21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.', img: 'frutas/semana21.png' },
-  22: { n: 'Mamão', e: '🍈', d: 'O bebê já parece um recém-nascido em miniatura.', img: 'frutas/semana22.png' },
-  23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.', img: 'frutas/semana23.png' },
-  24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.', img: 'frutas/semana24.png' },
-  25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.', img: 'frutas/semana25.png' },
-  26: { n: 'Cebola Grande', e: '🧅', d: 'O bebê está praticando a respiração com o líquido amniótico.', img: 'frutas/semana26.png' },
-  27: { n: 'Repolho', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.', img: 'frutas/semana27.png' },
-  28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.', img: 'frutas/semana28.png' },
-  29: { n: 'Abóbora Bolota', e: '🎃', d: 'O bebê está ganhando peso rapidamente.', img: 'frutas/semana29.png' },
-  30: { n: 'Pepino', e: '🥒', d: 'O bebê já consegue seguir a luz com os olhos.', img: 'frutas/semana30.png' },
-  31: { n: 'Abacaxi', e: '🍍', d: 'O bebê está ficando sem espaço para grandes piruetas.', img: 'frutas/semana31.png' },
-  32: { n: 'Abóbora', e: '🎃', d: 'O bebê está se posicionando para o nascimento.', img: 'frutas/semana32.png' },
-  33: { n: 'Batata-Doce', e: '🍠', d: 'O sistema imunológico do bebê está se fortalecendo.', img: 'frutas/semana33.png' },
-  34: { n: 'Abóbora Manteiga', e: '🎃', d: 'O bebê está acumulando cálcio para os ossos.', img: 'frutas/semana34.png' },
-  35: { n: 'Coco', e: '🥥', d: 'O sistema nervoso está quase totalmente maduro.', img: 'frutas/semana35.png' },
-  36: { n: 'Melão', e: '🍈', d: 'O bebê está ganhando cerca de 30g por dia!', img: 'frutas/semana36.png' },
-  37: { n: 'Melão Verde', e: '🍈', d: 'O bebê já é considerado "a termo precoce".', img: 'frutas/semana37.png' },
-  38: { n: 'Abobrinha Grande', e: '🥒', d: 'O bebê está perdendo a lanugem (pelinhos finos).', img: 'frutas/semana38.png' },
-  39: { n: 'Melancia', e: '🍉', d: 'O bebê está pronto para conhecer o mundo!', img: 'frutas/semana39.png' },
-  40: { n: 'Abóbora Moranga', e: '🎃', d: 'O grande momento chegou ou está muito próximo!', img: 'frutas/semana40.png' },
-  41: { n: 'Jaca', e: '🍈', d: 'O bebê está apenas ganhando um pouquinho mais de peso.', img: 'frutas/semana41.png' },
-  42: { n: 'Jaca', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.', img: 'frutas/semana42.png' }
+  4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
+  5:  { n: 'Gergelim', e: '🌾', d: 'O coração do bebê começa a bater esta semana. Que emoção!' },
+  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!' },
+  7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.' },
+  8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.' },
+  9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!' },
+  10: { n: 'Ameixa Seca', e: '🍇', d: 'Ossos e cartilagens estão se formando.' },
+  11: { n: 'Limão Taiti', e: '🍋', d: 'O bebê já tem unhas e folículos capilares.' },
+  12: { n: 'Ameixa', e: '🍒', d: 'Quase todos os órgãos estão formados agora.' },
+  13: { n: 'Limão Siciliano', e: '🍋', d: 'O bebê já tem impressões digitais!' },
+  14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.' },
+  15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.' },
+  16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.' },
+  17: { n: 'Romã', e: '🔴', d: 'O bebê está acumulando gordura para se aquecer.' },
+  18: { n: 'Alcachofra', e: '🌿', d: 'O bebê já boceja e faz soluços.' },
+  19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.' },
+  20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.' },
+  21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.' },
+  22: { n: 'Mamão', e: '🍊', d: 'O bebê já parece um recém-nascido em miniatura.' },
+  23: { n: 'Toranja', e: '🟠', d: 'Os pulmões estão se preparando para respirar.' },
+  24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.' },
+  25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.' },
+  26: { n: 'Cebola Grande', e: '🧅', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
+  27: { n: 'Repolho', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
+  28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.' },
+  29: { n: 'Abóbora Bolota', e: '🎃', d: 'O bebê está ganhando peso rapidamente.' },
+  30: { n: 'Pepino', e: '🥒', d: 'O bebê já consegue seguir a luz com os olhos.' },
+  31: { n: 'Abacaxi', e: '🍍', d: 'O bebê está ficando sem espaço para grandes piruetas.' },
+  32: { n: 'Abóbora', e: '🟠', d: 'O bebê está se posicionando para o nascimento.' },
+  33: { n: 'Batata-Doce', e: '🍠', d: 'O sistema imunológico do bebê está se fortalecendo.' },
+  34: { n: 'Abóbora Manteiga', e: '🥜', d: 'O bebê está acumulando cálcio para os ossos.' },
+  35: { n: 'Coco', e: '🥥', d: 'O sistema nervoso está quase totalmente maduro.' },
+  36: { n: 'Melão', e: '🍈', d: 'O bebê está ganhando cerca de 30g por dia!' },
+  37: { n: 'Melão Verde', e: '💚', d: 'O bebê já é considerado "a termo precoce".' },
+  38: { n: 'Abobrinha Grande', e: '🟢', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
+  39: { n: 'Melancia', e: '🍉', d: 'O bebê está pronto para conhecer o mundo!' },
+  40: { n: 'Abóbora Moranga', e: '🎃', d: 'O grande momento chegou ou está muito próximo!' },
+  41: { n: 'Jaca', e: '🟡', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
+  42: { n: 'Jaca', e: '🟡', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
 };
 
 function carregarSecaoBebe() {
