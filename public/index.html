@@ -6655,10 +6655,14 @@ async function enviarReporte() {
   var preview = document.getElementById('reporte-msg-preview');
   if (!desc || !desc.value.trim()) { mostrarToast('Descreva o problema antes de enviar'); return; }
   if (!db) { mostrarToast('Sem conex\u00e3o. Tente novamente.'); return; }
+  var luaMsg = (preview && preview.textContent && preview.textContent !== 'Carregando...')
+    ? preview.textContent.trim() : null;
   var payload = {
     user_id: currentUserId || null,
     tipo_usuario: _reporteTipo || tipoSelecionado || 'gestante',
-    mensagem: desc.value.trim()
+    tipo_feedback: 'bug',
+    secao: _fbGetSecaoAtual ? _fbGetSecaoAtual() : '\u2014',
+    mensagem: desc.value.trim() + (luaMsg ? '\n\n[Msg Lua]: ' + luaMsg.substring(0, 300) : '')
   };
   try {
     var res = await db.from('reportes').insert(payload);
@@ -13100,7 +13104,50 @@ if ('serviceWorker' in navigator) {
 
     <div style="margin-bottom:16px;">
       <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:6px;" data-i18n="feedback.secao.label">Seção</label>
-      <input id="fb-secao" type="text" readonly style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(176,154,140,0.7);font-family:'DM Sans',sans-serif;outline:none;">
+      <select id="fb-secao" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;color:rgba(176,154,140,0.9);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22%3E%3Cpath fill=%22%23B09A8C%22 d=%22M6 8L0 0h12z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;">
+        <option value="—">— Selecione a área —</option>
+        <optgroup label="Gestante">
+          <option value="Dashboard">Dashboard</option>
+          <option value="Gestação">Gestação</option>
+          <option value="Contrações">Contrações</option>
+          <option value="Diário">Diário</option>
+          <option value="Chat Lua">Chat Lua</option>
+          <option value="Plano de Parto">Plano de Parto</option>
+          <option value="Biblioteca">Biblioteca</option>
+          <option value="Marketplace">Marketplace</option>
+          <option value="Acompanhante">Acompanhante</option>
+          <option value="Pós-Parto">Pós-Parto</option>
+          <option value="Perfil Doula">Perfil Doula</option>
+        </optgroup>
+        <optgroup label="Doula">
+          <option value="Dashboard Doula">Dashboard Doula</option>
+          <option value="Clientes">Clientes</option>
+          <option value="Agenda">Agenda</option>
+          <option value="Biblioteca Doula">Biblioteca Doula</option>
+          <option value="Chat">Chat</option>
+          <option value="Perfil">Perfil</option>
+        </optgroup>
+        <optgroup label="Acompanhante">
+          <option value="Dashboard Acomp.">Dashboard Acomp.</option>
+          <option value="Gestação Acomp.">Gestação Acomp.</option>
+          <option value="Contrações Acomp.">Contrações Acomp.</option>
+          <option value="Diário Acomp.">Diário Acomp.</option>
+          <option value="Chat Lua Acomp.">Chat Lua Acomp.</option>
+          <option value="Checklist Acomp.">Checklist Acomp.</option>
+        </optgroup>
+        <optgroup label="Lua Pós">
+          <option value="Lua Pós › Início">Início</option>
+          <option value="Lua Pós › Amamentação">Amamentação</option>
+          <option value="Lua Pós › Rotina">Rotina</option>
+          <option value="Lua Pós › Rede de Apoio">Rede de Apoio</option>
+        </optgroup>
+        <optgroup label="Admin">
+          <option value="Admin › Usuários">Usuários</option>
+          <option value="Admin › Estatísticas">Estatísticas</option>
+          <option value="Admin › Conteúdos">Conteúdos</option>
+          <option value="Admin › Biblioteca">Biblioteca</option>
+        </optgroup>
+      </select>
     </div>
 
     <div style="margin-bottom:20px;">
