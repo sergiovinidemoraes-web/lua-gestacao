@@ -1961,6 +1961,11 @@ tr:hover td { background:var(--rose-pale); }
         <!-- MINHA DOULA -->
         <div class="g-panel" id="g-minha-doula">
           <div class="panel-title" data-i18n="doula.title">Minha Doula</div>
+          <div id="lembrete-avaliacao-parto" style="display:none;background:linear-gradient(135deg,#fffbf0,#fef3d0);border:1.5px solid #e6b800;border-radius:16px;padding:16px;margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px;">💛 Como foi seu parto?</div>
+            <div style="font-size:12px;color:var(--earth-light);margin-bottom:12px;line-height:1.5;">Sua DPP já passou! Que tal avaliar sua doula e ajudar outras gestantes a escolherem bem?</div>
+            <button onclick="abrirAvaliacaoDoula()" style="background:linear-gradient(135deg,#e6b800,#c99a00);color:white;border:none;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;">⭐ Avaliar minha doula agora</button>
+          </div>
           <div id="minha-doula-info" style="background:linear-gradient(135deg,var(--dark),#3d2a22);border-radius:20px;padding:20px;color:white;margin-bottom:20px;">
             <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5;margin-bottom:10px;" data-i18n="doula.label">Sua Doula</div>
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
@@ -2236,6 +2241,11 @@ tr:hover td { background:var(--rose-pale); }
                   <div id="doula-disponivel-knob" style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;right:3px;transition:right 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
                 </div>
               </div>
+              <div style="background:var(--white);border-radius:12px;padding:14px 16px;border:1px solid var(--border);">
+                <div style="font-size:13px;font-weight:500;color:var(--dark);margin-bottom:4px;">Limite de clientes simultâneas</div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;">Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.</div>
+                <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" placeholder="Ex: 5 (deixe vazio para ilimitado)" style="margin-bottom:0;">
+              </div>
               <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;" data-i18n="doula.perfil.save">Salvar e aparecer no marketplace</button>
             </div>
           </div>
@@ -2293,8 +2303,19 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div id="solicitacoes-section" style="margin-bottom:20px;">
-            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:12px;" data-i18n="doula.clients.pending">Solicitações pendentes</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div style="font-size:14px;font-weight:600;color:var(--dark);" data-i18n="doula.clients.pending">Solicitações pendentes</div>
+              <div id="limite-clientes-badge" style="display:none;font-size:12px;color:var(--earth-light);background:var(--cream);padding:4px 12px;border-radius:20px;border:1px solid var(--border);">0 clientes ativas</div>
+            </div>
             <div id="solicitacoes-container"><div style="font-size:13px;color:var(--earth-light);padding:12px 0;" data-i18n="doula.clients.pending.empty">Nenhuma solicitação pendente.</div></div>
+          </div>
+
+          <div id="historico-solicitacoes-section" style="margin-bottom:24px;">
+            <button onclick="toggleHistoricoSolicitacoes()" style="background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;padding:0;margin-bottom:10px;">
+              <span style="font-size:14px;font-weight:600;color:var(--earth);">Histórico de vínculos</span>
+              <span id="historico-toggle-icon" style="font-size:13px;color:var(--earth-light);">▶</span>
+            </button>
+            <div id="historico-container" style="display:none;"></div>
           </div>
 
           <div class="clients-table">
@@ -10382,6 +10403,7 @@ async function carregarSolicitacoesDoula() {
       var textoEl = document.getElementById('banner-sol-texto');
       if (textoEl) textoEl.textContent = qtd === 1 ? '1 solicitação pendente' : qtd + ' solicitações pendentes';
     }
+    _atualizarBadgeLimite();
     if (!res.data || !res.data.length) {
       container.innerHTML = '<div style="font-size:13px;color:var(--earth-light);padding:12px 0;">' + t('doula.clients.pending.empty') + '</div>';
       return;
@@ -10402,9 +10424,83 @@ async function carregarSolicitacoesDoula() {
   } catch(e) {}
 }
 
+async function _atualizarBadgeLimite() {
+  var badge = document.getElementById('limite-clientes-badge');
+  if (!badge || !db || !currentUserId) return;
+  try {
+    var countRes = await db.from('solicitacoes')
+      .select('id', { count: 'exact', head: true })
+      .eq('doula_id', currentUserId)
+      .eq('status', 'aceita');
+    var ativas = countRes.count || 0;
+    if (_doulaLimiteClientes) {
+      var cor = ativas >= _doulaLimiteClientes ? 'color:var(--rose);border-color:var(--rose-light);background:#fff0ed;' : '';
+      badge.style.cssText = cor;
+      badge.textContent = ativas + ' / ' + _doulaLimiteClientes + ' clientes ativas';
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+async function carregarHistoricoSolicitacoes() {
+  if (!db || !currentUserId) return;
+  var container = document.getElementById('historico-container');
+  if (!container) return;
+  try {
+    var res = await db.from('solicitacoes')
+      .select('id,gestante_nome,status,criado_em')
+      .eq('doula_id', currentUserId)
+      .in('status', ['aceita','recusada','encerrada'])
+      .order('criado_em', { ascending: false });
+    var dados = res.data || [];
+    if (!dados.length) {
+      container.innerHTML = '<div style="font-size:13px;color:var(--earth-light);padding:8px 0;">Nenhum vínculo anterior registrado.</div>';
+      return;
+    }
+    var statusInfo = {
+      aceita:    { label: 'Aceita',    bg: '#dcfce7', color: '#16a34a' },
+      recusada:  { label: 'Recusada',  bg: '#fee2e2', color: '#dc2626' },
+      encerrada: { label: 'Encerrada', bg: '#f3f4f6', color: '#6b7280' }
+    };
+    container.innerHTML = dados.map(function(s) {
+      var info = statusInfo[s.status] || { label: s.status, bg: '#f3f4f6', color: '#6b7280' };
+      var data = s.criado_em ? new Date(s.criado_em).toLocaleDateString('pt-BR') : '—';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;">' +
+        '<div>' +
+          '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + s.gestante_nome + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Solicitado em ' + data + '</div>' +
+        '</div>' +
+        '<span style="font-size:11px;font-weight:600;background:' + info.bg + ';color:' + info.color + ';padding:3px 10px;border-radius:20px;">' + info.label + '</span>' +
+      '</div>';
+    }).join('');
+  } catch(e) {}
+}
+
+function toggleHistoricoSolicitacoes() {
+  _historicoAberto = !_historicoAberto;
+  var container = document.getElementById('historico-container');
+  var icon = document.getElementById('historico-toggle-icon');
+  if (container) container.style.display = _historicoAberto ? 'block' : 'none';
+  if (icon) icon.textContent = _historicoAberto ? '▼' : '▶';
+  if (_historicoAberto) carregarHistoricoSolicitacoes();
+}
+
 async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
   if (!db) return;
   try {
+    if (_doulaLimiteClientes) {
+      var countRes = await db.from('solicitacoes')
+        .select('id', { count: 'exact', head: true })
+        .eq('doula_id', currentUserId)
+        .eq('status', 'aceita');
+      var ativas = countRes.count || 0;
+      if (ativas >= _doulaLimiteClientes) {
+        mostrarToast('⚠️ Limite de ' + _doulaLimiteClientes + ' clientes atingido. Atualize seu limite nas configurações de perfil.');
+        return;
+      }
+    }
     var r1 = await db.from('solicitacoes').update({ status: 'aceita' }).eq('id', solId);
     if (r1.error) throw r1.error;
     // Tenta atualizar doula_id na gestante (pode falhar por RLS — não é crítico)
@@ -11208,6 +11304,8 @@ async function _carregarAvaliacoesModal(doulaId) {
 
 // ── Perfil da Doula ──
 var _doulaDisponivelAtual = true;
+var _doulaLimiteClientes = null;
+var _historicoAberto = false;
 
 function toggleDisponivelDoula() {
   _doulaDisponivelAtual = !_doulaDisponivelAtual;
@@ -11230,6 +11328,8 @@ async function salvarPerfilDoula() {
   var partos = partosRaw !== '' ? parseInt(partosRaw, 10) : null;
   var tipoAtendimento = ((document.getElementById('doula-tipo-atendimento') || {}).value || '') || null;
   var valoresPacotes = ((document.getElementById('doula-valores-pacotes') || {}).value || '').trim() || null;
+  var limiteRaw = ((document.getElementById('doula-limite-clientes') || {}).value || '').trim();
+  var limiteClientes = limiteRaw !== '' ? parseInt(limiteRaw, 10) : null;
   if (!cidade && !especialidades) { mostrarToast('Preencha pelo menos cidade e especialidades'); return; }
   try {
     var session = await db.auth.getSession();
@@ -11240,8 +11340,10 @@ async function salvarPerfilDoula() {
       cidade: cidade,
       especialidades: especialidades,
       bio: bio,
-      disponivel: _doulaDisponivelAtual
+      disponivel: _doulaDisponivelAtual,
+      limite_clientes: (limiteClientes && !isNaN(limiteClientes) && limiteClientes > 0) ? limiteClientes : null
     };
+    _doulaLimiteClientes = payload.limite_clientes;
     if (partos !== null && !isNaN(partos)) payload.partos_acompanhados = partos;
     if (tipoAtendimento) payload.tipo_atendimento = tipoAtendimento;
     if (valoresPacotes) payload.valores_pacotes = valoresPacotes;
@@ -11318,6 +11420,7 @@ async function carregarMinhaDoula() {
     // Carrega materiais da doula
     carregarMateriaisDoula(d.id, d.nome);
     carregarContratoGestante();
+    verificarLembreteAvaliacao();
   } catch(e) {}
 }
 
@@ -11521,6 +11624,7 @@ async function carregarClientesDoula() {
           '<div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (g.tipo === 'ext' ? 'cadastro externo' : t('doula.client.active')) + '</div></div></div>';
       }).join('');
     }
+    carregarAlertasDoula(solicitacoes, externos, dppMapSol);
     carregarAgenda();
     carregarDisponibilidadeDoula();
     carregarRegistros();
@@ -12171,7 +12275,7 @@ async function carregarPerfilDoula() {
     if (!session.data.session) return;
     var uid = session.data.session.user.id;
     var res = await db.from('usuarios')
-      .select('id,nome,whatsapp,cidade,especialidades,bio,partos_acompanhados,tipo_atendimento,valores_pacotes,disponivel,verificada')
+      .select('id,nome,whatsapp,cidade,especialidades,bio,partos_acompanhados,tipo_atendimento,valores_pacotes,disponivel,verificada,limite_clientes')
       .eq('id', uid).maybeSingle();
     if (res.data) {
       var d = res.data;
@@ -12182,6 +12286,8 @@ async function carregarPerfilDoula() {
       if (d.partos_acompanhados != null) (document.getElementById('doula-partos') || {}).value = d.partos_acompanhados;
       if (d.tipo_atendimento) (document.getElementById('doula-tipo-atendimento') || {}).value = d.tipo_atendimento;
       if (d.valores_pacotes) (document.getElementById('doula-valores-pacotes') || {}).value = d.valores_pacotes;
+      if (d.limite_clientes != null) (document.getElementById('doula-limite-clientes') || {}).value = d.limite_clientes;
+      _doulaLimiteClientes = d.limite_clientes || null;
       // Disponibilidade — default true se null
       _doulaDisponivelAtual = d.disponivel !== false;
       var toggle = document.getElementById('doula-disponivel-toggle');
@@ -14267,6 +14373,74 @@ function atualizarVisualBebe(semana) {
     var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
     document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
   }
+}
+
+// ── Notificações / Alertas ──
+function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
+  var container = document.getElementById('alertas-container');
+  if (!container) return;
+  var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  var alertas = [];
+  solicitacoes.forEach(function(g) {
+    var dpp = dppMapSol[g.gestante_id];
+    if (!dpp) return;
+    var dias = Math.round((new Date(dpp + 'T12:00:00') - hoje) / 86400000);
+    alertas.push({ nome: g.gestante_nome, dpp: dpp, dias: dias });
+  });
+  externos.forEach(function(c) {
+    if (!c.dpp) return;
+    var dias = Math.round((new Date(c.dpp + 'T12:00:00') - hoje) / 86400000);
+    alertas.push({ nome: c.nome, dpp: c.dpp, dias: dias });
+  });
+  var relevantes = alertas.filter(function(a) { return a.dias >= -14 && a.dias <= 60; });
+  if (!relevantes.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div><div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
+    return;
+  }
+  relevantes.sort(function(a, b) { return a.dias - b.dias; });
+  container.innerHTML = relevantes.map(function(a) {
+    var icon, bg, cor, texto;
+    if (a.dias < 0) {
+      icon = '🍼'; bg = '#f0fdf4'; cor = '#16a34a';
+      texto = 'Parto previsto há ' + Math.abs(a.dias) + ' dia' + (Math.abs(a.dias) !== 1 ? 's' : '') + ' — acompanhe o pós-parto';
+    } else if (a.dias === 0) {
+      icon = '🚨'; bg = '#fff0f0'; cor = '#dc2626';
+      texto = 'DPP é HOJE — esteja disponível!';
+    } else if (a.dias <= 7) {
+      icon = '🚨'; bg = '#fff0f0'; cor = '#dc2626';
+      texto = 'DPP em ' + a.dias + ' dia' + (a.dias !== 1 ? 's' : '') + ' — alerta máximo!';
+    } else if (a.dias <= 30) {
+      icon = '⏰'; bg = '#fff8f0'; cor = '#ea580c';
+      texto = 'DPP em ' + a.dias + ' dias — prepare-se!';
+    } else {
+      icon = '📅'; bg = '#f9f9f9'; cor = 'var(--earth-light)';
+      texto = 'DPP em ' + a.dias + ' dias';
+    }
+    var dppStr = new Date(a.dpp + 'T12:00:00').toLocaleDateString('pt-BR');
+    return '<div style="background:' + bg + ';border-left:4px solid ' + cor + ';border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">' +
+      '<div style="font-size:22px;flex-shrink:0;">' + icon + '</div>' +
+      '<div><div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
+      '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + '</div>' +
+      '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">DPP: ' + dppStr + '</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+async function verificarLembreteAvaliacao() {
+  var card = document.getElementById('lembrete-avaliacao-parto');
+  if (!card || !currentDoulaId || !db || !currentUserId) return;
+  var dppStr = localStorage.getItem('lua_dpp');
+  if (!dppStr) return;
+  var dpp = new Date(dppStr + 'T12:00:00');
+  if (dpp >= new Date()) return;
+  try {
+    var res = await db.from('avaliacoes_doula')
+      .select('id')
+      .eq('gestante_id', currentUserId)
+      .eq('doula_id', currentDoulaId)
+      .maybeSingle();
+    if (!res.data) card.style.display = 'block';
+  } catch(e) {}
 }
 
 // ── Contrato Digital ──
