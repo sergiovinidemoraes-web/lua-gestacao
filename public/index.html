@@ -2118,6 +2118,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span><span data-i18n="doula.nav.library">Biblioteca</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span>Estatísticas</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
           <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
@@ -2660,6 +2661,30 @@ tr:hover td { background:var(--rose-pale); }
               <div class="empty-state-small" data-i18n="doula.fin.contracts.empty">Nenhum contrato cadastrado ainda</div>
             </div>
             </div>
+          </div>
+        </div>
+
+        <!-- ESTATÍSTICAS DA DOULA -->
+        <div class="d-panel" id="d-estatisticas">
+          <div class="panel-title">Minhas Estatísticas</div>
+          <div class="panel-sub">Seu desempenho e impacto como doula</div>
+
+          <div class="stats-grid" style="margin-bottom:28px;">
+            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="estat-partos">—</div><div class="stat-label">Partos acompanhados</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="estat-nota">—</div><div class="stat-label">Média de avaliações</div></div>
+            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-val" id="estat-taxa">—</div><div class="stat-label">Taxa de resposta</div></div>
+            <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-val" id="estat-tempo">—</div><div class="stat-label">Tempo médio de resposta</div></div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-title">⭐ Avaliações das gestantes</div>
+            <div id="estat-avaliacoes-resumo"></div>
+            <div id="estat-avaliacoes-lista"><div class="empty-state-small">Carregando...</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📊 Histórico de solicitações</div>
+            <div id="estat-solicitacoes-resumo"><div class="empty-state-small">Carregando...</div></div>
           </div>
         </div>
 
@@ -10501,7 +10526,7 @@ async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
         return;
       }
     }
-    var r1 = await db.from('solicitacoes').update({ status: 'aceita' }).eq('id', solId);
+    var r1 = await db.from('solicitacoes').update({ status: 'aceita', respondido_em: new Date().toISOString() }).eq('id', solId);
     if (r1.error) throw r1.error;
     // Tenta atualizar doula_id na gestante (pode falhar por RLS — não é crítico)
     try { await db.from('usuarios').update({ doula_id: currentUserId }).eq('id', gestanteId); } catch(e2) {}
@@ -10517,7 +10542,7 @@ async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
 async function recusarSolicitacao(solId, gestanteNome) {
   if (!db) return;
   try {
-    var r = await db.from('solicitacoes').update({ status: 'recusada' }).eq('id', solId);
+    var r = await db.from('solicitacoes').update({ status: 'recusada', respondido_em: new Date().toISOString() }).eq('id', solId);
     if (r.error) throw r.error;
     mostrarToast('Solicitação de ' + gestanteNome + ' recusada.');
     carregarSolicitacoesDoula();
@@ -14373,6 +14398,118 @@ function atualizarVisualBebe(semana) {
     var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
     document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
   }
+}
+
+// ── Estatísticas da Doula ──
+async function carregarEstatisticasDoula() {
+  if (!db || !currentUserId) return;
+  try {
+    var [perfRes, avalRes, solRes] = await Promise.all([
+      db.from('usuarios').select('partos_acompanhados').eq('id', currentUserId).maybeSingle(),
+      db.from('avaliacoes_doula').select('nota,comentario,gestante_nome,tipo_parto,criado_em').eq('doula_id', currentUserId).order('criado_em', { ascending: false }),
+      db.from('solicitacoes').select('id,status,criado_em,respondido_em').eq('doula_id', currentUserId)
+    ]);
+
+    // Partos acompanhados
+    var partos = perfRes.data && perfRes.data.partos_acompanhados != null ? perfRes.data.partos_acompanhados : '—';
+    var elP = document.getElementById('estat-partos');
+    if (elP) elP.textContent = partos;
+
+    // Média e distribuição de avaliações
+    var avals = avalRes.data || [];
+    var elN = document.getElementById('estat-nota');
+    var media = avals.length ? avals.reduce(function(s, a) { return s + (a.nota || 0); }, 0) / avals.length : null;
+    if (elN) elN.textContent = media != null ? media.toFixed(1) + ' ⭐' : '—';
+
+    // Taxa de resposta
+    var sols = solRes.data || [];
+    var respondidas = sols.filter(function(s) { return s.status === 'aceita' || s.status === 'recusada'; }).length;
+    var elT = document.getElementById('estat-taxa');
+    if (elT) elT.textContent = sols.length ? Math.round(respondidas / sols.length * 100) + '%' : '—';
+
+    // Tempo médio de resposta
+    var comTempo = sols.filter(function(s) { return s.respondido_em && s.criado_em; });
+    var elTm = document.getElementById('estat-tempo');
+    if (elTm) {
+      if (comTempo.length) {
+        var mediaMs = comTempo.reduce(function(sum, s) {
+          return sum + (new Date(s.respondido_em) - new Date(s.criado_em));
+        }, 0) / comTempo.length;
+        var horas = Math.round(mediaMs / 3600000);
+        elTm.textContent = horas < 1 ? '< 1h' : horas < 24 ? horas + 'h' : Math.round(horas / 24) + 'd';
+      } else {
+        elTm.textContent = '—';
+      }
+    }
+
+    // Resumo distribuição de notas
+    var resumoEl = document.getElementById('estat-avaliacoes-resumo');
+    if (resumoEl && avals.length) {
+      var dist = [5, 4, 3, 2, 1].map(function(n) {
+        var c = avals.filter(function(a) { return a.nota === n; }).length;
+        return { n: n, c: c, pct: Math.round(c / avals.length * 100) };
+      });
+      resumoEl.innerHTML =
+        '<div style="display:flex;align-items:center;gap:20px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);">' +
+          '<div style="text-align:center;flex-shrink:0;">' +
+            '<div style="font-size:48px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;line-height:1;">' + media.toFixed(1) + '</div>' +
+            '<div style="font-size:13px;color:var(--earth-light);margin-top:4px;">' + avals.length + ' avaliação' + (avals.length !== 1 ? 'ões' : '') + '</div>' +
+          '</div>' +
+          '<div style="flex:1;">' + dist.map(function(d) {
+            return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">' +
+              '<div style="font-size:11px;color:var(--earth-light);width:22px;text-align:right;">' + d.n + '★</div>' +
+              '<div style="flex:1;background:var(--cream);border-radius:4px;height:8px;">' +
+                '<div style="background:var(--rose);height:8px;border-radius:4px;width:' + d.pct + '%;transition:width 0.4s;"></div>' +
+              '</div>' +
+              '<div style="font-size:11px;color:var(--earth-light);width:24px;">' + d.c + '</div>' +
+            '</div>';
+          }).join('') + '</div>' +
+        '</div>';
+    } else if (resumoEl) {
+      resumoEl.innerHTML = '';
+    }
+
+    // Lista de avaliações recentes
+    var listaEl = document.getElementById('estat-avaliacoes-lista');
+    if (listaEl) {
+      if (!avals.length) {
+        listaEl.innerHTML = '<div class="empty-state-small">Nenhuma avaliação recebida ainda</div>';
+      } else {
+        listaEl.innerHTML = avals.slice(0, 5).map(function(a) {
+          var stars = Array(a.nota || 0).fill('⭐').join('');
+          var data = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : '—';
+          return '<div style="border-top:1px solid var(--border);padding:12px 0;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">' +
+              '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + (a.gestante_nome || 'Gestante') + '</div>' +
+              '<div style="font-size:11px;color:var(--earth-light);">' + data + '</div>' +
+            '</div>' +
+            '<div style="font-size:12px;margin-bottom:4px;">' + stars + '</div>' +
+            (a.tipo_parto ? '<div style="font-size:11px;color:var(--earth-light);margin-bottom:4px;">Tipo: ' + a.tipo_parto + '</div>' : '') +
+            (a.comentario ? '<div style="font-size:13px;color:var(--mid);font-style:italic;">"' + a.comentario + '"</div>' : '') +
+          '</div>';
+        }).join('');
+      }
+    }
+
+    // Resumo de solicitações por status
+    var solResEl = document.getElementById('estat-solicitacoes-resumo');
+    if (solResEl) {
+      var aceitas = sols.filter(function(s) { return s.status === 'aceita'; }).length;
+      var recusadas = sols.filter(function(s) { return s.status === 'recusada'; }).length;
+      var pendentes = sols.filter(function(s) { return s.status === 'pendente'; }).length;
+      var encerradas = sols.filter(function(s) { return s.status === 'encerrada'; }).length;
+      if (!sols.length) {
+        solResEl.innerHTML = '<div class="empty-state-small">Nenhuma solicitação recebida ainda</div>';
+      } else {
+        solResEl.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+          '<div style="background:#dcfce7;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#16a34a;">' + aceitas + '</div><div style="font-size:12px;color:#16a34a;margin-top:2px;">Aceitas</div></div>' +
+          '<div style="background:#fee2e2;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#dc2626;">' + recusadas + '</div><div style="font-size:12px;color:#dc2626;margin-top:2px;">Recusadas</div></div>' +
+          '<div style="background:#fff8f0;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#ea580c;">' + pendentes + '</div><div style="font-size:12px;color:#ea580c;margin-top:2px;">Pendentes</div></div>' +
+          '<div style="background:#f3f4f6;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#6b7280;">' + encerradas + '</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">Encerradas</div></div>' +
+        '</div>';
+      }
+    }
+  } catch(e) {}
 }
 
 // ── Notificações / Alertas ──
