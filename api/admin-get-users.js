@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?select=id,nome,email,tipo,criado_em,whatsapp,cidade&order=criado_em.desc`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?select=id,nome,email,tipo,criado_em,whatsapp,cidade,verificada&order=criado_em.desc`, {
       headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` }
     });
     const data = await r.json();
