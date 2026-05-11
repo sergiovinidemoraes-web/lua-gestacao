@@ -2467,6 +2467,14 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
+          <div class="card" style="margin-bottom:20px;display:none;" id="card-alertas-dpp">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+              <div class="card-title" style="margin-bottom:0;">🚨 Partos próximos</div>
+              <span style="font-size:11px;background:var(--rose);color:white;padding:2px 8px;border-radius:20px;font-weight:600;" id="alertas-dpp-badge">0</span>
+            </div>
+            <div id="alertas-dpp-agenda"></div>
+          </div>
+
           <div class="card" style="margin-bottom:20px;" id="card-disponibilidade-doula">
             <div class="card-title">📅 Minha Disponibilidade</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;line-height:1.5;">Clique nos dias em que você <strong style="color:var(--dark);">não</strong> estará disponível. Aparecem bloqueados no seu perfil público.</div>
@@ -14805,6 +14813,35 @@ function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
     var dias = Math.round((new Date(c.dpp + 'T12:00:00') - hoje) / 86400000);
     alertas.push({ nome: c.nome, dpp: c.dpp, dias: dias });
   });
+
+  // ── Agenda: partos próximos (≤30 dias) ──
+  var agendaCard = document.getElementById('card-alertas-dpp');
+  var agendaLista = document.getElementById('alertas-dpp-agenda');
+  var agendaBadge = document.getElementById('alertas-dpp-badge');
+  if (agendaCard && agendaLista) {
+    var proximos30 = alertas.filter(function(a) { return a.dias >= 0 && a.dias <= 30; })
+      .sort(function(a, b) { return a.dias - b.dias; });
+    agendaCard.style.display = proximos30.length ? '' : 'none';
+    if (agendaBadge) agendaBadge.textContent = proximos30.length;
+    agendaLista.innerHTML = proximos30.map(function(a) {
+      var urgente = a.dias <= 7, alerta = a.dias <= 14;
+      var bg    = urgente ? '#fff0f0'                  : alerta ? '#fff8f0'                  : 'rgba(201,137,122,0.07)';
+      var cor   = urgente ? '#dc2626'                  : alerta ? '#ea580c'                  : 'var(--rose)';
+      var icon  = urgente ? '🚨'                       : alerta ? '⏰'                        : '📅';
+      var dppFmt = new Date(a.dpp + 'T12:00:00').toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
+      var texto = a.dias === 0
+        ? 'DPP é <strong>HOJE</strong>'
+        : 'DPP em <strong>' + a.dias + ' dia' + (a.dias !== 1 ? 's' : '') + '</strong>';
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:' + bg + ';border-left:3px solid ' + cor + ';border-radius:10px;margin-bottom:8px;">' +
+        '<div style="font-size:20px;flex-shrink:0;">' + icon + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
+          '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + ' &nbsp;·&nbsp; ' + dppFmt + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   var relevantes = alertas.filter(function(a) { return a.dias >= -14 && a.dias <= 60; });
   if (!relevantes.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div><div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
