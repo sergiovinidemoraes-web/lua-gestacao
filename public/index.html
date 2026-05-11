@@ -166,7 +166,7 @@ header { padding-top: env(safe-area-inset-top, 0); }
   margin-bottom: 24px; position: relative; overflow: hidden;
 }
 .baby-fruit-emoji { font-size: 64px; margin-bottom: 16px; display: block; }
-.baby-fruit-emoji img { width: 96px; height: 96px; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.18)); display: block; margin: 0 auto; }
+.baby-fruit-emoji img { width: 120px; height: 120px; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.18)); display: block; margin: 0 auto; }
 .baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
 .baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
 
@@ -14413,7 +14413,7 @@ function _doulaAvatarColor(nome) {
 var _babyFrutas = {
   4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
   5:  { n: 'Gergelim', e: '🌾', d: 'O coração do bebê começa a bater esta semana. Que emoção!' },
-  6:  { n: 'Ervilha', e: '🟢', d: 'O bebê dobrou de tamanho desde a semana passada!' },
+  6:  { n: 'Ervilha', e: '🫘', d: 'O bebê dobrou de tamanho desde a semana passada!' },
   7:  { n: 'Mirtilo', e: '🫐', d: 'O cérebro está se desenvolvendo rapidamente agora.' },
   8:  { n: 'Framboesa', e: '🍓', d: 'Bracinhos e perninhas começam a aparecer.' },
   9:  { n: 'Azeitona', e: '🫒', d: 'O bebê já consegue se mexer um pouquinho!' },
@@ -14424,32 +14424,32 @@ var _babyFrutas = {
   14: { n: 'Pêssego', e: '🍑', d: 'O bebê já consegue fazer expressões faciais.' },
   15: { n: 'Maçã', e: '🍎', d: 'O bebê está começando a ouvir sua voz.' },
   16: { n: 'Abacate', e: '🥑', d: 'O bebê já consegue segurar o cordão umbilical.' },
-  17: { n: 'Romã', e: '🔴', d: 'O bebê está acumulando gordura para se aquecer.' },
-  18: { n: 'Alcachofra', e: '🌿', d: 'O bebê já boceja e faz soluços.' },
+  17: { n: 'Romã', e: '🍎', d: 'O bebê está acumulando gordura para se aquecer.' },
+  18: { n: 'Alcachofra', e: '🥦', d: 'O bebê já boceja e faz soluços.' },
   19: { n: 'Manga', e: '🥭', d: 'Os sentidos (olfato, visão, audição) estão se desenvolvendo.' },
   20: { n: 'Banana', e: '🍌', d: 'Chegamos à metade do caminho! O bebê está crescendo muito.' },
   21: { n: 'Cenoura', e: '🥕', d: 'O sistema digestivo do bebê está amadurecendo.' },
   22: { n: 'Mamão', e: '🍊', d: 'O bebê já parece um recém-nascido em miniatura.' },
-  23: { n: 'Toranja', e: '🟠', d: 'Os pulmões estão se preparando para respirar.' },
+  23: { n: 'Toranja', e: '🍊', d: 'Os pulmões estão se preparando para respirar.' },
   24: { n: 'Milho', e: '🌽', d: 'O bebê já tem ciclos de sono e vigília.' },
   25: { n: 'Couve-Flor', e: '🥦', d: 'O bebê começa a abrir os olhos esta semana.' },
   26: { n: 'Cebola Grande', e: '🧅', d: 'O bebê está praticando a respiração com o líquido amniótico.' },
   27: { n: 'Repolho', e: '🥬', d: 'O bebê já consegue reconhecer vozes familiares.' },
   28: { n: 'Berinjela', e: '🍆', d: 'Entrando no terceiro trimestre! O bebê está sonhando agora.' },
-  29: { n: 'Abóbora Bolota', e: '🎃', d: 'O bebê está ganhando peso rapidamente.' },
+  29: { n: 'Melão', e: '🍈', d: 'O bebê está ganhando peso rapidamente.' },
   30: { n: 'Pepino', e: '🥒', d: 'O bebê já consegue seguir a luz com os olhos.' },
   31: { n: 'Abacaxi', e: '🍍', d: 'O bebê está ficando sem espaço para grandes piruetas.' },
-  32: { n: 'Abóbora', e: '🟠', d: 'O bebê está se posicionando para o nascimento.' },
+  32: { n: 'Abóbora', e: '🎃', d: 'O bebê está se posicionando para o nascimento.' },
   33: { n: 'Batata-Doce', e: '🍠', d: 'O sistema imunológico do bebê está se fortalecendo.' },
-  34: { n: 'Abóbora Manteiga', e: '🥜', d: 'O bebê está acumulando cálcio para os ossos.' },
+  34: { n: 'Abóbora Manteiga', e: '🎃', d: 'O bebê está acumulando cálcio para os ossos.' },
   35: { n: 'Coco', e: '🥥', d: 'O sistema nervoso está quase totalmente maduro.' },
   36: { n: 'Melão', e: '🍈', d: 'O bebê está ganhando cerca de 30g por dia!' },
-  37: { n: 'Melão Verde', e: '💚', d: 'O bebê já é considerado "a termo precoce".' },
-  38: { n: 'Abobrinha Grande', e: '🟢', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
+  37: { n: 'Melão Verde', e: '🍈', d: 'O bebê já é considerado "a termo precoce".' },
+  38: { n: 'Melão Comprido', e: '🍈', d: 'O bebê está perdendo a lanugem (pelinhos finos).' },
   39: { n: 'Melancia', e: '🍉', d: 'O bebê está pronto para conhecer o mundo!' },
   40: { n: 'Abóbora Moranga', e: '🎃', d: 'O grande momento chegou ou está muito próximo!' },
-  41: { n: 'Jaca', e: '🟡', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
-  42: { n: 'Jaca', e: '🟡', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
+  41: { n: 'Jaca', e: '🍐', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
+  42: { n: 'Jaca', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
 };
 
 function carregarSecaoBebe() {
@@ -14485,7 +14485,7 @@ function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
   var emojiEl = document.getElementById('baby-emoji');
   if (s <= 0) {
-    emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="96" height="96" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="120" height="120" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
     document.getElementById('baby-fruit-name').textContent = 'Configure sua DPP';
     document.getElementById('baby-fruit-desc').textContent = 'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.';
   } else {
@@ -14497,7 +14497,7 @@ function atualizarVisualBebe(semana) {
     var imgUrl = fruta.img || _twUrl(fruta.e);
     var emojiFallback = _twUrl(fruta.e);
     
-    emojiEl.innerHTML = '<img src="' + imgUrl + '" width="96" height="96" ' +
+    emojiEl.innerHTML = '<img src="' + imgUrl + '" width="120" height="120" ' +
       'onerror="this.onerror=null;this.src=\'' + emojiFallback + '\';" ' +
       'style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
     
