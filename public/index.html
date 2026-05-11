@@ -681,6 +681,18 @@ header {
 .agenda-cal-num { width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:13px; border-radius:50%; color:var(--dark); }
 .agenda-cal-num.hoje { background:var(--rose); color:white; font-weight:600; }
 .agenda-cal-dot { width:5px; height:5px; border-radius:50%; background:var(--rose); margin-top:3px; }
+/* ─ Resumo da Semana ─ */
+.semana-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid rgba(122,100,85,0.07); }
+.semana-item:last-child { border-bottom:none; padding-bottom:0; }
+.semana-item-data { min-width:50px; text-align:center; background:var(--rose-pale); border-radius:10px; padding:7px 4px; flex-shrink:0; }
+.semana-item-hoje { background:var(--rose) !important; }
+.semana-item-dia { font-size:20px; font-weight:700; color:var(--rose); font-family:'Cormorant Garamond',serif; line-height:1.1; }
+.semana-item-dia-hoje { color:white !important; }
+.semana-item-label { font-size:10px; color:var(--rose); text-transform:uppercase; letter-spacing:0.5px; }
+.semana-item-label-hoje { color:rgba(255,255,255,0.85) !important; }
+.semana-item-nome { font-size:14px; font-weight:600; color:var(--dark); }
+.semana-item-sub { font-size:12px; color:var(--earth-light); margin-top:2px; line-height:1.4; }
+.semana-item-hora { font-size:12px; font-weight:500; color:var(--rose); margin-top:3px; }
 
 /* Form modal / inline */
 .form-section { background:var(--white); border-radius:20px; padding:28px; margin-bottom:20px; box-shadow:0 2px 20px rgba(45,31,26,0.05); }
@@ -2442,6 +2454,19 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-title" data-i18n="doula.agenda.title">Agenda</div>
           <div class="panel-sub" id="doula-agenda-semana-label">Semana atual</div>
 
+          <div class="card" style="margin-bottom:20px;" id="card-resumo-semana">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+              <div>
+                <div class="card-title" style="margin-bottom:3px;">📋 Resumo da Semana</div>
+                <div id="resumo-semana-periodo" style="font-size:11px;color:var(--earth-light);letter-spacing:0.5px;text-transform:uppercase;"></div>
+              </div>
+              <button onclick="abrirFormAgendamento()" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;">+ Novo</button>
+            </div>
+            <div id="resumo-semana-lista">
+              <div style="text-align:center;padding:16px 0;color:var(--earth-light);font-size:13px;">Carregando...</div>
+            </div>
+          </div>
+
           <div class="card" style="margin-bottom:20px;" id="card-disponibilidade-doula">
             <div class="card-title">📅 Minha Disponibilidade</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;line-height:1.5;">Clique nos dias em que você <strong style="color:var(--dark);">não</strong> estará disponível. Aparecem bloqueados no seu perfil público.</div>
@@ -2462,7 +2487,7 @@ tr:hover td { background:var(--rose-pale); }
             </div>
           </div>
 
-          <div class="card" style="margin-bottom:20px;">
+          <div class="card" style="margin-bottom:20px;" id="card-form-agendamento">
             <div class="card-title" data-i18n="doula.agenda.new">➕ Novo agendamento</div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
@@ -12064,6 +12089,58 @@ function agendaFiltrarDia(dia, mes, ano) {
   }).join('') : '<div style="text-align:center;padding:24px;color:var(--earth-light);font-size:13px;">Nenhuma consulta neste dia</div>';
 }
 
+function renderResumoSemana(consultas) {
+  var hoje = new Date();
+  var dow = hoje.getDay();
+  var seg = new Date(hoje); seg.setDate(hoje.getDate() - (dow === 0 ? 6 : dow - 1)); seg.setHours(0,0,0,0);
+  var dom = new Date(seg); dom.setDate(seg.getDate() + 6); dom.setHours(23,59,59,999);
+  var periodoEl = document.getElementById('resumo-semana-periodo');
+  if (periodoEl) {
+    var o = { day:'numeric', month:'short' };
+    periodoEl.textContent = seg.toLocaleDateString('pt-BR', o).replace('.','').toUpperCase() + ' — ' + dom.toLocaleDateString('pt-BR', o).replace('.','').toUpperCase();
+  }
+  var listaEl = document.getElementById('resumo-semana-lista');
+  if (!listaEl) return;
+  var daSemana = (consultas || []).filter(function(c) {
+    var d = new Date(c.data_hora); return d >= seg && d <= dom;
+  }).sort(function(a, b) { return new Date(a.data_hora) - new Date(b.data_hora); });
+  if (!daSemana.length) {
+    listaEl.innerHTML = '<div style="text-align:center;padding:16px 0;color:var(--earth-light);font-size:13px;">Nenhuma consulta esta semana</div>';
+    return;
+  }
+  var hojeDStr = hoje.toDateString();
+  listaEl.innerHTML = daSemana.map(function(c) {
+    var dt = new Date(c.data_hora);
+    var ehHoje = dt.toDateString() === hojeDStr;
+    var diaN = dt.toLocaleDateString('pt-BR', { weekday:'short' }).replace('.','');
+    var diaNum = dt.getDate();
+    var mesStr = dt.toLocaleDateString('pt-BR', { month:'short' }).replace('.','');
+    var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    var corLabel = ehHoje ? 'semana-item-label semana-item-label-hoje' : 'semana-item-label';
+    var corDia = ehHoje ? 'semana-item-dia semana-item-dia-hoje' : 'semana-item-dia';
+    var dataClass = ehHoje ? 'semana-item-data semana-item-hoje' : 'semana-item-data';
+    return '<div class="semana-item">' +
+      '<div class="' + dataClass + '">' +
+        '<div class="' + corLabel + '">' + diaN + '</div>' +
+        '<div class="' + corDia + '">' + diaNum + '</div>' +
+        '<div class="' + corLabel + '">' + mesStr + '</div>' +
+      '</div>' +
+      '<div style="flex:1;">' +
+        '<div class="semana-item-nome">' + c.cliente_nome + '</div>' +
+        '<div class="semana-item-sub">' + (c.tipo || 'Consulta') + (c.local ? ' &nbsp;·&nbsp; 📍 ' + c.local : '') + '</div>' +
+        '<div class="semana-item-hora">🕐 ' + horaStr + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function abrirFormAgendamento() {
+  var card = document.getElementById('card-form-agendamento');
+  if (card) { card.scrollIntoView({ behavior:'smooth', block:'center' }); card.style.outline = '2px solid var(--rose)'; setTimeout(function() { card.style.outline = ''; }, 1400); }
+  var inp = document.getElementById('ag-data-hora');
+  if (inp) setTimeout(function() { inp.focus(); }, 400);
+}
+
 async function carregarAgenda() {
   if (!db || !currentUserId) return;
   var semanaLabel = document.getElementById('doula-agenda-semana-label');
@@ -12080,6 +12157,7 @@ async function carregarAgenda() {
   try {
     var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).order('data_hora', { ascending: true });
     var todas = res.data || [];
+    renderResumoSemana(todas);
     agendaRenderCalendario(todas);
     var agoraRef = new Date();
     var hY = agoraRef.getFullYear(), hM = agoraRef.getMonth(), hD = agoraRef.getDate();
