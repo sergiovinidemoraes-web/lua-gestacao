@@ -13990,6 +13990,12 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<!-- BOTÃO FLUTUANTE DE ATUALIZAÇÕES -->
+<button id="fab-changelog" onclick="abrirChangelog()" style="position:fixed;bottom:130px;right:18px;z-index:8500;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:10px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);align-items:center;gap:6px;transition:opacity 0.2s;">
+  ✦ Atualizações
+  <span class="cl-novo-dot" id="cl-badge-dot"></span>
+</button>
+
 <!-- BOTÃO FLUTUANTE DE FEEDBACK -->
 <button id="fab-feedback" onclick="abrirFeedbackGlobal()" style="display:none;position:fixed;bottom:80px;right:18px;z-index:8500;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:10px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px;transition:opacity 0.2s;" data-i18n="feedback.btn">⚑ Reportar</button>
 
@@ -14069,11 +14075,34 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+<!-- MODAL ATUALIZAÇÕES LUA -->
+<div id="modal-changelog" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)fecharChangelog()">
+  <div style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.25);border-radius:20px;padding:28px;max-width:480px;width:100%;position:relative;max-height:88vh;overflow-y:auto;">
+    <button onclick="fecharChangelog()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.06);border:none;color:rgba(176,154,140,0.6);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">×</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8C5BC;margin-bottom:4px;">✦ Atualizações</div>
+    <div style="font-size:13px;color:rgba(176,154,140,0.5);margin-bottom:20px;">Novidades e melhorias do Lua Materna</div>
+    <div id="changelog-lista"></div>
+  </div>
+</div>
+
 <style>
 #fab-feedback { display:none; }
 #fab-feedback.fb-visible { display:flex !important; }
 @media (max-width:768px) { #fab-feedback { bottom:72px; } }
 .fb-tipo-btn.active { background:rgba(201,137,122,0.2) !important; border-color:rgba(201,137,122,0.5) !important; color:#E8C5BC !important; }
+#fab-changelog { display:none; position:relative; }
+#fab-changelog.fb-visible { display:flex !important; }
+#fab-changelog .cl-novo-dot { display:none; width:9px;height:9px;background:#e74c3c;border-radius:50%;position:absolute;top:-3px;right:-3px;border:1.5px solid #0d0805;animation:cl-pulse 1.5s ease-in-out infinite; }
+#fab-changelog .cl-novo-dot.show { display:block; }
+@keyframes cl-pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.7} }
+@media (max-width:768px) { #fab-feedback { bottom:72px; } #fab-changelog { bottom:120px; } }
+.cl-entry { border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 0; }
+.cl-entry:last-child { border-bottom:none; }
+.cl-entry-header { display:flex;align-items:center;gap:8px;margin-bottom:5px; }
+.cl-entry-titulo { font-size:14px;font-weight:600;color:#E8C5BC;flex:1; }
+.cl-entry-data { font-size:11px;color:rgba(176,154,140,0.5); }
+.cl-entry-novo-tag { background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid rgba(231,76,60,0.35);border-radius:4px;font-size:10px;padding:1px 7px;font-weight:700;white-space:nowrap;letter-spacing:0.5px; }
+.cl-entry-desc { font-size:13px;color:rgba(176,154,140,0.75);line-height:1.5; }
 </style>
 
 <script>
@@ -14143,6 +14172,75 @@ function _fbMostrarBotao(show) {
   if (!btn) return;
   if (show) btn.classList.add('fb-visible');
   else btn.classList.remove('fb-visible');
+  var cl = document.getElementById('fab-changelog');
+  if (!cl) return;
+  if (show) { cl.classList.add('fb-visible'); _clAtualizarBadge(); }
+  else cl.classList.remove('fb-visible');
+}
+
+// ─── CHANGELOG / ATUALIZAÇÕES ───
+var _changelog = [
+  { data:'2026-05-10', titulo:'Estatísticas da doula', descricao:'Nova aba no painel da doula com total de partos acompanhados, média de avaliações, taxa de resposta a solicitações e tempo médio de resposta.' },
+  { data:'2026-05-10', titulo:'Contrato digital', descricao:'Ao aceitar um vínculo, a doula gera automaticamente um contrato de serviços. Ambas as partes assinam digitalmente no app e podem salvar em PDF.' },
+  { data:'2026-05-10', titulo:'Histórico de vínculos', descricao:'Doulas visualizam o histórico completo de todas as gestantes vinculadas — ativas, recusadas e encerradas.' },
+  { data:'2026-05-10', titulo:'Limite de clientes simultâneas', descricao:'Doulas configuram um limite máximo de clientes ativas no perfil. Novas solicitações são bloqueadas automaticamente ao atingir o limite.' },
+  { data:'2026-05-10', titulo:'Alertas de DPP para doula', descricao:'O painel da doula exibe alertas coloridos para gestantes próximas do parto: urgente (menos de 14 dias), alerta (menos de 30 dias) e aviso (menos de 60 dias).' },
+  { data:'2026-05-10', titulo:'Lembrete de avaliação pós-parto', descricao:'Após a DPP, a gestante recebe um card lembrando de avaliar a doula enquanto a experiência ainda está fresca.' },
+  { data:'2026-04-20', titulo:'Avaliações de doulas', descricao:'Gestantes avaliam a doula com nota de 1 a 5 estrelas, tipo de parto e comentário. As avaliações aparecem no perfil público da doula no marketplace.' },
+  { data:'2026-04-15', titulo:'Lua Pós-Parto', descricao:'Nova seção dedicada ao período pós-parto: registro do bebê, marcos de desenvolvimento, controle de amamentação, sono e fraldas.' },
+  { data:'2026-04-10', titulo:'Registros de atendimento', descricao:'Doulas registram o histórico de atendimentos e visitas de pós-parto de cada gestante, com evolução e anotações clínicas.' },
+  { data:'2026-04-05', titulo:'Agenda de consultas', descricao:'Agenda integrada para a doula agendar e gerenciar consultas com gestantes vinculadas e clientes externas.' },
+  { data:'2026-04-01', titulo:'Mensagens em tempo real', descricao:'Chat entre gestante e doula vinculadas, com histórico de mensagens e notificações instantâneas.' },
+  { data:'2026-03-20', titulo:'Marketplace de doulas', descricao:'Gestantes encontram e escolhem sua doula com perfil completo, especialidades, bio e avaliações de outras gestantes.' },
+  { data:'2026-03-15', titulo:'Chat com a Lua (IA)', descricao:'Assistente de inteligência artificial especializada em gestação para dúvidas, suporte emocional e informações sobre o parto.' },
+  { data:'2026-03-10', titulo:'Diário da gestante', descricao:'Registro de pensamentos e momentos especiais da gestação com indicador de humor e semana gestacional.' },
+  { data:'2026-03-05', titulo:'Plano de parto', descricao:'Ferramenta para criar e personalizar o plano de parto com todas as preferências para o dia do nascimento.' },
+  { data:'2026-03-01', titulo:'Timer de contrações', descricao:'Cronômetro de contrações com duração, intervalo e histórico. Indica automaticamente quando é hora de ir para a maternidade.' },
+];
+
+var _clUltimaVista = null;
+
+function _clAtualizarBadge() {
+  var badge = document.getElementById('cl-badge-dot');
+  if (!badge) return;
+  var ultima = localStorage.getItem('lua_changelog_vista');
+  var maisRecente = _changelog[0] ? _changelog[0].data : null;
+  if (maisRecente && (!ultima || ultima < maisRecente)) badge.classList.add('show');
+  else badge.classList.remove('show');
+}
+
+function abrirChangelog() {
+  var modal = document.getElementById('modal-changelog');
+  if (!modal) return;
+  var lista = document.getElementById('changelog-lista');
+  if (lista && !lista.hasChildNodes()) {
+    var hoje = new Date();
+    var html = '';
+    _changelog.forEach(function(entry) {
+      var dataEntry = new Date(entry.data);
+      var diffDias = Math.floor((hoje - dataEntry) / 86400000);
+      var isNovo = diffDias <= 14;
+      var dataFmt = dataEntry.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+      html += '<div class="cl-entry">' +
+        '<div class="cl-entry-header">' +
+          '<span class="cl-entry-titulo">' + entry.titulo + '</span>' +
+          (isNovo ? '<span class="cl-entry-novo-tag">NOVO</span>' : '') +
+          '<span class="cl-entry-data">' + dataFmt + '</span>' +
+        '</div>' +
+        '<div class="cl-entry-desc">' + entry.descricao + '</div>' +
+      '</div>';
+    });
+    lista.innerHTML = html;
+  }
+  modal.style.display = 'flex';
+  localStorage.setItem('lua_changelog_vista', _changelog[0] ? _changelog[0].data : '');
+  var badge = document.getElementById('cl-badge-dot');
+  if (badge) badge.classList.remove('show');
+}
+
+function fecharChangelog() {
+  var modal = document.getElementById('modal-changelog');
+  if (modal) modal.style.display = 'none';
 }
 
 
