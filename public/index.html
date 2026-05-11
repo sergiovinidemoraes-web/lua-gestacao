@@ -11593,7 +11593,7 @@ function ligarDoula() {
 
 // ── Carrega clientes da DOULA ──
 function populateClienteSelects(solicitacoes, externos) {
-  var ids = ['select-cliente-agenda','select-cliente-registros','select-cliente-posparto','select-cliente-financeiro'];
+  var ids = ['select-cliente-agenda','select-cliente-registros','select-cliente-posparto','select-cliente-financeiro','modal-ag-cliente'];
   ids.forEach(function(id) {
     var sel = document.getElementById(id);
     if (!sel) return;
@@ -12157,10 +12157,59 @@ function renderResumoSemana(consultas) {
 }
 
 function abrirFormAgendamento() {
-  var card = document.getElementById('card-form-agendamento');
-  if (card) { card.scrollIntoView({ behavior:'smooth', block:'center' }); card.style.outline = '2px solid var(--rose)'; setTimeout(function() { card.style.outline = ''; }, 1400); }
-  var inp = document.getElementById('ag-data-hora');
-  if (inp) setTimeout(function() { inp.focus(); }, 400);
+  var m = document.getElementById('modal-agendamento');
+  if (!m) return;
+  m.style.display = 'flex';
+  var dataEl = document.getElementById('modal-ag-data');
+  if (dataEl && !dataEl.value) dataEl.value = new Date().toISOString().slice(0, 10);
+}
+
+function fecharModalAgendamento() {
+  var m = document.getElementById('modal-agendamento');
+  if (m) m.style.display = 'none';
+}
+
+function setModalidadeAgenda(val) {
+  document.getElementById('modal-ag-modalidade').value = val;
+  var ativo = 'flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--rose);background:var(--rose);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;';
+  var inativo = 'flex:1;padding:10px;border-radius:10px;border:1.5px solid rgba(122,100,85,0.18);background:transparent;color:var(--mid);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;';
+  document.getElementById('modal-ag-btn-presencial').style.cssText = val === 'presencial' ? ativo : inativo;
+  document.getElementById('modal-ag-btn-online').style.cssText    = val === 'online'     ? ativo : inativo;
+}
+
+async function agendarConsultaModal() {
+  if (!db || !currentUserId) return;
+  var clienteEl = document.getElementById('modal-ag-cliente');
+  if (!clienteEl.value) { mostrarToast('Selecione uma cliente'); return; }
+  var data = document.getElementById('modal-ag-data').value;
+  var hora = document.getElementById('modal-ag-hora').value;
+  if (!data || !hora) { mostrarToast('Informe a data e hora'); return; }
+  var partes = clienteEl.value.split('|');
+  var nomeCliente = clienteEl.selectedOptions[0].textContent;
+  var modalidade = document.getElementById('modal-ag-modalidade').value;
+  var obs = document.getElementById('modal-ag-obs').value.trim() || null;
+  var payload = {
+    doula_id: currentUserId,
+    cliente_nome: nomeCliente,
+    cliente_externo_id: partes[0] === 'ext' ? partes[1] : null,
+    gestante_id:        partes[0] === 'sol' ? partes[1] : null,
+    data_hora: new Date(data + 'T' + hora).toISOString(),
+    tipo: document.getElementById('modal-ag-tipo').value,
+    local: modalidade === 'online' ? 'Online' : null,
+    observacoes: obs
+  };
+  try {
+    var res = await db.from('consultas_doula').insert(payload);
+    if (res.error) throw res.error;
+    mostrarToast('Consulta agendada! 📅');
+    fecharModalAgendamento();
+    clienteEl.value = '';
+    document.getElementById('modal-ag-data').value = '';
+    document.getElementById('modal-ag-hora').value = '';
+    document.getElementById('modal-ag-obs').value = '';
+    setModalidadeAgenda('presencial');
+    carregarAgenda();
+  } catch(e) { mostrarToast('Erro ao agendar: ' + e.message); }
 }
 
 async function carregarAgenda() {
@@ -13489,6 +13538,56 @@ function mostrarToast(msg) {
     <div id="admin-login-erro" style="display:none;background:rgba(224,123,90,0.15);border:1px solid rgba(224,123,90,0.3);border-radius:8px;padding:8px 12px;font-size:12px;color:#ffb8a0;margin-bottom:12px;"></div>
     <button onclick="verificarAdmin()" style="width:100%;background:var(--rose);color:white;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;">Entrar</button>
     <button onclick="fecharAdmin()" style="width:100%;background:none;border:none;color:rgba(255,255,255,0.3);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL AGENDAMENTO -->
+<div id="modal-agendamento" onclick="if(event.target===this)fecharModalAgendamento()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--dark);">📅 Novo agendamento</div>
+      <button onclick="fecharModalAgendamento()" style="background:none;border:none;font-size:20px;color:var(--earth-light);cursor:pointer;line-height:1;padding:4px 6px;">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cliente</label>
+      <select id="modal-ag-cliente" class="form-input form-select"><option value="">Selecione uma cliente</option></select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Data</label>
+        <input id="modal-ag-data" class="form-input" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hora</label>
+        <input id="modal-ag-hora" class="form-input" type="time">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de consulta</label>
+      <select id="modal-ag-tipo" class="form-input form-select">
+        <option>Consulta pré-natal</option>
+        <option>Preparação para o parto</option>
+        <option>Reunião inicial</option>
+        <option>Visita pós-parto</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Modalidade</label>
+      <div style="display:flex;gap:8px;">
+        <button id="modal-ag-btn-presencial" onclick="setModalidadeAgenda('presencial')" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--rose);background:var(--rose);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">🏠 Presencial</button>
+        <button id="modal-ag-btn-online" onclick="setModalidadeAgenda('online')" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid rgba(122,100,85,0.18);background:transparent;color:var(--mid);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">💻 Online</button>
+      </div>
+      <input type="hidden" id="modal-ag-modalidade" value="presencial">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observações</label>
+      <textarea id="modal-ag-obs" class="form-input form-textarea" placeholder="Local, link da videochamada, tema da consulta..." style="height:72px;resize:none;"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button onclick="fecharModalAgendamento()" style="flex:1;background:transparent;color:var(--mid);border:1.5px solid rgba(122,100,85,0.2);padding:12px;border-radius:30px;font-size:14px;cursor:pointer;font-family:inherit;">Cancelar</button>
+      <button onclick="agendarConsultaModal()" style="flex:2;background:var(--rose);color:white;border:none;padding:12px;border-radius:30px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Agendar consulta</button>
+    </div>
   </div>
 </div>
 
