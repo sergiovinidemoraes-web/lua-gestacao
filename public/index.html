@@ -671,6 +671,17 @@ header {
 .agenda-event-type { font-size:12px; color:var(--earth-light); }
 .agenda-event-obs { font-size:11px; color:var(--earth-light); font-style:italic; margin-top:4px; }
 
+/* ─ Calendário mensal (Agenda doula) ─ */
+.agenda-cal-header { display:grid; grid-template-columns:repeat(7,1fr); }
+.agenda-cal-day-label { text-align:center; font-size:11px; font-weight:600; color:var(--earth-light); padding:6px 2px 8px; }
+.agenda-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.agenda-cal-cell { height:54px; max-height:60px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:6px; cursor:pointer; border-radius:8px; transition:background 0.15s; }
+.agenda-cal-cell:hover:not(.empty) { background:rgba(201,137,122,0.08); }
+.agenda-cal-cell.empty { cursor:default; }
+.agenda-cal-num { width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:13px; border-radius:50%; color:var(--dark); }
+.agenda-cal-num.hoje { background:var(--rose); color:white; font-weight:600; }
+.agenda-cal-dot { width:5px; height:5px; border-radius:50%; background:var(--rose); margin-top:3px; }
+
 /* Form modal / inline */
 .form-section { background:var(--white); border-radius:20px; padding:28px; margin-bottom:20px; box-shadow:0 2px 20px rgba(45,31,26,0.05); }
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -2461,6 +2472,17 @@ tr:hover td { background:var(--rose-pale); }
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
             </div>
             <button class="btn-primary" onclick="agendarConsulta()" data-i18n="doula.agenda.schedule">Agendar</button>
+          </div>
+
+          <div class="card" style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div class="card-title" style="margin-bottom:0;" id="agenda-mes-label">Calendário</div>
+              <div style="display:flex;gap:6px;">
+                <button onclick="agendaMesAnterior()" style="background:var(--rose-pale);color:var(--rose);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;font-family:inherit;display:flex;align-items:center;justify-content:center;line-height:1;">‹</button>
+                <button onclick="agendaProximoMes()" style="background:var(--rose-pale);color:var(--rose);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;font-family:inherit;display:flex;align-items:center;justify-content:center;line-height:1;">›</button>
+              </div>
+            </div>
+            <div id="agenda-calendario"></div>
           </div>
 
           <div id="agenda-semana" class="agenda-grid">
@@ -11974,6 +11996,74 @@ async function agendarConsulta() {
   } catch(e) { mostrarToast('Erro ao agendar: ' + e.message); }
 }
 
+var _agendaCalAno = null, _agendaCalMes = null, _agendaCalConsultas = [];
+
+function agendaRenderCalendario(consultas) {
+  var hoje = new Date();
+  if (_agendaCalAno === null) _agendaCalAno = hoje.getFullYear();
+  if (_agendaCalMes === null) _agendaCalMes = hoje.getMonth();
+  _agendaCalConsultas = consultas || [];
+  var ano = _agendaCalAno, mes = _agendaCalMes;
+  var mesLabel = new Date(ano, mes, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  var el = document.getElementById('agenda-mes-label');
+  if (el) el.textContent = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
+  var priDia = new Date(ano, mes, 1).getDay();
+  var totalDias = new Date(ano, mes + 1, 0).getDate();
+  var diasComConsulta = {};
+  _agendaCalConsultas.forEach(function(c) {
+    var d = new Date(c.data_hora);
+    if (d.getFullYear() === ano && d.getMonth() === mes) diasComConsulta[d.getDate()] = true;
+  });
+  var hojeAno = hoje.getFullYear(), hojeMes = hoje.getMonth(), hojeDia = hoje.getDate();
+  var isHojeMes = hojeAno === ano && hojeMes === mes;
+  var labels = ['D','S','T','Q','Q','S','S'];
+  var html = '<div class="agenda-cal-header">';
+  labels.forEach(function(l) { html += '<div class="agenda-cal-day-label">' + l + '</div>'; });
+  html += '</div><div class="agenda-cal-grid">';
+  for (var e = 0; e < priDia; e++) html += '<div class="agenda-cal-cell empty"></div>';
+  for (var d = 1; d <= totalDias; d++) {
+    var isHoje = isHojeMes && d === hojeDia;
+    html += '<div class="agenda-cal-cell" onclick="agendaFiltrarDia(' + d + ',' + mes + ',' + ano + ')">';
+    html += '<div class="agenda-cal-num' + (isHoje ? ' hoje' : '') + '">' + d + '</div>';
+    if (diasComConsulta[d]) html += '<div class="agenda-cal-dot"></div>';
+    html += '</div>';
+  }
+  html += '</div>';
+  var cal = document.getElementById('agenda-calendario');
+  if (cal) cal.innerHTML = html;
+}
+
+function agendaMesAnterior() {
+  if (_agendaCalAno === null) { var h = new Date(); _agendaCalAno = h.getFullYear(); _agendaCalMes = h.getMonth(); }
+  _agendaCalMes--; if (_agendaCalMes < 0) { _agendaCalMes = 11; _agendaCalAno--; }
+  agendaRenderCalendario(_agendaCalConsultas);
+}
+
+function agendaProximoMes() {
+  if (_agendaCalAno === null) { var h = new Date(); _agendaCalAno = h.getFullYear(); _agendaCalMes = h.getMonth(); }
+  _agendaCalMes++; if (_agendaCalMes > 11) { _agendaCalMes = 0; _agendaCalAno++; }
+  agendaRenderCalendario(_agendaCalConsultas);
+}
+
+function agendaFiltrarDia(dia, mes, ano) {
+  var container = document.getElementById('agenda-semana');
+  if (!container) return;
+  var diaStr = ano + '-' + String(mes + 1).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+  var filtradas = _agendaCalConsultas.filter(function(c) { return c.data_hora && c.data_hora.slice(0, 10) === diaStr; });
+  container.innerHTML = filtradas.length ? filtradas.map(function(c) {
+    var dt = new Date(c.data_hora);
+    var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
+        '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
+        '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
+        (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">📍 ' + c.local + '</div>' : '') +
+        (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
+        '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div></div>' +
+      '</div></div>';
+  }).join('') : '<div style="text-align:center;padding:24px;color:var(--earth-light);font-size:13px;">Nenhuma consulta neste dia</div>';
+}
+
 async function carregarAgenda() {
   if (!db || !currentUserId) return;
   var semanaLabel = document.getElementById('doula-agenda-semana-label');
@@ -11990,6 +12080,7 @@ async function carregarAgenda() {
   try {
     var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).order('data_hora', { ascending: true });
     var todas = res.data || [];
+    agendaRenderCalendario(todas);
     var agoraRef = new Date();
     var hY = agoraRef.getFullYear(), hM = agoraRef.getMonth(), hD = agoraRef.getDate();
     var statConsultasEl = document.getElementById('stat-consultas');
