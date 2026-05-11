@@ -1002,7 +1002,7 @@ tr:hover td { background:var(--rose-pale); }
     <button class="splash-btn btn-doula" onclick="enterApp('doula')">🌙 Doula</button>
   </div>
   <div style="margin-top:32px;">
-    <button onclick="abrirAdmin()" style="background:rgba(201,137,122,0.12);border:1px solid rgba(201,137,122,0.25);color:rgba(201,137,122,0.7);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px 20px;border-radius:30px;">⚙ Admin</button>
+    <button id="btn-admin-splash" onclick="abrirAdmin()" style="display:none;background:rgba(201,137,122,0.12);border:1px solid rgba(201,137,122,0.25);color:rgba(201,137,122,0.7);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px 20px;border-radius:30px;">⚙ Admin</button>
   </div>
 </div>
 
@@ -1024,7 +1024,7 @@ tr:hover td { background:var(--rose-pale); }
       </div>
     </div>
     <span style="font-size:13px;color:var(--earth-light);" id="header-user-name"></span>
-    <button onclick="abrirAdmin()" style="background:none;border:none;font-size:16px;cursor:pointer;opacity:0.4;" title="Admin">⚙️</button>
+    <button id="btn-admin-header" onclick="abrirAdmin()" style="display:none;background:none;border:none;font-size:16px;cursor:pointer;opacity:0.4;" title="Admin">⚙️</button>
     <button class="header-switch" onclick="fazerLogout()" data-i18n="hdr.logout">Sair</button>
   </div>
   </header>
@@ -7720,9 +7720,18 @@ async function verificarConfirmacao() {
 }
 
 // ── CARREGAR USUÁRIO ──
+var _ADMIN_EMAILS = ['sergiovinidemoraes@gmail.com','sergiovinidemoraes@hotmail.com'];
+function _atualizarBotoesAdmin(show) {
+  var s = document.getElementById('btn-admin-splash');
+  var h = document.getElementById('btn-admin-header');
+  if (s) s.style.display = show ? 'inline-block' : 'none';
+  if (h) h.style.display = show ? 'inline-block' : 'none';
+}
+
 async function carregarUsuario(user) {
   currentUserId = user.id;
   currentEmail = user.email || '';
+  _atualizarBotoesAdmin(_ADMIN_EMAILS.indexOf(currentEmail.toLowerCase()) > -1);
   try {
     var res = await db.from('usuarios').select('*').eq('id', user.id).maybeSingle();
     if (!res.data) {
@@ -9820,6 +9829,7 @@ async function fazerLogout() {
   await registrarFimSessao();
   try { if (db) await db.auth.signOut(); } catch(e) {}
   try { _fbMostrarBotao(false); } catch(e) {}
+  try { _atualizarBotoesAdmin(false); } catch(e) {}
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   mostrarToast('Até logo! 🌙');
