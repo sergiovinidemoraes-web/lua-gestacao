@@ -2416,7 +2416,10 @@ tr:hover td { background:var(--rose-pale); }
         <!-- MENSAGENS DOULA -->
         <div class="d-panel" id="d-mensagens">
           <div class="panel-title" data-i18n="doula.msgs.panel.title">Mensagens</div>
-          <div id="d-msgs-aviso" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="doula.msgs.panel.select">Selecione uma cliente para ver as mensagens</div>
+          <div id="d-msgs-lista" style="margin-bottom:20px;">
+            <div style="font-size:13px;color:var(--earth-light);font-style:italic;">Carregando clientes...</div>
+          </div>
+          <div id="d-msgs-aviso" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;display:none;" data-i18n="doula.msgs.panel.select">Selecione uma cliente para ver as mensagens</div>
           <div class="card" id="d-msgs-card" style="display:none;">
             <div class="card-title" id="d-msgs-nome">—</div>
             <div id="msgs-doula-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
@@ -4013,6 +4016,7 @@ function dNav(el, panelId) {
 
   document.getElementById(panelId).classList.add('active');
   if (panelId === 'd-biblioteca') try { carregarBibliotecaDoula(); } catch(e) {}
+  if (panelId === 'd-mensagens') try { carregarListaMensagensDoula(); } catch(e) {}
 }
 
 function irParaClientesDoula() {
@@ -10786,6 +10790,44 @@ async function enviarMensagemParaGestante() {
   try {
     await db.from('mensagens').insert({ gestante_id: chatGestanteIdDoula, doula_id: currentUserId, remetente_tipo: 'doula', texto: texto });
   } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function carregarListaMensagensDoula() {
+  var lista = document.getElementById('d-msgs-lista');
+  if (!lista) return;
+  if (!db || !currentUserId) {
+    lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);font-style:italic;">Faça login para ver suas clientes.</div>';
+    return;
+  }
+  lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);font-style:italic;">Carregando clientes...</div>';
+  try {
+    var res = await db.from('solicitacoes')
+      .select('gestante_id,gestante_nome,criado_em')
+      .eq('doula_id', currentUserId)
+      .eq('status', 'aceita')
+      .order('criado_em', { ascending: false });
+    console.log('[carregarListaMensagensDoula] doula_id:', currentUserId, '| resultado:', res.data, '| erro:', res.error);
+    var clientes = res.data || [];
+    if (!clientes.length) {
+      lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);font-style:italic;padding:12px 0;">Nenhuma cliente vinculada ainda.</div>';
+      return;
+    }
+    var cores = ['#C9897A','#8A9E8C','#C9A96E','#7A6455'];
+    lista.innerHTML = clientes.map(function(g) {
+      var nome = g.gestante_nome || 'Gestante';
+      var nomeSafe = nome.replace(/'/g, '');
+      var inicial = nome[0].toUpperCase();
+      var cor = cores[nome.charCodeAt(0) % cores.length];
+      return '<div onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nomeSafe + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-radius:12px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.08)\'" onmouseout="this.style.boxShadow=\'none\'">' +
+        '<div style="width:40px;height:40px;border-radius:50%;background:' + cor + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:white;flex-shrink:0;">' + inicial + '</div>' +
+        '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + nome + '</div>' +
+        '<div style="font-size:12px;color:var(--earth-light);">Toque para abrir conversa</div></div>' +
+        '<div style="margin-left:auto;font-size:18px;color:var(--earth-light);">›</div></div>';
+    }).join('');
+  } catch(e) {
+    console.error('[carregarListaMensagensDoula] erro:', e);
+    lista.innerHTML = '<div style="font-size:13px;color:var(--rose);">Erro ao carregar clientes: ' + e.message + '</div>';
+  }
 }
 
 function abrirChatComGestante(gestanteId, gestanteNome) {
