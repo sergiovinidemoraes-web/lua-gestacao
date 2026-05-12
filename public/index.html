@@ -584,9 +584,25 @@ header {
 .d-main { background:var(--cream); padding:32px; overflow-y:auto; }
 .d-panel { display:none; }
 .d-panel.active { display:block; animation:fadeIn 0.3s ease; }
+#d-mensagens.active { display:flex; flex-direction:column; margin:-32px; }
 .pcli-tab { background:var(--cream);border:1.5px solid transparent;border-radius:20px;padding:7px 16px;font-size:12px;cursor:pointer;color:var(--earth-light);font-family:inherit;white-space:nowrap;transition:all .15s; }
 .pcli-tab.active { background:var(--rose);color:white;border-color:var(--rose); }
 .pcli-tab:hover:not(.active) { border-color:var(--rose-light);color:var(--rose); }
+/* ── Mensagens layout dois painéis ── */
+.msgs-layout { display:flex; height:calc(100vh - 130px); border-radius:16px; overflow:hidden; box-shadow:0 2px 16px rgba(0,0,0,0.07); background:white; }
+.msgs-sidebar { width:270px; flex-shrink:0; border-right:1px solid rgba(0,0,0,0.07); display:flex; flex-direction:column; background:white; overflow:hidden; }
+.msgs-sidebar-header { padding:18px 16px 14px; border-bottom:1px solid rgba(0,0,0,0.06); }
+#d-msgs-lista { overflow-y:auto; flex:1; padding:8px; }
+.msgs-client-item { display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; cursor:pointer; transition:background 0.15s; border:1px solid transparent; margin-bottom:4px; }
+.msgs-client-item:hover { background:rgba(201,137,122,0.06); }
+.msgs-client-item.selected { background:rgba(201,137,122,0.1); border-color:rgba(201,137,122,0.25); }
+.msgs-chat { flex:1; display:flex; flex-direction:column; background:var(--cream); overflow:hidden; }
+.msgs-chat-header { display:flex; align-items:center; gap:12px; padding:14px 20px; background:white; border-bottom:1px solid rgba(0,0,0,0.07); flex-shrink:0; }
+.msgs-back-btn { display:none; background:var(--cream); border:none; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:15px; color:var(--dark); font-family:inherit; line-height:1; }
+.msgs-input-bar { display:flex; gap:8px; padding:12px 16px; background:white; border-top:1px solid rgba(0,0,0,0.07); flex-shrink:0; }
+#msgs-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:10px; }
+#msgs-chat-active { display:none; flex-direction:column; flex:1; overflow:hidden; }
+#msgs-doula-container { flex:1; overflow-y:auto; display:flex; flex-direction:column; padding:16px; gap:2px; }
 
 /* ─ Stats ─ */
 .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
@@ -852,6 +868,15 @@ tr:hover td { background:var(--rose-pale); }
   .d-nav-item.active { background: rgba(201,137,122,0.15); color: var(--rose-light); }
   .d-sidebar-clients { display: none; }
   .d-main { padding: 16px !important; }
+  #d-mensagens.active { margin:-16px; }
+  .msgs-layout { height:auto; min-height:calc(100vh - 160px); flex-direction:column; margin:0; border-radius:12px; }
+  .msgs-sidebar { width:100%; border-right:none; border-bottom:1px solid rgba(0,0,0,0.07); overflow:visible; flex-shrink:0; }
+  #d-msgs-lista { max-height:none; overflow:visible; }
+  .msgs-chat { display:none; }
+  .msgs-layout.chat-aberto .msgs-sidebar { display:none; }
+  .msgs-layout.chat-aberto .msgs-chat { display:flex; min-height:calc(100vh - 160px); }
+  .msgs-back-btn { display:inline-flex !important; align-items:center; }
+  #msgs-doula-container { min-height:300px; }
 
   /* Grids */
   .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
@@ -2415,19 +2440,37 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- MENSAGENS DOULA -->
         <div class="d-panel" id="d-mensagens">
-          <div class="panel-title" data-i18n="doula.msgs.panel.title">Mensagens</div>
-          <div id="d-msgs-lista" style="margin-bottom:20px;">
-            <div style="font-size:13px;color:var(--earth-light);font-style:italic;">Carregando clientes...</div>
-          </div>
-          <div id="d-msgs-aviso" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;display:none;" data-i18n="doula.msgs.panel.select">Selecione uma cliente para ver as mensagens</div>
-          <div class="card" id="d-msgs-card" style="display:none;">
-            <div class="card-title" id="d-msgs-nome">—</div>
-            <div id="msgs-doula-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
-              <div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;" data-i18n="loading">Carregando...</div>
+          <div class="msgs-layout" id="msgs-layout">
+            <!-- Sidebar: lista de clientes -->
+            <div class="msgs-sidebar" id="msgs-sidebar">
+              <div class="msgs-sidebar-header">
+                <div style="font-size:16px;font-weight:600;color:var(--dark);" data-i18n="doula.msgs.panel.title">Mensagens</div>
+                <div style="font-size:12px;color:var(--earth-light);margin-top:3px;">Selecione uma cliente</div>
+              </div>
+              <div id="d-msgs-lista">
+                <div style="font-size:13px;color:var(--earth-light);font-style:italic;padding:16px;">Carregando clientes...</div>
+              </div>
             </div>
-            <div style="display:flex;gap:8px;">
-              <input id="msg-doula-input" class="chat-input" style="flex:1;" data-i18n-ph="doula.msgs.panel.ph" placeholder="Mensagem para a gestante..." onkeydown="if(event.key==='Enter')enviarMensagemParaGestante()">
-              <button class="chat-send" onclick="enviarMensagemParaGestante()">➤</button>
+            <!-- Área de chat -->
+            <div class="msgs-chat" id="msgs-chat">
+              <div id="msgs-placeholder">
+                <div style="font-size:36px;">💬</div>
+                <div style="font-size:15px;font-weight:500;color:var(--dark);">Selecione uma cliente</div>
+                <div style="font-size:13px;color:var(--earth-light);">Escolha uma cliente para iniciar a conversa</div>
+              </div>
+              <div id="msgs-chat-active">
+                <div class="msgs-chat-header">
+                  <button class="msgs-back-btn" onclick="voltarListaMensagens()">← Voltar</button>
+                  <div id="d-msgs-nome" style="font-size:15px;font-weight:600;color:var(--dark);">—</div>
+                </div>
+                <div id="msgs-doula-container">
+                  <div style="text-align:center;font-size:13px;color:var(--earth-light);padding:20px;">Carregando...</div>
+                </div>
+                <div class="msgs-input-bar">
+                  <input id="msg-doula-input" class="chat-input" style="flex:1;" data-i18n-ph="doula.msgs.panel.ph" placeholder="Mensagem para a gestante..." onkeydown="if(event.key==='Enter')enviarMensagemParaGestante()">
+                  <button class="chat-send" onclick="enviarMensagemParaGestante()">➤</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -3759,6 +3802,8 @@ tr:hover td { background:var(--rose-pale); }
                   <div class="card-title">Fraldas de hoje</div>
                   <div id="posd-historico-fraldas"><div style="font-size:13px;color:var(--earth-light);">Nenhum registro ainda.</div></div>
                 </div>
+              </div><!-- /posd-rot-fralda -->
+
               <!-- PLANEJAMENTO -->
               <div id="posd-rot-planejamento" style="display:none;">
                 <div class="card" style="background:linear-gradient(135deg,#eef0ff,#f4eeff);border:1.5px solid rgba(102,102,204,0.15);">
@@ -10815,14 +10860,15 @@ async function carregarListaMensagensDoula() {
     var cores = ['#C9897A','#8A9E8C','#C9A96E','#7A6455'];
     lista.innerHTML = clientes.map(function(g) {
       var nome = g.gestante_nome || 'Gestante';
-      var nomeSafe = nome.replace(/'/g, '');
+      var nomeSafe = nome.replace(/'/g, "\\'");
       var inicial = nome[0].toUpperCase();
       var cor = cores[nome.charCodeAt(0) % cores.length];
-      return '<div onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nomeSafe + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-radius:12px;margin-bottom:8px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.08)\'" onmouseout="this.style.boxShadow=\'none\'">' +
+      var sel = chatGestanteIdDoula === g.gestante_id ? ' selected' : '';
+      return '<div class="msgs-client-item' + sel + '" data-id="' + g.gestante_id + '" onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nomeSafe + '\')">' +
         '<div style="width:40px;height:40px;border-radius:50%;background:' + cor + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:white;flex-shrink:0;">' + inicial + '</div>' +
-        '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + nome + '</div>' +
-        '<div style="font-size:12px;color:var(--earth-light);">Toque para abrir conversa</div></div>' +
-        '<div style="margin-left:auto;font-size:18px;color:var(--earth-light);">›</div></div>';
+        '<div style="min-width:0;flex:1;"><div style="font-size:14px;font-weight:500;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nome + '</div>' +
+        '<div style="font-size:12px;color:var(--earth-light);">Toque para conversar</div></div>' +
+        '<div style="margin-left:auto;font-size:18px;color:var(--earth-light);flex-shrink:0;">›</div></div>';
     }).join('');
   } catch(e) {
     console.error('[carregarListaMensagensDoula] erro:', e);
@@ -10833,19 +10879,52 @@ async function carregarListaMensagensDoula() {
 function abrirChatComGestante(gestanteId, gestanteNome) {
   chatGestanteIdDoula = gestanteId;
   chatGestanteNomeDoula = gestanteNome;
-  var card = document.getElementById('d-msgs-card');
-  if (card) card.style.display = 'block';
-  var aviso = document.getElementById('d-msgs-aviso');
-  if (aviso) aviso.style.display = 'none';
+
+  // Garante que o painel de mensagens está ativo
+  var navEl = document.getElementById('nav-mensagens-doula');
+  if (!document.getElementById('d-mensagens').classList.contains('active')) {
+    if (navEl) dNav(navEl, 'd-mensagens');
+  }
+
+  // Destaca cliente selecionado na lista
+  document.querySelectorAll('#d-msgs-lista .msgs-client-item').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.id === gestanteId);
+  });
+
+  // Mostra área de chat
+  var placeholder = document.getElementById('msgs-placeholder');
+  var chatActive = document.getElementById('msgs-chat-active');
   var titulo = document.getElementById('d-msgs-nome');
-  if (titulo) titulo.textContent = '💬 ' + gestanteNome;
+  if (placeholder) placeholder.style.display = 'none';
+  if (chatActive) chatActive.style.display = 'flex';
+  if (titulo) titulo.textContent = gestanteNome;
+
+  // Mobile: troca para tela de chat
+  var layout = document.getElementById('msgs-layout');
+  if (layout) layout.classList.add('chat-aberto');
+
   var container = document.getElementById('msgs-doula-container');
   if (container) {
     carregarMensagens(gestanteId, currentUserId, container, 'doula');
     iniciarRealtimeMensagens(gestanteId, currentUserId, container, 'doula');
   }
-  var navEl = document.getElementById('nav-mensagens-doula');
-  if (navEl) dNav(navEl, 'd-mensagens');
+}
+
+function voltarListaMensagens() {
+  var layout = document.getElementById('msgs-layout');
+  if (layout) layout.classList.remove('chat-aberto');
+  var placeholder = document.getElementById('msgs-placeholder');
+  var chatActive = document.getElementById('msgs-chat-active');
+  if (placeholder) placeholder.style.display = 'flex';
+  if (chatActive) chatActive.style.display = 'none';
+  chatGestanteIdDoula = null;
+  document.querySelectorAll('#d-msgs-lista .msgs-client-item').forEach(function(el) {
+    el.classList.remove('selected');
+  });
+  if (realtimeChannelMensagens) {
+    db.removeChannel(realtimeChannelMensagens);
+    realtimeChannelMensagens = null;
+  }
 }
 
 async function encerrarVinculo() {

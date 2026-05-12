@@ -115,6 +115,10 @@ realtimeChannelSolicitacoes // canal de solicitações
 - Erros de RLS geralmente falham silenciosamente (sem `throw`) — checar se update afetou 0 linhas
 - Realtime via `db.channel(...).on('postgres_changes', ...)` 
 
+## Changelog (`_changelog` no index.html)
+- Após cada implementação, **sempre perguntar** ao usuário se quer adicionar uma entrada no array `_changelog`
+- Se sim, inserir no início do array um objeto `{ data:'YYYY-MM-DD', titulo:'...', descricao:'...' }` no mesmo commit ou num commit separado
+
 ## O que ignorar no console
 - Erros do Spotify (`spclient.wg.spotify.com`, `widevine`) — DRM interno, sem solução
 - Avisos de LF/CRLF do git no Windows — inofensivo
