@@ -1311,43 +1311,43 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- MEU BEBÊ -->
         <div class="g-panel" id="g-bebe">
-          <div class="panel-title">Meu Bebê 👶</div>
-          <div class="panel-sub" id="g-bebe-sub">Acompanhe o crescimento semana a semana</div>
+          <div class="panel-title" data-i18n="bebe.title">Meu Bebê 👶</div>
+          <div class="panel-sub" id="g-bebe-sub" data-i18n="bebe.sub">Acompanhe o crescimento semana a semana</div>
 
           <div class="baby-fruit-card">
             <span class="baby-fruit-emoji" id="baby-emoji">🌸</span>
-            <div class="baby-fruit-name" id="baby-fruit-name">Configure sua DPP</div>
-            <p class="baby-fruit-desc" id="baby-fruit-desc">Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.</p>
+            <div class="baby-fruit-name" id="baby-fruit-name" data-i18n="bebe.cfg.dpp">Configure sua DPP</div>
+            <p class="baby-fruit-desc" id="baby-fruit-desc" data-i18n="bebe.cfg.dpp.desc">Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.</p>
           </div>
 
           <div class="card">
-            <div class="card-title">Perfil do Bebê</div>
+            <div class="card-title" data-i18n="bebe.perfil.title">Perfil do Bebê</div>
 
             <!-- Pergunta: nasceu? -->
             <div style="margin-bottom:18px;">
-              <label class="baby-form-label" style="margin-bottom:10px;display:block;">Seu bebê já nasceu?</label>
+              <label class="baby-form-label" style="margin-bottom:10px;display:block;" data-i18n="bebe.nasceu.q">Seu bebê já nasceu?</label>
               <div style="display:flex;gap:8px;">
-                <button id="g-bebe-sim-btn" onclick="gBebeRespostaNasceu(true)" style="flex:1;padding:11px 8px;border:1.5px solid rgba(212,178,10,0.3);border-radius:12px;background:var(--rose-pale);color:var(--mid);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">Sim, nasceu! 🎉</button>
-                <button id="g-bebe-nao-btn" onclick="gBebeRespostaNasceu(false)" style="flex:1;padding:11px 8px;border:1.5px solid var(--rose);border-radius:12px;background:var(--rose);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;">Ainda não 🤰</button>
+                <button id="g-bebe-sim-btn" onclick="gBebeRespostaNasceu(true)" style="flex:1;padding:11px 8px;border:1.5px solid rgba(212,178,10,0.3);border-radius:12px;background:var(--rose-pale);color:var(--mid);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;" data-i18n="bebe.nasceu.sim">Sim, nasceu! 🎉</button>
+                <button id="g-bebe-nao-btn" onclick="gBebeRespostaNasceu(false)" style="flex:1;padding:11px 8px;border:1.5px solid var(--rose);border-radius:12px;background:var(--rose);color:white;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;" data-i18n="bebe.nasceu.nao">Ainda não 🤰</button>
               </div>
             </div>
 
             <!-- Campos do perfil (visíveis quando "Ainda não") -->
             <div id="g-bebe-campos-perfil">
               <div class="baby-form-group">
-                <label class="baby-form-label">Nome do Bebê</label>
-                <input type="text" id="baby-name-input" class="baby-input" placeholder="Ex: Lucas, Sofia...">
+                <label class="baby-form-label" data-i18n="bebe.nome.label">Nome do Bebê</label>
+                <input type="text" id="baby-name-input" class="baby-input" data-i18n-ph="bebe.nome.ph" placeholder="Ex: Lucas, Sofia...">
               </div>
               <div class="baby-form-group">
-                <label class="baby-form-label">Sexo (Opcional)</label>
+                <label class="baby-form-label" data-i18n="bebe.sexo.label">Sexo (Opcional)</label>
                 <select id="baby-gender-input" class="baby-input">
-                  <option value="">Não definido</option>
-                  <option value="menino">Menino 💙</option>
-                  <option value="menina">Menina 💖</option>
-                  <option value="surpresa">Surpresa 🎁</option>
+                  <option value="" data-i18n="bebe.sexo.nd">Não definido</option>
+                  <option value="menino" data-i18n="bebe.sexo.m">Menino 💙</option>
+                  <option value="menina" data-i18n="bebe.sexo.f">Menina 💖</option>
+                  <option value="surpresa" data-i18n="bebe.sexo.s">Surpresa 🎁</option>
                 </select>
               </div>
-              <button class="baby-save-btn" onclick="salvarDadosBebe()">Salvar</button>
+              <button class="baby-save-btn" onclick="salvarDadosBebe()" data-i18n="bebe.btn.save">Salvar</button>
             </div>
           </div>
         </div>
@@ -1882,25 +1882,25 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="doula-filter-main-row">
             <div class="doula-filter-bar">
-              <button class="doula-filter-chip active" onclick="setFiltroAtendimento(this,'todos')">Todas</button>
-              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'presencial')">Presencial</button>
-              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'online')">Online</button>
-              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'hibrido')">Híbrido</button>
-              <button class="doula-filter-chip" id="chip-disponivel" onclick="setFiltroDisponivel(this)">Disponíveis</button>
+              <button class="doula-filter-chip active" onclick="setFiltroAtendimento(this,'todos')" data-i18n="market.filter.all">Todas</button>
+              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'presencial')" data-i18n="market.filter.presencial">Presencial</button>
+              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'online')" data-i18n="market.filter.online">Online</button>
+              <button class="doula-filter-chip" onclick="setFiltroAtendimento(this,'hibrido')" data-i18n="market.filter.hibrido">Híbrido</button>
+              <button class="doula-filter-chip" id="chip-disponivel" onclick="setFiltroDisponivel(this)" data-i18n="market.filter.avail">Disponíveis</button>
             </div>
             <div class="doula-sort-wrap">
               <select class="doula-sort-select" id="doula-sort-select" onchange="setOrdem(this.value)">
-                <option value="relevancia">Ordenar</option>
-                <option value="avaliacao">⭐ Melhor avaliação</option>
-                <option value="partos">🤱 Mais partos</option>
-                <option value="verificadas">✓ Verificadas primeiro</option>
+                <option value="relevancia" data-i18n="market.sort.default">Ordenar</option>
+                <option value="avaliacao" data-i18n="market.sort.rating">⭐ Melhor avaliação</option>
+                <option value="partos" data-i18n="market.sort.births">🤱 Mais partos</option>
+                <option value="verificadas" data-i18n="market.sort.verified">✓ Verificadas primeiro</option>
               </select>
               <span class="doula-sort-arrow">▼</span>
             </div>
           </div>
 
           <div class="doula-esp-row" id="doula-esp-row" style="display:none;">
-            <div class="doula-esp-label">Especialidade</div>
+            <div class="doula-esp-label" data-i18n="market.esp.label">Especialidade</div>
             <div class="doula-esp-chips" id="doula-esp-chips"></div>
           </div>
 
@@ -2163,8 +2163,8 @@ tr:hover td { background:var(--rose-pale); }
         <nav>
           <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><span class="d-nav-icon">📊</span><span data-i18n="doula.nav.dashboard">Dashboard</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span><span data-i18n="doula.nav.clients">Clientes</span><span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-convite');carregarConviteDoula()"><span class="d-nav-icon">🔗</span><span>Enviar Convite</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-backup');carregarBackupDoula()"><span class="d-nav-icon">🛡️</span><span>Minha Backup</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-convite');carregarConviteDoula()"><span class="d-nav-icon">🔗</span><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-backup');carregarBackupDoula()"><span class="d-nav-icon">🛡️</span><span data-i18n="doula.nav.backup">Minha Backup</span></div>
           <div class="d-nav-item" id="nav-mensagens-doula" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span><span data-i18n="doula.nav.messages">Mensagens</span><span id="badge-msgs" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-agenda')"><span class="d-nav-icon">📅</span><span data-i18n="doula.nav.schedule">Agenda</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span><span data-i18n="doula.nav.records">Registros</span></div>
@@ -2172,7 +2172,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span><span data-i18n="doula.nav.library">Biblioteca</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span>Estatísticas</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span data-i18n="doula.nav.stats">Estatísticas</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
           <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
@@ -2213,8 +2213,8 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more">
-        <div class="mob-more-item" onclick="dNav(this,'d-convite');carregarConviteDoula();fecharMobMore()"><span>🔗 Enviar Convite</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span>🛡️ Minha Backup</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-convite');carregarConviteDoula();fecharMobMore()"><span>🔗 </span><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span>🛡️ </span><span data-i18n="doula.nav.backup">Minha Backup</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-registros');fecharMobMore()"><span>📋 Registros</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
@@ -2274,6 +2274,11 @@ tr:hover td { background:var(--rose-pale); }
           <div id="card-perfil-doula" class="card" style="margin-top:24px;background:linear-gradient(135deg,var(--rose-pale),var(--sage-light));border:1.5px dashed var(--rose-light);">
             <div class="card-title" data-i18n="doula.perfil.title">Complete seu perfil</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="doula.perfil.sub">Preencha para aparecer no marketplace do Lua e receber gestantes</div>
+            <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px;">
+              <div id="doula-perfil-avatar" onclick="trocarFotoDoula()" title="Clique para alterar foto" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;color:white;cursor:pointer;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;">D</div>
+              <input type="file" id="foto-doula-input" accept="image/*" style="display:none" onchange="salvarFotoDoula(this)">
+              <div style="font-size:11px;color:var(--earth-light);margin-top:6px;cursor:pointer;" onclick="trocarFotoDoula()">Toque para adicionar foto de perfil</div>
+            </div>
             <div style="display:grid;gap:10px;">
               <input id="doula-whatsapp" class="form-input" type="tel" data-i18n-ph="doula.perfil.wpp" placeholder="WhatsApp com DDD (ex: 11999999999)">
               <input id="doula-cidade" class="form-input" type="text" data-i18n-ph="doula.perfil.city" placeholder="Cidade e Estado (ex: Sao Paulo, SP)">
@@ -2289,16 +2294,16 @@ tr:hover td { background:var(--rose-pale); }
               <textarea id="doula-valores-pacotes" class="form-input form-textarea" placeholder="Valores e pacotes (ex: Pré-natal R$200/sessão · Parto completo R$2.500)" style="height:72px;resize:none;"></textarea>
               <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--rose-pale);border-radius:12px;">
                 <div>
-                  <div style="font-size:13px;font-weight:500;color:var(--dark);">Disponível para novas clientes</div>
-                  <div id="doula-disponivel-label" style="font-size:11px;color:var(--earth-light);margin-top:2px;">Ativado — aparece no marketplace</div>
+                  <div style="font-size:13px;font-weight:500;color:var(--dark);" data-i18n="doula.disponivel.title">Disponível para novas clientes</div>
+                  <div id="doula-disponivel-label" data-i18n="doula.disponivel.on" style="font-size:11px;color:var(--earth-light);margin-top:2px;">Ativado — aparece no marketplace</div>
                 </div>
                 <div id="doula-disponivel-toggle" onclick="toggleDisponivelDoula()" style="width:44px;height:24px;border-radius:12px;background:var(--sage);cursor:pointer;position:relative;transition:background 0.2s;">
                   <div id="doula-disponivel-knob" style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;right:3px;transition:right 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
                 </div>
               </div>
               <div style="background:var(--white);border-radius:12px;padding:14px 16px;border:1px solid var(--border);">
-                <div style="font-size:13px;font-weight:500;color:var(--dark);margin-bottom:4px;">Limite de clientes simultâneas</div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;">Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.</div>
+                <div style="font-size:13px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="doula.limite.title">Limite de clientes simultâneas</div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;" data-i18n="doula.limite.desc">Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.</div>
                 <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" placeholder="Ex: 5 (deixe vazio para ilimitado)" style="margin-bottom:0;">
               </div>
               <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;" data-i18n="doula.perfil.save">Salvar e aparecer no marketplace</button>
@@ -2367,7 +2372,7 @@ tr:hover td { background:var(--rose-pale); }
 
           <div id="historico-solicitacoes-section" style="margin-bottom:24px;">
             <button onclick="toggleHistoricoSolicitacoes()" style="background:none;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;padding:0;margin-bottom:10px;">
-              <span style="font-size:14px;font-weight:600;color:var(--earth);">Histórico de vínculos</span>
+              <span style="font-size:14px;font-weight:600;color:var(--earth);" data-i18n="doula.clients.history">Histórico de vínculos</span>
               <span id="historico-toggle-icon" style="font-size:13px;color:var(--earth-light);">▶</span>
             </button>
             <div id="historico-container" style="display:none;"></div>
@@ -2392,20 +2397,20 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- CONVITE DOULA -->
         <div class="d-panel" id="d-convite">
-          <div class="panel-title">Enviar Convite</div>
-          <div class="panel-sub">Compartilhe um link com sua gestante — ela se cadastra e já entra vinculada a você automaticamente.</div>
+          <div class="panel-title" data-i18n="doula.convite.title">Enviar Convite</div>
+          <div class="panel-sub" data-i18n="doula.convite.sub">Compartilhe um link com sua gestante — ela se cadastra e já entra vinculada a você automaticamente.</div>
           <div class="card">
-            <div class="card-title">🔗 Seu link de convite</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:20px;line-height:1.6;">Gere um link único e envie pelo WhatsApp, Instagram ou e-mail. Qualquer gestante que se cadastrar por este link será vinculada a você automaticamente.</div>
-            <button id="btn-gerar-convite-doula" onclick="gerarConviteDoula()" style="background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;">🔗 Gerar meu link de convite</button>
+            <div class="card-title" data-i18n="doula.convite.card.title">🔗 Seu link de convite</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:20px;line-height:1.6;" data-i18n="doula.convite.desc">Gere um link único e envie pelo WhatsApp, Instagram ou e-mail. Qualquer gestante que se cadastrar por este link será vinculada a você automaticamente.</div>
+            <button id="btn-gerar-convite-doula" onclick="gerarConviteDoula()" style="background:var(--rose);color:white;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;" data-i18n="doula.convite.btn.generate">🔗 Gerar meu link de convite</button>
             <div id="convite-doula-card" style="display:none;margin-top:20px;">
               <div style="background:var(--cream);border:1.5px solid rgba(122,100,85,0.15);border-radius:14px;padding:14px 16px;word-break:break-all;font-size:13px;color:var(--dark);margin-bottom:14px;line-height:1.6;" id="convite-doula-link-texto"></div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button onclick="copiarLinkConviteDoula()" style="flex:1;background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">📋 Copiar link</button>
+                <button onclick="copiarLinkConviteDoula()" style="flex:1;background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;" data-i18n="doula.convite.btn.copy">📋 Copiar link</button>
                 <button onclick="compartilharWppConviteDoula()" style="flex:1;background:#e8f5e9;color:#2e7d32;border:1.5px solid #a5d6a7;padding:10px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;">💬 WhatsApp</button>
               </div>
               <div style="text-align:center;margin-top:12px;">
-                <button onclick="gerarConviteDoula(true)" style="background:none;border:none;color:var(--earth-light);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;">↺ Gerar novo link</button>
+                <button onclick="gerarConviteDoula(true)" style="background:none;border:none;color:var(--earth-light);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;" data-i18n="doula.convite.btn.new">↺ Gerar novo link</button>
               </div>
             </div>
           </div>
@@ -2413,26 +2418,26 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- BACKUP DOULA -->
         <div class="d-panel" id="d-backup">
-          <div class="panel-title">Minha Backup</div>
-          <div class="panel-sub">Configure uma colega de confiança para cobrir você quando precisar.</div>
+          <div class="panel-title" data-i18n="doula.backup.title">Minha Backup</div>
+          <div class="panel-sub" data-i18n="doula.backup.sub">Configure uma colega de confiança para cobrir você quando precisar.</div>
           <div class="card" style="background:linear-gradient(135deg,rgba(30,18,12,0.9),rgba(40,25,15,0.9));border:1px solid rgba(201,137,122,0.2);">
-            <div class="card-title">🛡️ Doula Backup</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;">Configure uma doula de backup para atender suas clientes quando você não estiver disponível. Você pode avisar ela pelo app ou enviar um link de convite.</div>
+            <div class="card-title" data-i18n="doula.backup.card.title">🛡️ Doula Backup</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;line-height:1.6;" data-i18n="doula.backup.desc">Configure uma doula de backup para atender suas clientes quando você não estiver disponível. Você pode avisar ela pelo app ou enviar um link de convite.</div>
             <div style="display:grid;gap:10px;">
               <div>
-                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;">E-mail da doula backup</label>
-                <input id="backup-doula-email" class="form-input" type="email" placeholder="backup@doula.com">
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;" data-i18n="doula.backup.email.label">E-mail da doula backup</label>
+                <input id="backup-doula-email" class="form-input" type="email" placeholder="backup@doula.com" data-i18n-ph="doula.backup.email.ph">
               </div>
               <div>
-                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:8px;">Permissões concedidas</label>
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:8px;" data-i18n="doula.backup.perms.label">Permissões concedidas</label>
                 <div style="display:flex;flex-direction:column;gap:8px;">
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à Agenda</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso ao Chat</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso aos Registros</label>
-                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> ↳ Ver histórico de dias anteriores</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-agenda" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.agenda">Acesso à Agenda</span></label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.chat">Acesso ao Chat</span></label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.registros">Acesso aos Registros</span></label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.historico">↳ Ver histórico de dias anteriores</span></label>
                 </div>
               </div>
-              <button onclick="salvarBackupDoula()" id="btn-salvar-backup" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">✅ Salvar e verificar</button>
+              <button onclick="salvarBackupDoula()" id="btn-salvar-backup" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;" data-i18n="doula.backup.btn.save">✅ Salvar e verificar</button>
             </div>
             <div id="backup-resultado" style="display:none;margin-top:20px;"></div>
           </div>
@@ -2503,32 +2508,32 @@ tr:hover td { background:var(--rose-pale); }
         <!-- AGENDA -->
         <div class="d-panel" id="d-agenda">
           <div class="panel-title" data-i18n="doula.agenda.title">Agenda</div>
-          <div class="panel-sub" id="doula-agenda-semana-label">Semana atual</div>
+          <div class="panel-sub" id="doula-agenda-semana-label" data-i18n="doula.agenda.week.current">Semana atual</div>
 
           <div class="card" style="margin-bottom:20px;" id="card-resumo-semana">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
               <div>
-                <div class="card-title" style="margin-bottom:3px;">📋 Resumo da Semana</div>
+                <div class="card-title" style="margin-bottom:3px;" data-i18n="doula.agenda.week.summary">📋 Resumo da Semana</div>
                 <div id="resumo-semana-periodo" style="font-size:11px;color:var(--earth-light);letter-spacing:0.5px;text-transform:uppercase;"></div>
               </div>
-              <button onclick="abrirFormAgendamento()" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;">+ Novo</button>
+              <button onclick="abrirFormAgendamento()" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;" data-i18n="doula.agenda.new.short">+ Novo</button>
             </div>
             <div id="resumo-semana-lista">
-              <div style="text-align:center;padding:16px 0;color:var(--earth-light);font-size:13px;">Carregando...</div>
+              <div style="text-align:center;padding:16px 0;color:var(--earth-light);font-size:13px;" data-i18n="loading">Carregando...</div>
             </div>
           </div>
 
           <div class="card" style="margin-bottom:20px;display:none;" id="card-alertas-dpp">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-              <div class="card-title" style="margin-bottom:0;">🚨 Partos próximos</div>
+              <div class="card-title" style="margin-bottom:0;" data-i18n="doula.agenda.births.soon">🚨 Partos próximos</div>
               <span style="font-size:11px;background:var(--rose);color:white;padding:2px 8px;border-radius:20px;font-weight:600;" id="alertas-dpp-badge">0</span>
             </div>
             <div id="alertas-dpp-agenda"></div>
           </div>
 
           <div class="card" style="margin-bottom:20px;" id="card-disponibilidade-doula">
-            <div class="card-title">📅 Minha Disponibilidade</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;line-height:1.5;">Clique nos dias em que você <strong style="color:var(--dark);">não</strong> estará disponível. Aparecem bloqueados no seu perfil público.</div>
+            <div class="card-title" data-i18n="doula.agenda.avail.title">📅 Minha Disponibilidade</div>
+            <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;line-height:1.5;" data-i18n-html="doula.agenda.avail.desc">Clique nos dias em que você <strong style="color:var(--dark);">não</strong> estará disponível. Aparecem bloqueados no seu perfil público.</div>
             <div class="cal-nav-row">
               <button class="cal-nav-btn" onclick="_navCalDisponib(-1)">‹</button>
               <span id="cal-doula-label" class="cal-month-label">—</span>
@@ -2541,8 +2546,8 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div class="cal-grid-7" id="cal-doula-grid"></div>
             <div class="cal-legend">
-              <span><span class="cal-legend-dot" style="background:var(--white);border:1.5px solid var(--border);"></span>Disponível</span>
-              <span><span class="cal-legend-dot" style="background:rgba(201,137,122,0.4);"></span>Bloqueado</span>
+              <span><span class="cal-legend-dot" style="background:var(--white);border:1.5px solid var(--border);"></span><span data-i18n="doula.agenda.avail.free">Disponível</span></span>
+              <span><span class="cal-legend-dot" style="background:rgba(201,137,122,0.4);"></span><span data-i18n="doula.agenda.avail.blocked">Bloqueado</span></span>
             </div>
           </div>
 
@@ -2552,7 +2557,7 @@ tr:hover td { background:var(--rose-pale); }
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input id="ag-data-hora" class="form-input" type="datetime-local"></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
-              <div class="form-group"><label class="form-label">Local / Endereço</label><input id="ag-local" class="form-input" type="text" placeholder="Ex: Casa da cliente, Parque Ibirapuera, Consultório..."></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.local">Local / Endereço</label><input id="ag-local" class="form-input" type="text" data-i18n-ph="doula.agenda.local.ph" placeholder="Ex: Casa da cliente, Parque Ibirapuera, Consultório..."></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
             </div>
             <button class="btn-primary" onclick="agendarConsulta()" data-i18n="doula.agenda.schedule">Agendar</button>
@@ -2665,32 +2670,32 @@ tr:hover td { background:var(--rose-pale); }
 
           <!-- Meus materiais -->
           <div style="margin-top:28px;">
-            <div style="font-size:15px;font-weight:600;color:var(--dark);margin-bottom:14px;">📁 Meus materiais</div>
+            <div style="font-size:15px;font-weight:600;color:var(--dark);margin-bottom:14px;" data-i18n="doula.lib.my.title">📁 Meus materiais</div>
             <div id="d-bib-lista" style="margin-bottom:20px;">
-              <div style="font-size:13px;color:var(--earth-light);text-align:center;padding:16px 0;">Nenhum material adicionado ainda.</div>
+              <div style="font-size:13px;color:var(--earth-light);text-align:center;padding:16px 0;" data-i18n="doula.lib.my.empty">Nenhum material adicionado ainda.</div>
             </div>
 
             <div style="background:var(--rose-pale);border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:20px;">
-              <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:14px;">➕ Adicionar material</div>
+              <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:14px;" data-i18n="doula.lib.add.title">➕ Adicionar material</div>
 
               <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-                <button id="d-tab-video" onclick="setDBibTipo('video')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:var(--rose);color:white;border:none;">🎬 Vídeo YouTube</button>
-                <button id="d-tab-link" onclick="setDBibTipo('link')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);">🔗 Link</button>
-                <button id="d-tab-pdf" onclick="setDBibTipo('pdf')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);">📄 PDF</button>
+                <button id="d-tab-video" onclick="setDBibTipo('video')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:var(--rose);color:white;border:none;" data-i18n="doula.lib.tab.video">🎬 Vídeo YouTube</button>
+                <button id="d-tab-link" onclick="setDBibTipo('link')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);" data-i18n="doula.lib.tab.link">🔗 Link</button>
+                <button id="d-tab-pdf" onclick="setDBibTipo('pdf')" style="padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--earth);border:1px solid rgba(139,99,80,0.2);" data-i18n="doula.lib.tab.pdf">📄 PDF</button>
               </div>
 
-              <input id="d-bib-titulo" type="text" placeholder="Título do material" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:10px;outline:none;">
+              <input id="d-bib-titulo" type="text" data-i18n-ph="doula.lib.ph.title" placeholder="Título do material" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:10px;outline:none;">
 
               <div id="d-bib-area-video" style="margin-bottom:10px;">
-                <input id="d-bib-youtube" type="url" placeholder="Link do YouTube" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
+                <input id="d-bib-youtube" type="url" data-i18n-ph="doula.lib.ph.youtube" placeholder="Link do YouTube" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
               </div>
 
               <div id="d-bib-area-link" style="display:none;margin-bottom:10px;">
-                <input id="d-bib-link-url" type="url" placeholder="URL do link" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
+                <input id="d-bib-link-url" type="url" data-i18n-ph="doula.lib.ph.url" placeholder="URL do link" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;outline:none;">
               </div>
 
               <div id="d-bib-area-pdf" style="display:none;margin-bottom:10px;">
-                <div onclick="document.getElementById('d-bib-arquivo').click()" style="border:2px dashed rgba(201,137,122,0.35);border-radius:10px;padding:18px;text-align:center;cursor:pointer;font-size:13px;color:var(--earth-light);">📎 Clique para selecionar PDF ou imagem</div>
+                <div onclick="document.getElementById('d-bib-arquivo').click()" style="border:2px dashed rgba(201,137,122,0.35);border-radius:10px;padding:18px;text-align:center;cursor:pointer;font-size:13px;color:var(--earth-light);" data-i18n="doula.lib.ph.file">📎 Clique para selecionar PDF ou imagem</div>
                 <input type="file" id="d-bib-arquivo" style="display:none" accept=".pdf,.png,.jpg,.jpeg" onchange="previewDBibArquivo(this)">
                 <div id="d-bib-arquivo-preview" style="display:none;font-size:12px;color:var(--earth);margin-top:6px;padding:8px 12px;background:rgba(201,137,122,0.1);border-radius:8px;display:flex;align-items:center;gap:8px;">
                   <span id="d-bib-arquivo-nome" style="flex:1;"></span>
@@ -2698,9 +2703,9 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
               </div>
 
-              <input id="d-bib-desc" type="text" placeholder="Descrição breve (opcional)" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:14px;outline:none;">
+              <input id="d-bib-desc" type="text" data-i18n-ph="doula.lib.ph.desc" placeholder="Descrição breve (opcional)" style="width:100%;padding:10px 14px;border:1px solid rgba(139,99,80,0.2);border-radius:10px;font-family:inherit;font-size:13px;background:white;color:var(--dark);box-sizing:border-box;margin-bottom:14px;outline:none;">
 
-              <button id="d-bib-btn" onclick="adicionarConteudoDoula()" style="width:100%;background:var(--rose);color:white;border:none;padding:12px;border-radius:12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;">Adicionar material</button>
+              <button id="d-bib-btn" onclick="adicionarConteudoDoula()" style="width:100%;background:var(--rose);color:white;border:none;padding:12px;border-radius:12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;" data-i18n="doula.lib.btn.add">Adicionar material</button>
             </div>
           </div>
         </div>
@@ -2773,25 +2778,25 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- ESTATÍSTICAS DA DOULA -->
         <div class="d-panel" id="d-estatisticas">
-          <div class="panel-title">Minhas Estatísticas</div>
-          <div class="panel-sub">Seu desempenho e impacto como doula</div>
+          <div class="panel-title" data-i18n="doula.stat.title">Minhas Estatísticas</div>
+          <div class="panel-sub" data-i18n="doula.stat.sub">Seu desempenho e impacto como doula</div>
 
           <div class="stats-grid" style="margin-bottom:28px;">
-            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="estat-partos">—</div><div class="stat-label">Partos acompanhados</div></div>
-            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="estat-nota">—</div><div class="stat-label">Média de avaliações</div></div>
-            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-val" id="estat-taxa">—</div><div class="stat-label">Taxa de resposta</div></div>
-            <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-val" id="estat-tempo">—</div><div class="stat-label">Tempo médio de resposta</div></div>
+            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="estat-partos">—</div><div class="stat-label" data-i18n="doula.stat.births">Partos acompanhados</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="estat-nota">—</div><div class="stat-label" data-i18n="doula.stat.rating">Média de avaliações</div></div>
+            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-val" id="estat-taxa">—</div><div class="stat-label" data-i18n="doula.stat.response.rate">Taxa de resposta</div></div>
+            <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-val" id="estat-tempo">—</div><div class="stat-label" data-i18n="doula.stat.response.time">Tempo médio de resposta</div></div>
           </div>
 
           <div class="card" style="margin-bottom:20px;">
-            <div class="card-title">⭐ Avaliações das gestantes</div>
+            <div class="card-title" data-i18n="doula.stat.reviews.title">⭐ Avaliações das gestantes</div>
             <div id="estat-avaliacoes-resumo"></div>
-            <div id="estat-avaliacoes-lista"><div class="empty-state-small">Carregando...</div></div>
+            <div id="estat-avaliacoes-lista"><div class="empty-state-small" data-i18n="loading">Carregando...</div></div>
           </div>
 
           <div class="card">
-            <div class="card-title">📊 Histórico de solicitações</div>
-            <div id="estat-solicitacoes-resumo"><div class="empty-state-small">Carregando...</div></div>
+            <div class="card-title" data-i18n="doula.stat.requests.title">📊 Histórico de solicitações</div>
+            <div id="estat-solicitacoes-resumo"><div class="empty-state-small" data-i18n="loading">Carregando...</div></div>
           </div>
         </div>
 
@@ -3149,60 +3154,60 @@ tr:hover td { background:var(--rose-pale); }
             <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
               <div class="stat-icon">🤱</div>
               <div class="stat-val" id="pos-stat-mamada">—</div>
-              <div class="stat-label">mamadas hoje</div>
+              <div class="stat-label" data-i18n="pos.stat.mamadas">mamadas hoje</div>
             </div>
             <div class="stat-card" style="cursor:pointer;" onclick="posAbrirFralda()">
               <div class="stat-icon">💧</div>
               <div class="stat-val" id="pos-stat-fralda">—</div>
-              <div class="stat-label">fraldas hoje</div>
+              <div class="stat-label" data-i18n="pos.stat.fraldas">fraldas hoje</div>
             </div>
             <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
               <div class="stat-icon">🌙</div>
               <div class="stat-val" id="pos-stat-sono">—</div>
-              <div class="stat-label">sono hoje</div>
+              <div class="stat-label" data-i18n="pos.stat.sono">sono hoje</div>
             </div>
           </div>
           <div style="background:var(--white);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 8px rgba(45,31,26,0.05);margin-bottom:20px;">
-            <div style="font-size:12px;color:var(--earth-light);">⏱ Intervalo entre mamadas</div>
+            <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.stat.intervalo">⏱ Intervalo entre mamadas</div>
             <div style="font-size:14px;font-weight:600;color:var(--rose);" id="pos-stat-intervalo">—</div>
           </div>
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,var(--rose-pale),#fff0ec);border:1.5px solid rgba(201,137,122,0.2);" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
-            <div class="card-title">🤱 Registrar Mamada</div>
-            <div style="font-size:13px;color:var(--earth-light);">Mama, bomba ou mamadeira — inicie o timer ou registre o volume.</div>
+            <div class="card-title" data-i18n="pos.reg.mamada.title">🤱 Registrar Mamada</div>
+            <div style="font-size:13px;color:var(--earth-light);" data-i18n="pos.reg.mamada.sub">Mama, bomba ou mamadeira — inicie o timer ou registre o volume.</div>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posAbrirFralda()">
               <div style="font-size:28px;margin-bottom:10px;">💧</div>
-              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;">Troca de Fralda</div>
-              <div style="font-size:12px;color:var(--earth-light);">Registrar agora</div>
+              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="pos.reg.fralda.title">Troca de Fralda</div>
+              <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.reg.now">Registrar agora</div>
             </div>
             <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
               <div style="font-size:28px;margin-bottom:10px;">🌙</div>
-              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;">Sono do Bebê</div>
-              <div style="font-size:12px;color:var(--earth-light);">Soneca ou noturno</div>
+              <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="pos.reg.sono.title">Sono do Bebê</div>
+              <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.reg.sono.sub">Soneca ou noturno</div>
             </div>
           </div>
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);margin-top:4px;" onclick="posToggleDoulaPos()">
-            <div class="card-title" style="color:#9B7BB8;">💜 Minha Doula Pós-Parto</div>
+            <div class="card-title" style="color:#9B7BB8;" data-i18n="pos.doula.title">💜 Minha Doula Pós-Parto</div>
             <div id="pos-doula-pos-status" style="font-size:13px;color:var(--earth-light);">Carregando...</div>
           </div>
           <div id="pos-doula-escolha" style="display:none;margin-top:4px;">
             <div class="card" style="border:1.5px solid rgba(155,123,184,0.2);">
-              <div class="card-title" style="color:#9B7BB8;">Continuar com sua doula?</div>
-              <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;"><span id="pos-doula-escolha-nome" style="color:#9B7BB8;font-weight:500;"></span> acompanhou sua gestação. Quer continuar com ela no pós-parto também?</div>
+              <div class="card-title" style="color:#9B7BB8;" data-i18n="pos.doula.continuar.title">Continuar com sua doula?</div>
+              <div style="font-size:13px;color:var(--earth-light);margin-bottom:14px;"><span id="pos-doula-escolha-nome" style="color:#9B7BB8;font-weight:500;"></span><span data-i18n="pos.doula.continuar.desc"> acompanhou sua gestação. Quer continuar com ela no pós-parto também?</span></div>
               <div style="display:flex;gap:10px;">
-                <button onclick="posUsarMesmaDoula()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:20px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Sim, continuar com ela</button>
-                <button onclick="posEscolherOutraDoula()" style="flex:1;background:rgba(122,100,85,0.1);color:var(--mid);border:none;border-radius:20px;padding:10px;font-size:13px;cursor:pointer;font-family:inherit;">Escolher outra</button>
+                <button onclick="posUsarMesmaDoula()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:20px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;" data-i18n="pos.doula.continuar.sim">Sim, continuar com ela</button>
+                <button onclick="posEscolherOutraDoula()" style="flex:1;background:rgba(122,100,85,0.1);color:var(--mid);border:none;border-radius:20px;padding:10px;font-size:13px;cursor:pointer;font-family:inherit;" data-i18n="pos.doula.continuar.outra">Escolher outra</button>
               </div>
             </div>
           </div>
           <div id="pos-doula-pos-marketplace" style="display:none;margin-top:4px;">
             <div class="card">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                <div class="card-title" style="margin-bottom:0;">Doulas Pós-Parto disponíveis</div>
+                <div class="card-title" style="margin-bottom:0;" data-i18n="pos.doula.market.title">Doulas Pós-Parto disponíveis</div>
                 <button onclick="posToggleDoulaPos()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--earth-light);padding:0;">✕</button>
               </div>
               <div id="pos-doula-pos-lista" style="font-size:13px;color:var(--earth-light);">Carregando...</div>
@@ -4470,6 +4475,18 @@ pt: {
   'pos.alert.3':'Sangramento intenso após o parto',
   'pos.alert.4':'Dor ou vermelhão na mama (mastite)',
   'pos.alert.5':'Pensamentos de se machucar ou machucar o bebê',
+  'pos.stat.mamadas':'mamadas hoje','pos.stat.fraldas':'fraldas hoje','pos.stat.sono':'sono hoje',
+  'pos.stat.intervalo':'⏱ Intervalo entre mamadas',
+  'pos.reg.mamada.title':'🤱 Registrar Mamada','pos.reg.mamada.sub':'Mama, bomba ou mamadeira — inicie o timer ou registre o volume.',
+  'pos.reg.fralda.title':'Troca de Fralda','pos.reg.now':'Registrar agora',
+  'pos.reg.sono.title':'Sono do Bebê','pos.reg.sono.sub':'Soneca ou noturno',
+  'pos.doula.title':'💜 Minha Doula Pós-Parto',
+  'pos.doula.continuar.title':'Continuar com sua doula?','pos.doula.continuar.desc':' acompanhou sua gestação. Quer continuar com ela no pós-parto também?',
+  'pos.doula.continuar.sim':'Sim, continuar com ela','pos.doula.continuar.outra':'Escolher outra',
+  'pos.doula.market.title':'Doulas Pós-Parto disponíveis',
+  'pos.doula.status.tap':'Toque para encontrar uma doula pós-parto.','pos.doula.status.cfg':'Toque para configurar sua doula pós-parto.',
+  'pos.doula.status.wait':'Aguardando {nome} aceitar','pos.doula.status.gest':'— sua doula de gestação',
+  'pos.doula.market.loading':'Buscando...','pos.doula.market.empty':'Nenhuma doula pós-parto cadastrada ainda.','pos.doula.market.vincular':'Vincular','pos.doula.market.error':'Erro ao carregar.',
   // Diário
   'diario.title':'Diário da Gestação','diario.sub':'Registre seus sentimentos e memórias desta fase única',
   'diario.ph':'Como você está se sentindo hoje? Escreva livremente...',
@@ -4498,6 +4515,10 @@ pt: {
   // Marketplace
   'market.title':'Encontrar uma Doula','market.sub':'Doulas verificadas prontas para te acompanhar',
   'market.search.ph':'🔍 Buscar por cidade ou especialidade...',
+  'market.filter.all':'Todas','market.filter.presencial':'Presencial','market.filter.online':'Online','market.filter.hibrido':'Híbrido','market.filter.avail':'Disponíveis',
+  'market.sort.default':'Ordenar','market.sort.rating':'⭐ Melhor avaliação','market.sort.births':'🤱 Mais partos','market.sort.verified':'✓ Verificadas primeiro',
+  'market.esp.label':'Especialidade','market.empty':'Nenhuma doula encontrada.',
+  'market.tipo.presencial':'Presencial','market.tipo.online':'Online','market.tipo.hibrido':'Híbrido','market.tipo.hibrido.full':'Híbrido (presencial + online)',
   // Minha Doula
   'doula.title':'Minha Doula','doula.label':'Sua Doula',
   'doula.dash.sub':'Bem-vinda ao seu painel',
@@ -4521,6 +4542,11 @@ pt: {
   'doula.perfil.esp':'Especialidades separadas por virgula',
   'doula.perfil.bio':'Sua bio curta — quem voce e e como trabalha...',
   'doula.perfil.save':'Salvar e aparecer no marketplace',
+  'doula.disponivel.title':'Disponível para novas clientes',
+  'doula.disponivel.on':'Ativado — aparece no marketplace',
+  'doula.disponivel.off':'Desativado — oculta do marketplace',
+  'doula.limite.title':'Limite de clientes simultâneas',
+  'doula.limite.desc':'Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Nenhuma consulta agendada ainda',
   'doula.births.title':'Partos do mês','doula.births.empty':'Nenhum parto registrado este mês',
   'doula.clients.title':'Minhas Clientes','doula.clients.sub':'Gerencie e acompanhe todas as suas gestantes',
@@ -4549,6 +4575,17 @@ pt: {
   'doula.agenda.type.other':'Outro','doula.agenda.notes':'Observações',
   'doula.agenda.notes.ph':'Tema ou observações da consulta','doula.agenda.schedule':'Agendar',
   'doula.agenda.empty':'Agenda vazia','doula.agenda.empty.sub':'Use o formulário acima para agendar suas consultas',
+  'doula.agenda.week.current':'Semana atual',
+  'doula.agenda.week.label':'Semana de {start} a {end}',
+  'doula.agenda.week.summary':'📋 Resumo da Semana',
+  'doula.agenda.new.short':'+ Novo',
+  'doula.agenda.births.soon':'🚨 Partos próximos',
+  'doula.agenda.avail.title':'📅 Minha Disponibilidade',
+  'doula.agenda.avail.desc':'Clique nos dias em que você <strong style="color:var(--dark);">não</strong> estará disponível. Aparecem bloqueados no seu perfil público.',
+  'doula.agenda.avail.free':'Disponível',
+  'doula.agenda.avail.blocked':'Bloqueado',
+  'doula.agenda.local':'Local / Endereço',
+  'doula.agenda.local.ph':'Ex: Casa da cliente, Parque Ibirapuera, Consultório...',
   'doula.records.title':'Registros de Atendimento','doula.records.sub':'Histórico detalhado de cada consulta',
   'doula.records.new':'➕ Novo registro','doula.records.date':'Data',
   'doula.records.type.labor':'Acompanhamento do parto',
@@ -4568,6 +4605,19 @@ pt: {
   'doula.lib.title':'Biblioteca da Doula','doula.lib.sub':'Seus materiais de apoio e recursos educativos',
   'doula.lib.cat.all':'Todos','doula.lib.cat.videos':'Vídeos','doula.lib.cat.edu':'Materiais educativos',
   'doula.lib.empty':'Nenhum material ainda','doula.lib.empty.sub':'Adicione materiais pelo painel Admin',
+  'doula.lib.my.title':'📁 Meus materiais','doula.lib.my.empty':'Nenhum material adicionado ainda.',
+  'doula.lib.add.title':'➕ Adicionar material','doula.lib.btn.add':'Adicionar material',
+  'doula.lib.tab.video':'🎬 Vídeo YouTube','doula.lib.tab.link':'🔗 Link','doula.lib.tab.pdf':'📄 PDF',
+  'doula.lib.ph.title':'Título do material','doula.lib.ph.youtube':'Link do YouTube',
+  'doula.lib.ph.url':'URL do link','doula.lib.ph.file':'📎 Clique para selecionar PDF ou imagem',
+  'doula.lib.ph.desc':'Descrição breve (opcional)',
+  'doula.stat.title':'Minhas Estatísticas','doula.stat.sub':'Seu desempenho e impacto como doula',
+  'doula.stat.births':'Partos acompanhados','doula.stat.rating':'Média de avaliações',
+  'doula.stat.response.rate':'Taxa de resposta','doula.stat.response.time':'Tempo médio de resposta',
+  'doula.stat.reviews.title':'⭐ Avaliações das gestantes','doula.stat.reviews.empty':'Nenhuma avaliação recebida ainda',
+  'doula.stat.requests.title':'📊 Histórico de solicitações','doula.stat.requests.empty':'Nenhuma solicitação recebida ainda',
+  'doula.stat.req.accepted':'Aceitas','doula.stat.req.declined':'Recusadas',
+  'doula.stat.req.pending':'Pendentes','doula.stat.req.closed':'Encerradas',
   'doula.lib.upload.title':'📤 Adicionar novo material','doula.lib.upload.text':'Clique para fazer upload de PDF, vídeo ou apresentação',
   'doula.faq.title':'Guia Prático','doula.faq.sub':'Base de conhecimento para apoio rápido às suas gestantes',
   'doula.faq.1.q':'Como identificar o início do trabalho de parto?',
@@ -4581,7 +4631,7 @@ pt: {
   'doula.faq.5.q':'O que é apojadura e como orientar a mãe?',
   'doula.faq.5.a':'A apojadura (descida do leite) ocorre entre o 2º e 5º dia pós-parto. As mamas ficam firmes, quentes e cheias. Orientações: amamentar com frequência (a cada 2–3h), compressa morna antes de mamar para facilitar, compressa fria após para aliviar desconforto. Se muito intensa, ordenhamento manual suave ajuda. É sinal de produção saudável!',
   'doula.fin.title':'Financeiro','doula.fin.sub':'Controle de contratos, pagamentos e relatórios',
-  'doula.fin.received':'Recebido em março','doula.fin.pending':'Pendente','doula.fin.total':'Total previsto',
+  'doula.fin.received':'Recebido em {month}','doula.fin.pending':'Pendente','doula.fin.total':'Total previsto',
   'doula.fin.new':'➕ Novo contrato','doula.fin.value':'Valor total do serviço',
   'doula.fin.installments':'Número de parcelas','doula.fin.installments.ph':'Ex: 3',
   'doula.fin.status':'Status','doula.fin.status.pending':'Pendente',
@@ -4593,8 +4643,40 @@ pt: {
   'doula.nav.messages':'Mensagens','doula.nav.schedule':'Agenda','doula.nav.records':'Registros',
   'doula.nav.postpartum':'Pós-Parto','doula.nav.library':'Biblioteca',
   'doula.nav.guide':'Guia Prático','doula.nav.financial':'Financeiro',
+  'doula.nav.stats':'Estatísticas',
+  'doula.clients.history':'Histórico de vínculos',
+  'doula.nav.convite':'Enviar Convite',
+  'doula.convite.title':'Enviar Convite',
+  'doula.convite.sub':'Compartilhe um link com sua gestante — ela se cadastra e já entra vinculada a você automaticamente.',
+  'doula.convite.card.title':'🔗 Seu link de convite',
+  'doula.convite.desc':'Gere um link único e envie pelo WhatsApp, Instagram ou e-mail. Qualquer gestante que se cadastrar por este link será vinculada a você automaticamente.',
+  'doula.convite.btn.generate':'🔗 Gerar meu link de convite',
+  'doula.convite.btn.copy':'📋 Copiar link',
+  'doula.convite.btn.new':'↺ Gerar novo link',
+  'doula.nav.backup':'Minha Backup',
+  'doula.backup.title':'Minha Backup',
+  'doula.backup.sub':'Configure uma colega de confiança para cobrir você quando precisar.',
+  'doula.backup.card.title':'🛡️ Doula Backup',
+  'doula.backup.desc':'Configure uma doula de backup para atender suas clientes quando você não estiver disponível. Você pode avisar ela pelo app ou enviar um link de convite.',
+  'doula.backup.email.label':'E-mail da doula backup',
+  'doula.backup.email.ph':'backup@doula.com',
+  'doula.backup.perms.label':'Permissões concedidas',
+  'doula.backup.perm.agenda':'Acesso à Agenda',
+  'doula.backup.perm.chat':'Acesso ao Chat',
+  'doula.backup.perm.registros':'Acesso aos Registros',
+  'doula.backup.perm.historico':'↳ Ver histórico de dias anteriores',
+  'doula.backup.btn.save':'✅ Salvar e verificar',
   'loading':'Carregando...',
   'doula.unlink':'Encerrar vínculo com esta doula',
+  'bebe.title':'Meu Bebê 👶','bebe.sub':'Acompanhe o crescimento semana a semana',
+  'bebe.cfg.dpp':'Configure sua DPP','bebe.cfg.dpp.desc':'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.',
+  'bebe.tamanho':'está com o tamanho de {fruta}.',
+  'bebe.default.nome':'Seu bebê',
+  'bebe.perfil.title':'Perfil do Bebê',
+  'bebe.nasceu.q':'Seu bebê já nasceu?','bebe.nasceu.sim':'Sim, nasceu! 🎉','bebe.nasceu.nao':'Ainda não 🤰',
+  'bebe.nome.label':'Nome do Bebê','bebe.nome.ph':'Ex: Lucas, Sofia...',
+  'bebe.sexo.label':'Sexo (Opcional)','bebe.sexo.nd':'Não definido','bebe.sexo.m':'Menino 💙','bebe.sexo.f':'Menina 💖','bebe.sexo.s':'Surpresa 🎁',
+  'bebe.btn.save':'Salvar','bebe.toast.saved':'✅ Dados do bebê salvos 🌸',
   // Modal
   'modal.delete.title':'Remover material?','modal.delete.sub':'Esta ação não pode ser desfeita.',
   'modal.cancel':'Cancelar','modal.confirm':'Remover',
@@ -4980,6 +5062,18 @@ en: {
   'pos.alert.3':'Heavy bleeding after birth',
   'pos.alert.4':'Breast pain or redness (mastitis)',
   'pos.alert.5':'Thoughts of harming yourself or your baby',
+  'pos.stat.mamadas':'feeds today','pos.stat.fraldas':'diapers today','pos.stat.sono':'sleep today',
+  'pos.stat.intervalo':'⏱ Feeding interval',
+  'pos.reg.mamada.title':'🤱 Log a Feed','pos.reg.mamada.sub':'Breast, pump or bottle — start the timer or record the volume.',
+  'pos.reg.fralda.title':'Diaper Change','pos.reg.now':'Register now',
+  'pos.reg.sono.title':'Baby Sleep','pos.reg.sono.sub':'Nap or overnight',
+  'pos.doula.title':'💜 My Postpartum Doula',
+  'pos.doula.continuar.title':'Continue with your doula?','pos.doula.continuar.desc':' accompanied your pregnancy. Would you like to continue with her postpartum too?',
+  'pos.doula.continuar.sim':'Yes, stay with her','pos.doula.continuar.outra':'Choose another',
+  'pos.doula.market.title':'Available Postpartum Doulas',
+  'pos.doula.status.tap':'Tap to find a postpartum doula.','pos.doula.status.cfg':'Tap to set up your postpartum doula.',
+  'pos.doula.status.wait':'Waiting for {nome} to accept','pos.doula.status.gest':'— your pregnancy doula',
+  'pos.doula.market.loading':'Searching...','pos.doula.market.empty':'No postpartum doulas registered yet.','pos.doula.market.vincular':'Connect','pos.doula.market.error':'Error loading.',
   'diario.title':'Pregnancy Journal','diario.sub':'Record your feelings and memories of this unique phase',
   'diario.ph':'How are you feeling today? Write freely...',
   'diario.btn.save':'Save entry','diario.empty.title':'Your journal is waiting',
@@ -5003,6 +5097,10 @@ en: {
   'feedback.msg.ph':'Describe in detail...','feedback.cancel':'Cancel','feedback.send':'⚑ Send',
   'market.title':'Find a Doula','market.sub':'Verified doulas ready to support you',
   'market.search.ph':'🔍 Search by city or specialty...',
+  'market.filter.all':'All','market.filter.presencial':'In-person','market.filter.online':'Online','market.filter.hibrido':'Hybrid','market.filter.avail':'Available',
+  'market.sort.default':'Sort','market.sort.rating':'⭐ Best rating','market.sort.births':'🤱 Most births','market.sort.verified':'✓ Verified first',
+  'market.esp.label':'Specialty','market.empty':'No doulas found.',
+  'market.tipo.presencial':'In-person','market.tipo.online':'Online','market.tipo.hibrido':'Hybrid','market.tipo.hibrido.full':'Hybrid (in-person + online)',
   'doula.title':'My Doula','doula.label':'Your Doula',
   'doula.dash.sub':'Welcome to your dashboard',
   'doula.stat.clients':'Active clients','doula.stat.births':'Births this month',
@@ -5025,6 +5123,11 @@ en: {
   'doula.perfil.esp':'Specialties separated by comma',
   'doula.perfil.bio':'Your short bio — who you are and how you work...',
   'doula.perfil.save':'Save and appear in marketplace',
+  'doula.disponivel.title':'Available for new clients',
+  'doula.disponivel.on':'Active — visible in marketplace',
+  'doula.disponivel.off':'Inactive — hidden from marketplace',
+  'doula.limite.title':'Simultaneous client limit',
+  'doula.limite.desc':'Leave blank for unlimited. You will not be able to accept new requests once you reach this number.',
   'doula.appts.title':'Upcoming appointments','doula.appts.empty':'No appointments scheduled yet',
   'doula.births.title':'Births this month','doula.births.empty':'No births recorded this month',
   'doula.clients.title':'My Clients','doula.clients.sub':'Manage and follow all your pregnant clients',
@@ -5053,6 +5156,17 @@ en: {
   'doula.agenda.type.other':'Other','doula.agenda.notes':'Notes',
   'doula.agenda.notes.ph':'Topic or appointment notes','doula.agenda.schedule':'Schedule',
   'doula.agenda.empty':'Empty schedule','doula.agenda.empty.sub':'Use the form above to schedule appointments',
+  'doula.agenda.week.current':'Current week',
+  'doula.agenda.week.label':'Week from {start} to {end}',
+  'doula.agenda.week.summary':'📋 Weekly Summary',
+  'doula.agenda.new.short':'+ New',
+  'doula.agenda.births.soon':'🚨 Upcoming births',
+  'doula.agenda.avail.title':'📅 My Availability',
+  'doula.agenda.avail.desc':'Click on days when you are <strong style="color:var(--dark);">not</strong> available. They will appear blocked on your public profile.',
+  'doula.agenda.avail.free':'Available',
+  'doula.agenda.avail.blocked':'Blocked',
+  'doula.agenda.local':'Location / Address',
+  'doula.agenda.local.ph':'E.g.: Client\'s home, Central Park, Office...',
   'doula.records.title':'Appointment Records','doula.records.sub':'Detailed history of each appointment',
   'doula.records.new':'➕ New record','doula.records.date':'Date',
   'doula.records.type.labor':'Labor support',
@@ -5072,6 +5186,19 @@ en: {
   'doula.lib.title':'Doula Library','doula.lib.sub':'Your support materials and educational resources',
   'doula.lib.cat.all':'All','doula.lib.cat.videos':'Videos','doula.lib.cat.edu':'Educational materials',
   'doula.lib.empty':'No materials yet','doula.lib.empty.sub':'Add materials via the Admin panel',
+  'doula.lib.my.title':'📁 My materials','doula.lib.my.empty':'No material added yet.',
+  'doula.lib.add.title':'➕ Add material','doula.lib.btn.add':'Add material',
+  'doula.lib.tab.video':'🎬 YouTube Video','doula.lib.tab.link':'🔗 Link','doula.lib.tab.pdf':'📄 PDF',
+  'doula.lib.ph.title':'Material title','doula.lib.ph.youtube':'YouTube link',
+  'doula.lib.ph.url':'Link URL','doula.lib.ph.file':'📎 Click to select PDF or image',
+  'doula.lib.ph.desc':'Brief description (optional)',
+  'doula.stat.title':'My Statistics','doula.stat.sub':'Your performance and impact as a doula',
+  'doula.stat.births':'Births attended','doula.stat.rating':'Average rating',
+  'doula.stat.response.rate':'Response rate','doula.stat.response.time':'Avg. response time',
+  'doula.stat.reviews.title':'⭐ Client reviews','doula.stat.reviews.empty':'No reviews received yet',
+  'doula.stat.requests.title':'📊 Requests history','doula.stat.requests.empty':'No requests received yet',
+  'doula.stat.req.accepted':'Accepted','doula.stat.req.declined':'Declined',
+  'doula.stat.req.pending':'Pending','doula.stat.req.closed':'Closed',
   'doula.lib.upload.title':'📤 Add new material','doula.lib.upload.text':'Click to upload a PDF, video or presentation',
   'doula.faq.title':'Practical Guide','doula.faq.sub':'Knowledge base for quick support to your clients',
   'doula.faq.1.q':'How to identify the start of labor?',
@@ -5085,7 +5212,7 @@ en: {
   'doula.faq.5.q':'What is milk let-down and how to guide the mother?',
   'doula.faq.5.a':'Milk let-down occurs between the 2nd and 5th day postpartum. The breasts become firm, warm and full. Guidelines: breastfeed frequently (every 2–3h), warm compress before feeding to help, cold compress after to relieve discomfort. If very intense, gentle manual expression helps. It is a sign of healthy milk production!',
   'doula.fin.title':'Financial','doula.fin.sub':'Manage contracts, payments and reports',
-  'doula.fin.received':'Received in March','doula.fin.pending':'Pending','doula.fin.total':'Total projected',
+  'doula.fin.received':'Received in {month}','doula.fin.pending':'Pending','doula.fin.total':'Total projected',
   'doula.fin.new':'➕ New contract','doula.fin.value':'Total service value',
   'doula.fin.installments':'Number of installments','doula.fin.installments.ph':'E.g.: 3',
   'doula.fin.status':'Status','doula.fin.status.pending':'Pending',
@@ -5097,8 +5224,40 @@ en: {
   'doula.nav.messages':'Messages','doula.nav.schedule':'Schedule','doula.nav.records':'Records',
   'doula.nav.postpartum':'Postpartum','doula.nav.library':'Library',
   'doula.nav.guide':'Practical Guide','doula.nav.financial':'Financial',
+  'doula.nav.stats':'Statistics',
+  'doula.clients.history':'Link history',
+  'doula.nav.convite':'Send Invite',
+  'doula.convite.title':'Send Invite',
+  'doula.convite.sub':'Share a link with your client — she signs up and is automatically linked to you.',
+  'doula.convite.card.title':'🔗 Your invite link',
+  'doula.convite.desc':'Generate a unique link and send it via WhatsApp, Instagram or email. Any client who signs up through this link will be automatically linked to you.',
+  'doula.convite.btn.generate':'🔗 Generate my invite link',
+  'doula.convite.btn.copy':'📋 Copy link',
+  'doula.convite.btn.new':'↺ Generate new link',
+  'doula.nav.backup':'My Backup',
+  'doula.backup.title':'My Backup',
+  'doula.backup.sub':'Set up a trusted colleague to cover you when needed.',
+  'doula.backup.card.title':'🛡️ Backup Doula',
+  'doula.backup.desc':'Set up a backup doula to serve your clients when you are unavailable. You can notify her through the app or send an invite link.',
+  'doula.backup.email.label':'Backup doula email',
+  'doula.backup.email.ph':'backup@doula.com',
+  'doula.backup.perms.label':'Granted permissions',
+  'doula.backup.perm.agenda':'Schedule access',
+  'doula.backup.perm.chat':'Chat access',
+  'doula.backup.perm.registros':'Records access',
+  'doula.backup.perm.historico':'↳ View previous days history',
+  'doula.backup.btn.save':'✅ Save and verify',
   'loading':'Loading...',
   'doula.unlink':'End relationship with this doula',
+  'bebe.title':'My Baby 👶','bebe.sub':'Track growth week by week',
+  'bebe.cfg.dpp':'Set your Due Date','bebe.cfg.dpp.desc':'Enter your due date on the Home screen to see your baby\'s size this week.',
+  'bebe.tamanho':'is the size of {fruta}.',
+  'bebe.default.nome':'Your baby',
+  'bebe.perfil.title':'Baby Profile',
+  'bebe.nasceu.q':'Has your baby been born?','bebe.nasceu.sim':'Yes, born! 🎉','bebe.nasceu.nao':'Not yet 🤰',
+  'bebe.nome.label':'Baby\'s Name','bebe.nome.ph':'E.g.: Lucas, Sofia...',
+  'bebe.sexo.label':'Sex (Optional)','bebe.sexo.nd':'Not defined','bebe.sexo.m':'Boy 💙','bebe.sexo.f':'Girl 💖','bebe.sexo.s':'Surprise 🎁',
+  'bebe.btn.save':'Save','bebe.toast.saved':'✅ Baby data saved 🌸',
   'modal.delete.title':'Remove material?','modal.delete.sub':'This action cannot be undone.',
   'modal.cancel':'Cancel','modal.confirm':'Remove',
   // Companion (pai)
@@ -5483,6 +5642,18 @@ es: {
   'pos.alert.3':'Sangrado intenso después del parto',
   'pos.alert.4':'Dolor o enrojecimiento en el pecho (mastitis)',
   'pos.alert.5':'Pensamientos de hacerse daño o hacerle daño al bebé',
+  'pos.stat.mamadas':'tomas hoy','pos.stat.fraldas':'pañales hoy','pos.stat.sono':'sueño hoy',
+  'pos.stat.intervalo':'⏱ Intervalo entre tomas',
+  'pos.reg.mamada.title':'🤱 Registrar Toma','pos.reg.mamada.sub':'Pecho, bomba o biberón — inicia el temporizador o registra el volumen.',
+  'pos.reg.fralda.title':'Cambio de Pañal','pos.reg.now':'Registrar ahora',
+  'pos.reg.sono.title':'Sueño del Bebé','pos.reg.sono.sub':'Siesta o nocturno',
+  'pos.doula.title':'💜 Mi Doula Posparto',
+  'pos.doula.continuar.title':'¿Continuar con tu doula?','pos.doula.continuar.desc':' acompañó tu embarazo. ¿Quieres continuar con ella en el posparto también?',
+  'pos.doula.continuar.sim':'Sí, continuar con ella','pos.doula.continuar.outra':'Elegir otra',
+  'pos.doula.market.title':'Doulas Posparto disponibles',
+  'pos.doula.status.tap':'Toca para encontrar una doula posparto.','pos.doula.status.cfg':'Toca para configurar tu doula posparto.',
+  'pos.doula.status.wait':'Esperando que {nome} acepte','pos.doula.status.gest':'— tu doula de embarazo',
+  'pos.doula.market.loading':'Buscando...','pos.doula.market.empty':'Ninguna doula posparto registrada aún.','pos.doula.market.vincular':'Vincular','pos.doula.market.error':'Error al cargar.',
   'diario.title':'Diario del Embarazo','diario.sub':'Registra tus sentimientos y memorias de esta fase única',
   'diario.ph':'¿Cómo te sientes hoy? Escribe libremente...',
   'diario.btn.save':'Guardar registro','diario.empty.title':'Tu diario te está esperando',
@@ -5506,6 +5677,10 @@ es: {
   'feedback.msg.ph':'Describe con detalle...','feedback.cancel':'Cancelar','feedback.send':'⚑ Enviar',
   'market.title':'Encontrar una Doula','market.sub':'Doulas verificadas listas para acompañarte',
   'market.search.ph':'🔍 Buscar por ciudad o especialidad...',
+  'market.filter.all':'Todas','market.filter.presencial':'Presencial','market.filter.online':'Online','market.filter.hibrido':'Híbrido','market.filter.avail':'Disponibles',
+  'market.sort.default':'Ordenar','market.sort.rating':'⭐ Mejor valoración','market.sort.births':'🤱 Más partos','market.sort.verified':'✓ Verificadas primero',
+  'market.esp.label':'Especialidad','market.empty':'No se encontraron doulas.',
+  'market.tipo.presencial':'Presencial','market.tipo.online':'Online','market.tipo.hibrido':'Híbrido','market.tipo.hibrido.full':'Híbrido (presencial + online)',
   'doula.title':'Mi Doula','doula.label':'Tu Doula',
   'doula.dash.sub':'Bienvenida a tu panel',
   'doula.stat.clients':'Clientas activas','doula.stat.births':'Partos este mes',
@@ -5528,6 +5703,11 @@ es: {
   'doula.perfil.esp':'Especialidades separadas por coma',
   'doula.perfil.bio':'Tu bio corta — quién eres y cómo trabajas...',
   'doula.perfil.save':'Guardar y aparecer en el marketplace',
+  'doula.disponivel.title':'Disponible para nuevas clientas',
+  'doula.disponivel.on':'Activo — visible en el marketplace',
+  'doula.disponivel.off':'Inactivo — oculto del marketplace',
+  'doula.limite.title':'Límite de clientas simultáneas',
+  'doula.limite.desc':'Déjalo en blanco para ilimitado. No podrás aceptar nuevas solicitudes al alcanzar este número.',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Sin consultas agendadas aún',
   'doula.births.title':'Partos del mes','doula.births.empty':'Ningún parto registrado este mes',
   'doula.clients.title':'Mis Clientas','doula.clients.sub':'Gestiona y acompáña a todas tus gestantes',
@@ -5556,6 +5736,17 @@ es: {
   'doula.agenda.type.other':'Otro','doula.agenda.notes':'Observaciones',
   'doula.agenda.notes.ph':'Tema u observaciones de la consulta','doula.agenda.schedule':'Agendar',
   'doula.agenda.empty':'Agenda vacía','doula.agenda.empty.sub':'Usa el formulario de arriba para agendar tus consultas',
+  'doula.agenda.week.current':'Semana actual',
+  'doula.agenda.week.label':'Semana del {start} al {end}',
+  'doula.agenda.week.summary':'📋 Resumen de la Semana',
+  'doula.agenda.new.short':'+ Nuevo',
+  'doula.agenda.births.soon':'🚨 Partos próximos',
+  'doula.agenda.avail.title':'📅 Mi Disponibilidad',
+  'doula.agenda.avail.desc':'Haz clic en los días en que <strong style="color:var(--dark);">no</strong> estarás disponible. Aparecerán bloqueados en tu perfil público.',
+  'doula.agenda.avail.free':'Disponible',
+  'doula.agenda.avail.blocked':'Bloqueado',
+  'doula.agenda.local':'Lugar / Dirección',
+  'doula.agenda.local.ph':'Ej: Casa de la clienta, Parque, Consultorio...',
   'doula.records.title':'Registros de Atención','doula.records.sub':'Historial detallado de cada consulta',
   'doula.records.new':'➕ Nuevo registro','doula.records.date':'Fecha',
   'doula.records.type.labor':'Acompañamiento del parto',
@@ -5575,6 +5766,19 @@ es: {
   'doula.lib.title':'Biblioteca de la Doula','doula.lib.sub':'Tus materiales de apoyo y recursos educativos',
   'doula.lib.cat.all':'Todos','doula.lib.cat.videos':'Vídeos','doula.lib.cat.edu':'Materiales educativos',
   'doula.lib.empty':'Ningún material aún','doula.lib.empty.sub':'Añade materiales desde el panel Admin',
+  'doula.lib.my.title':'📁 Mis materiales','doula.lib.my.empty':'Ningún material agregado aún.',
+  'doula.lib.add.title':'➕ Agregar material','doula.lib.btn.add':'Agregar material',
+  'doula.lib.tab.video':'🎬 Video YouTube','doula.lib.tab.link':'🔗 Enlace','doula.lib.tab.pdf':'📄 PDF',
+  'doula.lib.ph.title':'Título del material','doula.lib.ph.youtube':'Enlace de YouTube',
+  'doula.lib.ph.url':'URL del enlace','doula.lib.ph.file':'📎 Haz clic para seleccionar PDF o imagen',
+  'doula.lib.ph.desc':'Descripción breve (opcional)',
+  'doula.stat.title':'Mis Estadísticas','doula.stat.sub':'Tu desempeño e impacto como doula',
+  'doula.stat.births':'Partos acompañados','doula.stat.rating':'Promedio de evaluaciones',
+  'doula.stat.response.rate':'Tasa de respuesta','doula.stat.response.time':'Tiempo promedio de respuesta',
+  'doula.stat.reviews.title':'⭐ Evaluaciones de las gestantes','doula.stat.reviews.empty':'Ninguna evaluación recibida aún',
+  'doula.stat.requests.title':'📊 Historial de solicitudes','doula.stat.requests.empty':'Ninguna solicitud recibida aún',
+  'doula.stat.req.accepted':'Aceptadas','doula.stat.req.declined':'Rechazadas',
+  'doula.stat.req.pending':'Pendientes','doula.stat.req.closed':'Finalizadas',
   'doula.lib.upload.title':'📤 Añadir nuevo material','doula.lib.upload.text':'Haz clic para subir un PDF, vídeo o presentación',
   'doula.faq.title':'Guía Práctica','doula.faq.sub':'Base de conocimiento para apoyo rápido a tus gestantes',
   'doula.faq.1.q':'¿Cómo identificar el inicio del trabajo de parto?',
@@ -5588,7 +5792,7 @@ es: {
   'doula.faq.5.q':'¿Qué es la subida de la leche y cómo orientar a la madre?',
   'doula.faq.5.a':'La subida de la leche ocurre entre el 2.º y el 5.º día posparto. Los pechos se vuelven firmes, calientes y llenos. Orientaciones: amamantar con frecuencia (cada 2–3h), compresa tibia antes de mamar para facilitar, compresa fría después para aliviar el malestar. Si es muy intensa, el ordeño manual suave ayuda. ¡Es señal de producción saludable!',
   'doula.fin.title':'Financiero','doula.fin.sub':'Control de contratos, pagos e informes',
-  'doula.fin.received':'Recibido en marzo','doula.fin.pending':'Pendiente','doula.fin.total':'Total previsto',
+  'doula.fin.received':'Recibido en {month}','doula.fin.pending':'Pendiente','doula.fin.total':'Total previsto',
   'doula.fin.new':'➕ Nuevo contrato','doula.fin.value':'Valor total del servicio',
   'doula.fin.installments':'Número de cuotas','doula.fin.installments.ph':'Ej: 3',
   'doula.fin.status':'Estado','doula.fin.status.pending':'Pendiente',
@@ -5600,8 +5804,40 @@ es: {
   'doula.nav.messages':'Mensajes','doula.nav.schedule':'Agenda','doula.nav.records':'Registros',
   'doula.nav.postpartum':'Posparto','doula.nav.library':'Biblioteca',
   'doula.nav.guide':'Guía Práctica','doula.nav.financial':'Financiero',
+  'doula.nav.stats':'Estadísticas',
+  'doula.clients.history':'Historial de vínculos',
+  'doula.nav.convite':'Enviar Invitación',
+  'doula.convite.title':'Enviar Invitación',
+  'doula.convite.sub':'Comparte un enlace con tu gestante — se registra y queda vinculada a ti automáticamente.',
+  'doula.convite.card.title':'🔗 Tu enlace de invitación',
+  'doula.convite.desc':'Genera un enlace único y envíalo por WhatsApp, Instagram o correo. Cualquier gestante que se registre por este enlace quedará vinculada a ti automáticamente.',
+  'doula.convite.btn.generate':'🔗 Generar mi enlace de invitación',
+  'doula.convite.btn.copy':'📋 Copiar enlace',
+  'doula.convite.btn.new':'↺ Generar nuevo enlace',
+  'doula.nav.backup':'Mi Backup',
+  'doula.backup.title':'Mi Backup',
+  'doula.backup.sub':'Configura una colega de confianza para cubrirte cuando lo necesites.',
+  'doula.backup.card.title':'🛡️ Doula Backup',
+  'doula.backup.desc':'Configura una doula de backup para atender a tus clientas cuando no estés disponible. Puedes avisarle por la app o enviarle un enlace de invitación.',
+  'doula.backup.email.label':'Email de la doula backup',
+  'doula.backup.email.ph':'backup@doula.com',
+  'doula.backup.perms.label':'Permisos concedidos',
+  'doula.backup.perm.agenda':'Acceso a la Agenda',
+  'doula.backup.perm.chat':'Acceso al Chat',
+  'doula.backup.perm.registros':'Acceso a los Registros',
+  'doula.backup.perm.historico':'↳ Ver historial de días anteriores',
+  'doula.backup.btn.save':'✅ Guardar y verificar',
   'loading':'Cargando...',
   'doula.unlink':'Finalizar vínculo con esta doula',
+  'bebe.title':'Mi Bebé 👶','bebe.sub':'Sigue el crecimiento semana a semana',
+  'bebe.cfg.dpp':'Configura tu FPP','bebe.cfg.dpp.desc':'Ingresa tu fecha probable de parto en Inicio para ver el tamaño de tu bebé esta semana.',
+  'bebe.tamanho':'tiene el tamaño de {fruta}.',
+  'bebe.default.nome':'Tu bebé',
+  'bebe.perfil.title':'Perfil del Bebé',
+  'bebe.nasceu.q':'¿Tu bebé ya nació?','bebe.nasceu.sim':'¡Sí, nació! 🎉','bebe.nasceu.nao':'Todavía no 🤰',
+  'bebe.nome.label':'Nombre del Bebé','bebe.nome.ph':'Ej: Lucas, Sofía...',
+  'bebe.sexo.label':'Sexo (Opcional)','bebe.sexo.nd':'No definido','bebe.sexo.m':'Niño 💙','bebe.sexo.f':'Niña 💖','bebe.sexo.s':'Sorpresa 🎁',
+  'bebe.btn.save':'Guardar','bebe.toast.saved':'✅ Datos del bebé guardados 🌸',
   'modal.delete.title':'¿Eliminar material?','modal.delete.sub':'Esta acción no se puede deshacer.',
   'modal.cancel':'Cancelar','modal.confirm':'Eliminar',
   // Acompañante (pai)
@@ -8844,7 +9080,7 @@ async function posCarregarDoulaPosDashboard() {
               '<button onclick="posNav(document.getElementById(\'pos-nav-msg\'),\'pos-mensagens\');carregarPosMensagens()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 Chat</button>' +
             '</div>';
         } else {
-          statusEl.innerHTML = 'Aguardando <span style="color:#9B7BB8;">' + doula.nome + '</span> aceitar';
+          statusEl.innerHTML = t('pos.doula.status.wait').replace('{nome}', '<span style="color:#9B7BB8;">' + doula.nome + '</span>');
           if (sol) {
             _posPendenteSol = { id: sol.id, doulaNome: doula.nome };
             iniciarRealtimeSolicitacoesPos(sol.id);
@@ -8863,15 +9099,15 @@ async function posCarregarDoulaPosDashboard() {
         if (doulaReg.data) {
           _posDoulaDeGestacao = { id: doulaReg.data.id, nome: doulaReg.data.nome };
           if (choice === 'same') {
-            statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doulaReg.data.nome + '</span> — sua doula de gestação';
+            statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doulaReg.data.nome + '</span> ' + t('pos.doula.status.gest');
           } else {
-            statusEl.textContent = 'Toque para configurar sua doula pós-parto.';
+            statusEl.textContent = t('pos.doula.status.cfg');
           }
           return;
         }
       }
     }
-    statusEl.textContent = 'Toque para encontrar uma doula pós-parto.';
+    statusEl.textContent = t('pos.doula.status.tap');
   } catch(e) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; }
 }
 
@@ -8879,21 +9115,21 @@ async function posCarregarMercadoDoulaPos() {
   if (!db) return;
   var lista = document.getElementById('pos-doula-pos-lista');
   if (!lista) return;
-  lista.innerHTML = '<div style="padding:16px;text-align:center;color:var(--earth-light);">Buscando...</div>';
+  lista.innerHTML = '<div style="padding:16px;text-align:center;color:var(--earth-light);">' + t('pos.doula.market.loading') + '</div>';
   try {
     var res = await db.from('usuarios').select('id,nome,cidade,bio').eq('tipo', 'pos_doula');
     if (!res.data || !res.data.length) {
-      lista.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:var(--earth-light);">Nenhuma doula pós-parto cadastrada ainda.</div>';
+      lista.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:var(--earth-light);">' + t('pos.doula.market.empty') + '</div>';
       return;
     }
     lista.innerHTML = res.data.map(function(d) {
       return '<div style="padding:12px 0;border-bottom:1px solid rgba(122,100,85,0.08);display:flex;justify-content:space-between;align-items:center;">'
         + '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">💜 ' + d.nome + '</div>'
         + (d.cidade ? '<div style="font-size:12px;color:var(--earth-light);">' + d.cidade + '</div>' : '') + '</div>'
-        + '<button onclick="posEnviarSolicitacaoDoulaPos(\'' + d.id + '\',\'' + d.nome.replace(/'/g,'') + '\')" style="background:#9B7BB8;color:white;border:none;border-radius:20px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;">Vincular</button>'
+        + '<button onclick="posEnviarSolicitacaoDoulaPos(\'' + d.id + '\',\'' + d.nome.replace(/'/g,'') + '\')" style="background:#9B7BB8;color:white;border:none;border-radius:20px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;">' + t('pos.doula.market.vincular') + '</button>'
         + '</div>';
     }).join('');
-  } catch(e) { lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.doula.market.error') + '</div>'; }
 }
 
 async function posEnviarSolicitacaoDoulaPos(doulaId, nomeDoula) {
@@ -10383,10 +10619,10 @@ function renderDoulas(doulas, ratingsMap) {
   if (!grid) return;
   grid.innerHTML = '';
   if (!doulas.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">Nenhuma doula encontrada.</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--earth-light);font-size:14px;">' + t('market.empty') + '</div>';
     return;
   }
-  var tipoLabel = { presencial: 'Presencial', online: 'Online', hibrido: 'Híbrido' };
+  var tipoLabel = { presencial: t('market.tipo.presencial'), online: t('market.tipo.online'), hibrido: t('market.tipo.hibrido') };
   doulas.forEach(function(d) {
     var inicial = (d.nome || 'D')[0].toUpperCase();
     var espec = d.especialidades ? d.especialidades.split(',') : [];
@@ -10419,9 +10655,12 @@ function renderDoulas(doulas, ratingsMap) {
       ? '<span class="doula-partos-info">🤱 ' + d.partos_acompanhados + ' partos</span>'
       : '';
     var avatarBg = _doulaAvatarColor(d.nome);
+    var avatarMktHtml = d.foto_perfil
+      ? '<div class="doula-avatar-mkt" style="background:' + avatarBg + ';background-image:url(' + d.foto_perfil + ');background-size:cover;background-position:center;font-family:\'Cormorant Garamond\',serif;"></div>'
+      : '<div class="doula-avatar-mkt" style="background:' + avatarBg + ';font-family:\'Cormorant Garamond\',serif;">' + inicial + '</div>';
     card.innerHTML =
       '<div class="doula-card-top">' +
-        '<div class="doula-avatar-mkt" style="background:' + avatarBg + ';font-family:\'Cormorant Garamond\',serif;">' + inicial + '</div>' +
+        avatarMktHtml +
         '<div style="flex:1;min-width:0;"><div class="doula-mkt-name">' + d.nome + '</div>' +
         '<div class="doula-mkt-local">' + loc + '</div>' +
         ratingHtml +
@@ -11026,31 +11265,31 @@ async function adicionarConteudoDoula() {
   try {
     if (dBibTipo === 'video') {
       url = (document.getElementById('d-bib-youtube').value || '').trim();
-      if (!url) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Cole o link do YouTube'); }
+      if (!url) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('Cole o link do YouTube'); }
     } else if (dBibTipo === 'link') {
       url = (document.getElementById('d-bib-link-url').value || '').trim();
-      if (!url) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Cole o link'); }
+      if (!url) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('Cole o link'); }
     } else {
-      if (!dBibArquivo) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Selecione um arquivo'); }
+      if (!dBibArquivo) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('Selecione um arquivo'); }
       var nomeArq = Date.now() + '_' + dBibArquivo.name.replace(/\s/g,'_');
       var upRes = await db.storage.from('materiais').upload(nomeArq, dBibArquivo);
-      if (upRes.error) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Erro no upload: ' + upRes.error.message); }
+      if (upRes.error) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('Erro no upload: ' + upRes.error.message); }
       url = db.storage.from('materiais').getPublicUrl(nomeArq).data.publicUrl;
       tipo = dBibArquivo.name.match(/\.(png|jpg|jpeg)$/i) ? 'imagem' : 'pdf';
     }
     var desc = (document.getElementById('d-bib-desc').value || '').trim();
     var res = await db.from('biblioteca').insert({ titulo: titulo, tipo: tipo, url: url, destino: 'doula', descricao: desc, doula_id: currentUserId });
-    if (res.error) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('Erro: ' + res.error.message); }
+    if (res.error) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('Erro: ' + res.error.message); }
     mostrarToast('✅ Material adicionado!');
     document.getElementById('d-bib-titulo').value = '';
     document.getElementById('d-bib-desc').value = '';
     try { document.getElementById('d-bib-youtube').value = ''; } catch(e) {}
     try { document.getElementById('d-bib-link-url').value = ''; } catch(e) {}
     limparDBibArquivo();
-    btn.disabled=false; btn.textContent='Adicionar material';
+    btn.disabled=false; btn.textContent=t('doula.lib.btn.add');
     carregarBibliotecaDoula();
   } catch(e) {
-    btn.disabled=false; btn.textContent='Adicionar material';
+    btn.disabled=false; btn.textContent=t('doula.lib.btn.add');
     mostrarToast('Erro: ' + e.message);
   }
 }
@@ -11339,10 +11578,21 @@ function verPerfilDoula(d, rInfo) {
   if (!modal) return;
   var inicial = (d.nome || 'D')[0].toUpperCase();
   var bg = _doulaAvatarColor(d.nome);
-  var tipoLabel = { presencial: 'Presencial', online: 'Online', hibrido: 'Híbrido (presencial + online)' };
+  var tipoLabel = { presencial: t('market.tipo.presencial'), online: t('market.tipo.online'), hibrido: t('market.tipo.hibrido.full') };
   // Avatar
   var pdAvatar = document.getElementById('pd-avatar');
-  if (pdAvatar) { pdAvatar.textContent = inicial; pdAvatar.style.background = bg; }
+  if (pdAvatar) {
+    pdAvatar.style.background = bg;
+    if (d.foto_perfil) {
+      pdAvatar.style.backgroundImage = 'url(' + d.foto_perfil + ')';
+      pdAvatar.style.backgroundSize = 'cover';
+      pdAvatar.style.backgroundPosition = 'center';
+      pdAvatar.textContent = '';
+    } else {
+      pdAvatar.style.backgroundImage = '';
+      pdAvatar.textContent = inicial;
+    }
+  }
   // Nome e local
   var pdNome = document.getElementById('pd-nome');
   if (pdNome) pdNome.textContent = d.nome || '';
@@ -11531,7 +11781,7 @@ function toggleDisponivelDoula() {
   var label = document.getElementById('doula-disponivel-label');
   if (toggle) toggle.style.background = _doulaDisponivelAtual ? 'var(--sage)' : '#ccc';
   if (knob) knob.style.right = _doulaDisponivelAtual ? '3px' : 'calc(100% - 21px)';
-  if (label) label.textContent = _doulaDisponivelAtual ? 'Ativado — aparece no marketplace' : 'Desativado — oculta do marketplace';
+  if (label) label.textContent = _doulaDisponivelAtual ? t('doula.disponivel.on') : t('doula.disponivel.off');
 }
 
 async function salvarPerfilDoula() {
@@ -11576,7 +11826,7 @@ async function salvarPerfilDoula() {
 async function carregarMinhaDoula() {
   if (!db || !currentDoulaId) return;
   try {
-    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio,email').eq('id', currentDoulaId).maybeSingle();
+    var res = await db.from('usuarios').select('id,nome,cidade,whatsapp,especialidades,bio,email,foto_perfil').eq('id', currentDoulaId).maybeSingle();
     if (!res.data) return;
     var d = res.data;
     chatDoulaId = d.id;
@@ -11599,7 +11849,15 @@ async function carregarMinhaDoula() {
     if (mobEncontrar) mobEncontrar.style.display = 'none';
     // Painel Minha Doula
     var el = document.getElementById('minha-doula-avatar');
-    if (el) el.textContent = inicial;
+    if (el) {
+      el.textContent = inicial;
+      if (d.foto_perfil) {
+        el.style.backgroundImage = 'url(' + d.foto_perfil + ')';
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+        el.textContent = '';
+      }
+    }
     var el2 = document.getElementById('minha-doula-nome');
     if (el2) el2.textContent = d.nome || '—';
     var el3 = document.getElementById('minha-doula-cidade');
@@ -11614,7 +11872,15 @@ async function carregarMinhaDoula() {
     var btnChat = document.getElementById('btn-falar-doula-chat');
     if (btnChat) btnChat.style.display = 'flex';
     var avatarEl = document.getElementById('doula-card-avatar');
-    if (avatarEl) avatarEl.textContent = inicial;
+    if (avatarEl) {
+      avatarEl.textContent = inicial;
+      if (d.foto_perfil) {
+        avatarEl.style.backgroundImage = 'url(' + d.foto_perfil + ')';
+        avatarEl.style.backgroundSize = 'cover';
+        avatarEl.style.backgroundPosition = 'center';
+        avatarEl.textContent = '';
+      }
+    }
     var nomeCardEl = document.getElementById('doula-card-nome');
     if (nomeCardEl) nomeCardEl.textContent = d.nome || '—';
     var cidadeEl = document.getElementById('doula-card-cidade');
@@ -12042,7 +12308,7 @@ async function _pcliPosParto(el, id, campo) {
   try {
     var res = await db.from('registros_posparto').select('*').eq('doula_id', currentUserId).eq(campo, id).order('criado_em', { ascending: false });
     var dados = res.data || [];
-    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🌸</div><div class="empty-title">Nenhum registro pós-parto</div></div>'; return; }
+    if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🌸</div><div class="empty-title">'+t('doula.postpartum.empty')+'</div></div>'; return; }
     el.innerHTML = dados.map(function(p) {
       var dataStr = p.data_visita ? new Date(p.data_visita + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
       return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid #c9a6d4;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
@@ -12163,7 +12429,8 @@ function agendaRenderCalendario(consultas) {
   if (_agendaCalMes === null) _agendaCalMes = hoje.getMonth();
   _agendaCalConsultas = consultas || [];
   var ano = _agendaCalAno, mes = _agendaCalMes;
-  var mesLabel = new Date(ano, mes, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  var _locMap = {'pt':'pt-BR','en':'en-US','es':'es-ES'};
+  var mesLabel = new Date(ano, mes, 1).toLocaleDateString(_locMap[_lang]||'pt-BR', { month: 'long', year: 'numeric' });
   var el = document.getElementById('agenda-mes-label');
   if (el) el.textContent = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
   var priDia = new Date(ano, mes, 1).getDay();
@@ -12342,7 +12609,9 @@ async function carregarAgenda() {
     var seg = new Date(hoje); seg.setDate(hoje.getDate() - (dow === 0 ? 6 : dow - 1));
     var dom = new Date(seg); dom.setDate(seg.getDate() + 6);
     var opts = { day: 'numeric', month: 'long' };
-    semanaLabel.textContent = 'Semana de ' + seg.toLocaleDateString('pt-BR', opts) + ' a ' + dom.toLocaleDateString('pt-BR', opts);
+    var _lm = {'pt':'pt-BR','en':'en-US','es':'es-ES'};
+    var _loc = _lm[_lang] || 'pt-BR';
+    semanaLabel.textContent = t('doula.agenda.week.label').replace('{start}', seg.toLocaleDateString(_loc, opts)).replace('{end}', dom.toLocaleDateString(_loc, opts));
   }
   var container = document.getElementById('agenda-semana');
   if (!container) return;
@@ -12421,7 +12690,7 @@ async function carregarRegistros() {
   try {
     var res = await db.from('registros_atendimento').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
     if (res.error || !res.data || !res.data.length) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">Nenhum atendimento registrado</div><div class="empty-sub">Use o formulário acima para registrar suas consultas</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">'+t('doula.records.empty')+'</div><div class="empty-sub">'+t('doula.records.empty.sub')+'</div></div>';
       return;
     }
     container.innerHTML = res.data.map(function(r) {
@@ -12473,7 +12742,7 @@ async function carregarPosParto() {
   try {
     var res = await db.from('registros_posparto').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
     if (res.error || !res.data || !res.data.length) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">👶</div><div class="empty-title">Nenhum registro pós-parto</div><div class="empty-sub">Os registros aparecerão aqui após o parto das suas clientes</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">👶</div><div class="empty-title">'+t('doula.postpartum.empty')+'</div><div class="empty-sub">'+t('doula.postpartum.empty.sub')+'</div></div>';
       return;
     }
     container.innerHTML = res.data.map(function(r) {
@@ -12578,7 +12847,9 @@ async function carregarContratos() {
     var elP = document.getElementById('fin-pendente'); if (elP) elP.textContent = fmt(pendente);
     var elT = document.getElementById('fin-total'); if (elT) elT.textContent = fmt(recebido + pendente);
     var elLabel = document.getElementById('fin-recebido-label');
-    if (elLabel) elLabel.textContent = 'Recebido em ' + new Date().toLocaleDateString('pt-BR', { month: 'long' });
+    var _lmFin = {'pt':'pt-BR','en':'en-US','es':'es-ES'};
+    var _finMonth = new Date().toLocaleDateString(_lmFin[_lang]||'pt-BR', { month: 'long' });
+    if (elLabel) elLabel.textContent = t('doula.fin.received').replace('{month}', _finMonth);
   } catch(e) {}
 }
 
@@ -12672,10 +12943,16 @@ async function carregarPerfilDoula() {
     if (!session.data.session) return;
     var uid = session.data.session.user.id;
     var res = await db.from('usuarios')
-      .select('id,nome,whatsapp,cidade,especialidades,bio,partos_acompanhados,tipo_atendimento,valores_pacotes,disponivel,verificada,limite_clientes')
+      .select('id,nome,whatsapp,cidade,especialidades,bio,partos_acompanhados,tipo_atendimento,valores_pacotes,disponivel,verificada,limite_clientes,foto_perfil')
       .eq('id', uid).maybeSingle();
     if (res.data) {
       var d = res.data;
+      var avatarEl = document.getElementById('doula-perfil-avatar');
+      if (avatarEl) avatarEl.textContent = (d.nome || 'D')[0].toUpperCase();
+      if (d.foto_perfil) {
+        try { localStorage.setItem('lua_foto_doula_' + uid, d.foto_perfil); } catch(e) {}
+        aplicarFotoDoula(d.foto_perfil);
+      }
       if (d.whatsapp) (document.getElementById('doula-whatsapp') || {}).value = d.whatsapp;
       if (d.cidade) (document.getElementById('doula-cidade') || {}).value = d.cidade;
       if (d.especialidades) (document.getElementById('doula-especialidades') || {}).value = d.especialidades;
@@ -12692,7 +12969,7 @@ async function carregarPerfilDoula() {
       var label = document.getElementById('doula-disponivel-label');
       if (toggle) toggle.style.background = _doulaDisponivelAtual ? 'var(--sage)' : '#ccc';
       if (knob) knob.style.right = _doulaDisponivelAtual ? '3px' : 'calc(100% - 21px)';
-      if (label) label.textContent = _doulaDisponivelAtual ? 'Ativado — aparece no marketplace' : 'Desativado — oculta do marketplace';
+      if (label) label.textContent = _doulaDisponivelAtual ? t('doula.disponivel.on') : t('doula.disponivel.off');
       // Selo verificada
       var cardPerfil = document.getElementById('card-perfil-doula');
       if (cardPerfil && d.verificada) {
@@ -12756,6 +13033,62 @@ function carregarFotoPerfil() {
       if (res.data && res.data.foto_perfil) {
         try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
         aplicarFotoPerfil(res.data.foto_perfil);
+      }
+    });
+  }
+}
+
+// ── Foto de perfil da doula ──
+function trocarFotoDoula() {
+  document.getElementById('foto-doula-input').click();
+}
+
+function salvarFotoDoula(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 300;
+      var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      try { localStorage.setItem('lua_foto_doula_' + currentUserId, dataUrl); } catch(err) {}
+      aplicarFotoDoula(dataUrl);
+      if (db && currentUserId) {
+        db.from('usuarios').update({ foto_perfil: dataUrl }).eq('id', currentUserId);
+      }
+      mostrarToast('Foto atualizada!');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function aplicarFotoDoula(dataUrl) {
+  var avatar = document.getElementById('doula-perfil-avatar');
+  if (!avatar) return;
+  if (dataUrl) {
+    avatar.style.backgroundImage = 'url(' + dataUrl + ')';
+    avatar.style.backgroundSize = 'cover';
+    avatar.style.backgroundPosition = 'center';
+    avatar.textContent = '';
+  }
+}
+
+function carregarFotoDoula() {
+  try {
+    var foto = localStorage.getItem('lua_foto_doula_' + currentUserId);
+    if (foto) { aplicarFotoDoula(foto); return; }
+  } catch(e) {}
+  if (db && currentUserId) {
+    db.from('usuarios').select('foto_perfil').eq('id', currentUserId).maybeSingle().then(function(res) {
+      if (res.data && res.data.foto_perfil) {
+        try { localStorage.setItem('lua_foto_doula_' + currentUserId, res.data.foto_perfil); } catch(e) {}
+        aplicarFotoDoula(res.data.foto_perfil);
       }
     });
   }
@@ -13066,28 +13399,28 @@ async function adicionarBiblioteca() {
   var fileUrl = ''; var tipo = bibTipoAtual;
   try {
     if (bibTipoAtual === 'pdf') {
-      if (!arquivoSelecionado) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('⚠️ Selecione um arquivo'); }
+      if (!arquivoSelecionado) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('⚠️ Selecione um arquivo'); }
       status.textContent = 'Enviando...';
       document.getElementById('upload-progress').style.display = 'block';
       var nomeArq = Date.now() + '_' + arquivoSelecionado.name.replace(/\s/g, '_');
       var upRes = await db.storage.from('materiais').upload(nomeArq, arquivoSelecionado);
       document.getElementById('upload-bar').style.width = '100%';
-      if (upRes.error) { btn.disabled=false; btn.textContent='Adicionar material'; status.textContent=''; document.getElementById('upload-progress').style.display='none'; return mostrarToast('⚠️ Erro no upload: ' + upRes.error.message); }
+      if (upRes.error) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); status.textContent=''; document.getElementById('upload-progress').style.display='none'; return mostrarToast('⚠️ Erro no upload: ' + upRes.error.message); }
       var urlRes = db.storage.from('materiais').getPublicUrl(nomeArq);
       fileUrl = urlRes.data.publicUrl;
       if (arquivoSelecionado.name.match(/\.(png|jpg|jpeg)$/i)) tipo = 'imagem';
       else tipo = 'pdf';
     } else if (bibTipoAtual === 'video') {
       fileUrl = document.getElementById('bib-youtube').value.trim();
-      if (!fileUrl) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('⚠️ Cole o link do YouTube'); }
+      if (!fileUrl) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('⚠️ Cole o link do YouTube'); }
       tipo = 'video';
     } else {
       fileUrl = document.getElementById('bib-link-url').value.trim();
-      if (!fileUrl) { btn.disabled=false; btn.textContent='Adicionar material'; return mostrarToast('⚠️ Cole o link'); }
+      if (!fileUrl) { btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); return mostrarToast('⚠️ Cole o link'); }
       tipo = 'link';
     }
     var saveRes = await db.from('biblioteca').insert({ titulo: titulo, tipo: tipo, url: fileUrl, destino: destino, descricao: desc, doula_id: null });
-    btn.disabled=false; btn.textContent='Adicionar material'; status.textContent='';
+    btn.disabled=false; btn.textContent=t('doula.lib.btn.add'); status.textContent='';
     document.getElementById('upload-progress').style.display='none';
     document.getElementById('upload-bar').style.width='0%';
     if (saveRes.error) return mostrarToast('⚠️ Erro: ' + saveRes.error.message);
@@ -13100,7 +13433,7 @@ async function adicionarBiblioteca() {
     limparArquivo();
     carregarBibliotecaAdmin();
   } catch(e) {
-    btn.disabled=false; btn.textContent='Adicionar material';
+    btn.disabled=false; btn.textContent=t('doula.lib.btn.add');
     mostrarToast('⚠️ Erro: ' + e.message);
   }
 }
@@ -14596,6 +14929,7 @@ function _fbMostrarBotao(show) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-05-13', titulo:'Foto de perfil para a doula', descricao:'A doula agora pode adicionar uma foto de perfil no seu painel. Basta tocar no avatar circular no topo do card "Complete seu perfil" para escolher uma foto da galeria. A imagem aparece no marketplace (onde as gestantes encontram doulas), no modal de perfil detalhado, e no painel da gestante vinculada.' },
   { data:'2026-05-12', titulo:'Lista de clientes no painel de Mensagens', descricao:'A seção Mensagens da doula agora exibe automaticamente todas as clientes vinculadas (com solicitação aceita) ao ser aberta. Basta clicar no nome da cliente para abrir a conversa diretamente, sem precisar ir à seção Clientes.' },
   { data:'2026-05-11', titulo:'Agenda da doula reformulada', descricao:'A seção Agenda ganhou quatro melhorias: resumo da semana atual com todas as consultas, alertas de DPP para clientes com parto nos próximos 30 dias, calendário mensal com cores por tipo de dia (consulta, bloqueado, disponível) e modal rápido para agendar com toggle presencial/online.' },
   { data:'2026-05-11', titulo:'Resumo da semana na Agenda', descricao:'Card no topo da Agenda lista todas as consultas da semana atual com nome da cliente, tipo, local e horário. O dia de hoje fica destacado em rose. Botão "+ Novo" abre o modal de agendamento.' },
@@ -14867,6 +15201,88 @@ var _babyFrutas = {
   41: { n: 'Melancia Madura', e: '🍉', d: 'O bebê está apenas ganhando um pouquinho mais de peso.' },
   42: { n: 'Melão', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
 };
+var _babyFrutasEn = {
+  4:  { n: 'Poppy Seed', e: '🌱', d: 'Your baby is tiny, like a little seed, but already settling in!' },
+  5:  { n: 'Pod', e: '🫛', d: 'Baby\'s heart starts beating this week. How exciting!' },
+  6:  { n: 'Blueberry', e: '🫐', d: 'The baby has doubled in size since last week!' },
+  7:  { n: 'Cherry', e: '🍒', d: 'The brain is developing rapidly now.' },
+  8:  { n: 'Cherry', e: '🍒', d: 'Little arms and legs are starting to appear.' },
+  9:  { n: 'Olive', e: '🫒', d: 'The baby can move a little!' },
+  10: { n: 'Apricot', e: '🍑', d: 'Bones and cartilage are forming.' },
+  11: { n: 'Lime', e: '🍋', d: 'The baby already has nails and hair follicles.' },
+  12: { n: 'Grapes', e: '🍇', d: 'Almost all organs are formed now.' },
+  13: { n: 'Lemon', e: '🍋', d: 'The baby already has fingerprints!' },
+  14: { n: 'Peach', e: '🍑', d: 'The baby can now make facial expressions.' },
+  15: { n: 'Apple', e: '🍎', d: 'The baby is starting to hear your voice.' },
+  16: { n: 'Avocado', e: '🥑', d: 'The baby can already hold the umbilical cord.' },
+  17: { n: 'Pear', e: '🍐', d: 'The baby is accumulating fat to stay warm.' },
+  18: { n: 'Bell Pepper', e: '🫑', d: 'The baby already yawns and hiccups.' },
+  19: { n: 'Mango', e: '🥭', d: 'The senses (smell, sight, hearing) are developing.' },
+  20: { n: 'Banana', e: '🍌', d: 'Halfway there! The baby is growing a lot.' },
+  21: { n: 'Carrot', e: '🥕', d: 'The baby\'s digestive system is maturing.' },
+  22: { n: 'Corn', e: '🌽', d: 'The baby already looks like a miniature newborn.' },
+  23: { n: 'Grapefruit', e: '🍊', d: 'The lungs are preparing to breathe.' },
+  24: { n: 'Large Corn', e: '🌽', d: 'The baby already has sleep and wake cycles.' },
+  25: { n: 'Cauliflower', e: '🥦', d: 'The baby starts opening their eyes this week.' },
+  26: { n: 'Chard', e: '🥬', d: 'The baby is practicing breathing with amniotic fluid.' },
+  27: { n: 'Broccoli', e: '🥦', d: 'The baby can already recognize familiar voices.' },
+  28: { n: 'Eggplant', e: '🍆', d: 'Entering the third trimester! The baby is dreaming now.' },
+  29: { n: 'Honeydew', e: '🍈', d: 'The baby is gaining weight rapidly.' },
+  30: { n: 'Coconut', e: '🥥', d: 'The baby can already follow light with their eyes.' },
+  31: { n: 'Pineapple', e: '🍍', d: 'The baby is running out of room for big somersaults.' },
+  32: { n: 'Potato', e: '🥔', d: 'The baby is positioning for birth.' },
+  33: { n: 'Large Pineapple', e: '🍍', d: 'The baby\'s immune system is strengthening.' },
+  34: { n: 'Small Melon', e: '🍈', d: 'The baby is accumulating calcium for bones.' },
+  35: { n: 'Honeydew', e: '🍈', d: 'The nervous system is almost fully mature.' },
+  36: { n: 'Cabbage', e: '🥬', d: 'The baby is gaining about 30g per day!' },
+  37: { n: 'Fresh Herbs', e: '🌿', d: 'The baby is now considered "early term."' },
+  38: { n: 'Long Melon', e: '🍈', d: 'The baby is losing lanugo (fine baby hair).' },
+  39: { n: 'Watermelon', e: '🍉', d: 'The baby is ready to meet the world!' },
+  40: { n: 'Large Watermelon', e: '🍉', d: 'The big moment has arrived or is very close!' },
+  41: { n: 'Ripe Watermelon', e: '🍉', d: 'The baby is just gaining a little more weight.' },
+  42: { n: 'Melon', e: '🍈', d: 'You were amazing! The baby will soon be in your arms.' }
+};
+var _babyFrutasEs = {
+  4:  { n: 'Semilla de Amapola', e: '🌱', d: '¡Tu bebé es diminuto, como una semillita, pero ya se está acomodando!' },
+  5:  { n: 'Vaina', e: '🫛', d: '¡El corazón del bebé comienza a latir esta semana. Qué emoción!' },
+  6:  { n: 'Arándano', e: '🫐', d: '¡El bebé duplicó su tamaño desde la semana pasada!' },
+  7:  { n: 'Cereza', e: '🍒', d: 'El cerebro se está desarrollando rápidamente ahora.' },
+  8:  { n: 'Cereza', e: '🍒', d: 'Los brazitos y piernitas comienzan a aparecer.' },
+  9:  { n: 'Aceituna', e: '🫒', d: '¡El bebé ya puede moverse un poquito!' },
+  10: { n: 'Damasco', e: '🍑', d: 'Los huesos y los cartílagos se están formando.' },
+  11: { n: 'Lima', e: '🍋', d: 'El bebé ya tiene uñas y folículos capilares.' },
+  12: { n: 'Uvas', e: '🍇', d: 'Casi todos los órganos ya están formados.' },
+  13: { n: 'Limón', e: '🍋', d: '¡El bebé ya tiene huellas dactilares!' },
+  14: { n: 'Durazno', e: '🍑', d: 'El bebé ya puede hacer expresiones faciales.' },
+  15: { n: 'Manzana', e: '🍎', d: 'El bebé está comenzando a escuchar tu voz.' },
+  16: { n: 'Aguacate', e: '🥑', d: 'El bebé ya puede agarrar el cordón umbilical.' },
+  17: { n: 'Pera', e: '🍐', d: 'El bebé está acumulando grasa para mantenerse caliente.' },
+  18: { n: 'Pimiento', e: '🫑', d: 'El bebé ya bosteza y tiene hipo.' },
+  19: { n: 'Mango', e: '🥭', d: 'Los sentidos (olfato, visión, audición) se están desarrollando.' },
+  20: { n: 'Banana', e: '🍌', d: '¡Llegamos a la mitad del camino! El bebé está creciendo mucho.' },
+  21: { n: 'Zanahoria', e: '🥕', d: 'El sistema digestivo del bebé está madurando.' },
+  22: { n: 'Maíz', e: '🌽', d: 'El bebé ya parece un recién nacido en miniatura.' },
+  23: { n: 'Toronja', e: '🍊', d: 'Los pulmones se están preparando para respirar.' },
+  24: { n: 'Maíz Grande', e: '🌽', d: 'El bebé ya tiene ciclos de sueño y vigilia.' },
+  25: { n: 'Coliflor', e: '🥦', d: 'El bebé comienza a abrir los ojos esta semana.' },
+  26: { n: 'Acelga', e: '🥬', d: 'El bebé está practicando la respiración con líquido amniótico.' },
+  27: { n: 'Brócoli', e: '🥦', d: 'El bebé ya puede reconocer voces familiares.' },
+  28: { n: 'Berenjena', e: '🍆', d: '¡Entrando al tercer trimestre! El bebé está soñando ahora.' },
+  29: { n: 'Melón', e: '🍈', d: 'El bebé está ganando peso rápidamente.' },
+  30: { n: 'Coco', e: '🥥', d: 'El bebé ya puede seguir la luz con los ojos.' },
+  31: { n: 'Piña', e: '🍍', d: 'El bebé se está quedando sin espacio para grandes piruetas.' },
+  32: { n: 'Papa', e: '🥔', d: 'El bebé se está posicionando para el nacimiento.' },
+  33: { n: 'Piña Grande', e: '🍍', d: 'El sistema inmunológico del bebé se está fortaleciendo.' },
+  34: { n: 'Melón Pequeño', e: '🍈', d: 'El bebé está acumulando calcio para los huesos.' },
+  35: { n: 'Melón', e: '🍈', d: 'El sistema nervioso está casi completamente maduro.' },
+  36: { n: 'Repollo', e: '🥬', d: '¡El bebé está ganando unos 30g por día!' },
+  37: { n: 'Hierbas Frescas', e: '🌿', d: 'El bebé ya se considera "a término temprano."' },
+  38: { n: 'Melón Largo', e: '🍈', d: 'El bebé está perdiendo el lanugo (pelitos finos).' },
+  39: { n: 'Sandía', e: '🍉', d: '¡El bebé está listo para conocer el mundo!' },
+  40: { n: 'Sandía Grande', e: '🍉', d: '¡El gran momento llegó o está muy cerca!' },
+  41: { n: 'Sandía Madura', e: '🍉', d: 'El bebé solo está ganando un poco más de peso.' },
+  42: { n: 'Melón', e: '🍈', d: '¡Fuiste increíble! El bebé pronto estará en tus brazos.' }
+};
 
 function carregarSecaoBebe() {
   var nome = localStorage.getItem('lua_baby_nome') || '';
@@ -14884,7 +15300,7 @@ async function salvarDadosBebe() {
   if (db && currentUserId) {
     try { await db.from('usuarios').update({ baby_nome: nome, baby_sexo: sexo }).eq('id', currentUserId); } catch(e) {}
   }
-  mostrarToast('✅ Dados do bebê salvos 🌸');
+  mostrarToast(t('bebe.toast.saved'));
 }
 
 function _twUrl(emoji) {
@@ -14900,26 +15316,28 @@ function _twUrl(emoji) {
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
   var emojiEl = document.getElementById('baby-emoji');
+  var _fm = {'pt': _babyFrutas, 'en': _babyFrutasEn, 'es': _babyFrutasEs};
+  var _frutas = _fm[_lang] || _babyFrutas;
   if (s <= 0) {
     emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="120" height="120" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
-    document.getElementById('baby-fruit-name').textContent = 'Configure sua DPP';
-    document.getElementById('baby-fruit-desc').textContent = 'Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.';
+    document.getElementById('baby-fruit-name').textContent = t('bebe.cfg.dpp');
+    document.getElementById('baby-fruit-desc').textContent = t('bebe.cfg.dpp.desc');
   } else {
     if (s < 4) s = 4;
     if (s > 42) s = 42;
-    var fruta = _babyFrutas[s] || _babyFrutas[4];
-    
+    var fruta = _frutas[s] || _frutas[4];
+
     // Tenta carregar a imagem 3D, com fallback para o emoji caso falhe (arquivo não existe)
     var imgUrl = fruta.img || _twUrl(fruta.e);
     var emojiFallback = _twUrl(fruta.e);
-    
+
     emojiEl.innerHTML = '<img src="' + imgUrl + '" width="120" height="120" ' +
       'onerror="this.onerror=null;this.src=\'' + emojiFallback + '\';" ' +
       'style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
-    
+
     document.getElementById('baby-fruit-name').textContent = fruta.n;
-    var nome = localStorage.getItem('lua_baby_nome') || 'Seu bebê';
-    document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> está com o tamanho de <strong>' + fruta.n + '</strong>.<br><br>' + fruta.d;
+    var nome = localStorage.getItem('lua_baby_nome') || t('bebe.default.nome');
+    document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> ' + t('bebe.tamanho').replace('{fruta}', '<strong>' + fruta.n + '</strong>') + '<br><br>' + fruta.d;
   }
 }
 
@@ -14996,7 +15414,7 @@ async function carregarEstatisticasDoula() {
     var listaEl = document.getElementById('estat-avaliacoes-lista');
     if (listaEl) {
       if (!avals.length) {
-        listaEl.innerHTML = '<div class="empty-state-small">Nenhuma avaliação recebida ainda</div>';
+        listaEl.innerHTML = '<div class="empty-state-small">'+t('doula.stat.reviews.empty')+'</div>';
       } else {
         listaEl.innerHTML = avals.slice(0, 5).map(function(a) {
           var stars = Array(a.nota || 0).fill('⭐').join('');
@@ -15022,13 +15440,13 @@ async function carregarEstatisticasDoula() {
       var pendentes = sols.filter(function(s) { return s.status === 'pendente'; }).length;
       var encerradas = sols.filter(function(s) { return s.status === 'encerrada'; }).length;
       if (!sols.length) {
-        solResEl.innerHTML = '<div class="empty-state-small">Nenhuma solicitação recebida ainda</div>';
+        solResEl.innerHTML = '<div class="empty-state-small">'+t('doula.stat.requests.empty')+'</div>';
       } else {
         solResEl.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
-          '<div style="background:#dcfce7;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#16a34a;">' + aceitas + '</div><div style="font-size:12px;color:#16a34a;margin-top:2px;">Aceitas</div></div>' +
-          '<div style="background:#fee2e2;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#dc2626;">' + recusadas + '</div><div style="font-size:12px;color:#dc2626;margin-top:2px;">Recusadas</div></div>' +
-          '<div style="background:#fff8f0;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#ea580c;">' + pendentes + '</div><div style="font-size:12px;color:#ea580c;margin-top:2px;">Pendentes</div></div>' +
-          '<div style="background:#f3f4f6;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#6b7280;">' + encerradas + '</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">Encerradas</div></div>' +
+          '<div style="background:#dcfce7;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#16a34a;">' + aceitas + '</div><div style="font-size:12px;color:#16a34a;margin-top:2px;">'+t('doula.stat.req.accepted')+'</div></div>' +
+          '<div style="background:#fee2e2;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#dc2626;">' + recusadas + '</div><div style="font-size:12px;color:#dc2626;margin-top:2px;">'+t('doula.stat.req.declined')+'</div></div>' +
+          '<div style="background:#fff8f0;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#ea580c;">' + pendentes + '</div><div style="font-size:12px;color:#ea580c;margin-top:2px;">'+t('doula.stat.req.pending')+'</div></div>' +
+          '<div style="background:#f3f4f6;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:28px;font-weight:700;color:#6b7280;">' + encerradas + '</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">'+t('doula.stat.req.closed')+'</div></div>' +
         '</div>';
       }
     }
