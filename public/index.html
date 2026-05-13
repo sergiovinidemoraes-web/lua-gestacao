@@ -11850,12 +11850,11 @@ async function carregarMinhaDoula() {
     // Painel Minha Doula
     var el = document.getElementById('minha-doula-avatar');
     if (el) {
-      el.textContent = inicial;
       if (d.foto_perfil) {
-        el.style.backgroundImage = 'url(' + d.foto_perfil + ')';
-        el.style.backgroundSize = 'cover';
-        el.style.backgroundPosition = 'center';
+        el.style.background = 'url(' + d.foto_perfil + ') center/cover no-repeat';
         el.textContent = '';
+      } else {
+        el.textContent = inicial;
       }
     }
     var el2 = document.getElementById('minha-doula-nome');
@@ -11873,12 +11872,11 @@ async function carregarMinhaDoula() {
     if (btnChat) btnChat.style.display = 'flex';
     var avatarEl = document.getElementById('doula-card-avatar');
     if (avatarEl) {
-      avatarEl.textContent = inicial;
       if (d.foto_perfil) {
-        avatarEl.style.backgroundImage = 'url(' + d.foto_perfil + ')';
-        avatarEl.style.backgroundSize = 'cover';
-        avatarEl.style.backgroundPosition = 'center';
+        avatarEl.style.background = 'url(' + d.foto_perfil + ') center/cover no-repeat';
         avatarEl.textContent = '';
+      } else {
+        avatarEl.textContent = inicial;
       }
     }
     var nomeCardEl = document.getElementById('doula-card-nome');
@@ -13072,9 +13070,7 @@ function aplicarFotoDoula(dataUrl) {
   var avatar = document.getElementById('doula-perfil-avatar');
   if (!avatar) return;
   if (dataUrl) {
-    avatar.style.backgroundImage = 'url(' + dataUrl + ')';
-    avatar.style.backgroundSize = 'cover';
-    avatar.style.backgroundPosition = 'center';
+    avatar.style.background = 'url(' + dataUrl + ') center/cover no-repeat';
     avatar.textContent = '';
   }
 }
