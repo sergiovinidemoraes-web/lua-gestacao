@@ -165,8 +165,7 @@ header { padding-top: env(safe-area-inset-top, 0); }
   background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
   margin-bottom: 24px; position: relative; overflow: hidden;
 }
-.baby-fruit-emoji { font-size: 64px; margin-bottom: 16px; display: block; }
-.baby-fruit-emoji img { width: 120px; height: 120px; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.18)); display: block; margin: 0 auto; }
+.baby-fruit-emoji { font-size: 80px; margin-bottom: 16px; display: block; line-height: 1; }
 .baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
 .baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
 
@@ -15357,15 +15356,6 @@ async function salvarDadosBebe() {
   mostrarToast(t('bebe.toast.saved'));
 }
 
-function _twUrl(emoji) {
-  var cp = [];
-  for (var i = 0; i < emoji.length; ) {
-    var code = emoji.codePointAt(i);
-    if (code !== 0xFE0F) cp.push(code.toString(16));
-    i += code > 0xFFFF ? 2 : 1;
-  }
-  return 'https://cdn.jsdelivr.net/npm/twemoji@14.0.0/dist/svg/' + cp.join('-') + '.svg';
-}
 
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
@@ -15373,7 +15363,7 @@ function atualizarVisualBebe(semana) {
   var _fm = {'pt': _babyFrutas, 'en': _babyFrutasEn, 'es': _babyFrutasEs};
   var _frutas = _fm[_lang] || _babyFrutas;
   if (s <= 0) {
-    emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="120" height="120" style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    emojiEl.textContent = '🌸';
     document.getElementById('baby-fruit-name').textContent = t('bebe.cfg.dpp');
     document.getElementById('baby-fruit-desc').textContent = t('bebe.cfg.dpp.desc');
   } else {
@@ -15381,13 +15371,7 @@ function atualizarVisualBebe(semana) {
     if (s > 42) s = 42;
     var fruta = _frutas[s] || _frutas[4];
 
-    // Tenta carregar a imagem 3D, com fallback para o emoji caso falhe (arquivo não existe)
-    var imgUrl = fruta.img || _twUrl(fruta.e);
-    var emojiFallback = _twUrl(fruta.e);
-
-    emojiEl.innerHTML = '<img src="' + imgUrl + '" width="120" height="120" ' +
-      'onerror="this.onerror=null;this.src=\'' + emojiFallback + '\';" ' +
-      'style="display:block;margin:0 auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,0.15));">';
+    emojiEl.textContent = fruta.e;
 
     document.getElementById('baby-fruit-name').textContent = fruta.n;
     var nome = localStorage.getItem('lua_baby_nome') || t('bebe.default.nome');
