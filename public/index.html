@@ -8263,7 +8263,6 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarTarefasEstado(); } catch(e) {} }, 450);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
-    setTimeout(function() { try { carregarPerfilDoula(); } catch(e) {} }, 700);
     setTimeout(function() { try { carregarMinhaDoula(); } catch(e) {} }, 900);
     setTimeout(function() { try { carregarMinhaDoulaPos(); } catch(e) {} }, 1100);
     setTimeout(function() {
@@ -13053,7 +13052,7 @@ function salvarFotoPerfil(input) {
       canvas.height = Math.round(img.height * ratio);
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
       var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      try { localStorage.setItem('lua_foto_perfil', dataUrl); } catch(err) {}
+      try { localStorage.setItem('lua_foto_perfil_' + currentUserId, dataUrl); } catch(err) {}
       aplicarFotoPerfil(dataUrl);
       if (db && currentUserId) {
         db.from('usuarios').update({ foto_perfil: dataUrl }).eq('id', currentUserId);
@@ -13077,14 +13076,15 @@ function aplicarFotoPerfil(dataUrl) {
 }
 
 function carregarFotoPerfil() {
+  var uid = currentUserId;
   try {
-    var foto = localStorage.getItem('lua_foto_perfil');
+    var foto = localStorage.getItem('lua_foto_perfil_' + uid);
     if (foto) { aplicarFotoPerfil(foto); return; }
   } catch(e) {}
-  if (db && currentUserId) {
-    db.from('usuarios').select('foto_perfil').eq('id', currentUserId).maybeSingle().then(function(res) {
+  if (db && uid) {
+    db.from('usuarios').select('foto_perfil').eq('id', uid).maybeSingle().then(function(res) {
       if (res.data && res.data.foto_perfil) {
-        try { localStorage.setItem('lua_foto_perfil', res.data.foto_perfil); } catch(e) {}
+        try { localStorage.setItem('lua_foto_perfil_' + uid, res.data.foto_perfil); } catch(e) {}
         aplicarFotoPerfil(res.data.foto_perfil);
       }
     });
