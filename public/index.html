@@ -12058,10 +12058,14 @@ async function carregarClientesDoula() {
     var externos = results[1].data || [];
     // Busca DPP das gestantes internas direto de usuarios
     var dppMapSol = {};
+    var fotoMapSol = {};
     if (solicitacoes.length) {
       var idsGest = solicitacoes.map(function(g) { return g.gestante_id; });
-      var resDppSol = await db.from('usuarios').select('id,dpp').in('id', idsGest);
-      (resDppSol.data || []).forEach(function(u) { if (u.dpp) dppMapSol[u.id] = u.dpp; });
+      var resDppSol = await db.from('usuarios').select('id,dpp,foto_perfil').in('id', idsGest);
+      (resDppSol.data || []).forEach(function(u) {
+        if (u.dpp) dppMapSol[u.id] = u.dpp;
+        if (u.foto_perfil) fotoMapSol[u.id] = u.foto_perfil;
+      });
     }
     populateClienteSelects(solicitacoes, externos);
     var total = solicitacoes.length + externos.length;
@@ -12137,15 +12141,19 @@ async function carregarClientesDoula() {
     }
     var sidebarList = document.getElementById('sidebar-clientes-list');
     if (sidebarList) {
-      var todosSidebar = solicitacoes.map(function(g) { return { nome: g.gestante_nome, tipo: 'sol', id: g.gestante_id }; })
-        .concat(externos.map(function(c) { return { nome: c.nome, tipo: 'ext', id: c.id }; }));
+      var todosSidebar = solicitacoes.map(function(g) { return { nome: g.gestante_nome, tipo: 'sol', id: g.gestante_id, foto: fotoMapSol[g.gestante_id] || null }; })
+        .concat(externos.map(function(c) { return { nome: c.nome, tipo: 'ext', id: c.id, foto: null }; }));
       sidebarList.innerHTML = todosSidebar.map(function(g) {
         var inicial = (g.nome || '?')[0].toUpperCase();
         var cores = ['#C9897A','#8A9E8C','#C9A96E','#7A6455'];
         var cor = cores[g.nome ? g.nome.charCodeAt(0) % cores.length : 0];
+        var avatarStyle = g.foto
+          ? 'background:' + cor + ';background-image:url(' + g.foto + ');background-size:cover;background-position:center;'
+          : 'background:' + cor + ';';
+        var avatarContent = g.foto ? '' : inicial;
         var clique = g.tipo === 'sol' ? 'abrirChatComGestante(\'' + g.id + '\',\'' + g.nome.replace(/'/g,'') + '\')' : 'mostrarToast(\'' + g.nome.replace(/'/g,'') + '\')';
         return '<div class="d-client-item" onclick="' + clique + '">' +
-          '<div class="d-client-avatar" style="background:' + cor + ';">' + inicial + '</div>' +
+          '<div class="d-client-avatar" style="' + avatarStyle + '">' + avatarContent + '</div>' +
           '<div><div style="font-size:13px;color:rgba(255,255,255,0.85);font-weight:500;">' + g.nome + '</div>' +
           '<div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (g.tipo === 'ext' ? 'cadastro externo' : t('doula.client.active')) + '</div></div></div>';
       }).join('');
