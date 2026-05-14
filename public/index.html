@@ -7900,6 +7900,9 @@ var tipoSelecionado = 'gestante';
 var adminSenha = 'lua_admin_2026';
 var sessaoAtualId = null;
 var sessaoInicio = null;
+var sessaoTipo = null;
+var sessaoNome = null;
+var sessaoEmail = null;
 
 window.addEventListener('load', function() {
   try {
@@ -10224,43 +10227,30 @@ async function fazerLogout() {
   mostrarToast('Até logo! 🌙');
 }
 
-async function registrarInicioSessao(tipo) {
-  if (!db || !currentUserId) return;
-  try {
-    sessaoInicio = Date.now();
-    // Garante identificação mínima para o admin
-    var nomeParaLog = currentNome || currentEmail || 'Usuário';
-    var res = await db.from('sessoes').insert({ 
-      user_id: currentUserId, 
-      tipo: tipo, 
-      inicio: new Date().toISOString(), 
-      nome: nomeParaLog, 
-      email: currentEmail || null 
-    }).select('id').maybeSingle();
-    if (res.data) sessaoAtualId = res.data.id;
-  } catch(e) { console.error('Erro ao registrar sessão:', e); }
+function registrarInicioSessao(tipo) {
+  if (!currentUserId) return;
+  sessaoInicio = Date.now();
+  sessaoTipo = tipo;
+  sessaoNome = currentNome || currentEmail || 'Usuário';
+  sessaoEmail = currentEmail || null;
 }
 
 async function registrarFimSessao() {
-  if (!db || !sessaoAtualId || !sessaoInicio) return;
+  if (!db || !currentUserId || !sessaoInicio) return;
   try {
     var duracao = Date.now() - sessaoInicio;
-    await db.from('sessoes').update({ fim: new Date().toISOString(), duracao_ms: duracao }).eq('id', sessaoAtualId);
-    sessaoAtualId = null;
+    await db.from('sessoes').insert({
+      user_id: currentUserId,
+      tipo: sessaoTipo,
+      inicio: new Date(sessaoInicio).toISOString(),
+      fim: new Date().toISOString(),
+      duracao_ms: duracao,
+      nome: sessaoNome,
+      email: sessaoEmail
+    });
     sessaoInicio = null;
   } catch(e) {}
 }
-
-window.addEventListener('beforeunload', function() {
-  if (!sessaoAtualId || !sessaoInicio || !db) return;
-  var duracao = Date.now() - sessaoInicio;
-  // usa sendBeacon para garantir envio mesmo fechando a aba
-  var url = 'https://mmjrcusivcjiqjelyjyu.supabase.co/rest/v1/sessoes?id=eq.' + sessaoAtualId;
-  var body = JSON.stringify({ fim: new Date().toISOString(), duracao_ms: duracao });
-  try {
-    navigator.sendBeacon && navigator.sendBeacon(url + '&method=PATCH', new Blob([body], { type: 'application/json' }));
-  } catch(e) {}
-});
 
 function backToSplash() { fazerLogout(); }
 function enterApp(role) { entrarNoApp(role, role === 'gestante' ? 'Visitante' : 'Doula'); }
