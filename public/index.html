@@ -2173,6 +2173,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span data-i18n="doula.nav.stats">Estatísticas</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><span class="d-nav-icon">👤</span><span>Meu Perfil</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
           <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
@@ -2271,42 +2272,14 @@ tr:hover td { background:var(--rose-pale); }
             <div id="contracoes-realtime-log"></div>
           </div>
 
-          <div id="card-perfil-doula" class="card" style="margin-top:24px;background:linear-gradient(135deg,var(--rose-pale),var(--sage-light));border:1.5px dashed var(--rose-light);">
-            <div class="card-title" data-i18n="doula.perfil.title">Complete seu perfil</div>
-            <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="doula.perfil.sub">Preencha para aparecer no marketplace do Lua e receber gestantes</div>
-            <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px;">
-              <div id="doula-perfil-avatar" onclick="trocarFotoDoula()" title="Clique para alterar foto" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;color:white;cursor:pointer;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;">D</div>
-              <input type="file" id="foto-doula-input" accept="image/*" style="display:none" onchange="salvarFotoDoula(this)">
-              <div style="font-size:11px;color:var(--earth-light);margin-top:6px;cursor:pointer;" onclick="trocarFotoDoula()">Toque para adicionar foto de perfil</div>
-            </div>
-            <div style="display:grid;gap:10px;">
-              <input id="doula-whatsapp" class="form-input" type="tel" data-i18n-ph="doula.perfil.wpp" placeholder="WhatsApp com DDD (ex: 11999999999)">
-              <input id="doula-cidade" class="form-input" type="text" data-i18n-ph="doula.perfil.city" placeholder="Cidade e Estado (ex: Sao Paulo, SP)">
-              <input id="doula-especialidades" class="form-input" type="text" data-i18n-ph="doula.perfil.esp" placeholder="Especialidades separadas por virgula">
-              <textarea id="doula-bio" class="form-input form-textarea" data-i18n-ph="doula.perfil.bio" placeholder="Sua bio curta — quem voce e e como trabalha..." style="height:80px;resize:none;"></textarea>
-              <input id="doula-partos" class="form-input" type="number" min="0" placeholder="Número de partos acompanhados">
-              <select id="doula-tipo-atendimento" class="form-input form-select">
-                <option value="">Tipo de atendimento...</option>
-                <option value="presencial">Presencial</option>
-                <option value="online">Online</option>
-                <option value="hibrido">Híbrido (presencial + online)</option>
-              </select>
-              <textarea id="doula-valores-pacotes" class="form-input form-textarea" placeholder="Valores e pacotes (ex: Pré-natal R$200/sessão · Parto completo R$2.500)" style="height:72px;resize:none;"></textarea>
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--rose-pale);border-radius:12px;">
-                <div>
-                  <div style="font-size:13px;font-weight:500;color:var(--dark);" data-i18n="doula.disponivel.title">Disponível para novas clientes</div>
-                  <div id="doula-disponivel-label" data-i18n="doula.disponivel.on" style="font-size:11px;color:var(--earth-light);margin-top:2px;">Ativado — aparece no marketplace</div>
-                </div>
-                <div id="doula-disponivel-toggle" onclick="toggleDisponivelDoula()" style="width:44px;height:24px;border-radius:12px;background:var(--sage);cursor:pointer;position:relative;transition:background 0.2s;">
-                  <div id="doula-disponivel-knob" style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;right:3px;transition:right 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
-                </div>
+          <div id="card-perfil-doula" class="card" style="margin-top:24px;background:linear-gradient(135deg,var(--rose-pale),var(--sage-light));border:1.5px dashed var(--rose-light);cursor:pointer;" onclick="irParaMeuPerfil()">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div id="doula-perfil-avatar" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;color:white;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;">D</div>
+              <div style="flex:1;">
+                <div class="card-title" style="margin-bottom:2px;">Meu Perfil</div>
+                <div style="font-size:12px;color:var(--earth-light);">Foto, bio, especialidades e disponibilidade</div>
               </div>
-              <div style="background:var(--white);border-radius:12px;padding:14px 16px;border:1px solid var(--border);">
-                <div style="font-size:13px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="doula.limite.title">Limite de clientes simultâneas</div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;" data-i18n="doula.limite.desc">Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.</div>
-                <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" placeholder="Ex: 5 (deixe vazio para ilimitado)" style="margin-bottom:0;">
-              </div>
-              <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;" data-i18n="doula.perfil.save">Salvar e aparecer no marketplace</button>
+              <div style="font-size:20px;color:var(--rose);">›</div>
             </div>
           </div>
 
@@ -2320,6 +2293,76 @@ tr:hover td { background:var(--rose-pale); }
               <div id="partos-mes">
                 <div class="empty-state-small" data-i18n="doula.births.empty">Nenhum parto registrado este mês</div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEU PERFIL -->
+        <div class="d-panel" id="d-meuperfil">
+          <div class="panel-title">Meu Perfil</div>
+          <div class="panel-sub">Gerencie sua foto, bio e informações que aparecem no marketplace</div>
+
+          <!-- Foto de perfil -->
+          <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 24px;margin-bottom:20px;">
+            <div id="doula-mp-avatar" onclick="trocarFotoDoula()" title="Clique para alterar foto"
+                 style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;color:white;cursor:pointer;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;box-shadow:0 4px 16px rgba(201,137,122,0.3);">D</div>
+            <input type="file" id="foto-doula-input" accept="image/*" style="display:none" onchange="previewFotoDoula(this)">
+            <button onclick="trocarFotoDoula()" style="margin-top:14px;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--rose);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📷 Alterar foto</button>
+            <div id="doula-mp-foto-aviso" style="display:none;font-size:11px;color:var(--earth-light);margin-top:8px;">Nova foto selecionada — clique em Salvar para confirmar</div>
+          </div>
+
+          <!-- Campos de perfil -->
+          <div class="card">
+            <div class="card-title">Informações do perfil</div>
+            <div style="display:grid;gap:12px;margin-top:4px;">
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">WhatsApp</div>
+                <input id="doula-whatsapp" class="form-input" type="tel" placeholder="WhatsApp com DDD (ex: 11999999999)">
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Cidade e Estado</div>
+                <input id="doula-cidade" class="form-input" type="text" placeholder="Ex: São Paulo, SP">
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Especialidades</div>
+                <input id="doula-especialidades" class="form-input" type="text" placeholder="Separadas por vírgula">
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Bio</div>
+                <textarea id="doula-bio" class="form-input form-textarea" placeholder="Quem você é e como trabalha..." style="height:90px;resize:none;"></textarea>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Partos acompanhados</div>
+                <input id="doula-partos" class="form-input" type="number" min="0" placeholder="Número de partos">
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Tipo de atendimento</div>
+                <select id="doula-tipo-atendimento" class="form-input form-select">
+                  <option value="">Selecione...</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="online">Online</option>
+                  <option value="hibrido">Híbrido (presencial + online)</option>
+                </select>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Valores e pacotes</div>
+                <textarea id="doula-valores-pacotes" class="form-input form-textarea" placeholder="Ex: Pré-natal R$200/sessão · Parto completo R$2.500" style="height:72px;resize:none;"></textarea>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--rose-pale);border-radius:12px;">
+                <div>
+                  <div style="font-size:13px;font-weight:500;color:var(--dark);">Disponível para novas clientes</div>
+                  <div id="doula-disponivel-label" style="font-size:11px;color:var(--earth-light);margin-top:2px;">Ativado — aparece no marketplace</div>
+                </div>
+                <div id="doula-disponivel-toggle" onclick="toggleDisponivelDoula()" style="width:44px;height:24px;border-radius:12px;background:var(--sage);cursor:pointer;position:relative;transition:background 0.2s;">
+                  <div id="doula-disponivel-knob" style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;right:3px;transition:right 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Limite de clientes simultâneas</div>
+                <div style="font-size:11px;color:var(--earth-light);margin-bottom:6px;">Deixe em branco para ilimitado.</div>
+                <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" placeholder="Ex: 5 (vazio = ilimitado)">
+              </div>
+              <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">Salvar perfil</button>
             </div>
           </div>
         </div>
@@ -11772,6 +11815,13 @@ async function _carregarAvaliacoesModal(doulaId) {
 // ── Perfil da Doula ──
 var _doulaDisponivelAtual = true;
 var _doulaLimiteClientes = null;
+var _doulaFotoDataUrl = null;
+
+function irParaMeuPerfil() {
+  var navItem = document.querySelector('.d-nav-item[onclick*="d-meuperfil"]');
+  dNav(navItem, 'd-meuperfil');
+  carregarPerfilDoula();
+}
 var _historicoAberto = false;
 
 function toggleDisponivelDoula() {
@@ -11814,11 +11864,16 @@ async function salvarPerfilDoula() {
     if (partos !== null && !isNaN(partos)) payload.partos_acompanhados = partos;
     if (tipoAtendimento) payload.tipo_atendimento = tipoAtendimento;
     if (valoresPacotes) payload.valores_pacotes = valoresPacotes;
+    if (_doulaFotoDataUrl) payload.foto_perfil = _doulaFotoDataUrl;
     var res = await db.from('usuarios').update(payload).eq('id', uid).eq('tipo', 'doula');
     if (res.error) throw res.error;
+    if (_doulaFotoDataUrl) {
+      try { localStorage.setItem('lua_foto_doula_' + uid, _doulaFotoDataUrl); } catch(e) {}
+      _doulaFotoDataUrl = null;
+      var aviso = document.getElementById('doula-mp-foto-aviso');
+      if (aviso) aviso.style.display = 'none';
+    }
     mostrarToast('Perfil salvo! Você aparece no marketplace 🌙');
-    var card = document.getElementById('card-perfil-doula');
-    if (card) { card.style.background = 'var(--white)'; card.style.border = 'none'; }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
@@ -12945,8 +13000,11 @@ async function carregarPerfilDoula() {
       .eq('id', uid).maybeSingle();
     if (res.data) {
       var d = res.data;
-      var avatarEl = document.getElementById('doula-perfil-avatar');
-      if (avatarEl) avatarEl.textContent = (d.nome || 'D')[0].toUpperCase();
+      var inicial = (d.nome || 'D')[0].toUpperCase();
+      ['doula-perfil-avatar','doula-mp-avatar'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && !el.style.backgroundImage) el.textContent = inicial;
+      });
       if (d.foto_perfil) {
         try { localStorage.setItem('lua_foto_doula_' + uid, d.foto_perfil); } catch(e) {}
         aplicarFotoDoula(d.foto_perfil);
@@ -13038,10 +13096,11 @@ function carregarFotoPerfil() {
 
 // ── Foto de perfil da doula ──
 function trocarFotoDoula() {
-  document.getElementById('foto-doula-input').click();
+  var input = document.getElementById('foto-doula-input');
+  if (input) input.click();
 }
 
-function salvarFotoDoula(input) {
+function previewFotoDoula(input) {
   if (!input.files || !input.files[0]) return;
   var reader = new FileReader();
   reader.onload = function(e) {
@@ -13053,13 +13112,10 @@ function salvarFotoDoula(input) {
       canvas.width = Math.round(img.width * ratio);
       canvas.height = Math.round(img.height * ratio);
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      try { localStorage.setItem('lua_foto_doula_' + currentUserId, dataUrl); } catch(err) {}
-      aplicarFotoDoula(dataUrl);
-      if (db && currentUserId) {
-        db.from('usuarios').update({ foto_perfil: dataUrl }).eq('id', currentUserId);
-      }
-      mostrarToast('Foto atualizada!');
+      _doulaFotoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      aplicarFotoDoula(_doulaFotoDataUrl);
+      var aviso = document.getElementById('doula-mp-foto-aviso');
+      if (aviso) aviso.style.display = 'block';
     };
     img.src = e.target.result;
   };
@@ -13067,12 +13123,15 @@ function salvarFotoDoula(input) {
 }
 
 function aplicarFotoDoula(dataUrl) {
-  var avatar = document.getElementById('doula-perfil-avatar');
-  if (!avatar) return;
-  if (dataUrl) {
-    avatar.style.background = 'url(' + dataUrl + ') center/cover no-repeat';
-    avatar.textContent = '';
-  }
+  if (!dataUrl) return;
+  var ids = ['doula-mp-avatar', 'doula-perfil-avatar'];
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.style.background = 'url(' + dataUrl + ') center/cover no-repeat';
+      el.textContent = '';
+    }
+  });
 }
 
 function carregarFotoDoula() {
