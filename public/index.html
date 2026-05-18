@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- v20260405150000 -->
 <!-- Lua App v2.3.3 - 2026-04-05 - Fix: sidebar doula oculta por padrão, Spotify sem lazy -->
 <html lang="pt-BR">
@@ -2394,6 +2394,8 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
                 <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
                 <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="nc-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
+                <div class="form-group"><label class="form-label">Nome do bebê</label><input id="nc-nome-bebe" class="form-input" type="text" placeholder="Apelido ou nome escolhido"></div>
+                <div class="form-group"><label class="form-label">Nome do acompanhante</label><input id="nc-nome-acompanhante" class="form-input" type="text" placeholder="Parceiro(a), familiar..."></div>
               </div>
               <div class="form-group"><label class="form-label">Estado emocional atual</label><textarea id="nc-emocional" class="form-input form-textarea" placeholder="Descreva como a gestante está emocionalmente, medos, expectativas..."></textarea></div>
               <div class="form-group"><label class="form-label">Observações gerais</label><textarea id="nc-obs" class="form-input form-textarea" placeholder="Alergias, condições de saúde, preferências especiais..."></textarea></div>
@@ -2477,6 +2479,7 @@ tr:hover td { background:var(--rose-pale); }
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-chat" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.chat">Acesso ao Chat</span></label>
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-registros" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.registros">Acesso aos Registros</span></label>
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding-left:26px;"><input id="backup-perm-historico" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> <span data-i18n="doula.backup.perm.historico">↳ Ver histórico de dias anteriores</span></label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-ficha" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à ficha das clientes</label>
                 </div>
               </div>
               <button onclick="salvarBackupDoula()" id="btn-salvar-backup" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;" data-i18n="doula.backup.btn.save">✅ Salvar e verificar</button>
@@ -6714,9 +6717,9 @@ async function carregarDashboardPai() {
   try { document.getElementById('p-dias-restantes').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
   try { document.getElementById('p-dpp-display').textContent = dppFormatada; } catch(e) {}
   // Emojis por semana
-  var bebeEmojis = {1:'🫧',4:'🌱',8:'🫘',12:'🫐',16:'🥝',20:'🍋',24:'🥭',28:'🥥',32:'🍍',36:'🎃',40:'👶'};
+  var bebeEmojis = {1:'🫧',4:'🌱',8:'🫘',12:'🫐',16:'🥝',20:'🍋',24:'🥭',28:'🥥',32:'🍍',36:'🍈',40:'👶'};
   var emojiKey = Math.max.apply(null, Object.keys(bebeEmojis).filter(function(k){return parseInt(k)<=info.semana;}));
-  try { document.getElementById('p-bebe-emoji').textContent = bebeEmojis[emojiKey] || '👶'; } catch(e) {}
+  try { document.getElementById('p-bebe-emoji').innerHTML = '<img src="' + _twUrl(bebeEmojis[emojiKey] || '👶') + '" width="36" height="36" style="display:inline-block; vertical-align:middle; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1));">'; } catch(e) {}
   // Painel gestação
   try { document.getElementById('p-gestacao-semanas').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
   try { document.getElementById('p-gestacao-bar').style.width = info.progresso + '%'; } catch(e) {}
@@ -7616,6 +7619,7 @@ async function salvarBackupDoula() {
     perm_chat: !!(document.getElementById('backup-perm-chat') || {}).checked,
     perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked,
     perm_historico: !!(document.getElementById('backup-perm-historico') || {}).checked,
+    perm_ficha: !!(document.getElementById('backup-perm-ficha') || {}).checked,
     status: 'pendente',
     backup_user_id: null
   };
@@ -7691,6 +7695,7 @@ async function carregarBackupDoula() {
     var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
     var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
     var ph = document.getElementById('backup-perm-historico'); if (ph) ph.checked = !!res.data.perm_historico;
+    var pf = document.getElementById('backup-perm-ficha'); if (pf) pf.checked = !!res.data.perm_ficha;
   } catch(e) {}
 }
 
@@ -8382,7 +8387,8 @@ async function carregarUsuario(user) {
             agenda: !!bkRes.data.perm_agenda,
             chat: !!bkRes.data.perm_chat,
             registros: !!bkRes.data.perm_registros,
-            historico: !!bkRes.data.perm_historico
+            historico: !!bkRes.data.perm_historico,
+            ficha: !!bkRes.data.perm_ficha
           };
           window.hasBackupAccess = true;
         } else if (tipo === 'doula_backup') {
@@ -12454,7 +12460,8 @@ async function _pcliResumo(el, id, tipo, campo) {
         ['Telefone', info.telefone], ['DPP', dppStr],
         ['Semana gestacional', info.semanas_gestacional ? info.semanas_gestacional + ' semanas' : null],
         ['Tipo de parto', info.tipo_parto], ['Hospital', info.hospital],
-        ['Médico(a)', info.medico], ['Histórico gestacional', info.historico_gestacional]
+        ['Médico(a)', info.medico], ['Histórico gestacional', info.historico_gestacional],
+        ['Nome do bebê', info.nome_bebe], ['Acompanhante', info.nome_acompanhante]
       ];
       s += '<div class="card" style="margin-bottom:16px;"><div class="card-title">Dados cadastrais</div><div style="display:grid;gap:10px;">';
       campos.forEach(function(c) {
@@ -12600,6 +12607,8 @@ async function cadastrarCliente() {
     hospital: document.getElementById('nc-hospital').value || null,
     medico: document.getElementById('nc-medico').value || null,
     historico_gestacional: document.getElementById('nc-historico').value || null,
+    nome_bebe: document.getElementById('nc-nome-bebe').value.trim() || null,
+    nome_acompanhante: document.getElementById('nc-nome-acompanhante').value.trim() || null,
     estado_emocional: document.getElementById('nc-emocional').value || null,
     observacoes: document.getElementById('nc-obs').value || null
   };
@@ -12607,7 +12616,7 @@ async function cadastrarCliente() {
     var res = await db.from('clientes_doula').insert(payload);
     if (res.error) throw res.error;
     mostrarToast('Cliente cadastrada! 💛');
-    ['nc-nome','nc-tel','nc-semanas','nc-hospital','nc-medico','nc-emocional','nc-obs'].forEach(function(id) {
+    ['nc-nome','nc-tel','nc-semanas','nc-hospital','nc-medico','nc-nome-bebe','nc-nome-acompanhante','nc-emocional','nc-obs'].forEach(function(id) {
       var el = document.getElementById(id); if (el) el.value = '';
     });
     document.getElementById('nc-dpp').value = '';
@@ -15157,6 +15166,7 @@ function _fbMostrarBotao(show) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-05-18', titulo:'Ficha da cliente: nome do bebê e do acompanhante', descricao:'O cadastro de cliente no painel da doula agora inclui campos para nome do bebê (apelido ou nome escolhido) e nome do acompanhante (parceiro(a), familiar). As informações aparecem na ficha da cliente e a doula backup pode receber acesso à ficha através de uma nova opção de permissão na configuração de backup.' },
   { data:'2026-05-13', titulo:'Aba Meu Perfil para a doula', descricao:'A doula agora tem uma aba dedicada "Meu Perfil" no painel, com foto de perfil em destaque, todos os campos de informação e botão único de salvar. A foto é enviada junto com os dados do perfil, garantindo que apareça corretamente no marketplace e no painel das gestantes vinculadas.' },
   { data:'2026-05-13', titulo:'Foto de perfil para a doula', descricao:'A doula agora pode adicionar uma foto de perfil no seu painel. Basta tocar no avatar circular no topo do card "Complete seu perfil" para escolher uma foto da galeria. A imagem aparece no marketplace (onde as gestantes encontram doulas), no modal de perfil detalhado, e no painel da gestante vinculada.' },
   { data:'2026-05-12', titulo:'Lista de clientes no painel de Mensagens', descricao:'A seção Mensagens da doula agora exibe automaticamente todas as clientes vinculadas (com solicitação aceita) ao ser aberta. Basta clicar no nome da cliente para abrir a conversa diretamente, sem precisar ir à seção Clientes.' },
@@ -15532,6 +15542,15 @@ async function salvarDadosBebe() {
   mostrarToast(t('bebe.toast.saved'));
 }
 
+function _twUrl(emoji) {
+  var cp = [];
+  for (var i = 0; i < emoji.length; ) {
+    var code = emoji.codePointAt(i);
+    if (code !== 0xFE0F) cp.push(code.toString(16));
+    i += code > 0xFFFF ? 2 : 1;
+  }
+  return 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.0.1/img/apple/128/' + cp.join('-') + '.png';
+}
 
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
