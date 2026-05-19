@@ -3193,7 +3193,7 @@ tr:hover td { background:var(--rose-pale); }
         <!-- INÍCIO -->
         <div class="pos-panel active" id="pos-dashboard">
           <div class="panel-title" id="pos-greeting">Olá, Mamãe 🌸</div>
-          <div class="panel-sub" id="pos-dias-puerperio">Carregando...</div>
+          <div class="panel-sub" id="pos-dias-puerperio" data-i18n="loading">Carregando...</div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
             <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
@@ -3237,7 +3237,7 @@ tr:hover td { background:var(--rose-pale); }
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);margin-top:4px;" onclick="posToggleDoulaPos()">
             <div class="card-title" style="color:#9B7BB8;" data-i18n="pos.doula.title">💜 Minha Doula Pós-Parto</div>
-            <div id="pos-doula-pos-status" style="font-size:13px;color:var(--earth-light);">Carregando...</div>
+            <div id="pos-doula-pos-status" style="font-size:13px;color:var(--earth-light);" data-i18n="loading">Carregando...</div>
           </div>
           <div id="pos-doula-escolha" style="display:none;margin-top:4px;">
             <div class="card" style="border:1.5px solid rgba(155,123,184,0.2);">
@@ -3255,7 +3255,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="card-title" style="margin-bottom:0;" data-i18n="pos.doula.market.title">Doulas Pós-Parto disponíveis</div>
                 <button onclick="posToggleDoulaPos()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--earth-light);padding:0;">✕</button>
               </div>
-              <div id="pos-doula-pos-lista" style="font-size:13px;color:var(--earth-light);">Carregando...</div>
+              <div id="pos-doula-pos-lista" style="font-size:13px;color:var(--earth-light);" data-i18n="loading">Carregando...</div>
             </div>
           </div>
         </div>
@@ -3532,7 +3532,7 @@ tr:hover td { background:var(--rose-pale); }
         <!-- MENSAGENS MÃE PÓS ↔ DOULA PÓS -->
         <div class="pos-panel" id="pos-mensagens">
           <div class="panel-title" data-i18n="pos.msg.panel.title">💬 Mensagens</div>
-          <div id="pos-msg-doula-info" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;">Carregando...</div>
+          <div id="pos-msg-doula-info" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="loading">Carregando...</div>
           <div class="card" id="pos-msg-card" style="display:none;">
             <div id="pos-msgs-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;"></div>
             <div style="display:flex;gap:8px;">
