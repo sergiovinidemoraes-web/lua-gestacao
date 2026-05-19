@@ -7496,6 +7496,21 @@ async function enviarReporte() {
 
 // ─── Admin: carregar reportes ───
 var _reporteFiltro = 'todos';
+var _reporteAba = 'recebidos';
+
+function setAbaReporte(aba) {
+  _reporteAba = aba;
+  ['recebidos','historico'].forEach(function(a) {
+    var el = document.getElementById('raba-' + a);
+    if (!el) return;
+    var ativo = a === aba;
+    el.style.background = ativo ? 'var(--rose)' : 'rgba(255,255,255,0.06)';
+    el.style.color = ativo ? 'white' : 'rgba(176,154,140,0.7)';
+    el.style.border = ativo ? 'none' : '1px solid rgba(255,255,255,0.1)';
+  });
+  carregarReportesAdmin();
+}
+
 function setFiltroReporte(filtro, btn) {
   _reporteFiltro = filtro;
   ['todos','gestante','doula','pai'].forEach(function(f) {
@@ -7505,6 +7520,15 @@ function setFiltroReporte(filtro, btn) {
   if (btn) { btn.style.background = 'var(--rose)'; btn.style.color = 'white'; btn.style.border = 'none'; }
   carregarReportesAdmin();
 }
+
+function lerReporte(id, btn) {
+  var detail = document.getElementById('rep-detail-' + id);
+  if (!detail) return;
+  var aberto = detail.style.display !== 'none';
+  detail.style.display = aberto ? 'none' : 'block';
+  if (btn) btn.textContent = aberto ? 'Ler' : 'Fechar';
+}
+
 async function carregarReportesAdmin() {
   var lista = document.getElementById('admin-reportes-lista');
   if (!lista || !db) return;
@@ -7517,25 +7541,31 @@ async function carregarReportesAdmin() {
     var res = await db.from('reportes').select('*').order('criado_em', { ascending: false }).limit(200);
     var data = res.data || [];
     var badge = document.getElementById('badge-reportes');
-    var naolidos = data.filter(function(r) { return !r.lido; }).length;
-    if (badge) { badge.style.display = naolidos > 0 ? 'inline-block' : 'none'; badge.textContent = naolidos; }
+    var pendentes = data.filter(function(r) { return !r.lido && !r.resposta; }).length;
+    if (badge) { badge.style.display = pendentes > 0 ? 'inline-block' : 'none'; badge.textContent = pendentes; }
+
     var filtrado = _reporteFiltro === 'todos' ? data : data.filter(function(r) { return (r.tipo_usuario || 'gestante') === _reporteFiltro; });
-    if (!filtrado.length) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Nenhum reporte ainda 🌙</div>'; return; }
+    var visiveis = _reporteAba === 'recebidos'
+      ? filtrado.filter(function(r) { return !r.lido && !r.resposta; })
+      : filtrado.filter(function(r) { return r.lido || r.resposta; });
+
+    if (!visiveis.length) {
+      var emptyMsg = _reporteAba === 'recebidos' ? 'Nenhum reporte pendente 🌙' : 'Nenhum reporte respondido ainda 🌙';
+      lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">' + emptyMsg + '</div>';
+      return;
+    }
 
     var tipoLabel = { gestante: 'Gestante', doula: 'Doula', pai: 'Acompanhante' };
     var tipoColor = { gestante: '#C9897A', doula: '#90B3A7', pai: '#82A0C8' };
     var fbLabel = { bug: '🐛 Bug', melhoria: '✨ Melhoria', sugestao: '💡 Sugestão', outro: '💬 Outro' };
 
-    lista.innerHTML = filtrado.map(function(r) {
+    lista.innerHTML = visiveis.map(function(r) {
       var d = r.criado_em ? new Date(r.criado_em).toLocaleString('pt-BR') : '—';
-      var op = r.lido ? 'opacity:0.55;' : '';
-      var borda = r.lido ? '0.08' : '0.25';
       var perfil = r.tipo_usuario || 'gestante';
       var cor = tipoColor[perfil] || '#C9897A';
       var perfilLabel = tipoLabel[perfil] || perfil;
       var fbTag = r.tipo_feedback ? (fbLabel[r.tipo_feedback] || r.tipo_feedback) : null;
       var secao = r.secao || null;
-
       var uid = r.user_id;
       var u = uid ? userMap[uid] : null;
       var nome = u ? (u.nome || 'Usuário') : 'Usuário';
@@ -7551,32 +7581,44 @@ async function carregarReportesAdmin() {
         contatoHtml += '</div>';
       }
 
-      var respostaHtml = '';
-      if (r.resposta) {
-        respostaHtml = '<div style="background:rgba(144,179,167,0.08);border:1px solid rgba(144,179,167,0.2);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#90B3A7;">↩ <strong>Sua resposta:</strong> ' + r.resposta + '</div>';
-      } else {
-        respostaHtml = '<div id="rep-form-' + r.id + '" style="display:none;margin-top:10px;">' +
-          '<textarea id="rep-txt-' + r.id + '" rows="2" placeholder="Digite sua resposta..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;font-size:12px;color:white;font-family:\'DM Sans\',sans-serif;outline:none;resize:none;"></textarea>' +
-          '<div style="display:flex;gap:8px;margin-top:6px;">' +
-          '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'none\'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.6);padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;">Cancelar</button>' +
-          '<button onclick="enviarRespostaReporte(\'' + r.id + '\',' + (waTel ? '\'' + waTel + '\'' : 'null') + ')" style="flex:2;background:var(--rose);color:white;border:none;padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;">↩ Enviar resposta</button>' +
-          '</div></div>';
+      var headerBadges = '<span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + perfilLabel + '</span>' +
+        (fbTag ? '<span style="font-size:10px;color:rgba(176,154,140,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:2px 8px;border-radius:20px;">' + fbTag + '</span>' : '') +
+        (secao ? '<span style="font-size:10px;color:rgba(176,154,140,0.45);">📍 ' + secao + '</span>' : '');
+
+      if (_reporteAba === 'historico') {
+        var respostaHtml = r.resposta
+          ? '<div style="background:rgba(144,179,167,0.08);border:1px solid rgba(144,179,167,0.2);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#90B3A7;">↩ <strong>Resposta:</strong> ' + r.resposta + '</div>'
+          : '<div style="font-size:11px;color:rgba(176,154,140,0.3);margin-top:8px;">Marcado como lido sem resposta</div>';
+        return '<div style="border:1px solid rgba(201,137,122,0.08);border-radius:12px;padding:16px;margin-bottom:12px;opacity:0.7;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' + headerBadges + '</div>' +
+          '<span style="font-size:10px;color:rgba(144,179,167,0.6);">' + (r.resposta ? '✓ Respondido' : '✓ Lido') + '</span>' +
+          '</div>' +
+          '<div style="font-size:11px;color:rgba(176,154,140,0.4);margin-bottom:8px;">' + d + ' · ' + nome + '</div>' +
+          '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.mensagem || '') + '</div>' +
+          contatoHtml + respostaHtml + '</div>';
       }
 
-      return '<div id="rep-card-' + r.id + '" style="border:1px solid rgba(201,137,122,' + borda + ');border-radius:12px;padding:16px;margin-bottom:12px;' + op + '">' +
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
-        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-        '<span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + cor + ';background:' + cor + '22;padding:2px 8px;border-radius:20px;">' + perfilLabel + '</span>' +
-        (fbTag ? '<span style="font-size:10px;color:rgba(176,154,140,0.7);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:2px 8px;border-radius:20px;">' + fbTag + '</span>' : '') +
-        (secao ? '<span style="font-size:10px;color:rgba(176,154,140,0.45);">📍 ' + secao + '</span>' : '') +
+      var detailHtml = '<div id="rep-detail-' + r.id + '" style="display:none;margin-top:12px;border-top:1px solid rgba(201,137,122,0.1);padding-top:12px;">' +
+        '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+        '<button onclick="marcarRepLido(\'' + r.id + '\')" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:inherit;">✓ Lido</button>' +
+        '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'block\'" style="background:rgba(144,179,167,0.15);border:none;color:#90B3A7;font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;font-family:inherit;">↩ Responder</button>' +
         '</div>' +
-        '<div style="display:flex;gap:6px;flex-shrink:0;">' +
-        '<button onclick="marcarRepLido(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.15);border:none;color:#C9897A;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">✓ Lido</button>' +
-        (!r.resposta ? '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'block\'" style="background:rgba(144,179,167,0.15);border:none;color:#90B3A7;font-size:11px;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;">↩ Responder</button>' : '') +
-        '</div></div>' +
+        '<div id="rep-form-' + r.id + '" style="display:none;">' +
+        '<textarea id="rep-txt-' + r.id + '" rows="2" placeholder="Digite sua resposta..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;font-size:12px;color:white;font-family:\'DM Sans\',sans-serif;outline:none;resize:none;"></textarea>' +
+        '<div style="display:flex;gap:8px;margin-top:6px;">' +
+        '<button onclick="document.getElementById(\'rep-form-' + r.id + '\').style.display=\'none\'" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(176,154,140,0.6);padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;">Cancelar</button>' +
+        '<button onclick="enviarRespostaReporte(\'' + r.id + '\',' + (waTel ? '\'' + waTel + '\'' : 'null') + ')" style="flex:2;background:var(--rose);color:white;border:none;padding:6px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;">↩ Enviar resposta</button>' +
+        '</div></div></div>';
+
+      return '<div id="rep-card-' + r.id + '" style="border:1px solid rgba(201,137,122,0.25);border-radius:12px;padding:16px;margin-bottom:12px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' + headerBadges + '</div>' +
+        '<button id="rep-ler-' + r.id + '" onclick="lerReporte(\'' + r.id + '\',this)" style="background:rgba(201,137,122,0.12);border:1px solid rgba(201,137,122,0.25);color:#C9897A;font-size:11px;padding:3px 14px;border-radius:20px;cursor:pointer;font-family:inherit;flex-shrink:0;">Ler</button>' +
+        '</div>' +
         '<div style="font-size:11px;color:rgba(176,154,140,0.4);margin-bottom:8px;">' + d + ' · ' + nome + '</div>' +
         '<div style="font-size:13px;color:#E8C5BC;line-height:1.5;">' + (r.mensagem || '') + '</div>' +
-        contatoHtml + respostaHtml + '</div>';
+        contatoHtml + detailHtml + '</div>';
     }).join('');
   } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
 }
@@ -7586,7 +7628,7 @@ async function enviarRespostaReporte(id, waTel) {
   if (!txt) { mostrarToast('Escreva a resposta antes de enviar'); return; }
   if (!db || !id) return;
   try {
-    await db.from('reportes').update({ resposta: txt }).eq('id', id);
+    await db.from('reportes').update({ resposta: txt, lido: true }).eq('id', id);
     mostrarToast('✅ Resposta salva!');
     if (waTel) {
       var msg = encodeURIComponent('Olá! Recebemos seu feedback no Lua Gestação e gostaríamos de responder:\n\n' + txt);
@@ -7596,15 +7638,15 @@ async function enviarRespostaReporte(id, waTel) {
   } catch(e) { mostrarToast('Erro ao salvar resposta'); }
 }
 
-async function marcarRepLido(id, btn) {
+async function marcarRepLido(id) {
   if (!db || !id) return;
-  // coluna 'lido' não existe na tabela — marcação é visual-only
-  var card = document.getElementById('rep-card-' + id);
-  if (card) card.style.opacity = '0.55';
-  if (btn) btn.remove();
-  var badge = document.getElementById('badge-reportes');
-  if (badge) { var n = Math.max(0, parseInt(badge.textContent || '0') - 1); badge.textContent = n; if (n <= 0) badge.style.display = 'none'; }
+  try {
+    await db.from('reportes').update({ lido: true }).eq('id', id);
+    mostrarToast('✓ Marcado como lido');
+    carregarReportesAdmin();
+  } catch(e) { mostrarToast('Erro ao marcar como lido'); }
 }
+
 async function marcarTodosLidos() {
   if (!db) return;
   try { await db.from('reportes').update({ lido: true }).eq('lido', false); mostrarToast('✓ Todos marcados como lidos'); carregarReportesAdmin(); } catch(e) {}
@@ -14727,16 +14769,19 @@ function mostrarToast(msg) {
       <!-- REPORTES -->
       <div class="admin-panel-section" id="admin-reportes">
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportes</div>
-        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:20px;">Reportes enviados por gestantes, doulas e acompanhantes</div>
+        <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:16px;">Reportes enviados por gestantes, doulas e acompanhantes</div>
+        <!-- Abas -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <button id="raba-recebidos" onclick="setAbaReporte('recebidos')" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">📥 Recebidos</button>
+          <button id="raba-historico" onclick="setAbaReporte('historico')" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Lidos e Respondidos</button>
+        </div>
+        <!-- Filtro por tipo -->
         <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
           <button onclick="setFiltroReporte('todos',this)" id="rfiltro-todos" style="background:var(--rose);color:white;border:none;padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Todos</button>
           <button onclick="setFiltroReporte('gestante',this)" id="rfiltro-gestante" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Gestante</button>
           <button onclick="setFiltroReporte('doula',this)" id="rfiltro-doula" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Doula</button>
           <button onclick="setFiltroReporte('pai',this)" id="rfiltro-pai" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Acompanhante</button>
-        </div>
-        <div style="display:flex;gap:10px;margin-bottom:20px;">
-          <button onclick="carregarReportesAdmin()" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄 Atualizar</button>
-          <button onclick="marcarTodosLidos()" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Marcar todos como lidos</button>
+          <button onclick="carregarReportesAdmin()" style="background:rgba(255,255,255,0.04);color:rgba(176,154,140,0.5);border:1px solid rgba(255,255,255,0.06);padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄</button>
         </div>
         <div id="admin-reportes-lista" style="background:#1a0f0a;border-radius:14px;padding:16px;border:1px solid rgba(201,137,122,0.1);">
           <div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando reportes...</div>
