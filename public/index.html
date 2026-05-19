@@ -6186,6 +6186,7 @@ function toggleLangDropdown(e) {
 }
 function pickLang(lang) {
   setLang(lang);
+  localStorage.setItem('lua_lang', lang);
   document.getElementById('lang-dropdown').classList.remove('open');
 }
 // Fechar dropdown ao clicar fora
@@ -8412,6 +8413,8 @@ async function carregarUsuario(user) {
 
 // ── ENTRAR NO APP ──
 function entrarNoApp(tipo, nome) {
+  var savedLang = localStorage.getItem('lua_lang');
+  if (savedLang && savedLang !== _lang) setLang(savedLang);
   document.getElementById('login-screen').classList.add('hidden');
   document.getElementById('splash').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
