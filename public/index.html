@@ -12246,6 +12246,9 @@ async function carregarClientesDoula() {
         if (u.dpp) dppMapSol[u.id] = u.dpp;
         if (u.foto_perfil) fotoMapSol[u.id] = u.foto_perfil;
       });
+      // DPP definida pela doula em clientes_doula sobrepõe a da gestante
+      var resDppCli = await db.from('clientes_doula').select('gestante_id,dpp').in('gestante_id', idsGest).eq('doula_id', currentUserId).not('dpp', 'is', null);
+      (resDppCli.data || []).forEach(function(c) { if (c.dpp && c.gestante_id) dppMapSol[c.gestante_id] = c.dpp; });
     }
     populateClienteSelects(solicitacoes, externos);
     var total = solicitacoes.length + externos.length;
@@ -12434,6 +12437,29 @@ function _pcliCarregar(tabId, id, tipo) {
   else if (tabId === 'pcli-contrato') _pcliContrato(el, id, campo);
 }
 
+async function pcliSalvarDpp(gestanteId) {
+  var val = (document.getElementById('pcli-dpp-input') || {}).value;
+  if (!val) { mostrarToast('Informe a data'); return; }
+  if (!db || !currentUserId) return;
+  try {
+    var diasRest = (new Date(val + 'T12:00:00') - new Date()) / 86400000;
+    var sem = Math.round(40 - diasRest / 7);
+    await db.from('clientes_doula').upsert({
+      doula_id: currentUserId,
+      gestante_id: gestanteId,
+      nome: _pcliAtual ? _pcliAtual.nome : '',
+      dpp: val,
+      semanas_gestacional: (sem >= 1 && sem <= 45) ? sem : null
+    }, { onConflict: 'doula_id,gestante_id' });
+    mostrarToast('DPP salva!');
+    var dppStr = new Date(val + 'T12:00:00').toLocaleDateString('pt-BR');
+    var valEl = document.getElementById('pcli-dpp-val');
+    if (valEl) valEl.innerHTML = dppStr + ' <span style="font-size:10px;color:var(--earth-light);">(definida por você)</span>';
+    document.getElementById('pcli-dpp-form').style.display = 'none';
+    carregarClientesDoula();
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
 async function _pcliResumo(el, id, tipo, campo) {
   try {
     var info = null;
@@ -12472,7 +12498,26 @@ async function _pcliResumo(el, id, tipo, campo) {
       if (info.estado_emocional) s += '<div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:8px;">Estado emocional</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.estado_emocional + '</div></div>';
       if (info.observacoes) s += '<div class="card"><div class="card-title" style="margin-bottom:8px;">Observações</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.observacoes + '</div></div>';
     } else {
-      s += '<div class="card"><div style="font-size:13px;color:var(--earth-light);">Gestante vinculada via app — dados de perfil gerenciados pela própria gestante.</div></div>';
+      try {
+        var _usrRes = await db.from('usuarios').select('dpp,whatsapp,cidade').eq('id', id).maybeSingle();
+        var _cliRes = await db.from('clientes_doula').select('dpp,semanas_gestacional').eq('doula_id', currentUserId).eq('gestante_id', id).maybeSingle();
+        var _uDpp = (_usrRes.data || {}).dpp || '';
+        var _cDpp = (_cliRes.data || {}).dpp || '';
+        var _dppEfetiva = _cDpp || _uDpp;
+        var _dppStr = _dppEfetiva ? new Date(_dppEfetiva + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        var _dppFonte = _cDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(definida por você)</span>' : (_uDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(informada pela gestante)</span>' : '');
+        s += '<div class="card" style="margin-bottom:16px;"><div class="card-title">Dados da gestante</div><div style="display:grid;gap:10px;">';
+        s += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:13px;color:var(--earth-light);min-width:140px;">DPP</span><span id="pcli-dpp-val" style="font-size:13px;color:var(--dark);font-weight:500;">' + _dppStr + _dppFonte + '</span><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'block\'" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">Editar</button></div>';
+        if ((_usrRes.data || {}).whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.whatsapp + '</span></div>';
+        if ((_usrRes.data || {}).cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.cidade + '</span></div>';
+        s += '</div>';
+        s += '<div id="pcli-dpp-form" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">';
+        s += '<div style="font-size:12px;color:var(--earth-light);margin-bottom:8px;">Isso não altera o perfil da gestante no app.</div>';
+        s += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><input id="pcli-dpp-input" type="date" class="form-input" style="flex:1;min-width:140px;" value="' + _dppEfetiva + '"><button onclick="pcliSalvarDpp(\'' + id + '\')" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">Salvar</button><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'none\'" style="background:none;border:none;color:var(--earth-light);font-size:12px;cursor:pointer;font-family:inherit;">Cancelar</button></div>';
+        s += '</div></div>';
+      } catch(e2) {
+        s += '<div class="card"><div style="font-size:13px;color:var(--earth-light);">Gestante vinculada via app — dados de perfil gerenciados pela própria gestante.</div></div>';
+      }
     }
     el.innerHTML = s;
   } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar resumo.</div>'; }
