@@ -4574,6 +4574,13 @@ pt: {
   'pos.rot.novo.sono':'Novo sono','pos.rot.soneca.dia':'Soneca (Dia)','pos.rot.sono.noturno':'Sono Noturno',
   'pos.rot.tranquilo':'Tranquilo','pos.rot.agitado':'Agitado','pos.rot.acordou.varias':'Acordou várias vezes',
   'pos.rot.fralda.tipo.label':'Tipo de fralda',
+  'common.erro':'Erro ao carregar.','common.vazio.hoje':'Nenhum registro hoje.',
+  'pos.rot.vazio.sono':'Nenhum sono registrado hoje.','pos.rot.vazio.fralda':'Nenhuma fralda hoje.',
+  'pos.rot.em.andamento':'em andamento','pos.dias.vida':'dias de vida',
+  'pos.amam.mama':'🤱 Mama','pos.amam.bomba.hist':'🍼 Bomba','pos.amam.esq.abrev':'Esq','pos.amam.dir.abrev':'Dir',
+  'pos.dreamfeed.ultima':'Última mamada hoje','pos.dreamfeed.sugerido':'Dream Feed sugerido',
+  'pos.dreamfeed.instrucao':'Alimente sem despertar completamente o bebê',
+  'pos.dreamfeed.vazio':'Nenhuma mamada hoje. O dream feed será calculado assim que houver registros.',
   'pos.bebe.panel.title':'👶 Bebê','pos.bebe.seu.bebe':'Seu bebê','pos.bebe.editar.btn':'✏️ Editar',
   'pos.bebe.cadastrar.title':'Cadastrar bebê','pos.bebe.cancelar.btn':'Cancelar','pos.bebe.salvar.btn':'✓ Salvar',
   'pos.denticao.superior':'Superior','pos.denticao.gengiva':'gengiva','pos.denticao.inferior':'Inferior',
@@ -5219,6 +5226,13 @@ en: {
   'pos.rot.novo.sono':'New sleep','pos.rot.soneca.dia':'Nap (Day)','pos.rot.sono.noturno':'Overnight Sleep',
   'pos.rot.tranquilo':'Calm','pos.rot.agitado':'Restless','pos.rot.acordou.varias':'Woke up multiple times',
   'pos.rot.fralda.tipo.label':'Diaper type',
+  'common.erro':'Failed to load.','common.vazio.hoje':'No records today.',
+  'pos.rot.vazio.sono':'No sleep recorded today.','pos.rot.vazio.fralda':'No diapers today.',
+  'pos.rot.em.andamento':'in progress','pos.dias.vida':'days old',
+  'pos.amam.mama':'🤱 Breast','pos.amam.bomba.hist':'🍼 Pump','pos.amam.esq.abrev':'L','pos.amam.dir.abrev':'R',
+  'pos.dreamfeed.ultima':'Last feed today','pos.dreamfeed.sugerido':'Suggested Dream Feed',
+  'pos.dreamfeed.instrucao':'Feed without fully waking the baby',
+  'pos.dreamfeed.vazio':'No feeds today. Dream feed time will be calculated once records exist.',
   'pos.bebe.panel.title':'👶 Baby','pos.bebe.seu.bebe':'Your baby','pos.bebe.editar.btn':'✏️ Edit',
   'pos.bebe.cadastrar.title':'Register baby','pos.bebe.cancelar.btn':'Cancel','pos.bebe.salvar.btn':'✓ Save',
   'pos.denticao.superior':'Upper','pos.denticao.gengiva':'gum','pos.denticao.inferior':'Lower',
@@ -5857,6 +5871,13 @@ es: {
   'pos.rot.novo.sono':'Nuevo sueño','pos.rot.soneca.dia':'Siesta (Día)','pos.rot.sono.noturno':'Sueño Nocturno',
   'pos.rot.tranquilo':'Tranquilo','pos.rot.agitado':'Agitado','pos.rot.acordou.varias':'Despertó varias veces',
   'pos.rot.fralda.tipo.label':'Tipo de pañal',
+  'common.erro':'Error al cargar.','common.vazio.hoje':'Sin registros hoy.',
+  'pos.rot.vazio.sono':'Sin registros de sueño hoy.','pos.rot.vazio.fralda':'Sin pañales hoy.',
+  'pos.rot.em.andamento':'en curso','pos.dias.vida':'días de vida',
+  'pos.amam.mama':'🤱 Pecho','pos.amam.bomba.hist':'🍼 Bomba','pos.amam.esq.abrev':'Izq','pos.amam.dir.abrev':'Der',
+  'pos.dreamfeed.ultima':'Última toma hoy','pos.dreamfeed.sugerido':'Dream Feed sugerido',
+  'pos.dreamfeed.instrucao':'Alimente sin despertar completamente al bebé',
+  'pos.dreamfeed.vazio':'Sin tomas hoy. El horario del dream feed se calculará cuando haya registros.',
   'pos.bebe.panel.title':'👶 Bebé','pos.bebe.seu.bebe':'Tu bebé','pos.bebe.editar.btn':'✏️ Editar',
   'pos.bebe.cadastrar.title':'Registrar bebé','pos.bebe.cancelar.btn':'Cancelar','pos.bebe.salvar.btn':'✓ Guardar',
   'pos.denticao.superior':'Superior','pos.denticao.gengiva':'encía','pos.denticao.inferior':'Inferior',
@@ -8944,14 +8965,14 @@ async function carregarHistoricoMamadas() {
   if (!el) return;
   try {
     var res = await db.from('pos_amamentacao').select('*').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; return; }
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.vazio.hoje') + '</div>'; return; }
     el.innerHTML = res.data.map(function(m) {
-      var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      var ladoLabel = m.lado === 'E' ? ' · Esq' : m.lado === 'D' ? ' · Dir' : '';
-      var det = m.tipo === 'mama' ? '🤱 Mama' + ladoLabel + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '') : m.tipo === 'bomba' ? '🍼 Bomba' + ladoLabel + (m.volume_ml ? ' · ' + m.volume_ml + 'ml' : '') + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '') : '🫙 ' + (m.tipo === 'formula' ? 'Fórmula' : 'Mamadeira LM') + (m.volume_ml ? ' · ' + m.volume_ml + 'ml' : '');
+      var hora = new Date(m.criado_em).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var ladoLabel = m.lado === 'E' ? ' · ' + t('pos.amam.esq.abrev') : m.lado === 'D' ? ' · ' + t('pos.amam.dir.abrev') : '';
+      var det = m.tipo === 'mama' ? t('pos.amam.mama') + ladoLabel + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '') : m.tipo === 'bomba' ? t('pos.amam.bomba.hist') + ladoLabel + (m.volume_ml ? ' · ' + m.volume_ml + 'ml' : '') + (m.duracao_seg ? ' · ' + posFormatarTimer(m.duracao_seg) : '') : '🫙 ' + (m.tipo === 'formula' ? t('pos.amam.formula.opt') : t('pos.amam.mamadeira.opt')) + (m.volume_ml ? ' · ' + m.volume_ml + 'ml' : '');
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + det + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 async function carregarHistoricoFraldas() {
@@ -8961,14 +8982,14 @@ async function carregarHistoricoFraldas() {
   if (!el) return;
   try {
     var res = await db.from('pos_fraldas').select('*').eq('mae_id', currentUserId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma fralda hoje.</div>'; return; }
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.rot.vazio.fralda') + '</div>'; return; }
     el.innerHTML = res.data.map(function(f) {
-      var hora = new Date(f.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      var emoji = f.tipo === 'seca' ? '✓ Seca' : f.tipo === 'xixi' ? '💧 Molhada' : f.tipo === 'coco' ? '💩 Com fezes' : '💧💩 Combinada';
+      var hora = new Date(f.criado_em).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var emoji = f.tipo === 'seca' ? t('posd.fralda.seca') : f.tipo === 'xixi' ? t('posd.fralda.xixi') : f.tipo === 'coco' ? t('posd.fralda.coco') : '💧💩 ' + t('posd.fralda.ambos');
       var det = emoji + (f.consistencia ? ' · ' + f.consistencia : '') + (f.cor ? ' · ' + f.cor : '');
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + det + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 async function carregarHistoricoSono() {
@@ -8978,14 +8999,14 @@ async function carregarHistoricoSono() {
   if (!el) return;
   try {
     var res = await db.from('pos_sono').select('*').eq('mae_id', currentUserId).gte('inicio', hoje + 'T00:00:00').order('inicio', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum sono registrado hoje.</div>'; return; }
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.rot.vazio.sono') + '</div>'; return; }
     el.innerHTML = res.data.map(function(s) {
-      var ini = s.inicio ? new Date(s.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
-      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '⏱ em andamento';
+      var ini = s.inicio ? new Date(s.inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—';
+      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '⏱ ' + t('pos.rot.em.andamento');
       var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fimText + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 // ── BEBÊ: Dentição + Desenvolvimento ──
@@ -9109,7 +9130,7 @@ async function carregarDenticao() {
     var histEl = document.getElementById('pos-denticao-historico');
     if (histEl) {
       var lista = Object.keys(registrados);
-      if (!lista.length) { histEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum dente registrado ainda.</div>'; }
+      if (!lista.length) { histEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('posd.denticao.historico.vazio') + '</div>'; }
       else {
         histEl.innerHTML = lista.map(function(id) {
           var info = _DENTES.find(function(d){ return d[0]===id; });
@@ -9606,7 +9627,7 @@ async function posDCarregarDenticao() {
     var histEl = document.getElementById('posd-denticao-historico');
     if (histEl) {
       var lista = Object.keys(registrados);
-      if (!lista.length) { histEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum dente registrado ainda.</div>'; }
+      if (!lista.length) { histEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('posd.denticao.historico.vazio') + '</div>'; }
       else {
         histEl.innerHTML = lista.map(function(id) {
           var info = _DENTES.find(function(d){ return d[0]===id; });
@@ -9748,7 +9769,7 @@ async function posDCarregarRegistros() {
         + (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);margin-top:8px;">' + r.evolucao + '</div>' : '')
         + '</div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 // ── DOULA PÓS: ROTINA (Mamadas, Sono, Fraldas) ──
@@ -9900,8 +9921,8 @@ async function posDCarregarMamadas() {
   if (!el) return;
   try {
     var res = await db.from('pos_amamentacao').select('*').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum registro hoje.</div>'; posDCarregarGraficoMamadas(); return; }
-    var tipoLabel = { 'mama':'Mama', 'bomba':'Bomba', 'mamadeira_lm':'Mamadeira (LM)', 'formula':'Fórmula' };
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.vazio.hoje') + '</div>'; posDCarregarGraficoMamadas(); return; }
+    var tipoLabel = { 'mama':t('pos.amam.mama'), 'bomba':t('pos.amam.bomba.hist'), 'mamadeira_lm':t('pos.amam.mamadeira.opt'), 'formula':t('pos.amam.formula.opt') };
     el.innerHTML = res.data.map(function(m) {
       var hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       var label = tipoLabel[m.tipo] || m.tipo;
@@ -9912,7 +9933,7 @@ async function posDCarregarMamadas() {
       var aviso = curta ? '<span style="font-size:10px;color:#D4880A;margin-left:6px;">⚠ curta</span>' : '';
       return '<div style="' + bg + 'border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">🤱 ' + label + aviso + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
   posDCarregarGraficoMamadas();
 }
 
@@ -10101,7 +10122,7 @@ async function renderizarGraficoPlanejamento(elId, maeId) {
           '<div style="font-size:10px;color:' + (d.isHoje ? 'var(--rose)' : 'var(--earth-light)') + ';font-weight:' + (d.isHoje ? '700' : '400') + ';margin-top:3px;">' + d.diaSem + '</div>' +
         '</div>';
       }).join('') + '</div>';
-  } catch(e) { var el2 = document.getElementById(elId); if (el2) el2.innerHTML = '<div style="font-size:12px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { var el2 = document.getElementById(elId); if (el2) el2.innerHTML = '<div style="font-size:12px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 async function posDCarregarPlanejamento() {
@@ -10119,13 +10140,13 @@ async function posDCarregarPlanejamento() {
         var dfMax = new Date(dtU.getTime() + 3 * 3600000);
         var hMin = dfMin.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         var hMax = dfMax.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">Última mamada hoje</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
+        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">' + t('pos.dreamfeed.ultima') + '</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
           '<div style="background:rgba(102,102,204,0.1);border-radius:12px;padding:12px;text-align:center;">' +
-          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Dream Feed sugerido</div>' +
+          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">' + t('pos.dreamfeed.sugerido') + '</div>' +
           '<div style="font-size:24px;font-weight:700;color:#5555BB;font-family:\'Cormorant Garamond\',serif;">' + hMin + ' – ' + hMax + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Alimente sem despertar completamente o bebê</div></div>';
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">' + t('pos.dreamfeed.instrucao') + '</div></div>';
       } else {
-        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma mamada registrada hoje. O horário do dream feed será calculado assim que houver registros.</div>';
+        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.dreamfeed.vazio') + '</div>';
       }
     }
   } catch(e) {}
@@ -10156,13 +10177,13 @@ async function posCarregarPlanejamento() {
         var dfMax = new Date(dtU.getTime() + 3 * 3600000);
         var hMin = dfMin.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         var hMax = dfMax.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">Última mamada hoje</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
+        dfEl.innerHTML = '<div style="margin-bottom:10px;"><span style="font-size:12px;color:var(--earth-light);">' + t('pos.dreamfeed.ultima') + '</span><br><span style="font-size:22px;font-weight:700;color:var(--dark);font-family:\'Cormorant Garamond\',serif;">' + hU + '</span></div>' +
           '<div style="background:rgba(102,102,204,0.1);border-radius:12px;padding:12px;text-align:center;">' +
-          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Dream Feed sugerido</div>' +
+          '<div style="font-size:11px;color:#6666BB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">' + t('pos.dreamfeed.sugerido') + '</div>' +
           '<div style="font-size:24px;font-weight:700;color:#5555BB;font-family:\'Cormorant Garamond\',serif;">' + hMin + ' – ' + hMax + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">Alimente sem despertar completamente o bebê</div></div>';
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:4px;">' + t('pos.dreamfeed.instrucao') + '</div></div>';
       } else {
-        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma mamada registrada hoje. O horário do dream feed será calculado assim que houver registros.</div>';
+        dfEl.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.dreamfeed.vazio') + '</div>';
       }
     }
   } catch(e) {}
@@ -10266,14 +10287,14 @@ async function posDCarregarSono() {
   if (!el) return;
   try {
     var res = await db.from('pos_sono').select('*').eq('mae_id', _posDClienteId).gte('inicio', hoje + 'T00:00:00').order('inicio', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhum sono hoje.</div>'; return; }
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.rot.vazio.sono') + '</div>'; return; }
     el.innerHTML = res.data.map(function(s) {
-      var ini = new Date(s.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '⏱ em andamento';
+      var ini = new Date(s.inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var fimText = s.fim ? new Date(s.fim).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '⏱ ' + t('pos.rot.em.andamento');
       var emoji = s.tipo === 'noite' ? '🌙' : '☀️';
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">' + emoji + ' ' + ini + ' – ' + fimText + (s.duracao_min ? ' (' + s.duracao_min + 'min)' : '') + '</span><span style="font-size:12px;color:var(--earth-light);">' + (s.qualidade || '') + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 function posDSelecionarFralda(tipo) {
@@ -10310,16 +10331,16 @@ async function posDCarregarFraldas() {
   if (!el) return;
   try {
     var res = await db.from('pos_fraldas').select('*').eq('mae_id', _posDClienteId).gte('criado_em', hoje + 'T00:00:00').order('criado_em', { ascending: false });
-    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Nenhuma fralda hoje.</div>'; return; }
-    var labels = { 'seca':'✓ Seca', 'xixi':'💧 Molhada', 'coco':'💩 Com fezes', 'ambos':'Combinada' };
+    if (!res.data || !res.data.length) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.rot.vazio.fralda') + '</div>'; return; }
+    var labels = { 'seca':t('posd.fralda.seca'), 'xixi':t('posd.fralda.xixi'), 'coco':t('posd.fralda.coco'), 'ambos':t('posd.fralda.ambos') };
     el.innerHTML = res.data.map(function(f) {
-      var hora = new Date(f.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      var hora = new Date(f.criado_em).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       var label = labels[f.tipo] || f.tipo;
       if (f.consistencia) label += ' · ' + f.consistencia;
       if (f.cor) label += ' · ' + f.cor;
       return '<div style="background:var(--white);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,0.03);margin-bottom:6px;"><span style="font-size:13px;color:var(--dark);">' + label + '</span><span style="font-size:12px;color:var(--earth-light);">' + hora + '</span></div>';
     }).join('');
-  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">Erro ao carregar.</div>'; }
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('common.erro') + '</div>'; }
 }
 
 // ── REALTIME CONTRAÇÕES (DOULA) ──
