@@ -3694,7 +3694,7 @@ tr:hover td { background:var(--rose-pale); }
                   </div>
                   <div class="card">
                     <div class="card-title" data-i18n="posd.denticao.orientacoes.title">📋 Orientações por fase</div>
-                    <div id="posd-denticao-orientacoes" style="font-size:13px;color:var(--earth-light);line-height:1.7;">Calculando fase...</div>
+                    <div id="posd-denticao-orientacoes" style="font-size:13px;color:var(--earth-light);line-height:1.7;" data-i18n="pos.denticao.calculando">Calculando fase...</div>
                   </div>
                   <div class="card">
                     <div class="card-title" data-i18n="posd.denticao.historico.title">Histórico de dentes</div>
@@ -4586,6 +4586,15 @@ pt: {
   'pos.denticao.superior':'Superior','pos.denticao.gengiva':'gengiva','pos.denticao.inferior':'Inferior',
   'pos.denticao.nao.nasceu':'⬜ Ainda não nasceu','pos.denticao.nasceu':'🟫 Nasceu',
   'pos.denticao.calculando':'Calculando fase...',
+  'pos.dent.ori.0':'Ainda não é esperado nenhum dente. Mantenha higiene das gengivas com gaze umedecida.',
+  'pos.dent.ori.1':'Fase dos primeiros incisivos! É normal o bebê ficar irritado, babar mais e querer morder. Ofereça mordedor gelado e massageie as gengivas.',
+  'pos.dent.ori.2':'Chegada dos molares pode causar mais desconforto. Faça higiene com dedeira ou escovinha macia após cada refeição.',
+  'pos.dent.ori.3':'Caninos surgem nessa fase. Higiene 2x ao dia com escova infantil e pasta com flúor (tamanho de um grão de arroz).',
+  'pos.dent.ori.4':'Fase dos últimos molares. Dentição quase completa! Consulte o dentista pediátrico se ainda não foi.',
+  'pos.dev.cadastrar.bebe':'Cadastre o bebê para ver o desenvolvimento',
+  'pos.dev.meses.vida':'{nome} — {meses} meses de vida',
+  'pos.dev.salto.desc':'Semana de salto mental! O bebê pode estar mais agitado e precisar de mais colo — é fase de crescimento cognitivo.',
+  'pos.dev.mes.sing':'1 mês','pos.dev.mes.plur':'{n} meses',
   'posd.reg.panel.title':'Registros de Visita','posd.reg.panel.sub':'Suas anotações pós-parto',
   'posd.reg.nova.title':'Nova visita pós-parto',
   'posd.reg.cliente.label':'Nome da cliente','posd.reg.cliente.ph':'Nome da mãe',
@@ -5238,6 +5247,15 @@ en: {
   'pos.denticao.superior':'Upper','pos.denticao.gengiva':'gum','pos.denticao.inferior':'Lower',
   'pos.denticao.nao.nasceu':'⬜ Not yet','pos.denticao.nasceu':'🟫 Appeared',
   'pos.denticao.calculando':'Calculating stage...',
+  'pos.dent.ori.0':'No teeth expected yet. Keep gums clean with a damp gauze pad.',
+  'pos.dent.ori.1':'First incisors phase! It\'s normal for the baby to be fussy, drool more, and want to bite. Offer a cold teether and massage the gums.',
+  'pos.dent.ori.2':'Molars arriving may cause more discomfort. Clean with a finger brush or soft toothbrush after each meal.',
+  'pos.dent.ori.3':'Canines emerge at this stage. Brush twice a day with a baby toothbrush and a rice-grain amount of fluoride toothpaste.',
+  'pos.dent.ori.4':'Final molars phase. Dentition almost complete! See a pediatric dentist if you haven\'t already.',
+  'pos.dev.cadastrar.bebe':'Register the baby to see development milestones',
+  'pos.dev.meses.vida':'{nome} — {meses} months old',
+  'pos.dev.salto.desc':'Mental leap week! The baby may be more restless and need more cuddles — it\'s a cognitive growth phase.',
+  'pos.dev.mes.sing':'1 month','pos.dev.mes.plur':'{n} months',
   'posd.reg.panel.title':'Visit Records','posd.reg.panel.sub':'Your postpartum notes',
   'posd.reg.nova.title':'New postpartum visit',
   'posd.reg.cliente.label':'Client name','posd.reg.cliente.ph':'Mother\'s name',
@@ -5883,6 +5901,15 @@ es: {
   'pos.denticao.superior':'Superior','pos.denticao.gengiva':'encía','pos.denticao.inferior':'Inferior',
   'pos.denticao.nao.nasceu':'⬜ Aún no salió','pos.denticao.nasceu':'🟫 Salió',
   'pos.denticao.calculando':'Calculando etapa...',
+  'pos.dent.ori.0':'Aún no se esperan dientes. Limpie las encías con una gasa húmeda.',
+  'pos.dent.ori.1':'¡Fase de los primeros incisivos! Es normal que el bebé esté irritable, babee más y quiera morder. Ofrezca mordedor frío y masajee las encías.',
+  'pos.dent.ori.2':'La llegada de los molares puede causar más molestias. Limpie con dedal o cepillo suave después de cada comida.',
+  'pos.dent.ori.3':'Los caninos salen en esta etapa. Cepille 2 veces al día con cepillo infantil y pasta con flúor (tamaño de un grano de arroz).',
+  'pos.dent.ori.4':'Fase de los últimos molares. ¡Dentición casi completa! Consulte al dentista pediátrico si aún no lo ha hecho.',
+  'pos.dev.cadastrar.bebe':'Registre al bebé para ver los hitos de desarrollo',
+  'pos.dev.meses.vida':'{nome} — {meses} meses de vida',
+  'pos.dev.salto.desc':'¡Semana de salto mental! El bebé puede estar más inquieto y necesitar más brazos — es una fase de crecimiento cognitivo.',
+  'pos.dev.mes.sing':'1 mes','pos.dev.mes.plur':'{n} meses',
   'posd.reg.panel.title':'Registros de Visita','posd.reg.panel.sub':'Tus anotaciones posparto',
   'posd.reg.nova.title':'Nueva visita posparto',
   'posd.reg.cliente.label':'Nombre de la cliente','posd.reg.cliente.ph':'Nombre de la madre',
@@ -9117,13 +9144,8 @@ async function carregarDenticao() {
     var idadeMeses = _bebeNascimento ? Math.floor((new Date() - _bebeNascimento) / (30.44 * 24 * 3600 * 1000)) : null;
     var oriEl = document.getElementById('pos-denticao-orientacoes');
     if (oriEl && idadeMeses !== null) {
-      var ori = '';
-      if (idadeMeses < 6) ori = 'Ainda não é esperado nenhum dente. Mantenha higiene das gengivas com gaze umedecida.';
-      else if (idadeMeses < 12) ori = 'Fase dos primeiros incisivos! É normal o bebê ficar irritado, babar mais e querer morder. Ofereça mordedor gelado e massageie as gengivas.';
-      else if (idadeMeses < 18) ori = 'Chegada dos molares pode causar mais desconforto. Faça higiene com dedeira ou escovinha macia após cada refeição.';
-      else if (idadeMeses < 24) ori = 'Caninos surgem nessa fase. Higiene 2x ao dia com escova infantil e pasta com flúor (tamanho de um grão de arroz).';
-      else ori = 'Fase dos últimos molares. Dentição quase completa! Consulte o dentista pediátrico se ainda não foi.';
-      oriEl.textContent = ori;
+      var oriIdx = idadeMeses < 6 ? 0 : idadeMeses < 12 ? 1 : idadeMeses < 18 ? 2 : idadeMeses < 24 ? 3 : 4;
+      oriEl.textContent = t('pos.dent.ori.' + oriIdx);
     }
 
     // Histórico
@@ -9134,10 +9156,10 @@ async function carregarDenticao() {
       else {
         histEl.innerHTML = lista.map(function(id) {
           var info = _DENTES.find(function(d){ return d[0]===id; });
-          var label = info ? info[1] + ' (' + (info[2]==='sup'?'Superior':'Inferior') + ')' : id;
+          var label = info ? info[1] + ' (' + (info[2]==='sup' ? t('pos.denticao.superior') : t('pos.denticao.inferior')) + ')' : id;
           return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.08);font-size:13px;">' +
             '<span style="color:var(--dark);">🦷 ' + label + '</span>' +
-            '<span style="color:var(--earth-light);">' + (registrados[id] ? new Date(registrados[id]).toLocaleDateString('pt-BR') : '—') + '</span>' +
+            '<span style="color:var(--earth-light);">' + (registrados[id] ? new Date(registrados[id]).toLocaleDateString([]) : '—') + '</span>' +
             '</div>';
         }).join('');
       }
@@ -9162,30 +9184,36 @@ async function toggleDente(denteId, label) {
 }
 
 var _MARCOS = {
-  1:  ['Fixa o olhar no rosto','Reage a sons altos','Faz pequenos sons guturais'],
-  2:  ['Sorri socialmente','Segue objetos com os olhos','Levanta a cabeça brevemente'],
-  3:  ['Vocaliza e balbucia','Segura objetos por instantes','Sustenta cabeça com apoio'],
-  4:  ['Ri alto','Sustenta a cabeça firme','Leva objetos à boca'],
-  5:  ['Rola de barriga para cima','Reconhece rosto familiar','Alcança objetos'],
-  6:  ['Senta com apoio','Transfere objeto entre as mãos','Responde ao próprio nome'],
-  7:  ['Rasteja ou arrasta','Bate palmas imitando','Estranha pessoas desconhecidas'],
-  8:  ['Senta sem apoio','Pinça com os dedos','Fala "mamama" ou "bababa"'],
-  9:  ['Engatinha','Puxa para ficar em pé','Imita gestos simples'],
-  10: ['Fica em pé com apoio','Entende "não"','Acena tchau'],
-  11: ['Dá passos com apoio','Fala 1-2 palavras com sentido','Aponta para o que quer'],
-  12: ['Primeiros passos sozinho','Usa colher com ajuda','Diz "mamã" e "papá" com sentido'],
-  15: ['Caminha bem','Empilha 2 blocos','Vocabulário de 5-10 palavras'],
-  18: ['Corre (com quedas)','Nomeia objetos conhecidos','Imita tarefas domésticas'],
-  24: ['Sobe escadas com apoio','Frases de 2 palavras','Brinca de faz-de-conta']
+  1:  [['Fixa o olhar no rosto','Fixes gaze on face','Fija la mirada en el rostro'],['Reage a sons altos','Reacts to loud sounds','Reacciona a sonidos fuertes'],['Faz pequenos sons guturais','Makes small guttural sounds','Emite pequeños sonidos guturales']],
+  2:  [['Sorri socialmente','Social smile','Sonríe socialmente'],['Segue objetos com os olhos','Follows objects with eyes','Sigue objetos con los ojos'],['Levanta a cabeça brevemente','Lifts head briefly','Levanta la cabeza brevemente']],
+  3:  [['Vocaliza e balbucia','Vocalizes and babbles','Vocaliza y balbucea'],['Segura objetos por instantes','Holds objects momentarily','Agarra objetos por momentos'],['Sustenta cabeça com apoio','Holds head with support','Sostiene la cabeza con apoyo']],
+  4:  [['Ri alto','Laughs out loud','Se ríe a carcajadas'],['Sustenta a cabeça firme','Holds head steady','Sostiene la cabeza firme'],['Leva objetos à boca','Brings objects to mouth','Lleva objetos a la boca']],
+  5:  [['Rola de barriga para cima','Rolls from tummy to back','Gira boca arriba'],['Reconhece rosto familiar','Recognizes familiar face','Reconoce cara familiar'],['Alcança objetos','Reaches for objects','Alcanza objetos']],
+  6:  [['Senta com apoio','Sits with support','Se sienta con apoyo'],['Transfere objeto entre as mãos','Transfers object between hands','Pasa objeto de una mano a otra'],['Responde ao próprio nome','Responds to own name','Responde a su nombre']],
+  7:  [['Rasteja ou arrasta','Crawls or scoots','Gatea o se arrastra'],['Bate palmas imitando','Claps in imitation','Aplaude imitando'],['Estranha pessoas desconhecidas','Shows stranger anxiety','Se extraña con desconocidos']],
+  8:  [['Senta sem apoio','Sits without support','Se sienta sin apoyo'],['Pinça com os dedos','Pincer grasp','Pinza con los dedos'],['Fala "mamama" ou "bababa"','Says "mamama" or "bababa"','Dice "mamama" o "bababa"']],
+  9:  [['Engatinha','Crawls','Gateo'],['Puxa para ficar em pé','Pulls to stand','Se jala para ponerse de pie'],['Imita gestos simples','Imitates simple gestures','Imita gestos simples']],
+  10: [['Fica em pé com apoio','Stands with support','Se para con apoyo'],['Entende "não"','Understands "no"','Entiende "no"'],['Acena tchau','Waves bye-bye','Hace adiós con la mano']],
+  11: [['Dá passos com apoio','Takes steps with support','Da pasos con apoyo'],['Fala 1-2 palavras com sentido','Says 1–2 meaningful words','Dice 1-2 palabras con sentido'],['Aponta para o que quer','Points to what they want','Señala lo que quiere']],
+  12: [['Primeiros passos sozinho','First steps alone','Primeros pasos solo'],['Usa colher com ajuda','Uses spoon with help','Usa cuchara con ayuda'],['Diz "mamã" e "papá" com sentido','Says "mama" and "dada" meaningfully','Dice "mamá" y "papá" con sentido']],
+  15: [['Caminha bem','Walks well','Camina bien'],['Empilha 2 blocos','Stacks 2 blocks','Apila 2 bloques'],['Vocabulário de 5-10 palavras','Vocabulary of 5–10 words','Vocabulario de 5-10 palabras']],
+  18: [['Corre (com quedas)','Runs (with falls)','Corre (con caídas)'],['Nomeia objetos conhecidos','Names familiar objects','Nombra objetos conocidos'],['Imita tarefas domésticas','Imitates household tasks','Imita tareas del hogar']],
+  24: [['Sobe escadas com apoio','Climbs stairs with support','Sube escaleras con apoyo'],['Frases de 2 palavras','Two-word phrases','Frases de 2 palabras'],['Brinca de faz-de-conta','Pretend play','Juego de fantasía']]
 };
 
 var _SALTOS = {
-  1:'🌿 Mundo das Sensações',2:'🌿 Mundo das Sensações',
-  3:'🌊 Mundo dos Padrões',4:'🌊 Mundo dos Padrões',
-  5:'🔄 Mundo das Transições',6:'🔄 Mundo das Transições',
-  7:'🎯 Mundo dos Eventos',8:'🎯 Mundo dos Eventos',
-  9:'🤝 Mundo das Relações',10:'🤝 Mundo das Relações',
-  11:'🗺️ Mundo das Sequências',12:'🗺️ Mundo das Sequências'
+  1:['🌿 Mundo das Sensações','🌿 World of Sensations','🌿 Mundo de las Sensaciones'],
+  2:['🌿 Mundo das Sensações','🌿 World of Sensations','🌿 Mundo de las Sensaciones'],
+  3:['🌊 Mundo dos Padrões','🌊 World of Patterns','🌊 Mundo de los Patrones'],
+  4:['🌊 Mundo dos Padrões','🌊 World of Patterns','🌊 Mundo de los Patrones'],
+  5:['🔄 Mundo das Transições','🔄 World of Transitions','🔄 Mundo de las Transiciones'],
+  6:['🔄 Mundo das Transições','🔄 World of Transitions','🔄 Mundo de las Transiciones'],
+  7:['🎯 Mundo dos Eventos','🎯 World of Events','🎯 Mundo de los Eventos'],
+  8:['🎯 Mundo dos Eventos','🎯 World of Events','🎯 Mundo de los Eventos'],
+  9:['🤝 Mundo das Relações','🤝 World of Relationships','🤝 Mundo de las Relaciones'],
+  10:['🤝 Mundo das Relações','🤝 World of Relationships','🤝 Mundo de las Relaciones'],
+  11:['🗺️ Mundo das Sequências','🗺️ World of Sequences','🗺️ Mundo de las Secuencias'],
+  12:['🗺️ Mundo das Sequências','🗺️ World of Sequences','🗺️ Mundo de las Secuencias']
 };
 
 async function carregarDesenvolvimento() {
@@ -9195,15 +9223,16 @@ async function carregarDesenvolvimento() {
     var bebe = await db.from('pos_bebes').select('data_nascimento,nome').eq('mae_id', currentUserId).maybeSingle();
     if (!bebe.data || !bebe.data.data_nascimento) {
       var mesEl = document.getElementById('pos-dev-mes');
-      if (mesEl) mesEl.textContent = 'Cadastre o bebê para ver o desenvolvimento';
+      if (mesEl) mesEl.textContent = t('pos.dev.cadastrar.bebe');
       return;
     }
     _bebeNascimento = new Date(bebe.data.data_nascimento);
     var meses = Math.floor((new Date() - _bebeNascimento) / (30.44 * 24 * 3600 * 1000));
-    var mesEl = document.getElementById('pos-dev-mes'); if (mesEl) mesEl.textContent = bebe.data.nome + ' — ' + meses + ' meses de vida';
-    var saltoEl = document.getElementById('pos-dev-salto'); if (saltoEl) saltoEl.textContent = _SALTOS[meses] || '';
+    var li = _lang === 'en' ? 1 : _lang === 'es' ? 2 : 0;
+    var mesEl = document.getElementById('pos-dev-mes'); if (mesEl) mesEl.textContent = t('pos.dev.meses.vida').replace('{nome}', bebe.data.nome).replace('{meses}', meses);
+    var saltoEl = document.getElementById('pos-dev-salto'); if (saltoEl) saltoEl.textContent = (_SALTOS[meses] || ['','',''])[li];
     var descEl = document.getElementById('pos-dev-salto-desc');
-    if (descEl) descEl.textContent = meses <= 12 ? 'Semana de salto mental! O bebê pode estar mais agitado e precisar de mais colo — é fase de crescimento cognitivo.' : '';
+    if (descEl) descEl.textContent = meses <= 12 ? t('pos.dev.salto.desc') : '';
 
     // Marcos do mês atual
     var marcosRes = await db.from('pos_marcos').select('*').eq('mae_id', currentUserId);
@@ -9215,11 +9244,12 @@ async function carregarDesenvolvimento() {
     var marcosEl = document.getElementById('pos-dev-marcos-lista');
     if (marcosEl) {
       marcosEl.innerHTML = marcosLista.map(function(m) {
-        var key = mesChave + '_' + m;
+        var label = m[li];
+        var key = mesChave + '_' + m[0];
         var ok = !!conquistados[key];
         return '<label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.06);cursor:pointer;">' +
-          '<input type="checkbox" ' + (ok ? 'checked' : '') + ' onchange="toggleMarco(' + mesChave + ',\'' + m.replace(/'/g,'') + '\',this)" style="accent-color:var(--sage);width:16px;height:16px;flex-shrink:0;">' +
-          '<span style="font-size:13px;color:' + (ok ? 'var(--sage)' : 'var(--dark)') + ';' + (ok ? 'text-decoration:line-through;opacity:0.6;' : '') + '">' + m + '</span>' +
+          '<input type="checkbox" ' + (ok ? 'checked' : '') + ' onchange="toggleMarco(' + mesChave + ',\'' + m[0].replace(/'/g,'') + '\',this)" style="accent-color:var(--sage);width:16px;height:16px;flex-shrink:0;">' +
+          '<span style="font-size:13px;color:' + (ok ? 'var(--sage)' : 'var(--dark)') + ';' + (ok ? 'text-decoration:line-through;opacity:0.6;' : '') + '">' + label + '</span>' +
           '</label>';
       }).join('');
     }
@@ -9230,13 +9260,14 @@ async function carregarDesenvolvimento() {
       tlEl.innerHTML = Object.keys(_MARCOS).map(function(mes) {
         var lista = _MARCOS[mes];
         var passado = parseInt(mes) <= meses;
+        var mesLabel = parseInt(mes) === 1 ? t('pos.dev.mes.sing') : t('pos.dev.mes.plur').replace('{n}', mes);
         return '<div style="border-radius:12px;overflow:hidden;margin-bottom:8px;">' +
           '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'\':\'none\'" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:' + (passado ? 'var(--sage)' : 'var(--cream)') + ';cursor:pointer;">' +
-          '<span style="font-size:13px;font-weight:500;color:' + (passado ? 'white' : 'var(--dark)') + ';">' + (parseInt(mes) === 1 ? '1 mês' : mes + ' meses') + '</span>' +
+          '<span style="font-size:13px;font-weight:500;color:' + (passado ? 'white' : 'var(--dark)') + ';">' + mesLabel + '</span>' +
           '<span style="font-size:11px;color:' + (passado ? 'rgba(255,255,255,0.7)' : 'var(--earth-light)') + ';">▼</span>' +
           '</div>' +
           '<div style="display:none;padding:12px 14px;background:var(--white);border:1px solid rgba(122,100,85,0.08);border-top:none;">' +
-          lista.map(function(m) { return '<div style="font-size:13px;color:var(--mid);padding:4px 0;">• ' + m + '</div>'; }).join('') +
+          lista.map(function(m) { return '<div style="font-size:13px;color:var(--mid);padding:4px 0;">• ' + m[li] + '</div>'; }).join('') +
           '</div></div>';
       }).join('');
     }
@@ -9616,13 +9647,8 @@ async function posDCarregarDenticao() {
     var idadeMeses = (bebeRes.data && bebeRes.data.data_nascimento) ? Math.floor((new Date() - new Date(bebeRes.data.data_nascimento)) / (30.44 * 24 * 3600 * 1000)) : null;
     var oriEl = document.getElementById('posd-denticao-orientacoes');
     if (oriEl && idadeMeses !== null) {
-      var ori = '';
-      if (idadeMeses < 6) ori = 'Ainda não é esperado nenhum dente. Mantenha higiene das gengivas com gaze umedecida.';
-      else if (idadeMeses < 12) ori = 'Fase dos primeiros incisivos! É normal o bebê ficar irritado, babar mais e querer morder. Ofereça mordedor gelado e massageie as gengivas.';
-      else if (idadeMeses < 18) ori = 'Chegada dos molares pode causar mais desconforto. Faça higiene com dedeira ou escovinha macia após cada refeição.';
-      else if (idadeMeses < 24) ori = 'Caninos surgem nessa fase. Higiene 2x ao dia com escova infantil e pasta com flúor (tamanho de um grão de arroz).';
-      else ori = 'Fase dos últimos molares. Dentição quase completa! Consulte o dentista pediátrico se ainda não foi.';
-      oriEl.textContent = ori;
+      var oriIdx = idadeMeses < 6 ? 0 : idadeMeses < 12 ? 1 : idadeMeses < 18 ? 2 : idadeMeses < 24 ? 3 : 4;
+      oriEl.textContent = t('pos.dent.ori.' + oriIdx);
     }
     var histEl = document.getElementById('posd-denticao-historico');
     if (histEl) {
@@ -9631,10 +9657,10 @@ async function posDCarregarDenticao() {
       else {
         histEl.innerHTML = lista.map(function(id) {
           var info = _DENTES.find(function(d){ return d[0]===id; });
-          var label = info ? info[1] + ' (' + (info[2]==='sup'?'Superior':'Inferior') + ')' : id;
+          var label = info ? info[1] + ' (' + (info[2]==='sup' ? t('pos.denticao.superior') : t('pos.denticao.inferior')) + ')' : id;
           return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.08);font-size:13px;">'
             + '<span style="color:var(--dark);">🦷 ' + label + '</span>'
-            + '<span style="color:var(--earth-light);">' + (registrados[id] ? new Date(registrados[id]).toLocaleDateString('pt-BR') : '—') + '</span>'
+            + '<span style="color:var(--earth-light);">' + (registrados[id] ? new Date(registrados[id]).toLocaleDateString([]) : '—') + '</span>'
             + '</div>';
         }).join('');
       }
@@ -9664,15 +9690,16 @@ async function posDCarregarDesenvolvimento() {
     var bebe = await db.from('pos_bebes').select('data_nascimento,nome').eq('mae_id', _posDClienteId).maybeSingle();
     if (!bebe.data || !bebe.data.data_nascimento) {
       var mesEl = document.getElementById('posd-dev-mes');
-      if (mesEl) mesEl.textContent = 'Cadastre o bebê para ver o desenvolvimento';
+      if (mesEl) mesEl.textContent = t('pos.dev.cadastrar.bebe');
       return;
     }
     var bebeNasc = new Date(bebe.data.data_nascimento);
     var meses = Math.floor((new Date() - bebeNasc) / (30.44 * 24 * 3600 * 1000));
-    var mesEl = document.getElementById('posd-dev-mes'); if (mesEl) mesEl.textContent = bebe.data.nome + ' — ' + meses + ' meses de vida';
-    var saltoEl = document.getElementById('posd-dev-salto'); if (saltoEl) saltoEl.textContent = _SALTOS[meses] || '';
+    var li = _lang === 'en' ? 1 : _lang === 'es' ? 2 : 0;
+    var mesEl = document.getElementById('posd-dev-mes'); if (mesEl) mesEl.textContent = t('pos.dev.meses.vida').replace('{nome}', bebe.data.nome).replace('{meses}', meses);
+    var saltoEl = document.getElementById('posd-dev-salto'); if (saltoEl) saltoEl.textContent = (_SALTOS[meses] || ['','',''])[li];
     var descEl = document.getElementById('posd-dev-salto-desc');
-    if (descEl) descEl.textContent = meses <= 12 ? 'Semana de salto mental! O bebê pode estar mais agitado e precisar de mais colo — é fase de crescimento cognitivo.' : '';
+    if (descEl) descEl.textContent = meses <= 12 ? t('pos.dev.salto.desc') : '';
     var marcosRes = await db.from('pos_marcos').select('*').eq('mae_id', _posDClienteId);
     var conquistados = {};
     (marcosRes.data || []).forEach(function(m) { conquistados[m.mes + '_' + m.marco] = true; });
@@ -9681,11 +9708,12 @@ async function posDCarregarDesenvolvimento() {
     var marcosEl = document.getElementById('posd-dev-marcos-lista');
     if (marcosEl) {
       marcosEl.innerHTML = marcosLista.map(function(m) {
-        var key = mesChave + '_' + m;
+        var label = m[li];
+        var key = mesChave + '_' + m[0];
         var ok = !!conquistados[key];
         return '<label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(122,100,85,0.06);cursor:pointer;">'
-          + '<input type="checkbox" ' + (ok ? 'checked' : '') + ' onchange="posDToggleMarco(' + mesChave + ',\'' + m.replace(/'/g,'') + '\',this)" style="accent-color:#9B7BB8;width:16px;height:16px;flex-shrink:0;">'
-          + '<span style="font-size:13px;color:' + (ok ? '#9B7BB8' : 'var(--dark)') + ';' + (ok ? 'text-decoration:line-through;opacity:0.6;' : '') + '">' + m + '</span>'
+          + '<input type="checkbox" ' + (ok ? 'checked' : '') + ' onchange="posDToggleMarco(' + mesChave + ',\'' + m[0].replace(/'/g,'') + '\',this)" style="accent-color:#9B7BB8;width:16px;height:16px;flex-shrink:0;">'
+          + '<span style="font-size:13px;color:' + (ok ? '#9B7BB8' : 'var(--dark)') + ';' + (ok ? 'text-decoration:line-through;opacity:0.6;' : '') + '">' + label + '</span>'
           + '</label>';
       }).join('');
     }
@@ -9694,13 +9722,14 @@ async function posDCarregarDesenvolvimento() {
       tlEl.innerHTML = Object.keys(_MARCOS).map(function(mes) {
         var lista = _MARCOS[mes];
         var passado = parseInt(mes) <= meses;
+        var mesLabel = parseInt(mes) === 1 ? t('pos.dev.mes.sing') : t('pos.dev.mes.plur').replace('{n}', mes);
         return '<div style="border-radius:12px;overflow:hidden;margin-bottom:8px;">'
           + '<div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'\':\'none\'" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:' + (passado ? '#9B7BB8' : 'var(--cream)') + ';cursor:pointer;">'
-          + '<span style="font-size:13px;font-weight:500;color:' + (passado ? 'white' : 'var(--dark)') + ';">' + (parseInt(mes) === 1 ? '1 mês' : mes + ' meses') + '</span>'
+          + '<span style="font-size:13px;font-weight:500;color:' + (passado ? 'white' : 'var(--dark)') + ';">' + mesLabel + '</span>'
           + '<span style="font-size:11px;color:' + (passado ? 'rgba(255,255,255,0.7)' : 'var(--earth-light)') + ';">▼</span>'
           + '</div>'
           + '<div style="display:none;padding:12px 14px;background:var(--white);border:1px solid rgba(122,100,85,0.08);border-top:none;">'
-          + lista.map(function(m) { return '<div style="font-size:13px;color:var(--mid);padding:4px 0;">• ' + m + '</div>'; }).join('')
+          + lista.map(function(m) { return '<div style="font-size:13px;color:var(--mid);padding:4px 0;">• ' + m[li] + '</div>'; }).join('')
           + '</div></div>';
       }).join('');
     }
