@@ -2045,6 +2045,10 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" style="margin-bottom:12px;">📚 Materiais da minha doula</div>
             <div id="g-materiais-doula-lista"></div>
           </div>
+          <div id="g-documentos-doula" style="display:none;margin-bottom:20px;">
+            <div class="card-title" style="margin-bottom:12px;">📄 Documentos da minha doula</div>
+            <div id="g-documentos-doula-lista"></div>
+          </div>
           <div class="card">
             <div class="card-title" data-i18n="doula.msgs.title">💬 Mensagens com sua doula</div>
             <div id="msgs-gestante-container" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;">
@@ -2168,6 +2172,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-agenda')"><span class="d-nav-icon">📅</span><span data-i18n="doula.nav.schedule">Agenda</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span><span data-i18n="doula.nav.records">Registros</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-posparto')"><span class="d-nav-icon">👶</span><span data-i18n="doula.nav.postpartum">Pós-Parto</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula()"><span class="d-nav-icon">📄</span><span>Documentos</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span><span data-i18n="doula.nav.library">Biblioteca</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
@@ -2217,6 +2222,7 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span>🛡️ </span><span data-i18n="doula.nav.backup">Minha Backup</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-registros');fecharMobMore()"><span>📋 Registros</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula();fecharMobMore()"><span>📄 Documentos</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-faq');fecharMobMore()"><span>💡 Guia Prático</span></div>
         <div class="mob-more-item" onclick="dNav(this,'d-financeiro');fecharMobMore()"><span>💰 Financeiro</span></div>
@@ -2681,6 +2687,42 @@ tr:hover td { background:var(--rose-pale); }
               <div class="empty-title" data-i18n="doula.postpartum.empty">Nenhum registro pós-parto</div>
               <div class="empty-sub" data-i18n="doula.postpartum.empty.sub">Os registros aparecerão aqui após o parto das suas clientes</div>
             </div>
+          </div>
+        </div>
+
+        <!-- DOCUMENTOS -->
+        <div class="d-panel" id="d-documentos">
+          <div class="panel-title">Documentos</div>
+          <div class="panel-sub">Envie anamneses, orientações e outros documentos para suas clientes</div>
+
+          <div class="form-section" style="margin-bottom:24px;">
+            <div class="card-title">📤 Enviar documento</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Cliente</label>
+                <select id="doc-select-gestante" class="form-input form-select">
+                  <option value="">Selecione uma cliente...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nome do documento</label>
+                <input id="doc-nome" class="form-input" type="text" placeholder="Ex: Anamnese, Plano de cuidados...">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:8px;">
+              <label class="form-label">Arquivo (PDF ou imagem)</label>
+              <div class="upload-area" id="doc-upload-area" onclick="document.getElementById('doc-file-input').click()">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text" id="doc-upload-text">Clique para selecionar o arquivo</div>
+              </div>
+              <input type="file" id="doc-file-input" accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="selecionarDocumento(this)">
+            </div>
+            <button class="btn-primary" onclick="enviarDocumento()" style="margin-top:4px;">Enviar documento</button>
+          </div>
+
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:14px;">Documentos enviados</div>
+            <div id="doc-lista-doula"><div class="empty-state-small">Nenhum documento enviado ainda.</div></div>
           </div>
         </div>
 
@@ -12220,6 +12262,7 @@ async function carregarMinhaDoula() {
     }
     // Carrega materiais da doula
     carregarMateriaisDoula(d.id, d.nome);
+    carregarDocumentosGestante(d.id);
     carregarContratoGestante();
     verificarLembreteAvaliacao();
   } catch(e) {}
@@ -12766,6 +12809,103 @@ async function cadastrarCliente() {
 }
 
 var _editandoClienteId = null;
+
+// ── DOCUMENTOS ──────────────────────────────────────────────────
+var _docArquivo = null;
+
+function selecionarDocumento(input) {
+  var file = input.files[0];
+  if (!file) return;
+  _docArquivo = file;
+  document.getElementById('doc-upload-text').textContent = file.name;
+}
+
+async function carregarDocumentosDoula() {
+  if (!db || !currentUserId) return;
+  // Preenche select de gestantes vinculadas
+  var sel = document.getElementById('doc-select-gestante');
+  if (sel) {
+    var res = await db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita');
+    var opts = '<option value="">Selecione uma cliente...</option>';
+    (res.data || []).forEach(function(g) {
+      opts += '<option value="' + g.gestante_id + '">' + g.gestante_nome + '</option>';
+    });
+    sel.innerHTML = opts;
+  }
+  // Carrega lista de documentos enviados
+  var lista = document.getElementById('doc-lista-doula');
+  if (!lista) return;
+  var r = await db.from('documentos_cliente').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
+  var docs = r.data || [];
+  if (!docs.length) { lista.innerHTML = '<div class="empty-state-small">Nenhum documento enviado ainda.</div>'; return; }
+  lista.innerHTML = docs.map(function(d) {
+    var data = new Date(d.criado_em).toLocaleDateString('pt-BR');
+    var icone = d.tipo === 'imagem' ? '🖼️' : '📄';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--white);border-radius:12px;margin-bottom:8px;border:1px solid var(--border);">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+      '<span style="font-size:22px;">' + icone + '</span>' +
+      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + d.nome + '</div>' +
+      '<div style="font-size:11px;color:var(--earth-light);">' + (d.gestante_nome || '') + ' · ' + data + '</div></div></div>' +
+      '<a href="' + d.url + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Ver</a>' +
+    '</div>';
+  }).join('');
+}
+
+async function enviarDocumento() {
+  if (!db || !currentUserId) return;
+  var gestanteId = document.getElementById('doc-select-gestante').value;
+  if (!gestanteId) { mostrarToast('Selecione uma cliente'); return; }
+  var nome = (document.getElementById('doc-nome').value || '').trim();
+  if (!nome) { mostrarToast('Informe o nome do documento'); return; }
+  if (!_docArquivo) { mostrarToast('Selecione um arquivo'); return; }
+  var gestanteNome = document.getElementById('doc-select-gestante').selectedOptions[0].textContent;
+  var ext = _docArquivo.name.split('.').pop().toLowerCase();
+  var tipo = ['png','jpg','jpeg'].includes(ext) ? 'imagem' : 'pdf';
+  var path = 'docs/' + currentUserId + '/' + Date.now() + '_' + _docArquivo.name.replace(/\s/g,'_');
+  mostrarToast('Enviando...');
+  try {
+    var up = await db.storage.from('materiais').upload(path, _docArquivo);
+    if (up.error) throw up.error;
+    var url = db.storage.from('materiais').getPublicUrl(path).data.publicUrl;
+    var res = await db.from('documentos_cliente').insert({
+      doula_id: currentUserId,
+      gestante_id: gestanteId,
+      gestante_nome: gestanteNome,
+      nome: nome,
+      url: url,
+      tipo: tipo
+    });
+    if (res.error) throw res.error;
+    mostrarToast('Documento enviado! 📄');
+    document.getElementById('doc-nome').value = '';
+    document.getElementById('doc-upload-text').textContent = 'Clique para selecionar o arquivo';
+    document.getElementById('doc-file-input').value = '';
+    _docArquivo = null;
+    carregarDocumentosDoula();
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function carregarDocumentosGestante(doulaId) {
+  if (!db || !currentUserId || !doulaId) return;
+  var wrap = document.getElementById('g-documentos-doula');
+  var lista = document.getElementById('g-documentos-doula-lista');
+  if (!wrap || !lista) return;
+  var r = await db.from('documentos_cliente').select('*').eq('doula_id', doulaId).eq('gestante_id', currentUserId).order('criado_em', { ascending: false });
+  var docs = r.data || [];
+  if (!docs.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  lista.innerHTML = docs.map(function(d) {
+    var icone = d.tipo === 'imagem' ? '🖼️' : '📄';
+    var data = new Date(d.criado_em).toLocaleDateString('pt-BR');
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border-radius:12px;margin-bottom:8px;">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+      '<span style="font-size:22px;">' + icone + '</span>' +
+      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + d.nome + '</div>' +
+      '<div style="font-size:11px;color:var(--earth-light);">' + data + '</div></div></div>' +
+      '<a href="' + d.url + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Abrir</a>' +
+    '</div>';
+  }).join('');
+}
 
 async function abrirEditarCliente(id) {
   if (!db || !currentUserId) return;
