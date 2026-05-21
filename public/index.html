@@ -1270,6 +1270,13 @@ tr:hover td { background:var(--rose-pale); }
               <div style="font-size:14px;font-weight:500;margin-bottom:6px;color:var(--rose);">🌙 Você já passou da DPP</div>
               <div style="font-size:13px;color:var(--mid);">Não falte às suas consultas. Alguns bebês nascem até 42 semanas — isso é completamente normal!</div>
             </div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+              <div style="font-size:11px;color:var(--earth-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🏥 Hospital / Maternidade</div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="g-hospital-input" class="form-input" placeholder="Nome do hospital ou maternidade" style="flex:1;font-size:13px;">
+                <button onclick="salvarHospitalGestante()" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;">Salvar</button>
+              </div>
+            </div>
           </div>
           <div class="card" id="card-sentir">
             <div class="card-title" data-i18n="acomp.symptoms.title">Esta semana você pode sentir...</div>
@@ -8643,6 +8650,7 @@ function entrarNoApp(tipo, nome) {
       setTimeout(function() { try { atualizarTarefas(0); } catch(e) {} }, 400);
     }, 300);
     setTimeout(function() { try { carregarFotoPerfil(); } catch(e) {} }, 400);
+    setTimeout(function() { try { carregarHospitalGestante(); } catch(e) {} }, 420);
     setTimeout(function() { try { carregarTarefasEstado(); } catch(e) {} }, 450);
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
@@ -10957,6 +10965,24 @@ async function salvarDPP() {
   mostrarToast('✅ Data salva! Semana calculada 🌸');
 }
 
+async function salvarHospitalGestante() {
+  var val = (document.getElementById('g-hospital-input').value || '').trim();
+  if (!db || !currentUserId) return;
+  try {
+    await db.from('usuarios').update({ hospital: val }).eq('id', currentUserId);
+    mostrarToast('✅ Hospital salvo!');
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+async function carregarHospitalGestante() {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('usuarios').select('hospital').eq('id', currentUserId).maybeSingle();
+    var hEl = document.getElementById('g-hospital-input');
+    if (hEl && res.data && res.data.hospital) hEl.value = res.data.hospital;
+  } catch(e) {}
+}
+
 async function carregarDPP() {
   var dpp = null;
   try { dpp = localStorage.getItem('lua_dpp'); } catch(e) {}
@@ -12450,12 +12476,14 @@ async function carregarClientesDoula() {
     // Busca DPP das gestantes internas direto de usuarios
     var dppMapSol = {};
     var fotoMapSol = {};
+    var hospitalMapSol = {};
     if (solicitacoes.length) {
       var idsGest = solicitacoes.map(function(g) { return g.gestante_id; });
-      var resDppSol = await db.from('usuarios').select('id,dpp,foto_perfil').in('id', idsGest);
+      var resDppSol = await db.from('usuarios').select('id,dpp,foto_perfil,hospital').in('id', idsGest);
       (resDppSol.data || []).forEach(function(u) {
         if (u.dpp) dppMapSol[u.id] = u.dpp;
         if (u.foto_perfil) fotoMapSol[u.id] = u.foto_perfil;
+        if (u.hospital) hospitalMapSol[u.id] = u.hospital;
       });
       // DPP definida pela doula em clientes_doula sobrepõe a da gestante
       var resDppCli = await db.from('clientes_doula').select('gestante_id,dpp').in('gestante_id', idsGest).eq('doula_id', currentUserId).not('dpp', 'is', null);
@@ -12510,7 +12538,7 @@ async function carregarClientesDoula() {
           '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')">' + g.gestante_nome + ' <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">—</td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (hospitalMapSol[g.gestante_id] || '—') + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
           '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
@@ -12710,7 +12738,7 @@ async function _pcliResumo(el, id, tipo, campo) {
       if (info.observacoes) s += '<div class="card"><div class="card-title" style="margin-bottom:8px;">Observações</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.observacoes + '</div></div>';
     } else {
       try {
-        var _usrRes = await db.from('usuarios').select('dpp,whatsapp,cidade').eq('id', id).maybeSingle();
+        var _usrRes = await db.from('usuarios').select('dpp,whatsapp,cidade,hospital').eq('id', id).maybeSingle();
         var _cliRes = await db.from('clientes_doula').select('dpp,semanas_gestacional').eq('doula_id', currentUserId).eq('gestante_id', id).maybeSingle();
         var _uDpp = (_usrRes.data || {}).dpp || '';
         var _cDpp = (_cliRes.data || {}).dpp || '';
@@ -12721,6 +12749,7 @@ async function _pcliResumo(el, id, tipo, campo) {
         s += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:13px;color:var(--earth-light);min-width:140px;">DPP</span><span id="pcli-dpp-val" style="font-size:13px;color:var(--dark);font-weight:500;">' + _dppStr + _dppFonte + '</span><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'block\'" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">Editar</button></div>';
         if ((_usrRes.data || {}).whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.whatsapp + '</span></div>';
         if ((_usrRes.data || {}).cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.cidade + '</span></div>';
+        if ((_usrRes.data || {}).hospital) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Hospital</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.hospital + '</span></div>';
         s += '</div>';
         s += '<div id="pcli-dpp-form" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">';
         s += '<div style="font-size:12px;color:var(--earth-light);margin-bottom:8px;">Isso não altera o perfil da gestante no app.</div>';
