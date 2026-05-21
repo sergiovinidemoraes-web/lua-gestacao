@@ -6853,7 +6853,7 @@ async function saveDiarioPai() {
   entry.className = 'diary-entry';
   var now = new Date();
   var catLabel = '<span style="background:var(--pai-pale);color:var(--pai);border-radius:10px;padding:2px 10px;font-size:11px;margin-right:8px;">' + paiCategoriaAtual + '</span>';
-  entry.innerHTML = '<div class="diary-date">' + catLabel + now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + texto + '</div>' + (humor ? '<div class="diary-mood">' + humor + '</div>' : '');
+  entry.innerHTML = '<div class="diary-date">' + catLabel + now.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + esc(texto) + '</div>' + (humor ? '<div class="diary-mood">' + esc(humor) + '</div>' : '');
   document.getElementById('p-diary-entries').prepend(entry);
   ta.value = '';
   document.querySelectorAll('#p-mood-btns .mood-btn').forEach(function(b) { b.classList.remove('selected'); });
@@ -6878,8 +6878,8 @@ async function carregarDiarioPai() {
       var entry = document.createElement('div');
       entry.className = 'diary-entry';
       var d = new Date(item.criado_em);
-      var catLabel = item.categoria ? '<span style="background:var(--pai-pale);color:var(--pai);border-radius:10px;padding:2px 10px;font-size:11px;margin-right:8px;">' + item.categoria + '</span>' : '';
-      entry.innerHTML = '<div class="diary-date">' + catLabel + d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + item.conteudo + '</div>' + (item.humor ? '<div class="diary-mood">' + item.humor + '</div>' : '');
+      var catLabel = item.categoria ? '<span style="background:var(--pai-pale);color:var(--pai);border-radius:10px;padding:2px 10px;font-size:11px;margin-right:8px;">' + esc(item.categoria) + '</span>' : '';
+      entry.innerHTML = '<div class="diary-date">' + catLabel + d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}).toUpperCase() + '</div><div class="diary-text">' + esc(item.conteudo) + '</div>' + (item.humor ? '<div class="diary-mood">' + esc(item.humor) + '</div>' : '');
       container.appendChild(entry);
     });
   } catch(e) {}
@@ -6913,7 +6913,7 @@ async function enviarMensagemLuaPai(mensagem) {
     var hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     var respDiv = document.createElement('div');
     respDiv.className = 'chat-msg recv';
-    respDiv.innerHTML = '<div class="chat-bubble">' + reply + '</div><div class="chat-time">Lua • ' + hora + '</div>';
+    respDiv.innerHTML = '<div class="chat-bubble">' + esc(reply) + '</div><div class="chat-time">Lua • ' + hora + '</div>';
     msgs.appendChild(respDiv);
     msgs.scrollTop = msgs.scrollHeight;
   } catch(e) {
@@ -6921,7 +6921,7 @@ async function enviarMensagemLuaPai(mensagem) {
     if (tEl) tEl.remove();
     var errDiv = document.createElement('div');
     errDiv.className = 'chat-msg recv';
-    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + ' 💛</div>';
+    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + esc(e.message) + ' 💛</div>';
     msgs.appendChild(errDiv);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -6933,7 +6933,7 @@ function sendFAQPai(btn) {
   var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + now + '</div>';
+  div.innerHTML = '<div class="chat-bubble">' + esc(msg) + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
   enviarMensagemLuaPai(msg);
@@ -6946,7 +6946,7 @@ function sendPaiMsg() {
   var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = '<div class="chat-bubble">' + inp.value + '</div><div class="chat-time">' + now + '</div>';
+  div.innerHTML = '<div class="chat-bubble">' + esc(inp.value) + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
   var mensagem = inp.value;
   inp.value = '';
@@ -7412,7 +7412,7 @@ async function enviarMensagemIA(mensagem) {
     var hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     var respDiv = document.createElement('div');
     respDiv.className = 'chat-msg recv';
-    respDiv.innerHTML = '<div class="chat-bubble">' + reply + '</div><div class="chat-time">' + nomeDoula + ' - ' + hora + '</div>';
+    respDiv.innerHTML = '<div class="chat-bubble">' + esc(reply) + '</div><div class="chat-time">' + esc(nomeDoula) + ' - ' + hora + '</div>';
     msgs.appendChild(respDiv);
     msgs.scrollTop = msgs.scrollHeight;
   } catch(e) {
@@ -7420,7 +7420,7 @@ async function enviarMensagemIA(mensagem) {
     if (t) t.remove();
     var errDiv = document.createElement('div');
     errDiv.className = 'chat-msg recv';
-    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + e.message + ' 💛</div>';
+    errDiv.innerHTML = '<div class="chat-bubble">Erro: ' + esc(e.message) + ' 💛</div>';
     msgs.appendChild(errDiv);
     msgs.scrollTop = msgs.scrollHeight;
     console.error('Chat error:', e);
@@ -7434,7 +7434,7 @@ function sendFAQ(btn) {
   var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + now + '</div>';
+  div.innerHTML = '<div class="chat-bubble">' + esc(msg) + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
   enviarMensagemIA(msg);
@@ -7447,7 +7447,7 @@ function sendGMsg() {
   var now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   var div = document.createElement('div');
   div.className = 'chat-msg sent';
-  div.innerHTML = '<div class="chat-bubble">' + inp.value + '</div><div class="chat-time">' + now + '</div>';
+  div.innerHTML = '<div class="chat-bubble">' + esc(inp.value) + '</div><div class="chat-time">' + now + '</div>';
   msgs.appendChild(div);
   var mensagem = inp.value;
   inp.value = '';
@@ -8209,6 +8209,10 @@ async function carregarRegistrosBackup() {
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
 var db = null;
+function esc(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
 var tipoSelecionado = 'gestante';
 var adminSenha = 'lua_admin_2026';
 var sessaoAtualId = null;
@@ -9445,7 +9449,7 @@ async function posCarregarDoulaPosDashboard() {
               '<button onclick="posNav(document.getElementById(\'pos-nav-msg\'),\'pos-mensagens\');carregarPosMensagens()" style="flex:1;background:#9B7BB8;color:white;border:none;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">💬 Chat</button>' +
             '</div>';
         } else {
-          statusEl.innerHTML = t('pos.doula.status.wait').replace('{nome}', '<span style="color:#9B7BB8;">' + doula.nome + '</span>');
+          statusEl.innerHTML = t('pos.doula.status.wait').replace('{nome}', '<span style="color:#9B7BB8;">' + esc(doula.nome) + '</span>');
           if (sol) {
             _posPendenteSol = { id: sol.id, doulaNome: doula.nome };
             iniciarRealtimeSolicitacoesPos(sol.id);
@@ -9464,7 +9468,7 @@ async function posCarregarDoulaPosDashboard() {
         if (doulaReg.data) {
           _posDoulaDeGestacao = { id: doulaReg.data.id, nome: doulaReg.data.nome };
           if (choice === 'same') {
-            statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + doulaReg.data.nome + '</span> ' + t('pos.doula.status.gest');
+            statusEl.innerHTML = '💜 <span style="color:#9B7BB8;font-weight:500;">' + esc(doulaReg.data.nome) + '</span> ' + t('pos.doula.status.gest');
           } else {
             statusEl.textContent = t('pos.doula.status.cfg');
           }
@@ -11379,13 +11383,13 @@ function renderMensagens(lista, containerEl, tipoLogado) {
     if (m.remetente_tipo === 'app') {
       return '<div style="display:flex;flex-direction:column;align-items:center;margin:10px 0;">' +
         '<div style="max-width:88%;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1px solid rgba(155,123,184,0.25);color:var(--dark);font-size:13px;line-height:1.5;word-break:break-word;text-align:center;">' +
-        '<div style="font-size:10px;font-weight:600;color:#9B7BB8;letter-spacing:0.5px;margin-bottom:4px;">💜 LUA MATERNA</div>' + m.texto + '</div>' +
+        '<div style="font-size:10px;font-weight:600;color:#9B7BB8;letter-spacing:0.5px;margin-bottom:4px;">💜 LUA MATERNA</div>' + esc(m.texto) + '</div>' +
         '<div style="font-size:10px;opacity:0.4;margin-top:2px;">' + hora + '</div>' +
         '</div>';
     }
     var enviada = m.remetente_tipo === tipoLogado;
     return '<div style="display:flex;flex-direction:column;align-items:' + (enviada ? 'flex-end' : 'flex-start') + ';margin-bottom:6px;">' +
-      '<div style="max-width:76%;padding:10px 14px;border-radius:18px;' + (enviada ? 'border-bottom-right-radius:4px;background:var(--rose);color:white;' : 'border-bottom-left-radius:4px;background:white;color:var(--dark);box-shadow:0 1px 3px rgba(0,0,0,0.08);') + 'font-size:14px;line-height:1.4;word-break:break-word;">' + m.texto + '</div>' +
+      '<div style="max-width:76%;padding:10px 14px;border-radius:18px;' + (enviada ? 'border-bottom-right-radius:4px;background:var(--rose);color:white;' : 'border-bottom-left-radius:4px;background:white;color:var(--dark);box-shadow:0 1px 3px rgba(0,0,0,0.08);') + 'font-size:14px;line-height:1.4;word-break:break-word;">' + esc(m.texto) + '</div>' +
       '<div style="font-size:10px;opacity:0.45;margin-top:2px;">' + hora + '</div>' +
       '</div>';
   }).join('');
@@ -15766,8 +15770,8 @@ function _renderDiarioEntrada(entry, prepend) {
   var data = new Date(entry.criado_em);
   var dataStr = data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).toUpperCase();
   var semanaStr = entry.semana ? ' · SEMANA ' + entry.semana : '';
-  var humorHtml = entry.humor ? '<div class="diary-mood">' + entry.humor + '</div>' : '';
-  div.innerHTML = '<div class="diary-date">' + dataStr + semanaStr + '</div><div class="diary-text">' + entry.conteudo + '</div>' + humorHtml;
+  var humorHtml = entry.humor ? '<div class="diary-mood">' + esc(entry.humor) + '</div>' : '';
+  div.innerHTML = '<div class="diary-date">' + dataStr + semanaStr + '</div><div class="diary-text">' + esc(entry.conteudo) + '</div>' + humorHtml;
   if (prepend) container.prepend(div); else container.appendChild(div);
 }
 
