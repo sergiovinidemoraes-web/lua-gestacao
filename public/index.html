@@ -1399,8 +1399,20 @@ tr:hover td { background:var(--rose-pale); }
             <div class="plan-section">
               <h3 data-i18n="plano.tipo.title">Tipo de Parto</h3>
               <div class="plan-tipo-btns">
-                <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')" data-i18n="plano.tipo.vaginal">🌸 Parto vaginal</button>
-                <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')" data-i18n="plano.tipo.cesariana">🏥 Cesariana</button>
+                <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')" data-i18n="plano.tipo.vaginal">🌸 Parto Vaginal</button>
+                <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')" data-i18n="plano.tipo.cesariana">🏥 Cesária</button>
+                <button class="plan-tipo-btn" id="btn-tipo-humanizado" onclick="toggleTipoParto(this,'humanizado')" data-i18n="plano.tipo.humanizado">🌿 Humanizado</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1b. Local do parto -->
+          <div class="card">
+            <div class="plan-section">
+              <h3>Local do Parto</h3>
+              <div class="plan-tipo-btns">
+                <button class="plan-tipo-btn selected" id="btn-local-hospitalar" onclick="toggleLocalParto(this,'hospitalar')">🏥 Hospitalar</button>
+                <button class="plan-tipo-btn" id="btn-local-domiciliar" onclick="toggleLocalParto(this,'domiciliar')">🏠 Domiciliar</button>
               </div>
             </div>
           </div>
@@ -2387,7 +2399,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="form-group">
                   <label class="form-label">Telefone / WhatsApp</label>
                   <div style="display:flex;">
-                    <select id="nc-tel-pais" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 10px;background:var(--bg);color:var(--dark);font-size:13px;cursor:pointer;height:44px;">
+                    <select id="nc-tel-pais" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 10px;background:var(--bg);color:var(--dark);font-size:13px;cursor:pointer;height:44px;" onchange="atualizarPlaceholderTel(this,'nc-tel')">
                       <option value="+55">🇧🇷 +55</option>
                       <option value="+1">🇺🇸 +1</option>
                       <option value="+351">🇵🇹 +351</option>
@@ -2398,7 +2410,8 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
                 <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp()"></div>
                 <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Calculada pela DPP"></div>
-                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
+                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option><option>Humanizado</option></select></div>
+                <div class="form-group"><label class="form-label">Local do parto</label><select id="nc-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Domiciliar</option></select></div>
                 <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
                 <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
                 <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="nc-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
@@ -4365,7 +4378,7 @@ pt: {
   'plano.title':'Plano de Parto','plano.sub':'Registre suas preferências e compartilhe com sua doula',
   'plano.orientacao':'O Plano de Parto é um registro dos seus desejos, escolhas e limites para o nascimento. Ele serve como um guia para a sua equipe e doula, garantindo que você seja a protagonista do seu parto. Use esse espaço para organizar seus pensamentos e conversar com quem vai estar ao seu lado!',
   'plano.orientacao.title':'💡 O que é o plano de parto?',
-  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesariana',
+  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto Vaginal','plano.tipo.cesariana':'🏥 Cesária','plano.tipo.humanizado':'🌿 Humanizado',
   'plano.dor.title':'Alívio da Dor',
   'plano.dor.q':'Quais métodos você gostaria de ter disponíveis durante o trabalho de parto?',
   'plano.dor.note':'Você pode marcar preferências, sabendo que sua experiência pode mudar ao longo do processo.',
@@ -5683,7 +5696,7 @@ es: {
   'plano.title':'Plan de Parto','plano.sub':'Registra tus preferencias y comparte con tu doula',
   'plano.orientacao':'El Plan de Parto es un registro de tus deseos, elecciones y límites para el nacimiento. Sirve como guía para tu equipo y doula, asegurando que seas la protagonista de tu parto. ¡Usa este espacio para organizar tus pensamientos y hablar con quienes estarán a tu lado!',
   'plano.orientacao.title':'💡 ¿Qué es un plan de parto?',
-  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto vaginal','plano.tipo.cesariana':'🏥 Cesárea',
+  'plano.tipo.title':'Tipo de Parto','plano.tipo.vaginal':'🌸 Parto Vaginal','plano.tipo.cesariana':'🏥 Cesária','plano.tipo.humanizado':'🌿 Humanizado',
   'plano.dor.title':'Alivio del Dolor',
   'plano.dor.q':'¿Qué métodos te gustaría tener disponibles durante el trabajo de parto?',
   'plano.dor.note':'Puedes marcar preferencias, sabiendo que tu experiencia puede cambiar durante el proceso.',
@@ -6301,11 +6314,21 @@ function toggleCheck(item) {
 function toggleTipoParto(btn, tipo) {
   document.getElementById('btn-tipo-vaginal').classList.remove('selected');
   document.getElementById('btn-tipo-cesariana').classList.remove('selected');
+  var bH = document.getElementById('btn-tipo-humanizado');
+  if (bH) bH.classList.remove('selected');
   btn.classList.add('selected');
   var bV = document.getElementById('bloco-vaginal');
   var bC = document.getElementById('bloco-cesariana');
-  if (tipo === 'vaginal') { bV.classList.add('visible'); bC.classList.remove('visible'); }
-  else { bC.classList.add('visible'); bV.classList.remove('visible'); }
+  if (tipo === 'vaginal' || tipo === 'humanizado') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
+  else { if(bC) bC.classList.add('visible'); if(bV) bV.classList.remove('visible'); }
+  clearTimeout(window._planoTimer);
+  window._planoTimer = setTimeout(salvarPlanoParto, 800);
+}
+
+function toggleLocalParto(btn, local) {
+  document.getElementById('btn-local-hospitalar').classList.remove('selected');
+  document.getElementById('btn-local-domiciliar').classList.remove('selected');
+  btn.classList.add('selected');
   clearTimeout(window._planoTimer);
   window._planoTimer = setTimeout(salvarPlanoParto, 800);
 }
@@ -6335,7 +6358,13 @@ function coletarPlanoParto() {
   var plano = {};
 
   // Tipo de parto
-  plano.tipoParto = document.getElementById('btn-tipo-cesariana').classList.contains('selected') ? 'Cesariana' : 'Parto vaginal';
+  var _bCes = document.getElementById('btn-tipo-cesariana');
+  var _bHum = document.getElementById('btn-tipo-humanizado');
+  if (_bCes && _bCes.classList.contains('selected')) plano.tipoParto = 'Cesária';
+  else if (_bHum && _bHum.classList.contains('selected')) plano.tipoParto = 'Humanizado';
+  else plano.tipoParto = 'Parto Vaginal';
+  var _bDom = document.getElementById('btn-local-domiciliar');
+  plano.localParto = (_bDom && _bDom.classList.contains('selected')) ? 'Domiciliar' : 'Hospitalar';
 
   // Alívio da dor — checar itens .done
   plano.alivioNaoFarm = [];
@@ -6455,6 +6484,7 @@ function gerarPDFPlanoParto(enviarEmail) {
   // 1. Tipo de parto
   secaoTitulo('Tipo de Parto');
   item(plano.tipoParto);
+  if (plano.localParto) item('Local: ' + plano.localParto);
   espaco(4);
 
   // 2. Alívio da dor
@@ -7719,6 +7749,7 @@ async function salvarAvaliacaoDoula() {
   if (!currentDoulaId) { mostrarToast('Voc\u00ea precisa estar vinculada a uma doula para avaliar'); return; }
   var nota = parseInt((document.getElementById('avaliacao-nota-valor') || {}).value || '0');
   var tipoParto = (document.getElementById('avaliacao-tipo-parto') || {}).value;
+  var localParto = (document.getElementById('avaliacao-local-parto') || {}).value;
   var comentario = ((document.getElementById('avaliacao-comentario') || {}).value || '').trim();
   var cidade = ((document.getElementById('avaliacao-cidade') || {}).value || '').trim();
   var modalidade = (document.getElementById('avaliacao-modalidade') || {}).value;
@@ -7729,7 +7760,7 @@ async function salvarAvaliacaoDoula() {
     if (dup.data) { mostrarToast('Voc\u00ea j\u00e1 avaliou esta doula'); fecharAvaliacaoDoula(); return; }
     var res = await db.from('avaliacoes_doula').insert({
       gestante_id: currentUserId, doula_id: currentDoulaId,
-      gestante_nome: currentNome, nota: nota, tipo_parto: tipoParto,
+      gestante_nome: currentNome, nota: nota, tipo_parto: tipoParto, local_parto: localParto || null,
       comentario: comentario, cidade: cidade, modalidade: modalidade,
       data_parto: dataParto || null
     });
@@ -12079,7 +12110,7 @@ async function _carregarAvaliacoesModal(doulaId) {
   if (!pdAval || !db) return;
   try {
     var res = await db.from('avaliacoes_doula')
-      .select('nota,tipo_parto,comentario,gestante_nome,criado_em')
+      .select('nota,tipo_parto,local_parto,comentario,gestante_nome,criado_em')
       .eq('doula_id', doulaId)
       .order('criado_em', { ascending: false })
       .limit(10);
@@ -12094,20 +12125,23 @@ async function _carregarAvaliacoesModal(doulaId) {
     var avgStars = '';
     for (var i = 1; i <= 5; i++) avgStars += i <= avgRound ? '★' : '☆';
     var tipoPartoLabel = {
-      vaginal: 'Parto vaginal', cesarea: 'Cesárea',
-      humanizado: 'Parto humanizado', agua: 'Parto na água', domiciliar: 'Parto domiciliar'
+      vaginal: 'Parto Vaginal', cesarea: 'Cesária', cesariana: 'Cesária',
+      humanizado: 'Humanizado'
     };
     var cardsHtml = av.map(function(a) {
       var estrelas = '';
       for (var j = 1; j <= 5; j++) estrelas += j <= a.nota ? '★' : '☆';
       var tipo = tipoPartoLabel[a.tipo_parto] || a.tipo_parto || '';
+      var localLabel = { hospitalar: 'Hospitalar', domiciliar: 'Domiciliar' };
+      var local = a.local_parto ? (localLabel[a.local_parto] || a.local_parto) : '';
+      var tipoLocalStr = [tipo, local].filter(Boolean).join(' · ');
       var data = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : '';
       return '<div class="pd-review-card">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
           '<span style="color:#c9897a;font-size:15px;letter-spacing:1px;">' + estrelas + '</span>' +
           (data ? '<span style="font-size:11px;color:var(--earth-light);">' + data + '</span>' : '') +
         '</div>' +
-        (tipo ? '<div style="font-size:10px;color:var(--sage);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px;">' + tipo + '</div>' : '') +
+        (tipoLocalStr ? '<div style="font-size:10px;color:var(--sage);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px;">' + tipoLocalStr + '</div>' : '') +
         (a.comentario ? '<div style="font-size:13px;color:var(--dark);line-height:1.6;margin-bottom:8px;">“' + a.comentario + '”</div>' : '') +
         '<div style="font-size:11px;color:var(--earth-light);">— ' + (a.gestante_nome || 'Gestante') + '</div>' +
       '</div>';
@@ -12631,7 +12665,7 @@ async function _pcliResumo(el, id, tipo, campo) {
       var campos = [
         ['Telefone', info.telefone], ['DPP', dppStr],
         ['Semana gestacional', info.semanas_gestacional ? info.semanas_gestacional + ' semanas' : null],
-        ['Tipo de parto', info.tipo_parto], ['Hospital', info.hospital],
+        ['Tipo de parto', info.tipo_parto], ['Local do parto', info.local_parto], ['Hospital', info.hospital],
         ['Médico(a)', info.medico], ['Histórico gestacional', info.historico_gestacional],
         ['Nome do bebê', info.nome_bebe], ['Acompanhante', info.nome_acompanhante]
       ];
@@ -12767,14 +12801,28 @@ async function _pcliContrato(el, id, campo) {
   } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
 }
 
-function calcSemanasFromDpp() {
-  var dppVal = document.getElementById('nc-dpp').value;
-  var semanasEl = document.getElementById('nc-semanas');
+var _telPlaceholders = {
+  '+55':  '(11) 99999-9999',
+  '+1':   '(555) 555-5555',
+  '+351': '912 345 678',
+  '+54':  '(011) 1234-5678'
+};
+function atualizarPlaceholderTel(select, inputId) {
+  var input = document.getElementById(inputId);
+  if (input) input.placeholder = _telPlaceholders[select.value] || '';
+}
+
+function calcSemanasFromDpp(dppId, semanasId) {
+  dppId = dppId || 'nc-dpp';
+  semanasId = semanasId || 'nc-semanas';
+  var dppVal = document.getElementById(dppId).value;
+  var semanasEl = document.getElementById(semanasId);
   if (!dppVal) { semanasEl.value = ''; return; }
   var dpp = new Date(dppVal + 'T12:00:00');
   var diasRestantes = (dpp - new Date()) / 86400000;
   var semanas = Math.round(40 - diasRestantes / 7);
   if (semanas >= 1 && semanas <= 45) semanasEl.value = semanas;
+  else semanasEl.value = '';
 }
 
 async function cadastrarCliente() {
@@ -12795,6 +12843,7 @@ async function cadastrarCliente() {
     dpp: dpp,
     semanas_gestacional: semanas,
     tipo_parto: document.getElementById('nc-tipo-parto').value || null,
+    local_parto: document.getElementById('nc-local-parto').value || null,
     hospital: document.getElementById('nc-hospital').value || null,
     medico: document.getElementById('nc-medico').value || null,
     historico_gestacional: document.getElementById('nc-historico').value || null,
@@ -12946,10 +12995,12 @@ async function abrirEditarCliente(id) {
     if (tel.startsWith(paises[i])) { paisEncontrado = paises[i]; numSemPais = tel.slice(paises[i].length).trim(); break; }
   }
   document.getElementById('ec-tel-pais').value = paisEncontrado;
+  atualizarPlaceholderTel(document.getElementById('ec-tel-pais'), 'ec-tel');
   document.getElementById('ec-tel').value = numSemPais;
   document.getElementById('ec-dpp').value = c.dpp || '';
   document.getElementById('ec-semanas').value = c.semanas_gestacional || '';
-  document.getElementById('ec-tipo-parto').value = c.tipo_parto || 'Parto normal humanizado';
+  document.getElementById('ec-tipo-parto').value = c.tipo_parto || 'Parto Vaginal';
+  document.getElementById('ec-local-parto').value = c.local_parto || 'Hospitalar';
   document.getElementById('ec-hospital').value = c.hospital || '';
   document.getElementById('ec-medico').value = c.medico || '';
   document.getElementById('ec-historico').value = c.historico_gestacional || 'Primeira gestação';
@@ -12978,6 +13029,7 @@ async function salvarEdicaoCliente() {
     dpp: dpp,
     semanas_gestacional: semanas,
     tipo_parto: document.getElementById('ec-tipo-parto').value || null,
+    local_parto: document.getElementById('ec-local-parto').value || null,
     hospital: document.getElementById('ec-hospital').value || null,
     medico: document.getElementById('ec-medico').value || null,
     historico_gestacional: document.getElementById('ec-historico').value || null,
@@ -13495,7 +13547,8 @@ async function verPlanoPartoGestante(gestanteId, gestanteNome) {
     }
 
     var estado = res.data.plano_parto_estado;
-    var tipoParto = estado.tipoParto === 'cesariana' ? '🏥 Cesariana' : '🌸 Parto vaginal';
+    var tipoParto = estado.tipoParto === 'cesariana' ? '🏥 Cesária' : (estado.tipoParto === 'humanizado' ? '🌿 Humanizado' : '🌸 Parto Vaginal');
+    var localParto = estado.localParto === 'domiciliar' ? '🏠 Domiciliar' : '🏥 Hospitalar';
 
     var checksNaoFarm = [], checksFarm = [], checksProc = [], checksEspec = [];
     (estado.checks || []).forEach(function(key) {
@@ -13521,13 +13574,13 @@ async function verPlanoPartoGestante(gestanteId, gestanteNome) {
         '</div>';
     }
 
-    var html = '<div style="margin-bottom:16px;padding:12px 16px;background:var(--rose-pale);border-radius:12px;font-size:15px;font-weight:600;color:var(--dark);">' + tipoParto + '</div>';
+    var html = '<div style="margin-bottom:16px;padding:12px 16px;background:var(--rose-pale);border-radius:12px;font-size:15px;font-weight:600;color:var(--dark);">' + tipoParto + ' &nbsp;·&nbsp; ' + localParto + '</div>';
     html += secao('Alívio da Dor — Não farmacológico', checksNaoFarm);
     html += secao('Alívio da Dor — Farmacológico', checksFarm);
     html += secao('Acompanhantes', acompanhantes);
     html += secao('Pós-Parto', posParto);
     html += secao('Procedimentos Imediatos', checksProc);
-    var tituloEspec = estado.tipoParto === 'cesariana' ? 'Preferências — Cesariana' : 'Preferências — Parto Vaginal';
+    var tituloEspec = estado.tipoParto === 'cesariana' ? 'Preferências — Cesária' : (estado.tipoParto === 'humanizado' ? 'Preferências — Parto Humanizado' : 'Preferências — Parto Vaginal');
     html += secao(tituloEspec, checksEspec);
     if (estado.obs) {
       html += '<div style="margin-bottom:16px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--rose);font-weight:600;margin-bottom:8px;">Observações</div>' +
@@ -14791,8 +14844,17 @@ function mostrarToast(msg) {
       <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:8px;">Tipo de parto</label>
       <select id="avaliacao-tipo-parto" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
         <option value="">Selecione...</option>
-        <option value="vaginal">Parto vaginal</option>
-        <option value="cesarea">Cesárea</option>
+        <option value="vaginal">Parto Vaginal</option>
+        <option value="cesarea">Cesária</option>
+        <option value="humanizado">Humanizado</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(176,154,140,0.5);display:block;margin-bottom:8px;">Local do parto</label>
+      <select id="avaliacao-local-parto" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:13px;color:white;font-family:'DM Sans',sans-serif;outline:none;">
+        <option value="">Selecione...</option>
+        <option value="hospitalar">Hospitalar</option>
+        <option value="domiciliar">Domiciliar</option>
       </select>
     </div>
     <div style="margin-bottom:16px;">
@@ -15461,7 +15523,7 @@ function mostrarToast(msg) {
       <div class="form-group">
         <label class="form-label">Telefone / WhatsApp</label>
         <div style="display:flex;">
-          <select id="ec-tel-pais" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 10px;background:var(--bg);color:var(--dark);font-size:13px;cursor:pointer;height:44px;">
+          <select id="ec-tel-pais" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 10px;background:var(--bg);color:var(--dark);font-size:13px;cursor:pointer;height:44px;" onchange="atualizarPlaceholderTel(this,'ec-tel')">
             <option value="+55">🇧🇷 +55</option>
             <option value="+1">🇺🇸 +1</option>
             <option value="+351">🇵🇹 +351</option>
@@ -15470,9 +15532,10 @@ function mostrarToast(msg) {
           <input id="ec-tel" class="form-input" type="tel" style="border-radius:0 10px 10px 0;flex:1;">
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="ec-dpp" class="form-input" type="date"></div>
+      <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="ec-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp('ec-dpp','ec-semanas')"></div>
       <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="ec-semanas" class="form-input" type="number" placeholder="Ex: 28"></div>
-      <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="ec-tipo-parto" class="form-input form-select"><option>Parto normal humanizado</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
+      <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="ec-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option><option>Humanizado</option></select></div>
+      <div class="form-group"><label class="form-label">Local do parto</label><select id="ec-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Domiciliar</option></select></div>
       <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="ec-hospital" class="form-input" type="text"></div>
       <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="ec-medico" class="form-input" type="text"></div>
       <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="ec-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
@@ -15767,10 +15830,14 @@ function salvarPlanoParto() {
   document.querySelectorAll('#g-plano .plan-option.selected').forEach(function(btn) {
     if (btn.getAttribute('data-i18n')) options.push(btn.getAttribute('data-i18n'));
   });
-  var tipoParto = (document.getElementById('btn-tipo-cesariana') && document.getElementById('btn-tipo-cesariana').classList.contains('selected')) ? 'cesariana' : 'vaginal';
+  var _bsCes = document.getElementById('btn-tipo-cesariana');
+  var _bsHum = document.getElementById('btn-tipo-humanizado');
+  var tipoParto = (_bsCes && _bsCes.classList.contains('selected')) ? 'cesariana' : ((_bsHum && _bsHum.classList.contains('selected')) ? 'humanizado' : 'vaginal');
+  var _bsDom = document.getElementById('btn-local-domiciliar');
+  var localParto = (_bsDom && _bsDom.classList.contains('selected')) ? 'domiciliar' : 'hospitalar';
   var obsEl = document.getElementById('plano-obs');
   var obs = obsEl ? obsEl.value.trim() : '';
-  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, checks: checks, options: options, obs: obs } }).eq('id', currentUserId);
+  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, localParto: localParto, checks: checks, options: options, obs: obs } }).eq('id', currentUserId);
 }
 
 function carregarPlanoParto() {
@@ -15783,11 +15850,21 @@ function carregarPlanoParto() {
       if (btn) {
         document.getElementById('btn-tipo-vaginal').classList.remove('selected');
         document.getElementById('btn-tipo-cesariana').classList.remove('selected');
+        var _bHr = document.getElementById('btn-tipo-humanizado');
+        if (_bHr) _bHr.classList.remove('selected');
         btn.classList.add('selected');
         var bV = document.getElementById('bloco-vaginal');
         var bC = document.getElementById('bloco-cesariana');
-        if (estado.tipoParto === 'vaginal') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
+        if (estado.tipoParto === 'vaginal' || estado.tipoParto === 'humanizado') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
         else { if(bC) bC.classList.add('visible'); if(bV) bV.classList.remove('visible'); }
+      }
+    }
+    if (estado.localParto) {
+      var btnLoc = document.getElementById('btn-local-' + estado.localParto);
+      if (btnLoc) {
+        document.getElementById('btn-local-hospitalar').classList.remove('selected');
+        document.getElementById('btn-local-domiciliar').classList.remove('selected');
+        btnLoc.classList.add('selected');
       }
     }
     if (estado.checks && estado.checks.length) {
@@ -16097,7 +16174,7 @@ async function carregarEstatisticasDoula() {
   try {
     var [perfRes, avalRes, solRes] = await Promise.all([
       db.from('usuarios').select('partos_acompanhados').eq('id', currentUserId).maybeSingle(),
-      db.from('avaliacoes_doula').select('nota,comentario,gestante_nome,tipo_parto,criado_em').eq('doula_id', currentUserId).order('criado_em', { ascending: false }),
+      db.from('avaliacoes_doula').select('nota,comentario,gestante_nome,tipo_parto,local_parto,criado_em').eq('doula_id', currentUserId).order('criado_em', { ascending: false }),
       db.from('solicitacoes').select('id,status,criado_em,respondido_em').eq('doula_id', currentUserId)
     ]);
 
@@ -16175,7 +16252,7 @@ async function carregarEstatisticasDoula() {
               '<div style="font-size:11px;color:var(--earth-light);">' + data + '</div>' +
             '</div>' +
             '<div style="font-size:12px;margin-bottom:4px;">' + stars + '</div>' +
-            (a.tipo_parto ? '<div style="font-size:11px;color:var(--earth-light);margin-bottom:4px;">Tipo: ' + a.tipo_parto + '</div>' : '') +
+            (a.tipo_parto ? '<div style="font-size:11px;color:var(--earth-light);margin-bottom:4px;">' + a.tipo_parto + (a.local_parto ? ' · ' + a.local_parto : '') + '</div>' : '') +
             (a.comentario ? '<div style="font-size:13px;color:var(--mid);font-style:italic;">"' + a.comentario + '"</div>' : '') +
           '</div>';
         }).join('');
