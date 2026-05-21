@@ -13753,7 +13753,11 @@ async function verificarAdmin() {
       body: JSON.stringify({ senha: senha })
     });
     var data = await res.json();
-    if (!res.ok) { mostrarToast('Senha incorreta'); return; }
+    if (!res.ok) {
+      var el = document.getElementById('admin-login-erro');
+      if (el) { el.textContent = 'Senha incorreta.'; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 2000); }
+      return;
+    }
     _adminToken = data.token;
     try { sessionStorage.setItem('lua_admin_token', _adminToken); } catch(e) {}
     document.getElementById('admin-login-overlay').style.display = 'none';
@@ -13768,11 +13772,7 @@ async function verificarAdmin() {
       var c = document.getElementById('adminMoonCanvas');
       if (c && typeof drawMoon === 'function') drawMoon(c, 28, 0.5, 1, false);
     }, 200);
-  } else {
-    var el = document.getElementById('admin-login-erro');
-    el.textContent = 'Senha incorreta.'; el.style.display = 'block';
-    setTimeout(function() { el.style.display = 'none'; }, 2000);
-  }
+  } catch(e) { mostrarToast('Erro ao conectar. Tente novamente.'); }
 }
 
 function adminSimularPerfil(tipo) {
