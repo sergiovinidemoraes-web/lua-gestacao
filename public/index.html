@@ -2624,7 +2624,8 @@ tr:hover td { background:var(--rose-pale); }
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input id="ag-data-hora" class="form-input" type="datetime-local"></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.local">Local / Endereço</label><input id="ag-local" class="form-input" type="text" data-i18n-ph="doula.agenda.local.ph" placeholder="Ex: Casa da cliente, Parque Ibirapuera, Consultório..."></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" data-i18n-ph="doula.agenda.notes.ph" placeholder="Tema ou observações da consulta"></div>
+              <div class="form-group"><label class="form-label">Tema da consulta</label><select id="ag-tema" class="form-input form-select"><option value="">— Selecione um tema —</option><option>🌱 Reunião inicial / Anamnese</option><option>🌿 Fases do trabalho de parto</option><option>💪 Posições durante o parto</option><option>🌬️ Técnicas não farmacológicas de alívio da dor</option><option>📋 Plano de parto</option><option>⚡ Violência obstétrica e direitos</option><option>👶 Cuidados com o recém-nascido</option><option>🤱 Amamentação</option><option>💆 Preparação mental e emocional</option><option>🌸 Pós-parto e recuperação</option><option>📌 Outro</option></select></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" placeholder="Local, link, anotações adicionais..."></div>
             </div>
             <button class="btn-primary" onclick="agendarConsulta()" data-i18n="doula.agenda.schedule">Agendar</button>
           </div>
@@ -13063,7 +13064,7 @@ async function agendarConsulta() {
     data_hora: new Date(dataHora).toISOString(),
     tipo: document.getElementById('ag-tipo').value,
     local: document.getElementById('ag-local').value || null,
-    observacoes: document.getElementById('ag-obs').value || null
+    observacoes: (function(){ var tema = document.getElementById('ag-tema').value; var obs = document.getElementById('ag-obs').value.trim(); return (tema && obs) ? tema + ' — ' + obs : (tema || obs || null); })()
   };
   try {
     var res = await db.from('consultas_doula').insert(payload);
@@ -13072,6 +13073,7 @@ async function agendarConsulta() {
     document.getElementById('ag-data-hora').value = '';
     document.getElementById('ag-local').value = '';
     document.getElementById('ag-obs').value = '';
+    document.getElementById('ag-tema').value = '';
     clienteEl.value = '';
     carregarAgenda();
   } catch(e) { mostrarToast('Erro ao agendar: ' + e.message); }
@@ -13231,7 +13233,9 @@ async function agendarConsultaModal() {
   var partes = clienteEl.value.split('|');
   var nomeCliente = clienteEl.selectedOptions[0].textContent;
   var modalidade = document.getElementById('modal-ag-modalidade').value;
-  var obs = document.getElementById('modal-ag-obs').value.trim() || null;
+  var tema = document.getElementById('modal-ag-tema').value;
+  var obs = document.getElementById('modal-ag-obs').value.trim();
+  var observacoes = (tema && obs) ? tema + ' — ' + obs : (tema || obs || null);
   var payload = {
     doula_id: currentUserId,
     cliente_nome: nomeCliente,
@@ -13240,7 +13244,7 @@ async function agendarConsultaModal() {
     data_hora: new Date(data + 'T' + hora).toISOString(),
     tipo: document.getElementById('modal-ag-tipo').value,
     local: modalidade === 'online' ? 'Online' : null,
-    observacoes: obs
+    observacoes: observacoes
   };
   try {
     var res = await db.from('consultas_doula').insert(payload);
@@ -13250,6 +13254,7 @@ async function agendarConsultaModal() {
     clienteEl.value = '';
     document.getElementById('modal-ag-data').value = '';
     document.getElementById('modal-ag-hora').value = '';
+    document.getElementById('modal-ag-tema').value = '';
     document.getElementById('modal-ag-obs').value = '';
     setModalidadeAgenda('presencial');
     carregarAgenda();
@@ -14753,8 +14758,25 @@ function mostrarToast(msg) {
       <input type="hidden" id="modal-ag-modalidade" value="presencial">
     </div>
     <div class="form-group">
+      <label class="form-label">Tema da consulta</label>
+      <select id="modal-ag-tema" class="form-input form-select">
+        <option value="">— Selecione um tema —</option>
+        <option>🌱 Reunião inicial / Anamnese</option>
+        <option>🌿 Fases do trabalho de parto</option>
+        <option>💪 Posições durante o parto</option>
+        <option>🌬️ Técnicas não farmacológicas de alívio da dor</option>
+        <option>📋 Plano de parto</option>
+        <option>⚡ Violência obstétrica e direitos</option>
+        <option>👶 Cuidados com o recém-nascido</option>
+        <option>🤱 Amamentação</option>
+        <option>💆 Preparação mental e emocional</option>
+        <option>🌸 Pós-parto e recuperação</option>
+        <option>📌 Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label class="form-label">Observações</label>
-      <textarea id="modal-ag-obs" class="form-input form-textarea" placeholder="Local, link da videochamada, tema da consulta..." style="height:72px;resize:none;"></textarea>
+      <textarea id="modal-ag-obs" class="form-input form-textarea" placeholder="Local, link da videochamada, anotações adicionais..." style="height:72px;resize:none;"></textarea>
     </div>
     <div style="display:flex;gap:10px;margin-top:4px;">
       <button onclick="fecharModalAgendamento()" style="flex:1;background:transparent;color:var(--mid);border:1.5px solid rgba(122,100,85,0.2);padding:12px;border-radius:30px;font-size:14px;cursor:pointer;font-family:inherit;">Cancelar</button>
