@@ -4203,6 +4203,7 @@ function dNav(el, panelId) {
   document.getElementById(panelId).classList.add('active');
   if (panelId === 'd-biblioteca') try { carregarBibliotecaDoula(); } catch(e) {}
   if (panelId === 'd-mensagens') try { carregarListaMensagensDoula(); } catch(e) {}
+  if (panelId === 'd-financeiro') try { carregarContratos(); } catch(e) {}
 }
 
 function irParaClientesDoula() {
@@ -13654,20 +13655,23 @@ async function carregarContratos() {
       container.innerHTML = '<div class="empty-state-small">Nenhum contrato cadastrado ainda</div>';
     } else {
       res.data.forEach(function(c) {
-        var v = parseFloat((c.valor || '0').replace(/[^\d,]/g,'').replace(',','.')) || 0;
+        var v = parseFloat(c.valor) || 0;
         if ((c.status || '').toLowerCase().includes('pago')) recebido += v; else pendente += v;
       });
       container.innerHTML = res.data.map(function(c) {
         var dataStr = new Date(c.criado_em).toLocaleDateString('pt-BR');
         var statusColor = (c.status||'').toLowerCase().includes('pago') ? 'var(--sage)' : (c.status||'').toLowerCase().includes('parcial') ? 'var(--alert)' : 'var(--earth-light)';
+        var valorDisp = c.valor ? 'R$ ' + Number(c.valor).toLocaleString('pt-BR', {minimumFractionDigits:2}) : '—';
         var linkContrato = c.contrato_url ? '<a href="' + c.contrato_url + '" target="_blank" style="font-size:11px;color:var(--rose);text-decoration:none;">📄 Ver contrato</a>' : '';
+        var btnDigital = (c.gestante_id && !c.contrato_url) ? '<button onclick="abrirContratoDigital(\'' + c.id + '\',\'doula\')" style="margin-top:4px;background:var(--cream);color:var(--dark);border:1.5px solid var(--rose-light);padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:inherit;">📄 Ver digital</button>' : '';
         var btnCobrar = c.gestante_id ? '<button onclick="enviarCobranca(\'' + c.gestante_id + '\',\'' + currentUserId + '\')" style="margin-top:6px;background:var(--alert);color:white;border:none;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">💰 Cobrar</button>' : '';
         return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
           '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.cliente_nome + '</div>' +
           '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + (c.parcelas ? ' · ' + c.parcelas + 'x' : '') + '</div>' +
           (linkContrato ? '<div style="margin-top:4px;">' + linkContrato + '</div>' : '') +
+          (btnDigital ? '<div>' + btnDigital + '</div>' : '') +
           (btnCobrar ? '<div>' + btnCobrar + '</div>' : '') + '</div>' +
-          '<div style="text-align:right;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.valor + '</div>' +
+          '<div style="text-align:right;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + valorDisp + '</div>' +
           '<div style="font-size:11px;color:' + statusColor + ';">' + (c.status || '—') + '</div></div></div>';
       }).join('');
     }
