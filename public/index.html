@@ -12738,23 +12738,47 @@ async function _pcliResumo(el, id, tipo, campo) {
       if (info.observacoes) s += '<div class="card"><div class="card-title" style="margin-bottom:8px;">Observações</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + info.observacoes + '</div></div>';
     } else {
       try {
-        var _usrRes = await db.from('usuarios').select('dpp,whatsapp,cidade,hospital').eq('id', id).maybeSingle();
-        var _cliRes = await db.from('clientes_doula').select('dpp,semanas_gestacional').eq('doula_id', currentUserId).eq('gestante_id', id).maybeSingle();
-        var _uDpp = (_usrRes.data || {}).dpp || '';
-        var _cDpp = (_cliRes.data || {}).dpp || '';
+        var _pcliParts = await Promise.all([
+          db.from('usuarios').select('nome,dpp,whatsapp,cidade,hospital').eq('id', id).maybeSingle(),
+          db.from('clientes_doula').select('*').eq('doula_id', currentUserId).eq('gestante_id', id).maybeSingle()
+        ]);
+        var usr = _pcliParts[0].data || {};
+        var cli = _pcliParts[1].data || null;
+        var _uDpp = usr.dpp || '';
+        var _cDpp = (cli && cli.dpp) ? cli.dpp : '';
         var _dppEfetiva = _cDpp || _uDpp;
         var _dppStr = _dppEfetiva ? new Date(_dppEfetiva + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
         var _dppFonte = _cDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(definida por você)</span>' : (_uDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(informada pela gestante)</span>' : '');
-        s += '<div class="card" style="margin-bottom:16px;"><div class="card-title">Dados da gestante</div><div style="display:grid;gap:10px;">';
+        var _semStr = '';
+        if (cli && cli.semanas_gestacional) { _semStr = cli.semanas_gestacional + ' semanas'; }
+        else if (_dppEfetiva) { var _dr = (new Date(_dppEfetiva + 'T12:00:00') - new Date()) / 86400000; var _sc = Math.round(40 - _dr / 7); if (_sc >= 1 && _sc <= 45) _semStr = _sc + ' semanas'; }
+        s += '<div class="card" style="margin-bottom:16px;">';
+        s += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">';
+        s += '<div class="card-title" style="margin:0;">Dados da gestante</div>';
+        s += '<button onclick="abrirAnamnese(\'' + id + '\',\'' + nome.replace(/'/g,'') + '\')" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">✏️ Editar anamnese</button>';
+        s += '</div><div style="display:grid;gap:10px;">';
         s += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:13px;color:var(--earth-light);min-width:140px;">DPP</span><span id="pcli-dpp-val" style="font-size:13px;color:var(--dark);font-weight:500;">' + _dppStr + _dppFonte + '</span><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'block\'" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">Editar</button></div>';
-        if ((_usrRes.data || {}).whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.whatsapp + '</span></div>';
-        if ((_usrRes.data || {}).cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.cidade + '</span></div>';
-        if ((_usrRes.data || {}).hospital) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Hospital</span><span style="color:var(--dark);font-weight:500;">' + _usrRes.data.hospital + '</span></div>';
+        if (_semStr) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Semana gestacional</span><span style="color:var(--dark);font-weight:500;">' + _semStr + '</span></div>';
+        if (usr.whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + usr.whatsapp + '</span></div>';
+        if (usr.cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + usr.cidade + '</span></div>';
+        var _hosp = usr.hospital || (cli && cli.hospital) || '';
+        if (_hosp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Hospital</span><span style="color:var(--dark);font-weight:500;">' + _hosp + '</span></div>';
+        if (cli) {
+          if (cli.telefone) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Telefone</span><span style="color:var(--dark);font-weight:500;">' + cli.telefone + '</span></div>';
+          if (cli.tipo_parto) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Tipo de parto</span><span style="color:var(--dark);font-weight:500;">' + cli.tipo_parto + '</span></div>';
+          if (cli.local_parto) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Local do parto</span><span style="color:var(--dark);font-weight:500;">' + cli.local_parto + '</span></div>';
+          if (cli.medico) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Médico(a)</span><span style="color:var(--dark);font-weight:500;">' + cli.medico + '</span></div>';
+          if (cli.historico_gestacional) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Histórico</span><span style="color:var(--dark);font-weight:500;">' + cli.historico_gestacional + '</span></div>';
+          if (cli.nome_bebe) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Nome do bebê</span><span style="color:var(--dark);font-weight:500;">' + cli.nome_bebe + '</span></div>';
+          if (cli.nome_acompanhante) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Acompanhante</span><span style="color:var(--dark);font-weight:500;">' + cli.nome_acompanhante + '</span></div>';
+        }
         s += '</div>';
         s += '<div id="pcli-dpp-form" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">';
         s += '<div style="font-size:12px;color:var(--earth-light);margin-bottom:8px;">Isso não altera o perfil da gestante no app.</div>';
         s += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><input id="pcli-dpp-input" type="date" class="form-input" style="flex:1;min-width:140px;" value="' + _dppEfetiva + '"><button onclick="pcliSalvarDpp(\'' + id + '\')" style="background:var(--rose);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">Salvar</button><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'none\'" style="background:none;border:none;color:var(--earth-light);font-size:12px;cursor:pointer;font-family:inherit;">Cancelar</button></div>';
         s += '</div></div>';
+        if (cli && cli.estado_emocional) s += '<div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:8px;">Estado emocional</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + cli.estado_emocional + '</div></div>';
+        if (cli && cli.observacoes) s += '<div class="card"><div class="card-title" style="margin-bottom:8px;">Observações</div><div style="font-size:13px;color:var(--mid);line-height:1.6;">' + cli.observacoes + '</div></div>';
       } catch(e2) {
         s += '<div class="card"><div style="font-size:13px;color:var(--earth-light);">Gestante vinculada via app — dados de perfil gerenciados pela própria gestante.</div></div>';
       }
@@ -12956,6 +12980,7 @@ async function cadastrarCliente() {
 }
 
 var _editandoClienteId = null;
+var _editandoGestanteId = null;
 
 // ── DOCUMENTOS ──────────────────────────────────────────────────
 var _docArquivo = null;
@@ -13102,13 +13127,46 @@ async function abrirEditarCliente(id) {
   modal.style.display = 'flex';
 }
 
+async function abrirAnamnese(gestanteId, nomeGestante) {
+  if (!db || !currentUserId) return;
+  _editandoClienteId = null;
+  _editandoGestanteId = gestanteId;
+  var res = await db.from('clientes_doula').select('*').eq('doula_id', currentUserId).eq('gestante_id', gestanteId).maybeSingle();
+  var c = res.data || {};
+  document.getElementById('ec-nome').value = c.nome || nomeGestante || '';
+  var tel = c.telefone || '';
+  var paises = ['+55', '+1', '+351', '+54'];
+  var paisEncontrado = '+55';
+  var numSemPais = tel;
+  for (var i = 0; i < paises.length; i++) {
+    if (tel.startsWith(paises[i])) { paisEncontrado = paises[i]; numSemPais = tel.slice(paises[i].length).trim(); break; }
+  }
+  document.getElementById('ec-tel-pais').value = paisEncontrado;
+  atualizarPlaceholderTel(document.getElementById('ec-tel-pais'), 'ec-tel');
+  document.getElementById('ec-tel').value = numSemPais;
+  document.getElementById('ec-dpp').value = c.dpp || '';
+  document.getElementById('ec-semanas').value = c.semanas_gestacional || '';
+  if (c.dpp) calcSemanasFromDpp('ec-dpp', 'ec-semanas');
+  document.getElementById('ec-tipo-parto').value = c.tipo_parto || 'Parto Vaginal';
+  document.getElementById('ec-local-parto').value = c.local_parto || 'Hospitalar';
+  document.getElementById('ec-hospital').value = c.hospital || '';
+  document.getElementById('ec-medico').value = c.medico || '';
+  document.getElementById('ec-historico').value = c.historico_gestacional || 'Primeira gestação';
+  document.getElementById('ec-nome-bebe').value = c.nome_bebe || '';
+  document.getElementById('ec-nome-acompanhante').value = c.nome_acompanhante || '';
+  document.getElementById('ec-emocional').value = c.estado_emocional || '';
+  document.getElementById('ec-obs').value = c.observacoes || '';
+  document.getElementById('modal-editar-cliente').style.display = 'flex';
+}
+
 function fecharEditarCliente() {
   document.getElementById('modal-editar-cliente').style.display = 'none';
   _editandoClienteId = null;
+  _editandoGestanteId = null;
 }
 
 async function salvarEdicaoCliente() {
-  if (!db || !currentUserId || !_editandoClienteId) return;
+  if (!db || !currentUserId || (!_editandoClienteId && !_editandoGestanteId)) return;
   var nome = (document.getElementById('ec-nome').value || '').trim();
   if (!nome) { mostrarToast('Informe o nome da gestante'); return; }
   var dpp = document.getElementById('ec-dpp').value || null;
@@ -13129,8 +13187,17 @@ async function salvarEdicaoCliente() {
     observacoes: document.getElementById('ec-obs').value || null
   };
   try {
-    var res = await db.from('clientes_doula').update(payload).eq('id', _editandoClienteId).eq('doula_id', currentUserId);
-    if (res.error) throw res.error;
+    if (_editandoClienteId) {
+      var res = await db.from('clientes_doula').update(payload).eq('id', _editandoClienteId).eq('doula_id', currentUserId);
+      if (res.error) throw res.error;
+    } else {
+      payload.doula_id = currentUserId;
+      payload.gestante_id = _editandoGestanteId;
+      var res = await db.from('clientes_doula').upsert(payload, { onConflict: 'doula_id,gestante_id' });
+      if (res.error) throw res.error;
+      // Reload profile tab after saving
+      if (_pcliAtual) { delete document.getElementById('pcli-resumo').dataset.loaded; _pcliCarregar('pcli-resumo', _pcliAtual.id, _pcliAtual.tipo); }
+    }
     mostrarToast('Dados atualizados! 💛');
     fecharEditarCliente();
     carregarClientesDoula();
