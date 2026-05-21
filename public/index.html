@@ -8214,7 +8214,7 @@ function esc(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 }
 var tipoSelecionado = 'gestante';
-var adminSenha = 'lua_admin_2026';
+var _adminToken = null;
 var sessaoAtualId = null;
 var sessaoInicio = null;
 var sessaoTipo = null;
@@ -8231,7 +8231,7 @@ window.addEventListener('load', function() {
     console.error('❌ Supabase erro:', e.message);
 
   }
-  try { adminSenha = localStorage.getItem('lua_admin_senha') || 'lua_admin_2026'; } catch(e) {}
+  try { _adminToken = sessionStorage.getItem('lua_admin_token') || null; } catch(e) {}
 
   // Convite de backup via URL ?convite_backup=DOULA_ID
   var _conviteBackupParam = new URLSearchParams(window.location.search).get('convite_backup');
@@ -13717,7 +13717,23 @@ async function verificarSessao() {
 // ══════════════════════════════
 // ADMIN
 // ══════════════════════════════
+function _adminTokenValido() {
+  try {
+    if (!_adminToken) return false;
+    var exp = parseInt((_adminToken).split('.')[0]);
+    return !isNaN(exp) && Date.now() < exp;
+  } catch(e) { return false; }
+}
+
 function abrirAdmin() {
+  if (_adminTokenValido()) {
+    document.getElementById('admin-panel').style.display = 'block';
+    carregarUsuariosAdmin();
+    setTimeout(function() { try { carregarBibliotecaAdmin(); } catch(e) {} }, 300);
+    try { renderConteudosAdmin(); } catch(e) {}
+    try { renderFAQAdmin(); } catch(e) {}
+    return;
+  }
   document.getElementById('admin-login-overlay').style.display = 'flex';
   setTimeout(function() { document.getElementById('admin-senha-input').focus(); }, 100);
 }
@@ -13729,11 +13745,17 @@ function fecharAdmin() {
 
 async function verificarAdmin() {
   var senha = document.getElementById('admin-senha-input').value;
+  if (!senha) return;
   try {
-    var cfgRes = await db.from('configuracoes').select('valor').eq('chave', 'admin_senha').maybeSingle();
-    if (cfgRes.data && cfgRes.data.valor) adminSenha = cfgRes.data.valor;
-  } catch(e) {}
-  if (senha === adminSenha) {
+    var res = await fetch('/api/admin-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senha: senha })
+    });
+    var data = await res.json();
+    if (!res.ok) { mostrarToast('Senha incorreta'); return; }
+    _adminToken = data.token;
+    try { sessionStorage.setItem('lua_admin_token', _adminToken); } catch(e) {}
     document.getElementById('admin-login-overlay').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
     document.getElementById('admin-senha-input').value = '';
@@ -13803,18 +13825,19 @@ function adminNav(el, sectionId) {
 async function carregarUsuariosAdmin() {
   var lista = document.getElementById('admin-usuarios-lista');
   if (lista) lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando...</div>';
+  if (!_adminTokenValido()) { mostrarToast('Sessão expirada. Faça login novamente.'); fecharAdmin(); return; }
   try {
-    console.log('[Admin] carregarUsuariosAdmin: iniciando query via anon key');
-    var res = await db.from('usuarios')
-      .select('id,nome,email,tipo,criado_em,whatsapp,cidade,verificada')
-      .order('criado_em', { ascending: false });
-    console.log('[Admin] resultado raw:', res);
-    if (res.error) {
-      console.error('[Admin] Erro Supabase:', res.error.code, res.error.message, res.error.details);
-      if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro: ' + res.error.message + '</div>';
+    var res = await fetch('/api/admin-get-users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: _adminToken })
+    });
+    var json = await res.json();
+    if (!res.ok) {
+      if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro: ' + esc(json.error || 'Falha') + '</div>';
       return;
     }
-    var data = res.data || [];
+    var data = json.users || [];
     console.log('[Admin] usuários retornados:', data.length);
     _adminUsuarios = data;
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
@@ -13878,7 +13901,7 @@ async function adminConfirmarEmail() {
     var res = await fetch('/api/admin-confirm-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, adminSenha: adminSenha })
+      body: JSON.stringify({ email: email, token: _adminToken })
     });
     var data = await res.json();
     if (!res.ok) { mostrarToast('Erro: ' + (data.error || 'Falha')); return; }
@@ -13896,7 +13919,7 @@ async function deletarUsuario(id, nome) {
       var res = await fetch('/api/admin-delete-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: id, adminSenha: adminSenha })
+        body: JSON.stringify({ userId: id, token: _adminToken })
       });
       var data = await res.json();
       if (!res.ok) { mostrarToast('Erro: ' + (data.error || 'Falha ao remover')); return; }
@@ -14418,16 +14441,7 @@ function _renderAdminChart(canvasId, tipo, data, options) {
 }
 
 async function alterarSenhaAdmin() {
-  var nova = document.getElementById('nova-senha-admin').value;
-  var conf = document.getElementById('conf-senha-admin').value;
-  if (!nova || nova.length < 8) return mostrarToast('⚠️ Mínimo 8 caracteres');
-  if (nova !== conf) return mostrarToast('⚠️ Senhas não coincidem');
-  try {
-    var res = await db.from('configuracoes').upsert({ chave: 'admin_senha', valor: nova });
-    if (res.error) { mostrarToast('❌ Erro ao salvar senha'); return; }
-  } catch(e) { mostrarToast('❌ Erro ao salvar senha'); return; }
-  adminSenha = nova;
-  try { localStorage.setItem('lua_admin_senha', nova); } catch(e) {}
+  mostrarToast('Para alterar a senha, acesse Vercel → Settings → Environment Variables → ADMIN_SENHA');
   document.getElementById('nova-senha-admin').value='';
   document.getElementById('conf-senha-admin').value='';
   mostrarToast('✅ Senha alterada!');
