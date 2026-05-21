@@ -2335,12 +2335,38 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title">Informações do perfil</div>
             <div style="display:grid;gap:12px;margin-top:4px;">
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">WhatsApp</div>
-                <input id="doula-whatsapp" class="form-input" type="tel" placeholder="WhatsApp com DDD (ex: 11999999999)">
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">País</div>
+                <select id="doula-pais" class="form-input form-select" onchange="onDoulaCountryChange()">
+                  <option value="">Selecione o país...</option>
+                  <option value="BR">🇧🇷 Brasil (+55)</option>
+                  <option value="US">🇺🇸 Estados Unidos (+1)</option>
+                  <option value="PT">🇵🇹 Portugal (+351)</option>
+                  <option value="AR">🇦🇷 Argentina (+54)</option>
+                  <option value="CO">🇨🇴 Colômbia (+57)</option>
+                  <option value="MX">🇲🇽 México (+52)</option>
+                  <option value="CL">🇨🇱 Chile (+56)</option>
+                  <option value="UY">🇺🇾 Uruguai (+598)</option>
+                  <option value="PY">🇵🇾 Paraguai (+595)</option>
+                  <option value="ES">🇪🇸 Espanha (+34)</option>
+                  <option value="IT">🇮🇹 Itália (+39)</option>
+                </select>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Cidade e Estado</div>
-                <input id="doula-cidade" class="form-input" type="text" placeholder="Ex: São Paulo, SP">
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">WhatsApp</div>
+                <div style="display:flex;">
+                  <div id="doula-wpp-codigo" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 12px;background:var(--cream);color:var(--dark);font-size:13px;font-weight:500;display:flex;align-items:center;height:44px;min-width:52px;justify-content:center;">+</div>
+                  <input id="doula-whatsapp" class="form-input" type="tel" placeholder="Selecione o país primeiro" style="border-radius:0 10px 10px 0;flex:1;">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div>
+                  <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Estado / Região</div>
+                  <input id="doula-estado" class="form-input" type="text" placeholder="Ex: São Paulo">
+                </div>
+                <div>
+                  <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Cidade</div>
+                  <input id="doula-cidade" class="form-input" type="text" placeholder="Ex: Campinas">
+                </div>
               </div>
               <div>
                 <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Especialidades</div>
@@ -9473,7 +9499,7 @@ async function posCarregarDoulaPosDashboard() {
         var sol = res.data.find(function(s) { return s.doula_id === doula.id; });
         if (sol && sol.status === 'aceita') {
           var waNome = encodeURIComponent('Olá ' + (doula.nome ? doula.nome.split(' ')[0] : '') + '! Sou sua cliente no app Lua 🌙');
-          var waLink = doula.whatsapp ? 'https://wa.me/55' + doula.whatsapp.replace(/\D/g,'') + '?text=' + waNome : null;
+          var waLink = doula.whatsapp ? 'https://wa.me/' + _wppLink(doula.whatsapp) + '?text=' + waNome : null;
           statusEl.innerHTML =
             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
               '<div style="width:38px;height:38px;border-radius:50%;background:#9B7BB8;color:white;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">' + (doula.nome||'D')[0].toUpperCase() + '</div>' +
@@ -12055,8 +12081,8 @@ function verPerfilDoula(d, rInfo) {
       var btnWpp = document.createElement('button');
       btnWpp.style.cssText = 'flex:1;background:#25D366;color:white;border:none;padding:12px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;';
       btnWpp.textContent = '💬 WhatsApp';
-      var num = whats.replace(/[^0-9]/g, '');
-      btnWpp.onclick = function() { window.open('https://wa.me/55' + num + '?text=Ol%C3%A1%2C+te+encontrei+no+app+Lua+Materna!', '_blank'); };
+      var num = whats;
+      btnWpp.onclick = function() { window.open('https://wa.me/' + _wppLink(num) + '?text=Ol%C3%A1%2C+te+encontrei+no+app+Lua+Materna!', '_blank'); };
       pdActions.appendChild(btnWpp);
     }
     var disponivel = d.disponivel !== false;
@@ -12186,9 +12212,14 @@ function toggleDisponivelDoula() {
 
 async function salvarPerfilDoula() {
   if (!db) return;
-  var whatsapp = (document.getElementById('doula-whatsapp') || {}).value || '';
-  whatsapp = whatsapp.trim();
-  var cidade = ((document.getElementById('doula-cidade') || {}).value || '').trim();
+  var paisKey = ((document.getElementById('doula-pais') || {}).value || '');
+  var wppCodigo = ((document.getElementById('doula-wpp-codigo') || {}).textContent || '').trim();
+  var wppNum = ((document.getElementById('doula-whatsapp') || {}).value || '').trim();
+  var whatsapp = (wppCodigo && wppCodigo !== '+' && wppNum) ? wppCodigo + ' ' + wppNum : wppNum;
+  var cidadeVal = ((document.getElementById('doula-cidade') || {}).value || '').trim();
+  var estadoVal = ((document.getElementById('doula-estado') || {}).value || '').trim();
+  var paisNome = (_paisInfo[paisKey] || {}).nome || '';
+  var cidade = [cidadeVal, estadoVal, paisNome].filter(Boolean).join(', ');
   var especialidades = ((document.getElementById('doula-especialidades') || {}).value || '').trim();
   var bio = ((document.getElementById('doula-bio') || {}).value || '').trim();
   var partosRaw = ((document.getElementById('doula-partos') || {}).value || '').trim();
@@ -12341,9 +12372,8 @@ async function carregarMinhaDoulaPos() {
 function gDoulaPosFalarWpp() {
   var d = window._minhaDoulaPosDados;
   if (!d || !d.whatsapp) { mostrarToast('WhatsApp não cadastrado.'); return; }
-  var num = '55' + d.whatsapp.replace(/\D/g,'');
   var msg = encodeURIComponent('Olá ' + (d.nome || 'doula') + ', sou sua cliente pelo Lua Materna! 💛');
-  window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
+  window.open('https://wa.me/' + _wppLink(d.whatsapp) + '?text=' + msg, '_blank');
 }
 
 async function carregarMateriaisDoula(doulaId, doulaName) {
@@ -12371,15 +12401,14 @@ function falarWhatsappDoula() {
   var btn = document.getElementById('btn-whatsapp-doula');
   var num = btn ? btn.dataset.whatsapp : '';
   if (!num) return mostrarToast('Doula ainda não informou o WhatsApp');
-  var numLimpo = num.replace(/\D/g, '');
-  window.open('https://wa.me/55' + numLimpo, '_blank');
+  window.open('https://wa.me/' + _wppLink(num), '_blank');
 }
 
 function ligarDoula() {
   var btn = document.getElementById('btn-ligar-doula');
   var num = btn ? btn.dataset.whatsapp : '';
   if (!num) return mostrarToast('Doula ainda não informou o telefone');
-  window.location.href = 'tel:+55' + num.replace(/\D/g, '');
+  window.location.href = 'tel:+' + _wppLink(num);
 }
 
 // ── Carrega clientes da DOULA ──
@@ -12800,6 +12829,36 @@ async function _pcliContrato(el, id, campo) {
         '</div>';
     }).join('');
   } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
+}
+
+var _paisInfo = {
+  BR: { nome:'Brasil',         codigo:'+55',  ph:'(11) 99999-9999'   },
+  US: { nome:'Estados Unidos', codigo:'+1',   ph:'(555) 555-5555'    },
+  PT: { nome:'Portugal',       codigo:'+351', ph:'912 345 678'       },
+  AR: { nome:'Argentina',      codigo:'+54',  ph:'(011) 1234-5678'   },
+  CO: { nome:'Colômbia',       codigo:'+57',  ph:'300 123 4567'      },
+  MX: { nome:'México',         codigo:'+52',  ph:'55 1234 5678'      },
+  CL: { nome:'Chile',          codigo:'+56',  ph:'9 1234 5678'       },
+  UY: { nome:'Uruguai',        codigo:'+598', ph:'91 234 567'        },
+  PY: { nome:'Paraguai',       codigo:'+595', ph:'981 234 567'       },
+  ES: { nome:'Espanha',        codigo:'+34',  ph:'612 345 678'       },
+  IT: { nome:'Itália',         codigo:'+39',  ph:'345 678 9012'      }
+};
+function onDoulaCountryChange() {
+  var pais = (document.getElementById('doula-pais') || {}).value;
+  var info = _paisInfo[pais];
+  var badge = document.getElementById('doula-wpp-codigo');
+  var input = document.getElementById('doula-whatsapp');
+  if (badge) badge.textContent = info ? info.codigo : '+';
+  if (input) input.placeholder = info ? info.ph : 'Selecione o país primeiro';
+}
+function _wppLink(num) {
+  if (!num) return '';
+  var limpo = num.replace(/\D/g, '');
+  // Se o número original já começava com +, os dígitos já incluem o código do país
+  if (num.trim().startsWith('+')) return limpo;
+  // Retrocompatibilidade: número sem código → assume Brasil +55
+  return '55' + limpo;
 }
 
 var _telPlaceholders = {
@@ -13618,8 +13677,44 @@ async function carregarPerfilDoula() {
         try { localStorage.setItem('lua_foto_doula_' + uid, d.foto_perfil); } catch(e) {}
         aplicarFotoDoula(d.foto_perfil);
       }
-      if (d.whatsapp) (document.getElementById('doula-whatsapp') || {}).value = d.whatsapp;
-      if (d.cidade) (document.getElementById('doula-cidade') || {}).value = d.cidade;
+      if (d.whatsapp) {
+        var wppRaw = d.whatsapp;
+        var wppBadge = document.getElementById('doula-wpp-codigo');
+        var wppInput = document.getElementById('doula-whatsapp');
+        var paisSel = document.getElementById('doula-pais');
+        if (wppRaw.startsWith('+')) {
+          var spIdx = wppRaw.indexOf(' ');
+          var code = spIdx > 0 ? wppRaw.slice(0, spIdx) : wppRaw;
+          var numPart = spIdx > 0 ? wppRaw.slice(spIdx + 1) : '';
+          if (wppBadge) wppBadge.textContent = code;
+          if (wppInput) wppInput.value = numPart;
+          if (paisSel) {
+            for (var pk in _paisInfo) { if (_paisInfo[pk].codigo === code) { paisSel.value = pk; break; } }
+          }
+          onDoulaCountryChange();
+        } else {
+          if (wppBadge) wppBadge.textContent = '+55';
+          if (wppInput) wppInput.value = wppRaw;
+          if (paisSel) paisSel.value = 'BR';
+          onDoulaCountryChange();
+        }
+      }
+      if (d.cidade) {
+        var cidadeRaw = d.cidade;
+        var paisNomesMap = {};
+        for (var _pk in _paisInfo) paisNomesMap[_paisInfo[_pk].nome] = _pk;
+        var detPais = '', restoCid = cidadeRaw;
+        for (var pn in paisNomesMap) {
+          if (cidadeRaw.endsWith(', ' + pn)) { detPais = paisNomesMap[pn]; restoCid = cidadeRaw.slice(0, cidadeRaw.length - (', ' + pn).length); break; }
+        }
+        var partes = restoCid.split(', ');
+        var cidEl = document.getElementById('doula-cidade');
+        var estEl = document.getElementById('doula-estado');
+        var paisEl2 = document.getElementById('doula-pais');
+        if (cidEl) cidEl.value = partes[0] || '';
+        if (estEl && partes[1]) estEl.value = partes[1];
+        if (detPais && paisEl2 && !paisEl2.value) { paisEl2.value = detPais; onDoulaCountryChange(); }
+      }
       if (d.especialidades) (document.getElementById('doula-especialidades') || {}).value = d.especialidades;
       if (d.bio) (document.getElementById('doula-bio') || {}).value = d.bio;
       if (d.partos_acompanhados != null) (document.getElementById('doula-partos') || {}).value = d.partos_acompanhados;
