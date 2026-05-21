@@ -12842,15 +12842,23 @@ async function carregarDocumentosDoula() {
   var r = await db.from('documentos_cliente').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false });
   var docs = r.data || [];
   if (!docs.length) { lista.innerHTML = '<div class="empty-state-small">Nenhum documento enviado ainda.</div>'; return; }
+  // Gera signed URLs para docs novos (com path); docs antigos usam url pública
+  var signedMap = {};
+  var comPath = docs.filter(function(d) { return d.path; });
+  if (comPath.length) {
+    var sr = await db.storage.from('documentos-privados').createSignedUrls(comPath.map(function(d) { return d.path; }), 3600);
+    (sr.data || []).forEach(function(s) { if (s.signedUrl) signedMap[s.path] = s.signedUrl; });
+  }
   lista.innerHTML = docs.map(function(d) {
+    var linkUrl = d.path ? (signedMap[d.path] || '') : (d.url || '');
     var data = new Date(d.criado_em).toLocaleDateString('pt-BR');
     var icone = d.tipo === 'imagem' ? '🖼️' : '📄';
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--white);border-radius:12px;margin-bottom:8px;border:1px solid var(--border);">' +
       '<div style="display:flex;align-items:center;gap:12px;">' +
       '<span style="font-size:22px;">' + icone + '</span>' +
-      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + d.nome + '</div>' +
-      '<div style="font-size:11px;color:var(--earth-light);">' + (d.gestante_nome || '') + ' · ' + data + '</div></div></div>' +
-      '<a href="' + d.url + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Ver</a>' +
+      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + esc(d.nome) + '</div>' +
+      '<div style="font-size:11px;color:var(--earth-light);">' + esc(d.gestante_nome || '') + ' · ' + data + '</div></div></div>' +
+      (linkUrl ? '<a href="' + esc(linkUrl) + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Ver</a>' : '<span style="font-size:11px;color:var(--earth-light);">—</span>') +
     '</div>';
   }).join('');
 }
@@ -12865,18 +12873,18 @@ async function enviarDocumento() {
   var gestanteNome = document.getElementById('doc-select-gestante').selectedOptions[0].textContent;
   var ext = _docArquivo.name.split('.').pop().toLowerCase();
   var tipo = ['png','jpg','jpeg'].includes(ext) ? 'imagem' : 'pdf';
-  var path = 'docs/' + currentUserId + '/' + Date.now() + '_' + _docArquivo.name.replace(/\s/g,'_');
+  var filePath = 'docs/' + currentUserId + '/' + Date.now() + '_' + _docArquivo.name.replace(/\s/g,'_');
   mostrarToast('Enviando...');
   try {
-    var up = await db.storage.from('materiais').upload(path, _docArquivo);
+    var up = await db.storage.from('documentos-privados').upload(filePath, _docArquivo);
     if (up.error) throw up.error;
-    var url = db.storage.from('materiais').getPublicUrl(path).data.publicUrl;
     var res = await db.from('documentos_cliente').insert({
       doula_id: currentUserId,
       gestante_id: gestanteId,
       gestante_nome: gestanteNome,
       nome: nome,
-      url: url,
+      path: filePath,
+      url: null,
       tipo: tipo
     });
     if (res.error) throw res.error;
@@ -12897,16 +12905,24 @@ async function carregarDocumentosGestante(doulaId) {
   var r = await db.from('documentos_cliente').select('*').eq('doula_id', doulaId).eq('gestante_id', currentUserId).order('criado_em', { ascending: false });
   var docs = r.data || [];
   if (!docs.length) { wrap.style.display = 'none'; return; }
+  // Gera signed URLs para docs novos (com path); docs antigos usam url pública
+  var signedMap = {};
+  var comPath = docs.filter(function(d) { return d.path; });
+  if (comPath.length) {
+    var sr = await db.storage.from('documentos-privados').createSignedUrls(comPath.map(function(d) { return d.path; }), 3600);
+    (sr.data || []).forEach(function(s) { if (s.signedUrl) signedMap[s.path] = s.signedUrl; });
+  }
   wrap.style.display = 'block';
   lista.innerHTML = docs.map(function(d) {
+    var linkUrl = d.path ? (signedMap[d.path] || '') : (d.url || '');
     var icone = d.tipo === 'imagem' ? '🖼️' : '📄';
     var data = new Date(d.criado_em).toLocaleDateString('pt-BR');
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border-radius:12px;margin-bottom:8px;">' +
       '<div style="display:flex;align-items:center;gap:12px;">' +
       '<span style="font-size:22px;">' + icone + '</span>' +
-      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + d.nome + '</div>' +
+      '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + esc(d.nome) + '</div>' +
       '<div style="font-size:11px;color:var(--earth-light);">' + data + '</div></div></div>' +
-      '<a href="' + d.url + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Abrir</a>' +
+      (linkUrl ? '<a href="' + esc(linkUrl) + '" target="_blank" style="font-size:12px;color:var(--rose);text-decoration:none;padding:4px 10px;border:1px solid var(--rose);border-radius:20px;">Abrir</a>' : '<span style="font-size:11px;color:var(--earth-light);">—</span>') +
     '</div>';
   }).join('');
 }
