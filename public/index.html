@@ -4503,7 +4503,7 @@ pt: {
   'plano.dados.contato.label':'Seu WhatsApp / telefone','plano.dados.contato.ph':'(11) 99999-9999',
   'plano.dados.dpp.label':'DPP (data provável do parto)','plano.dados.dpp.ph':'dd/mm/aaaa',
   'plano.email.title':'📧 E-mail da doula / equipe','plano.email.ph':'email@doulaexemplo.com',
-  'plano.email.note':'O PDF será baixado automaticamente. Seu cliente de e-mail será aberto com o destinatário e o plano no corpo da mensagem — basta anexar o arquivo baixado.',
+  'plano.email.note':'O PDF será enviado diretamente para o e-mail informado como anexo. Uma cópia também será baixada no seu dispositivo.',
   'plano.btn.send':'📩 Gerar PDF e enviar por e-mail','plano.btn.download':'⬇️ Apenas baixar o PDF',
   // Contrações
   'timer.title':'Contrações','timer.sub':'Observe seu padrão com calma e segurança',
@@ -5167,7 +5167,7 @@ en: {
   'plano.dados.contato.label':'Your WhatsApp / phone','plano.dados.contato.ph':'Phone number',
   'plano.dados.dpp.label':'Estimated due date (EDD)','plano.dados.dpp.ph':'mm/dd/yyyy',
   'plano.email.title':'📧 Doula / team email','plano.email.ph':'doula@example.com',
-  'plano.email.note':'The PDF will be downloaded automatically. Your email client will open with the recipient and plan in the message body — just attach the downloaded file.',
+  'plano.email.note':'The PDF will be sent directly to the provided email as an attachment. A copy will also be downloaded to your device.',
   'plano.btn.send':'📩 Generate PDF and send by email','plano.btn.download':'⬇️ Download PDF only',
   'timer.title':'Contractions','timer.sub':'Observe your pattern calmly and safely',
   'timer.edu.title':'📖 Learn to time contractions',
@@ -5821,7 +5821,7 @@ es: {
   'plano.dados.contato.label':'Tu WhatsApp / teléfono','plano.dados.contato.ph':'Número de teléfono',
   'plano.dados.dpp.label':'Fecha probable de parto (FPP)','plano.dados.dpp.ph':'dd/mm/aaaa',
   'plano.email.title':'📧 Email de la doula / equipo','plano.email.ph':'doula@ejemplo.com',
-  'plano.email.note':'El PDF se descargará automáticamente. Tu cliente de correo se abrirá con el destinatario y el plan en el cuerpo del mensaje — solo adjunta el archivo descargado.',
+  'plano.email.note':'El PDF se enviará directamente al correo indicado como adjunto. También se descargará una copia en tu dispositivo.',
   'plano.btn.send':'📩 Generar PDF y enviar por correo','plano.btn.download':'⬇️ Solo descargar el PDF',
   'timer.title':'Contracciones','timer.sub':'Observa tu patrón con calma y seguridad',
   'timer.edu.title':'📖 Aprende a cronometrar',
@@ -6591,17 +6591,26 @@ function gerarPDFPlanoParto(enviarEmail) {
         filename: nomeArquivo
       })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){
+      if (!r.ok) {
+        return r.json().catch(function(){ return { error: 'Erro ' + r.status + ' na API' }; });
+      }
+      return r.json();
+    })
     .then(function(data){
       if (data.ok) {
         mostrarToast('E-mail enviado com sucesso para a doula! 💛');
         doc.save(nomeArquivo);
       } else {
-        mostrarToast('Erro ao enviar: ' + (data.error || 'tente novamente'));
+        var msg = data.error || 'tente novamente';
+        console.error('[PlanoDePartoEmail] Erro ao enviar:', msg);
+        mostrarToast('Erro ao enviar e-mail: ' + msg);
+        doc.save(nomeArquivo);
       }
     })
-    .catch(function(){
-      mostrarToast('Falha na conexão. Baixando o PDF para envio manual.');
+    .catch(function(err){
+      console.error('[PlanoDePartoEmail] Falha na chamada à API:', err);
+      mostrarToast('Não foi possível enviar o e-mail. Veja o console para detalhes.');
       doc.save(nomeArquivo);
     });
   } else {
