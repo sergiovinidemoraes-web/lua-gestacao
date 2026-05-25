@@ -1,6 +1,17 @@
 export default async function handler(req, res) {
   // Allow CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://luamaterna.com');
+  const origin = req.headers.origin;
+  if (origin && (
+    origin === 'https://luamaterna.com' ||
+    origin === 'https://www.luamaterna.com' ||
+    /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+    /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)
+  )) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://luamaterna.com');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

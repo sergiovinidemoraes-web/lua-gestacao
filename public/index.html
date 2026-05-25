@@ -11514,7 +11514,11 @@ async function enviarMensagemParaDoula() {
   if (!texto) return;
   input.value = '';
   try {
-    await db.from('mensagens').insert({ gestante_id: currentUserId, doula_id: chatDoulaId, remetente_tipo: 'gestante', texto: texto });
+    var res = await db.from('mensagens').insert({ gestante_id: currentUserId, doula_id: chatDoulaId, remetente_tipo: 'gestante', texto: texto });
+    if (res.error) {
+      console.error('Erro ao enviar mensagem:', res.error);
+      mostrarToast('Erro ao enviar mensagem: ' + res.error.message);
+    }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
@@ -11525,7 +11529,11 @@ async function enviarMensagemParaGestante() {
   if (!texto) return;
   input.value = '';
   try {
-    await db.from('mensagens').insert({ gestante_id: chatGestanteIdDoula, doula_id: currentUserId, remetente_tipo: 'doula', texto: texto });
+    var res = await db.from('mensagens').insert({ gestante_id: chatGestanteIdDoula, doula_id: currentUserId, remetente_tipo: 'doula', texto: texto });
+    if (res.error) {
+      console.error('Erro ao enviar mensagem:', res.error);
+      mostrarToast('Erro ao enviar mensagem: ' + res.error.message);
+    }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
@@ -16063,7 +16071,7 @@ function fecharChangelog() {
 
 
 // ─── PERSISTÊNCIA: PLANO DE PARTO ───
-function salvarPlanoParto() {
+async function salvarPlanoParto() {
   if (!db || !currentUserId) return;
   var checks = [];
   document.querySelectorAll('#g-plano .plan-check-item.done').forEach(function(item) {
@@ -16081,7 +16089,13 @@ function salvarPlanoParto() {
   var localParto = (_bsDom && _bsDom.classList.contains('selected')) ? 'domiciliar' : 'hospitalar';
   var obsEl = document.getElementById('plano-obs');
   var obs = obsEl ? obsEl.value.trim() : '';
-  db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, localParto: localParto, checks: checks, options: options, obs: obs } }).eq('id', currentUserId);
+  try {
+    var res = await db.from('usuarios').update({ plano_parto_estado: { tipoParto: tipoParto, localParto: localParto, checks: checks, options: options, obs: obs } }).eq('id', currentUserId);
+    if (res.error) {
+      console.error('Erro ao salvar plano de parto:', res.error);
+      mostrarToast('Erro ao salvar plano: ' + res.error.message);
+    }
+  } catch(e) { console.error('Erro ao salvar plano de parto:', e); }
 }
 
 function carregarPlanoParto() {
@@ -16136,13 +16150,19 @@ function carregarPlanoParto() {
 }
 
 // ─── PERSISTÊNCIA: TAREFAS/FASES ───
-function salvarTarefasEstado() {
+async function salvarTarefasEstado() {
   if (!db || !currentUserId) return;
   var done = [];
   document.querySelectorAll('.fase-task.done .fase-task-text[data-i18n]').forEach(function(el) {
     done.push(el.getAttribute('data-i18n'));
   });
-  db.from('usuarios').update({ tarefas_estado: done }).eq('id', currentUserId);
+  try {
+    var res = await db.from('usuarios').update({ tarefas_estado: done }).eq('id', currentUserId);
+    if (res.error) {
+      console.error('Erro ao salvar tarefas:', res.error);
+      mostrarToast('Erro ao salvar progresso: ' + res.error.message);
+    }
+  } catch(e) { console.error('Erro ao salvar tarefas:', e); }
 }
 
 function carregarTarefasEstado() {
@@ -16162,13 +16182,19 @@ function carregarTarefasEstado() {
 }
 
 // ─── PERSISTÊNCIA: CHECKLIST MALA ───
-function salvarChecklistMala() {
+async function salvarChecklistMala() {
   if (!db || !currentUserId) return;
   var done = [];
   document.querySelectorAll('.checklist-item.done [data-i18n]').forEach(function(el) {
     done.push(el.getAttribute('data-i18n'));
   });
-  db.from('usuarios').update({ checklist_mala: done }).eq('id', currentUserId);
+  try {
+    var res = await db.from('usuarios').update({ checklist_mala: done }).eq('id', currentUserId);
+    if (res.error) {
+      console.error('Erro ao salvar checklist da mala:', res.error);
+      mostrarToast('Erro ao salvar mala: ' + res.error.message);
+    }
+  } catch(e) { console.error('Erro ao salvar checklist da mala:', e); }
 }
 
 function carregarChecklistMala() {
@@ -16375,7 +16401,18 @@ async function salvarDadosBebe() {
   localStorage.setItem('lua_baby_nome', nome);
   localStorage.setItem('lua_baby_sexo', sexo);
   if (db && currentUserId) {
-    try { await db.from('usuarios').update({ baby_nome: nome, baby_sexo: sexo }).eq('id', currentUserId); } catch(e) {}
+    try {
+      var res = await db.from('usuarios').update({ baby_nome: nome, baby_sexo: sexo }).eq('id', currentUserId);
+      if (res.error) {
+        console.error('Erro ao salvar dados do bebê:', res.error);
+        mostrarToast('Erro ao salvar no servidor: ' + res.error.message);
+        return;
+      }
+    } catch(e) {
+      console.error('Erro ao salvar dados do bebê:', e);
+      mostrarToast('Erro ao conectar ao servidor: ' + e.message);
+      return;
+    }
   }
   mostrarToast(t('bebe.toast.saved'));
 }
