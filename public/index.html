@@ -2198,7 +2198,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
           <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span data-i18n="doula.nav.stats">Estatísticas</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><span class="d-nav-icon">👤</span><span>Meu Perfil</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><span class="d-nav-icon">👤</span><span data-i18n="doula.nav.perfil">Meu Perfil</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
           <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
@@ -2302,8 +2302,8 @@ tr:hover td { background:var(--rose-pale); }
             <div style="display:flex;align-items:center;gap:14px;">
               <div id="doula-perfil-avatar" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;color:white;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center;">D</div>
               <div style="flex:1;">
-                <div class="card-title" style="margin-bottom:2px;">Meu Perfil</div>
-                <div style="font-size:12px;color:var(--earth-light);">Foto, bio, especialidades e disponibilidade</div>
+                <div class="card-title" data-i18n="doula.myperfil.title" style="margin-bottom:2px;">Meu Perfil</div>
+                <div data-i18n="doula.myperfil.card.sub" style="font-size:12px;color:var(--earth-light);">Foto, bio, especialidades e disponibilidade</div>
               </div>
               <div style="font-size:20px;color:var(--rose);">›</div>
             </div>
@@ -2325,21 +2325,21 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- MEU PERFIL -->
         <div class="d-panel" id="d-meuperfil">
-          <div class="panel-title">Meu Perfil</div>
-          <div class="panel-sub">Gerencie sua foto, bio e informações que aparecem no marketplace</div>
+          <div class="panel-title" data-i18n="doula.myperfil.title">Meu Perfil</div>
+          <div class="panel-sub" data-i18n="doula.myperfil.sub">Gerencie sua foto, bio e informações que aparecem no marketplace</div>
 
           <!-- Foto de perfil -->
           <div class="card" style="display:flex;flex-direction:column;align-items:center;padding:28px 24px;margin-bottom:20px;">
             <div id="doula-mp-avatar" onclick="trocarFotoDoula()" title="Clique para alterar foto"
                  style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--rose-light),var(--rose));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;color:white;cursor:pointer;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;box-shadow:0 4px 16px rgba(201,137,122,0.3);">D</div>
             <input type="file" id="foto-doula-input" accept="image/*" style="display:none" onchange="previewFotoDoula(this)">
-            <button onclick="trocarFotoDoula()" style="margin-top:14px;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--rose);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📷 Alterar foto</button>
-            <div id="doula-mp-foto-aviso" style="display:none;font-size:11px;color:var(--earth-light);margin-top:8px;">Nova foto selecionada — clique em Salvar para confirmar</div>
+            <button onclick="trocarFotoDoula()" data-i18n="doula.myperfil.alterfoto" style="margin-top:14px;background:var(--rose-pale);border:1.5px solid var(--rose-light);color:var(--rose);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;">📷 Alterar foto</button>
+            <div id="doula-mp-foto-aviso" data-i18n="doula.myperfil.fotoaviso" style="display:none;font-size:11px;color:var(--earth-light);margin-top:8px;">Nova foto selecionada — clique em Salvar para confirmar</div>
           </div>
 
           <!-- Campos de perfil -->
           <div class="card">
-            <div class="card-title">Informações do perfil</div>
+            <div class="card-title" data-i18n="doula.myperfil.infotitle">Informações do perfil</div>
             <div style="display:grid;gap:12px;margin-top:4px;">
               <div>
                 <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">País</div>
@@ -2376,33 +2376,33 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Especialidades</div>
-                <input id="doula-especialidades" class="form-input" type="text" placeholder="Separadas por vírgula">
+                <div data-i18n="doula.myperfil.esp" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Especialidades</div>
+                <input id="doula-especialidades" class="form-input" type="text" data-i18n-ph="doula.perfil.esp" placeholder="Separadas por vírgula">
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Bio</div>
-                <textarea id="doula-bio" class="form-input form-textarea" placeholder="Quem você é e como trabalha..." style="height:90px;resize:none;"></textarea>
+                <div data-i18n="doula.myperfil.bio" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Bio</div>
+                <textarea id="doula-bio" class="form-input form-textarea" data-i18n-ph="doula.perfil.bio" placeholder="Quem você é e como trabalha..." style="height:90px;resize:none;"></textarea>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Partos acompanhados</div>
-                <input id="doula-partos" class="form-input" type="number" min="0" placeholder="Número de partos">
+                <div data-i18n="doula.myperfil.partos" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Partos acompanhados</div>
+                <input id="doula-partos" class="form-input" type="number" min="0" data-i18n-ph="doula.myperfil.partos.ph" placeholder="Número de partos">
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Tipo de atendimento</div>
+                <div data-i18n="doula.myperfil.tipo" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Tipo de atendimento</div>
                 <select id="doula-tipo-atendimento" class="form-input form-select">
-                  <option value="">Selecione...</option>
-                  <option value="presencial">Presencial</option>
+                  <option value="" data-i18n="doula.myperfil.sel">Selecione...</option>
+                  <option value="presencial" data-i18n="doula.myperfil.presencial">Presencial</option>
                   <option value="online">Online</option>
-                  <option value="hibrido">Híbrido (presencial + online)</option>
+                  <option value="hibrido" data-i18n="doula.myperfil.hibrido">Híbrido (presencial + online)</option>
                 </select>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Valores e pacotes</div>
-                <textarea id="doula-valores-pacotes" class="form-input form-textarea" placeholder="Ex: Pré-natal R$200/sessão · Parto completo R$2.500" style="height:72px;resize:none;"></textarea>
+                <div data-i18n="doula.myperfil.valores" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Valores e pacotes</div>
+                <textarea id="doula-valores-pacotes" class="form-input form-textarea" data-i18n-ph="doula.myperfil.valores.ph" placeholder="Ex: Pré-natal R$200/sessão · Parto completo R$2.500" style="height:72px;resize:none;"></textarea>
               </div>
               <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--rose-pale);border-radius:12px;">
                 <div>
-                  <div style="font-size:13px;font-weight:500;color:var(--dark);">Disponível para novas clientes</div>
+                  <div data-i18n="doula.disponivel.title" style="font-size:13px;font-weight:500;color:var(--dark);">Disponível para novas clientes</div>
                   <div id="doula-disponivel-label" style="font-size:11px;color:var(--earth-light);margin-top:2px;">Ativado — aparece no marketplace</div>
                 </div>
                 <div id="doula-disponivel-toggle" onclick="toggleDisponivelDoula()" style="width:44px;height:24px;border-radius:12px;background:var(--sage);cursor:pointer;position:relative;transition:background 0.2s;">
@@ -2410,11 +2410,11 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Limite de clientes simultâneas</div>
-                <div style="font-size:11px;color:var(--earth-light);margin-bottom:6px;">Deixe em branco para ilimitado.</div>
-                <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" placeholder="Ex: 5 (vazio = ilimitado)">
+                <div data-i18n="doula.limite.title" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Limite de clientes simultâneas</div>
+                <div data-i18n="doula.limite.descshort" style="font-size:11px;color:var(--earth-light);margin-bottom:6px;">Deixe em branco para ilimitado.</div>
+                <input id="doula-limite-clientes" class="form-input" type="number" min="1" max="50" data-i18n-ph="doula.myperfil.limite.ph" placeholder="Ex: 5 (vazio = ilimitado)">
               </div>
-              <button onclick="salvarPerfilDoula()" style="background:var(--rose);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">Salvar perfil</button>
+              <button onclick="salvarPerfilDoula()" data-i18n="doula.myperfil.save" style="background:var(--rose);color:white;border:none;padding:14px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;">Salvar perfil</button>
             </div>
           </div>
         </div>
@@ -2443,11 +2443,11 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
                 <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp()"></div>
                 <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Calculada pela DPP"></div>
-                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option><option>Humanizado</option></select></div>
-                <div class="form-group"><label class="form-label">Local do parto</label><select id="nc-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Domiciliar</option></select></div>
+                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
+                <div class="form-group"><label class="form-label">Local do parto</label><select id="nc-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Casa de parto</option><option>Domiciliar</option></select></div>
                 <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
                 <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
-                <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="nc-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option></select></div>
+                <div class="form-group"><label class="form-label">Histórico gestacional</label><select id="nc-historico" class="form-input form-select"><option>Primeira gestação</option><option>Segunda gestação</option><option>Terceira ou mais</option><option>Gestação gemelar</option></select></div>
                 <div class="form-group"><label class="form-label">Nome do bebê</label><input id="nc-nome-bebe" class="form-input" type="text" placeholder="Apelido ou nome escolhido"></div>
                 <div class="form-group"><label class="form-label">Nome do acompanhante</label><input id="nc-nome-acompanhante" class="form-input" type="text" placeholder="Parceiro(a), familiar..."></div>
               </div>
@@ -2655,7 +2655,7 @@ tr:hover td { background:var(--rose-pale); }
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-agenda" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.datetime">Data e hora</label><input id="ag-data-hora" class="form-input" type="datetime-local"></div>
-              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
+              <div class="form-group"><label class="form-label" data-i18n="doula.agenda.type">Tipo de atendimento</label><select id="ag-tipo" class="form-input form-select"><option data-i18n="doula.agenda.type.prenatal">Consulta pré-natal</option><option data-i18n="doula.agenda.type.birth">Preparação para o parto</option><option data-i18n="doula.agenda.type.postpartum">Visita pós-parto</option><option data-i18n="doula.agenda.type.initial">Reunião inicial</option><option>🎉 Chá de bênção</option><option data-i18n="doula.agenda.type.other">Outro</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.local">Local / Endereço</label><input id="ag-local" class="form-input" type="text" data-i18n-ph="doula.agenda.local.ph" placeholder="Ex: Casa da cliente, Parque Ibirapuera, Consultório..."></div>
               <div class="form-group"><label class="form-label">Tema da consulta</label><select id="ag-tema" class="form-input form-select"><option value="">— Selecione um tema —</option><option>🌱 Reunião inicial / Anamnese</option><option>🌿 Fases do trabalho de parto</option><option>💪 Posições durante o parto</option><option>🌬️ Técnicas não farmacológicas de alívio da dor</option><option>📋 Plano de parto</option><option>⚡ Violência obstétrica e direitos</option><option>👶 Cuidados com o recém-nascido</option><option>🤱 Amamentação</option><option>💆 Preparação mental e emocional</option><option>🌸 Pós-parto e recuperação</option><option>📌 Outro</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.notes">Observações</label><input id="ag-obs" class="form-input" type="text" placeholder="Local, link, anotações adicionais..."></div>
@@ -2689,7 +2689,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" data-i18n="doula.records.sub">Histórico detalhado de cada consulta</div>
 
           <div class="card" style="margin-bottom:24px;">
-            <div class="card-title" data-i18n="doula.records.new">➕ Novo registro</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <div id="reg-form-titulo" class="card-title" style="margin-bottom:0;" data-i18n="doula.records.new">➕ Novo registro</div>
+              <button id="reg-cancelar-btn" onclick="cancelarEdicaoRegistro()" style="display:none;background:transparent;border:1px solid rgba(201,137,122,0.4);color:var(--earth);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;">✕ Cancelar edição</button>
+            </div>
             <div class="form-grid">
               <div class="form-group"><label class="form-label" data-i18n="doula.agenda.client">Cliente</label><select id="select-cliente-registros" class="form-input form-select"><option value="" data-i18n="doula.clients.select">Selecione uma cliente</option></select></div>
               <div class="form-group"><label class="form-label" data-i18n="doula.records.date">Data</label><input id="reg-data" class="form-input" type="date"></div>
@@ -2697,7 +2700,7 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div class="form-group"><label class="form-label" data-i18n="doula.records.notes">Anotações da consulta</label><textarea id="reg-anotacoes" class="form-input form-textarea" data-i18n-ph="doula.records.notes.ph" placeholder="Descreva o que foi abordado, como a gestante estava, o que foi feito..."></textarea></div>
             <div class="form-group"><label class="form-label" data-i18n="doula.records.progress">Evolução / Próximos passos</label><textarea id="reg-evolucao" class="form-input form-textarea" data-i18n-ph="doula.records.progress.ph" placeholder="Como está a evolução da gestante e o que fazer na próxima consulta..."></textarea></div>
-            <button class="btn-primary" onclick="salvarRegistro()" data-i18n="doula.records.save">Salvar registro</button>
+            <button id="reg-salvar-btn" class="btn-primary" onclick="salvarRegistro()" data-i18n="doula.records.save">Salvar registro</button>
           </div>
 
           <div id="atendimentos-lista">
@@ -4037,18 +4040,18 @@ tr:hover td { background:var(--rose-pale); }
   <div class="view" id="view-doula-backup">
     <div class="doula-layout">
       <aside class="d-sidebar">
-        <div class="d-sidebar-title">🔄 Doula Backup</div>
+        <div class="d-sidebar-title" data-i18n="bk.sidebar.title">🔄 Doula Backup</div>
         <div style="margin:0 16px 14px;padding:10px 14px;background:rgba(201,137,122,0.1);border-radius:12px;font-size:12px;color:var(--earth-light);text-align:center;line-height:1.5;">
-          Cobrindo<br><strong id="bk-doula-nome" style="color:var(--rose);font-size:13px;">—</strong>
+          <span data-i18n="bk.covering">Cobrindo</span><br><strong id="bk-doula-nome" style="color:var(--rose);font-size:13px;">—</strong>
         </div>
         <div id="btn-switch-to-main" style="display:none; margin:0 16px 14px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
-          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">⬅️ Voltar ao Meu Painel</div>
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;" data-i18n="bk.back.panel">⬅️ Voltar ao Meu Painel</div>
         </div>
         <nav>
-          <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><span class="d-nav-icon">👩</span>Clientes</div>
-          <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><span class="d-nav-icon">📅</span>Agenda</div>
-          <div class="d-nav-item" id="bk-nav-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;"><span class="d-nav-icon">💬</span>Mensagens</div>
-          <div class="d-nav-item" id="bk-nav-registros" onclick="bkNav(this,'bk-registros')" style="display:none;"><span class="d-nav-icon">📝</span>Registros</div>
+          <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><span class="d-nav-icon">👩</span><span data-i18n="bk.nav.clients">Clientes</span></div>
+          <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><span class="d-nav-icon">📅</span><span data-i18n="bk.nav.schedule">Agenda</span></div>
+          <div class="d-nav-item" id="bk-nav-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;"><span class="d-nav-icon">💬</span><span data-i18n="bk.nav.messages">Mensagens</span></div>
+          <div class="d-nav-item" id="bk-nav-registros" onclick="bkNav(this,'bk-registros')" style="display:none;"><span class="d-nav-icon">📝</span><span data-i18n="bk.nav.records">Registros</span></div>
         </nav>
       </aside>
 
@@ -4056,23 +4059,23 @@ tr:hover td { background:var(--rose-pale); }
         <div class="mobile-bottom-nav-inner">
           <div class="mob-nav-item active" id="bk-mob-clientes" onclick="bkNav(this,'bk-clientes')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-            <span>Clientes</span>
+            <span data-i18n="bk.nav.clients">Clientes</span>
           </div>
           <div class="mob-nav-item" id="bk-mob-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            <span>Agenda</span>
+            <span data-i18n="bk.nav.schedule">Agenda</span>
           </div>
           <div class="mob-nav-item" id="bk-mob-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span>Mensagens</span>
+            <span data-i18n="bk.nav.messages">Mensagens</span>
           </div>
           <div class="mob-nav-item" id="bk-mob-registros" onclick="bkNav(this,'bk-registros')" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            <span>Registros</span>
+            <span data-i18n="bk.nav.records">Registros</span>
           </div>
           <div class="mob-nav-item" id="bk-mob-main" style="display:none;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            <span>Meu Painel</span>
+            <span data-i18n="bk.mob.panel">Meu Painel</span>
           </div>
         </div>
       </nav>
@@ -4081,30 +4084,30 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- BANNER DE UPGRADE -->
         <div id="bk-upgrade-banner" style="display:none; background:linear-gradient(135deg,var(--rose) 0%,#a8685a 100%); border-radius:16px; padding:20px; color:white; margin-bottom:24px; box-shadow:0 4px 16px rgba(201,137,122,0.3);">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:22px; margin-bottom:8px;">Pronta para ter suas próprias clientes?</div>
-          <div style="font-size:13px; opacity:0.9; margin-bottom:16px; line-height:1.5;">Faça o upgrade da sua conta e torne-se uma Doula titular no app. Você continuará sendo backup desta colega!</div>
-          <button onclick="mostrarModalUpgradeBackup()" style="background:var(--white); color:var(--rose); border:none; padding:10px 24px; border-radius:30px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit;">Fazer Upgrade Agora</button>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:22px; margin-bottom:8px;" data-i18n="bk.upgrade.title">Pronta para ter suas próprias clientes?</div>
+          <div style="font-size:13px; opacity:0.9; margin-bottom:16px; line-height:1.5;" data-i18n="bk.upgrade.sub">Faça o upgrade da sua conta e torne-se uma Doula titular no app. Você continuará sendo backup desta colega!</div>
+          <button onclick="mostrarModalUpgradeBackup()" style="background:var(--white); color:var(--rose); border:none; padding:10px 24px; border-radius:30px; font-size:14px; font-weight:500; cursor:pointer; font-family:inherit;" data-i18n="bk.upgrade.btn">Fazer Upgrade Agora</button>
         </div>
 
         <!-- CLIENTES -->
         <div class="d-panel active" id="bk-clientes">
-          <div class="panel-title">Clientes</div>
-          <div class="panel-sub" id="bk-clientes-sub">Clientes ativas da doula que você está cobrindo</div>
-          <div id="bk-clientes-lista"><div class="empty-state-small">Carregando...</div></div>
+          <div class="panel-title" data-i18n="bk.clients.title">Clientes</div>
+          <div class="panel-sub" id="bk-clientes-sub" data-i18n="bk.clients.sub">Clientes ativas da doula que você está cobrindo</div>
+          <div id="bk-clientes-lista"><div class="empty-state-small" data-i18n="loading">Carregando...</div></div>
         </div>
 
         <!-- AGENDA -->
         <div class="d-panel" id="bk-agenda">
-          <div class="panel-title">Agenda</div>
-          <div class="panel-sub">Consultas agendadas</div>
-          <div id="bk-agenda-lista"><div class="empty-state-small">Carregando...</div></div>
+          <div class="panel-title" data-i18n="bk.schedule.title">Agenda</div>
+          <div class="panel-sub" data-i18n="bk.schedule.sub">Consultas agendadas</div>
+          <div id="bk-agenda-lista"><div class="empty-state-small" data-i18n="loading">Carregando...</div></div>
         </div>
 
         <!-- MENSAGENS -->
         <div class="d-panel" id="bk-mensagens">
-          <div class="panel-title">Mensagens</div>
-          <div class="panel-sub">Chat com as clientes</div>
-          <div id="bk-chat-lista"><div class="empty-state-small">Selecione uma cliente para ver o chat.</div></div>
+          <div class="panel-title" data-i18n="bk.messages.title">Mensagens</div>
+          <div class="panel-sub" data-i18n="bk.messages.sub">Chat com as clientes</div>
+          <div id="bk-chat-lista"><div class="empty-state-small" data-i18n="bk.messages.select">Selecione uma cliente para ver o chat.</div></div>
           <div id="bk-chat-area" style="display:none;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
               <button onclick="fecharChatBackup()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--earth-light);">←</button>
@@ -4112,17 +4115,17 @@ tr:hover td { background:var(--rose-pale); }
             </div>
             <div id="bk-msgs-container" style="height:320px;overflow-y:auto;padding:8px;background:var(--cream);border-radius:14px;margin-bottom:12px;"></div>
             <div style="display:flex;gap:8px;">
-              <input id="bk-msg-input" class="form-input" type="text" placeholder="Digite uma mensagem..." style="flex:1;" onkeydown="if(event.key==='Enter')enviarMensagemBackup()">
-              <button onclick="enviarMensagemBackup()" class="btn-primary" style="padding:10px 16px;">Enviar</button>
+              <input id="bk-msg-input" class="form-input" type="text" data-i18n-ph="bk.msg.ph" placeholder="Digite uma mensagem..." style="flex:1;" onkeydown="if(event.key==='Enter')enviarMensagemBackup()">
+              <button onclick="enviarMensagemBackup()" class="btn-primary" style="padding:10px 16px;" data-i18n="bk.msg.send">Enviar</button>
             </div>
           </div>
         </div>
 
         <!-- REGISTROS -->
         <div class="d-panel" id="bk-registros">
-          <div class="panel-title">Registros</div>
-          <div class="panel-sub">Histórico de atendimentos</div>
-          <div id="bk-registros-lista"><div class="empty-state-small">Carregando...</div></div>
+          <div class="panel-title" data-i18n="bk.records.title">Registros</div>
+          <div class="panel-sub" data-i18n="bk.records.sub">Histórico de atendimentos</div>
+          <div id="bk-registros-lista"><div class="empty-state-small" data-i18n="loading">Carregando...</div></div>
         </div>
 
       </main>
@@ -4135,14 +4138,14 @@ tr:hover td { background:var(--rose-pale); }
   <div class="lua-modal-overlay" id="modal-upgrade-backup">
     <div class="lua-modal">
       <div class="lua-modal-icon">🌟</div>
-      <div class="lua-modal-title">Escolha seu Perfil</div>
-      <div class="lua-modal-sub">Deseja atuar no app como Doula de Gestação ou Doula Pós-parto? (Você continuará com acesso ao painel de backup da sua colega).</div>
+      <div class="lua-modal-title" data-i18n="bk.modal.upgrade.title">Escolha seu Perfil</div>
+      <div class="lua-modal-sub" data-i18n="bk.modal.upgrade.sub">Deseja atuar no app como Doula de Gestação ou Doula Pós-parto? (Você continuará com acesso ao painel de backup da sua colega).</div>
       <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-        <button onclick="confirmarUpgradeBackup('doula')" style="background:var(--rose-pale); color:var(--rose); border:1.5px solid var(--rose-light); padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;">🌙 Doula de Gestação</button>
-        <button onclick="confirmarUpgradeBackup('pos_doula')" style="background:#f3e8f5; color:#784587; border:1.5px solid #dcbce3; padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;">💜 Doula Pós-parto</button>
+        <button onclick="confirmarUpgradeBackup('doula')" style="background:var(--rose-pale); color:var(--rose); border:1.5px solid var(--rose-light); padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;" data-i18n="bk.modal.upgrade.doula">🌙 Doula de Gestação</button>
+        <button onclick="confirmarUpgradeBackup('pos_doula')" style="background:#f3e8f5; color:#784587; border:1.5px solid #dcbce3; padding:12px; border-radius:12px; font-size:14px; cursor:pointer; font-family:inherit;" data-i18n="bk.modal.upgrade.pos">💜 Doula Pós-parto</button>
       </div>
       <div class="lua-modal-btns">
-        <button class="lua-modal-cancel" onclick="document.getElementById('modal-upgrade-backup').classList.remove('show')">Cancelar</button>
+        <button class="lua-modal-cancel" onclick="document.getElementById('modal-upgrade-backup').classList.remove('show')" data-i18n="modal.cancel">Cancelar</button>
       </div>
     </div>
   </div>
@@ -4158,6 +4161,8 @@ let currentEmail = '';
 let currentSolicitacaoPendente = null; // { id, doulaId, nomeDoula }
 let currentBackupDoulaId = null;      // ID da doula principal quando logado como backup
 let currentBackupPerms = null;        // { agenda, chat, registros }
+var _registroEditandoId = null;
+var _consultaEditandoId = null;
 let bkChatGestanteId = null;
 let paiGestanteId = null;
 let paiRealtimeChannel = null;
@@ -4758,6 +4763,27 @@ pt: {
   'doula.disponivel.off':'Desativado — oculta do marketplace',
   'doula.limite.title':'Limite de clientes simultâneas',
   'doula.limite.desc':'Deixe em branco para ilimitado. Você não poderá aceitar novas solicitações ao atingir este número.',
+  'doula.limite.descshort':'Deixe em branco para ilimitado.',
+  'doula.myperfil.title':'Meu Perfil',
+  'doula.myperfil.card.sub':'Foto, bio, especialidades e disponibilidade',
+  'doula.myperfil.sub':'Gerencie sua foto, bio e informações que aparecem no marketplace',
+  'doula.myperfil.alterfoto':'📷 Alterar foto',
+  'doula.myperfil.fotoaviso':'Nova foto selecionada — clique em Salvar para confirmar',
+  'doula.myperfil.infotitle':'Informações do perfil',
+  'doula.myperfil.wpp':'WhatsApp',
+  'doula.myperfil.cidade':'Cidade e Estado',
+  'doula.myperfil.esp':'Especialidades',
+  'doula.myperfil.bio':'Bio',
+  'doula.myperfil.partos':'Partos acompanhados',
+  'doula.myperfil.partos.ph':'Número de partos',
+  'doula.myperfil.tipo':'Tipo de atendimento',
+  'doula.myperfil.sel':'Selecione...',
+  'doula.myperfil.presencial':'Presencial',
+  'doula.myperfil.hibrido':'Híbrido (presencial + online)',
+  'doula.myperfil.valores':'Valores e pacotes',
+  'doula.myperfil.valores.ph':'Ex: Pré-natal R$200/sessão · Parto completo R$2.500',
+  'doula.myperfil.save':'Salvar perfil',
+  'doula.myperfil.limite.ph':'Ex: 5 (vazio = ilimitado)',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Nenhuma consulta agendada ainda',
   'doula.births.title':'Partos do mês','doula.births.empty':'Nenhum parto registrado este mês',
   'doula.clients.title':'Minhas Clientes','doula.clients.sub':'Gerencie e acompanhe todas as suas gestantes',
@@ -4865,6 +4891,7 @@ pt: {
   'doula.convite.btn.copy':'📋 Copiar link',
   'doula.convite.btn.new':'↺ Gerar novo link',
   'doula.nav.backup':'Minha Backup',
+  'doula.nav.perfil':'Meu Perfil',
   'doula.backup.title':'Minha Backup',
   'doula.backup.sub':'Configure uma colega de confiança para cobrir você quando precisar.',
   'doula.backup.card.title':'🛡️ Doula Backup',
@@ -4877,6 +4904,32 @@ pt: {
   'doula.backup.perm.registros':'Acesso aos Registros',
   'doula.backup.perm.historico':'↳ Ver histórico de dias anteriores',
   'doula.backup.btn.save':'✅ Salvar e verificar',
+  'bk.sidebar.title':'🔄 Doula Backup',
+  'bk.covering':'Cobrindo',
+  'bk.back.panel':'⬅️ Voltar ao Meu Painel',
+  'bk.nav.clients':'Clientes',
+  'bk.nav.schedule':'Agenda',
+  'bk.nav.messages':'Mensagens',
+  'bk.nav.records':'Registros',
+  'bk.mob.panel':'Meu Painel',
+  'bk.upgrade.title':'Pronta para ter suas próprias clientes?',
+  'bk.upgrade.sub':'Faça o upgrade da sua conta e torne-se uma Doula titular no app. Você continuará sendo backup desta colega!',
+  'bk.upgrade.btn':'Fazer Upgrade Agora',
+  'bk.clients.title':'Clientes',
+  'bk.clients.sub':'Clientes ativas da doula que você está cobrindo',
+  'bk.schedule.title':'Agenda',
+  'bk.schedule.sub':'Consultas agendadas',
+  'bk.messages.title':'Mensagens',
+  'bk.messages.sub':'Chat com as clientes',
+  'bk.messages.select':'Selecione uma cliente para ver o chat.',
+  'bk.msg.ph':'Digite uma mensagem...',
+  'bk.msg.send':'Enviar',
+  'bk.records.title':'Registros',
+  'bk.records.sub':'Histórico de atendimentos',
+  'bk.modal.upgrade.title':'Escolha seu Perfil',
+  'bk.modal.upgrade.sub':'Deseja atuar no app como Doula de Gestação ou Doula Pós-parto? (Você continuará com acesso ao painel de backup da sua colega).',
+  'bk.modal.upgrade.doula':'🌙 Doula de Gestação',
+  'bk.modal.upgrade.pos':'💜 Doula Pós-parto',
   'loading':'Carregando...',
   'doula.unlink':'Encerrar vínculo com esta doula',
   'bebe.title':'Meu Bebê 👶','bebe.sub':'Acompanhe o crescimento semana a semana',
@@ -5413,6 +5466,27 @@ en: {
   'doula.disponivel.off':'Inactive — hidden from marketplace',
   'doula.limite.title':'Simultaneous client limit',
   'doula.limite.desc':'Leave blank for unlimited. You will not be able to accept new requests once you reach this number.',
+  'doula.limite.descshort':'Leave blank for unlimited.',
+  'doula.myperfil.title':'My Profile',
+  'doula.myperfil.card.sub':'Photo, bio, specialties and availability',
+  'doula.myperfil.sub':'Manage your photo, bio and information that appears in the marketplace',
+  'doula.myperfil.alterfoto':'📷 Change photo',
+  'doula.myperfil.fotoaviso':'New photo selected — click Save to confirm',
+  'doula.myperfil.infotitle':'Profile information',
+  'doula.myperfil.wpp':'WhatsApp',
+  'doula.myperfil.cidade':'City and State',
+  'doula.myperfil.esp':'Specialties',
+  'doula.myperfil.bio':'Bio',
+  'doula.myperfil.partos':'Births attended',
+  'doula.myperfil.partos.ph':'Number of births',
+  'doula.myperfil.tipo':'Care type',
+  'doula.myperfil.sel':'Select...',
+  'doula.myperfil.presencial':'In-person',
+  'doula.myperfil.hibrido':'Hybrid (in-person + online)',
+  'doula.myperfil.valores':'Prices and packages',
+  'doula.myperfil.valores.ph':'E.g.: Prenatal R$200/session · Full birth R$2,500',
+  'doula.myperfil.save':'Save profile',
+  'doula.myperfil.limite.ph':'E.g.: 5 (blank = unlimited)',
   'doula.appts.title':'Upcoming appointments','doula.appts.empty':'No appointments scheduled yet',
   'doula.births.title':'Births this month','doula.births.empty':'No births recorded this month',
   'doula.clients.title':'My Clients','doula.clients.sub':'Manage and follow all your pregnant clients',
@@ -5520,6 +5594,7 @@ en: {
   'doula.convite.btn.copy':'📋 Copy link',
   'doula.convite.btn.new':'↺ Generate new link',
   'doula.nav.backup':'My Backup',
+  'doula.nav.perfil':'My Profile',
   'doula.backup.title':'My Backup',
   'doula.backup.sub':'Set up a trusted colleague to cover you when needed.',
   'doula.backup.card.title':'🛡️ Backup Doula',
@@ -5532,6 +5607,32 @@ en: {
   'doula.backup.perm.registros':'Records access',
   'doula.backup.perm.historico':'↳ View previous days history',
   'doula.backup.btn.save':'✅ Save and verify',
+  'bk.sidebar.title':'🔄 Backup Doula',
+  'bk.covering':'Covering',
+  'bk.back.panel':'⬅️ Back to My Panel',
+  'bk.nav.clients':'Clients',
+  'bk.nav.schedule':'Schedule',
+  'bk.nav.messages':'Messages',
+  'bk.nav.records':'Records',
+  'bk.mob.panel':'My Panel',
+  'bk.upgrade.title':'Ready to have your own clients?',
+  'bk.upgrade.sub':'Upgrade your account and become a full Doula in the app. You will continue as a backup for this colleague!',
+  'bk.upgrade.btn':'Upgrade Now',
+  'bk.clients.title':'Clients',
+  'bk.clients.sub':'Active clients of the doula you are covering',
+  'bk.schedule.title':'Schedule',
+  'bk.schedule.sub':'Scheduled appointments',
+  'bk.messages.title':'Messages',
+  'bk.messages.sub':'Chat with clients',
+  'bk.messages.select':'Select a client to view the chat.',
+  'bk.msg.ph':'Type a message...',
+  'bk.msg.send':'Send',
+  'bk.records.title':'Records',
+  'bk.records.sub':'Attendance history',
+  'bk.modal.upgrade.title':'Choose your Profile',
+  'bk.modal.upgrade.sub':'Do you want to work in the app as a Pregnancy Doula or Postpartum Doula? (You will continue with access to your colleague\'s backup panel).',
+  'bk.modal.upgrade.doula':'🌙 Pregnancy Doula',
+  'bk.modal.upgrade.pos':'💜 Postpartum Doula',
   'loading':'Loading...',
   'doula.unlink':'End relationship with this doula',
   'bebe.title':'My Baby 👶','bebe.sub':'Track growth week by week',
@@ -6067,6 +6168,27 @@ es: {
   'doula.disponivel.off':'Inactivo — oculto del marketplace',
   'doula.limite.title':'Límite de clientas simultáneas',
   'doula.limite.desc':'Déjalo en blanco para ilimitado. No podrás aceptar nuevas solicitudes al alcanzar este número.',
+  'doula.limite.descshort':'Déjalo en blanco para ilimitado.',
+  'doula.myperfil.title':'Mi Perfil',
+  'doula.myperfil.card.sub':'Foto, bio, especialidades y disponibilidad',
+  'doula.myperfil.sub':'Gestiona tu foto, bio e información que aparece en el marketplace',
+  'doula.myperfil.alterfoto':'📷 Cambiar foto',
+  'doula.myperfil.fotoaviso':'Nueva foto seleccionada — haz clic en Guardar para confirmar',
+  'doula.myperfil.infotitle':'Información del perfil',
+  'doula.myperfil.wpp':'WhatsApp',
+  'doula.myperfil.cidade':'Ciudad y Estado',
+  'doula.myperfil.esp':'Especialidades',
+  'doula.myperfil.bio':'Bio',
+  'doula.myperfil.partos':'Partos acompañados',
+  'doula.myperfil.partos.ph':'Número de partos',
+  'doula.myperfil.tipo':'Tipo de atención',
+  'doula.myperfil.sel':'Selecciona...',
+  'doula.myperfil.presencial':'Presencial',
+  'doula.myperfil.hibrido':'Híbrido (presencial + online)',
+  'doula.myperfil.valores':'Precios y paquetes',
+  'doula.myperfil.valores.ph':'Ej: Prenatal R$200/sesión · Parto completo R$2.500',
+  'doula.myperfil.save':'Guardar perfil',
+  'doula.myperfil.limite.ph':'Ej: 5 (vacío = ilimitado)',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Sin consultas agendadas aún',
   'doula.births.title':'Partos del mes','doula.births.empty':'Ningún parto registrado este mes',
   'doula.clients.title':'Mis Clientas','doula.clients.sub':'Gestiona y acompáña a todas tus gestantes',
@@ -6174,6 +6296,7 @@ es: {
   'doula.convite.btn.copy':'📋 Copiar enlace',
   'doula.convite.btn.new':'↺ Generar nuevo enlace',
   'doula.nav.backup':'Mi Backup',
+  'doula.nav.perfil':'Mi Perfil',
   'doula.backup.title':'Mi Backup',
   'doula.backup.sub':'Configura una colega de confianza para cubrirte cuando lo necesites.',
   'doula.backup.card.title':'🛡️ Doula Backup',
@@ -6186,6 +6309,32 @@ es: {
   'doula.backup.perm.registros':'Acceso a los Registros',
   'doula.backup.perm.historico':'↳ Ver historial de días anteriores',
   'doula.backup.btn.save':'✅ Guardar y verificar',
+  'bk.sidebar.title':'🔄 Doula Backup',
+  'bk.covering':'Cubriendo a',
+  'bk.back.panel':'⬅️ Volver a Mi Panel',
+  'bk.nav.clients':'Clientas',
+  'bk.nav.schedule':'Agenda',
+  'bk.nav.messages':'Mensajes',
+  'bk.nav.records':'Registros',
+  'bk.mob.panel':'Mi Panel',
+  'bk.upgrade.title':'¿Lista para tener tus propias clientas?',
+  'bk.upgrade.sub':'Actualiza tu cuenta y conviértete en una Doula titular en la app. ¡Seguirás siendo backup de esta colega!',
+  'bk.upgrade.btn':'Mejorar Ahora',
+  'bk.clients.title':'Clientas',
+  'bk.clients.sub':'Clientas activas de la doula que estás cubriendo',
+  'bk.schedule.title':'Agenda',
+  'bk.schedule.sub':'Citas programadas',
+  'bk.messages.title':'Mensajes',
+  'bk.messages.sub':'Chat con las clientas',
+  'bk.messages.select':'Selecciona una clienta para ver el chat.',
+  'bk.msg.ph':'Escribe un mensaje...',
+  'bk.msg.send':'Enviar',
+  'bk.records.title':'Registros',
+  'bk.records.sub':'Historial de atenciones',
+  'bk.modal.upgrade.title':'Elige tu Perfil',
+  'bk.modal.upgrade.sub':'¿Deseas actuar en la app como Doula de Gestación o Doula Posparto? (Continuarás con acceso al panel de backup de tu colega).',
+  'bk.modal.upgrade.doula':'🌙 Doula de Gestación',
+  'bk.modal.upgrade.pos':'💜 Doula Posparto',
   'loading':'Cargando...',
   'doula.unlink':'Finalizar vínculo con esta doula',
   'bebe.title':'Mi Bebé 👶','bebe.sub':'Sigue el crecimiento semana a semana',
@@ -13386,7 +13535,18 @@ function abrirFormAgendamento() {
 
 function fecharModalAgendamento() {
   var m = document.getElementById('modal-agendamento');
-  if (m) m.style.display = 'none';
+  if (!m) return;
+  m.style.display = 'none';
+  _consultaEditandoId = null;
+  var titulo = m.querySelector('[data-ag-titulo]');
+  if (titulo) titulo.textContent = '📅 Novo agendamento';
+  var btn = document.getElementById('modal-ag-salvar-btn');
+  if (btn) btn.textContent = 'Agendar consulta';
+  document.getElementById('modal-ag-cliente').value = '';
+  document.getElementById('modal-ag-data').value = '';
+  document.getElementById('modal-ag-hora').value = '';
+  document.getElementById('modal-ag-obs').value = '';
+  setModalidadeAgenda('presencial');
 }
 
 function setModalidadeAgenda(val) {
@@ -13421,18 +13581,19 @@ async function agendarConsultaModal() {
     observacoes: observacoes
   };
   try {
-    var res = await db.from('consultas_doula').insert(payload);
-    if (res.error) throw res.error;
-    mostrarToast('Consulta agendada! 📅');
+    var res;
+    if (_consultaEditandoId) {
+      res = await db.from('consultas_doula').update(payload).eq('id', _consultaEditandoId).eq('doula_id', currentUserId);
+      if (res.error) throw res.error;
+      mostrarToast('Agendamento atualizado! ✏️');
+    } else {
+      res = await db.from('consultas_doula').insert(payload);
+      if (res.error) throw res.error;
+      mostrarToast('Consulta agendada! 📅');
+    }
     fecharModalAgendamento();
-    clienteEl.value = '';
-    document.getElementById('modal-ag-data').value = '';
-    document.getElementById('modal-ag-hora').value = '';
-    document.getElementById('modal-ag-tema').value = '';
-    document.getElementById('modal-ag-obs').value = '';
-    setModalidadeAgenda('presencial');
     carregarAgenda();
-  } catch(e) { mostrarToast('Erro ao agendar: ' + e.message); }
+  } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
 }
 
 function _renderProximasConsultas(todas) {
@@ -13491,17 +13652,67 @@ async function carregarAgenda() {
       var dt = new Date(c.data_hora);
       var dataStr = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
       var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      var cJson = encodeURIComponent(JSON.stringify(c));
       return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
-          '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
+          '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
           '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
           (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">📍 ' + c.local + '</div>' : '') +
           (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
-          '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">' +
+            '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div>' +
+            '<div style="font-size:11px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+            '<div style="display:flex;gap:6px;">' +
+              '<button onclick="editarConsulta(decodeConsulta(\'' + cJson + '\'))" style="background:var(--rose-pale);color:var(--rose);border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:500;">✏️ Editar</button>' +
+              '<button onclick="excluirConsulta(\'' + c.id + '\')" style="background:#fff0ee;color:#c0392b;border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:500;">🗑️ Excluir</button>' +
+            '</div>' +
+          '</div>' +
         '</div></div>';
     }).join('');
   } catch(e) {}
+}
+
+function decodeConsulta(encoded) {
+  try { return JSON.parse(decodeURIComponent(encoded)); } catch(e) { return null; }
+}
+
+function editarConsulta(c) {
+  if (!c) return;
+  _consultaEditandoId = c.id;
+  var m = document.getElementById('modal-agendamento');
+  if (!m) return;
+  var titulo = m.querySelector('[data-ag-titulo]');
+  if (titulo) titulo.textContent = '✏️ Editar agendamento';
+  var btn = document.getElementById('modal-ag-salvar-btn');
+  if (btn) btn.textContent = 'Salvar alterações';
+  var dt = new Date(c.data_hora);
+  document.getElementById('modal-ag-data').value = dt.toISOString().slice(0, 10);
+  document.getElementById('modal-ag-hora').value = dt.toTimeString().slice(0, 5);
+  document.getElementById('modal-ag-obs').value = c.observacoes || '';
+  var tipoEl = document.getElementById('modal-ag-tipo');
+  if (tipoEl) {
+    for (var i = 0; i < tipoEl.options.length; i++) {
+      if (tipoEl.options[i].value === c.tipo || tipoEl.options[i].text === c.tipo) { tipoEl.selectedIndex = i; break; }
+    }
+  }
+  var clienteEl = document.getElementById('modal-ag-cliente');
+  if (clienteEl) {
+    var val = c.gestante_id ? 'sol|' + c.gestante_id : (c.cliente_externo_id ? 'ext|' + c.cliente_externo_id : '');
+    clienteEl.value = val;
+  }
+  var modalidade = (c.local && c.local.toLowerCase() === 'online') ? 'online' : 'presencial';
+  setModalidadeAgenda(modalidade);
+  m.style.display = 'flex';
+}
+
+async function excluirConsulta(id) {
+  if (!confirm('Excluir este agendamento? Esta ação não pode ser desfeita.')) return;
+  try {
+    var res = await db.from('consultas_doula').delete().eq('id', id).eq('doula_id', currentUserId);
+    if (res.error) throw res.error;
+    mostrarToast('Agendamento excluído 🗑️');
+    carregarAgenda();
+  } catch(e) { mostrarToast('Erro ao excluir: ' + e.message); }
 }
 
 async function salvarRegistro() {
@@ -13521,13 +13732,59 @@ async function salvarRegistro() {
     evolucao: document.getElementById('reg-evolucao').value || null
   };
   try {
-    var res = await db.from('registros_atendimento').insert(payload);
-    if (res.error) throw res.error;
-    mostrarToast('Registro salvo! 📝');
-    ['reg-data','reg-anotacoes','reg-evolucao'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
-    clienteEl.value = '';
+    var res;
+    if (_registroEditandoId) {
+      res = await db.from('registros_atendimento').update(payload).eq('id', _registroEditandoId).eq('doula_id', currentUserId);
+      if (res.error) throw res.error;
+      mostrarToast('Registro atualizado! ✏️');
+      cancelarEdicaoRegistro();
+    } else {
+      res = await db.from('registros_atendimento').insert(payload);
+      if (res.error) throw res.error;
+      mostrarToast('Registro salvo! 📝');
+      ['reg-data','reg-anotacoes','reg-evolucao'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+      clienteEl.value = '';
+    }
     carregarRegistros();
   } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+function editarRegistro(r) {
+  _registroEditandoId = r.id;
+  var titulo = document.getElementById('reg-form-titulo');
+  var salvarBtn = document.getElementById('reg-salvar-btn');
+  var cancelarBtn = document.getElementById('reg-cancelar-btn');
+  if (titulo) titulo.textContent = '✏️ Editando registro';
+  if (salvarBtn) salvarBtn.textContent = 'Atualizar registro';
+  if (cancelarBtn) cancelarBtn.style.display = '';
+  var dataEl = document.getElementById('reg-data');
+  if (dataEl) dataEl.value = r.data || '';
+  var tipoEl = document.getElementById('reg-tipo');
+  if (tipoEl) tipoEl.value = r.tipo || tipoEl.options[0].value;
+  var anotEl = document.getElementById('reg-anotacoes');
+  if (anotEl) anotEl.value = r.anotacoes || '';
+  var evolEl = document.getElementById('reg-evolucao');
+  if (evolEl) evolEl.value = r.evolucao || '';
+  var clienteEl = document.getElementById('select-cliente-registros');
+  if (clienteEl && r.gestante_id) clienteEl.value = 'sol|' + r.gestante_id;
+  else if (clienteEl && r.cliente_externo_id) clienteEl.value = 'ext|' + r.cliente_externo_id;
+  var panelEl = document.getElementById('d-registros');
+  if (panelEl) panelEl.scrollTop = 0;
+}
+
+function cancelarEdicaoRegistro() {
+  _registroEditandoId = null;
+  var titulo = document.getElementById('reg-form-titulo');
+  var salvarBtn = document.getElementById('reg-salvar-btn');
+  var cancelarBtn = document.getElementById('reg-cancelar-btn');
+  if (titulo) titulo.textContent = '➕ Novo registro';
+  if (salvarBtn) salvarBtn.textContent = 'Salvar registro';
+  if (cancelarBtn) cancelarBtn.style.display = 'none';
+  ['reg-data','reg-anotacoes','reg-evolucao'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+  var clienteEl = document.getElementById('select-cliente-registros');
+  if (clienteEl) clienteEl.value = '';
+  var tipoEl = document.getElementById('reg-tipo');
+  if (tipoEl) tipoEl.selectedIndex = 0;
 }
 
 async function carregarRegistros() {
@@ -13542,10 +13799,14 @@ async function carregarRegistros() {
     }
     container.innerHTML = res.data.map(function(r) {
       var dataStr = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      var rJson = encodeURIComponent(JSON.stringify(r));
       return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
-        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
           '<div style="font-size:14px;font-weight:600;color:var(--dark);">' + r.cliente_nome + '</div>' +
-          '<div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div>' +
+            '<button onclick=\'editarRegistro(JSON.parse(decodeURIComponent("' + rJson + '")))\' style="background:transparent;border:1px solid rgba(201,137,122,0.4);color:var(--rose);border-radius:16px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">✏️ Editar</button>' +
+          '</div></div>' +
         '<div style="font-size:12px;color:var(--rose);margin-bottom:6px;">' + (r.tipo || '') + '</div>' +
         (r.anotacoes ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
         (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;">' + r.evolucao + '</div>' : '') +
@@ -14948,7 +15209,7 @@ function mostrarToast(msg) {
 <div id="modal-agendamento" onclick="if(event.target===this)fecharModalAgendamento()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9000;align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--dark);">📅 Novo agendamento</div>
+      <div data-ag-titulo style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--dark);">📅 Novo agendamento</div>
       <button onclick="fecharModalAgendamento()" style="background:none;border:none;font-size:20px;color:var(--earth-light);cursor:pointer;line-height:1;padding:4px 6px;">✕</button>
     </div>
     <div class="form-group">
@@ -14972,6 +15233,7 @@ function mostrarToast(msg) {
         <option>Preparação para o parto</option>
         <option>Reunião inicial</option>
         <option>Visita pós-parto</option>
+        <option>🎉 Chá de bênção</option>
         <option>Outro</option>
       </select>
     </div>
@@ -15006,7 +15268,7 @@ function mostrarToast(msg) {
     </div>
     <div style="display:flex;gap:10px;margin-top:4px;">
       <button onclick="fecharModalAgendamento()" style="flex:1;background:transparent;color:var(--mid);border:1.5px solid rgba(122,100,85,0.2);padding:12px;border-radius:30px;font-size:14px;cursor:pointer;font-family:inherit;">Cancelar</button>
-      <button onclick="agendarConsultaModal()" style="flex:2;background:var(--rose);color:white;border:none;padding:12px;border-radius:30px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Agendar consulta</button>
+      <button id="modal-ag-salvar-btn" onclick="agendarConsultaModal()" style="flex:2;background:var(--rose);color:white;border:none;padding:12px;border-radius:30px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Agendar consulta</button>
     </div>
   </div>
 </div>
@@ -15999,6 +16261,7 @@ var _changelog = [
   { data:'2026-05-20', titulo:'Envio de documentos para gestantes', descricao:'A doula agora tem uma seção "Documentos" no painel onde pode fazer upload de PDFs e imagens (anamneses, orientações, planos de cuidado etc.) e enviá-los diretamente para clientes vinculadas pelo app. A gestante visualiza todos os documentos recebidos na aba Minha Doula, com botão para abrir cada arquivo.' },
   { data:'2026-05-20', titulo:'Edição de dados de cliente externa', descricao:'A doula agora pode editar os dados de clientes cadastradas manualmente (externas). Um botão "✏️ Editar" aparece na tabela de clientes e abre um modal com todos os campos preenchidos: nome, telefone, DPP, semanas gestacionais, tipo de parto, hospital, médico, histórico gestacional, nome do bebê, acompanhante, estado emocional e observações.' },
   { data:'2026-05-18', titulo:'Ficha da cliente: nome do bebê e do acompanhante', descricao:'O cadastro de cliente no painel da doula agora inclui campos para nome do bebê (apelido ou nome escolhido) e nome do acompanhante (parceiro(a), familiar). As informações aparecem na ficha da cliente e a doula backup pode receber acesso à ficha através de uma nova opção de permissão na configuração de backup.' },
+  { data:'2026-05-18', titulo:'Edição de registros de atendimento', descricao:'A doula agora pode editar qualquer registro de atendimento já salvo. Cada card na aba Registros ganhou um botão "✏️ Editar" que preenche o formulário com os dados existentes. O título do formulário e o botão de salvar mudam para indicar o modo de edição, e um botão "Cancelar edição" permite voltar à criação sem salvar.' },
   { data:'2026-05-13', titulo:'Aba Meu Perfil para a doula', descricao:'A doula agora tem uma aba dedicada "Meu Perfil" no painel, com foto de perfil em destaque, todos os campos de informação e botão único de salvar. A foto é enviada junto com os dados do perfil, garantindo que apareça corretamente no marketplace e no painel das gestantes vinculadas.' },
   { data:'2026-05-13', titulo:'Foto de perfil para a doula', descricao:'A doula agora pode adicionar uma foto de perfil no seu painel. Basta tocar no avatar circular no topo do card "Complete seu perfil" para escolher uma foto da galeria. A imagem aparece no marketplace (onde as gestantes encontram doulas), no modal de perfil detalhado, e no painel da gestante vinculada.' },
   { data:'2026-05-12', titulo:'Lista de clientes no painel de Mensagens', descricao:'A seção Mensagens da doula agora exibe automaticamente todas as clientes vinculadas (com solicitação aceita) ao ser aberta. Basta clicar no nome da cliente para abrir a conversa diretamente, sem precisar ir à seção Clientes.' },
