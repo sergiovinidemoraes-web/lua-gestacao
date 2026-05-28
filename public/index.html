@@ -12724,7 +12724,10 @@ async function carregarClientesDoula() {
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (c.hospital || '—') + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
           '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td>' +
-          '<td style="padding:14px;"><button onclick="abrirEditarCliente(\'' + c.id + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button></td></tr>';
+          '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+          '<button onclick="abrirEditarCliente(\'' + c.id + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button>' +
+          '<button onclick="excluirClienteExterno(\'' + c.id + '\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">🗑️</button>' +
+          '</div></td></tr>';
       });
       tbody.innerHTML = linhasSol.concat(linhasExt).join('');
     }
@@ -13330,6 +13333,20 @@ function fecharEditarCliente() {
   document.getElementById('modal-editar-cliente').style.display = 'none';
   _editandoClienteId = null;
   _editandoGestanteId = null;
+}
+
+async function excluirClienteExterno(id, nome) {
+  if (!db || !currentUserId) return;
+  if (!confirm('Excluir ' + nome + '?\n\nTodos os registros, agendamentos e dados desta cliente serão removidos permanentemente. Esta ação não pode ser desfeita.')) return;
+  try {
+    await db.from('registros_posparto').delete().eq('cliente_externo_id', id).eq('doula_id', currentUserId);
+    await db.from('registros_atendimento').delete().eq('cliente_externo_id', id).eq('doula_id', currentUserId);
+    await db.from('consultas_doula').delete().eq('cliente_externo_id', id).eq('doula_id', currentUserId);
+    var res = await db.from('clientes_doula').delete().eq('id', id).eq('doula_id', currentUserId);
+    if (res.error) throw res.error;
+    mostrarToast(nome + ' foi excluída.');
+    carregarClientesDoula();
+  } catch(e) { mostrarToast('Erro ao excluir: ' + e.message); }
 }
 
 async function salvarEdicaoCliente() {
@@ -16054,9 +16071,9 @@ function mostrarToast(msg) {
     </div>
     <div class="form-group" style="margin-top:8px;"><label class="form-label">Estado emocional atual</label><textarea id="ec-emocional" class="form-input form-textarea"></textarea></div>
     <div class="form-group"><label class="form-label">Observações gerais</label><textarea id="ec-obs" class="form-input form-textarea"></textarea></div>
-    <div style="display:flex;gap:12px;margin-top:8px;">
-      <button class="btn-primary" onclick="salvarEdicaoCliente()">Salvar alterações</button>
-      <button class="btn-secondary" onclick="fecharEditarCliente()">Cancelar</button>
+    <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="salvarEdicaoCliente()" style="flex:1;min-width:140px;">Salvar alterações</button>
+      <button class="btn-secondary" onclick="fecharEditarCliente()" style="flex:1;min-width:100px;">Cancelar</button>
     </div>
   </div>
 </div>
