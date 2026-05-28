@@ -732,7 +732,10 @@ header {
 
 /* ─ Tabela clientes ─ */
 .clients-table { background:var(--white); border-radius:20px; overflow:hidden; box-shadow:0 2px 20px rgba(45,31,26,0.05); }
-.table-header { padding:20px 24px; border-bottom:1px solid rgba(122,100,85,0.08); display:flex; justify-content:space-between; align-items:center; }
+.table-header { padding:20px 24px; border-bottom:1px solid rgba(122,100,85,0.08); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+.ord-dpp-btn { background:transparent;border:1px solid var(--border);color:var(--earth-light);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;transition:all 0.15s;white-space:nowrap; }
+.ord-dpp-btn:hover { border-color:rgba(201,137,122,0.4);color:var(--rose); }
+.ord-dpp-btn.ord-dpp-ativo { background:rgba(201,137,122,0.12);border-color:rgba(201,137,122,0.45);color:var(--rose);font-weight:600; }
 .table-title { font-family:'Cormorant Garamond',serif; font-size:20px; }
 .table-add { background:var(--rose); color:white; border:none; padding:8px 20px; border-radius:20px; font-size:13px; cursor:pointer; font-family:inherit; transition:background 0.2s; }
 .table-add:hover { background:#b57568; }
@@ -2479,6 +2482,12 @@ tr:hover td { background:var(--rose-pale); }
           <div class="clients-table">
             <div class="table-header">
               <div class="table-title" data-i18n="doula.clients.all">Todas as clientes</div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="font-size:11px;color:var(--earth-light);white-space:nowrap;">DPP:</span>
+                <button id="ord-cadastro" onclick="ordenarClientes('cadastro')" class="ord-dpp-btn ord-dpp-ativo" title="Ordem de cadastro">Padrão</button>
+                <button id="ord-asc" onclick="ordenarClientes('asc')" class="ord-dpp-btn" title="Mais próxima primeiro">↑ Próxima</button>
+                <button id="ord-desc" onclick="ordenarClientes('desc')" class="ord-dpp-btn" title="Mais distante primeiro">↓ Distante</button>
+              </div>
               <button class="table-add" onclick="document.getElementById('nova-cliente-form').style.display=document.getElementById('nova-cliente-form').style.display==='none'?'block':'none'" data-i18n="doula.clients.new">+ Nova cliente</button>
             </div>
             <table>
@@ -6457,7 +6466,7 @@ function setLang(lang) {
       if (sel && sel.options[0] && sel.options[0].value === '') sel.options[0].textContent = t('doula.clients.select');
     });
     var dEl = document.getElementById('gestante-dash-sub');
-    if (dEl && sem) dEl.textContent = t('dash.semana.sub').replace('{n}', sem);
+    if (dEl && sem) dEl.textContent = t('dash.semana.sub').replace('{n}', semStrFull(sem, window._currentDiasSemana || 0));
     var fraseEl = document.getElementById('frase-texto');
     if (fraseEl) fraseEl.textContent = getFraseSemana(sem);
   } catch(e) {}
@@ -7028,7 +7037,7 @@ async function carregarDashboardPai() {
   if (gestCard) gestCard.style.display = 'block';
   var partesDpp = dppG.split('-');
   var dppFormatada = partesDpp[2] + '/' + partesDpp[1] + '/' + partesDpp[0];
-  try { document.getElementById('p-semanas-num').innerHTML = info.semana + ' <span style="font-size:16px;opacity:0.7;">semanas</span>'; } catch(e) {}
+  try { document.getElementById('p-semanas-num').innerHTML = semStrFull(info.semana, info.diasSemana) + ' <span style="font-size:16px;opacity:0.7;">semanas</span>'; } catch(e) {}
   try { document.getElementById('p-prog-bar').style.width = info.progresso + '%'; } catch(e) {}
   try { document.getElementById('p-dias-restantes').textContent = info.dias > 0 ? info.dias : 0; } catch(e) {}
   try { document.getElementById('p-dpp-display').textContent = dppFormatada; } catch(e) {}
@@ -7037,7 +7046,7 @@ async function carregarDashboardPai() {
   var emojiKey = Math.max.apply(null, Object.keys(bebeEmojis).filter(function(k){return parseInt(k)<=info.semana;}));
   try { document.getElementById('p-bebe-emoji').innerHTML = '<img src="' + _twUrl(bebeEmojis[emojiKey] || '👶') + '" width="36" height="36" style="display:inline-block; vertical-align:middle; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1));">'; } catch(e) {}
   // Painel gestação
-  try { document.getElementById('p-gestacao-semanas').innerHTML = info.semana + ' <span>semanas</span>'; } catch(e) {}
+  try { document.getElementById('p-gestacao-semanas').innerHTML = semStrFull(info.semana, info.diasSemana) + ' <span>semanas</span>'; } catch(e) {}
   try { document.getElementById('p-gestacao-bar').style.width = info.progresso + '%'; } catch(e) {}
   try { document.getElementById('p-gestacao-dpp').textContent = dppFormatada; } catch(e) {}
   try { document.getElementById('p-gestacao-progresso').textContent = info.progresso + '%'; } catch(e) {}
@@ -10963,11 +10972,19 @@ function calcularSemana(dpp) {
   dataParto.setHours(0, 0, 0, 0);
   var diffMs = dataParto - hoje;
   var diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  var diasGestacao = 280 - diffDias;
+  var semanasGestacao = Math.floor(diasGestacao / 7);
+  var diasSemana = diasGestacao % 7;
+  if (diasSemana < 0) diasSemana = 0;
+  if (semanasGestacao < 0) { semanasGestacao = 0; diasSemana = 0; }
+  if (semanasGestacao > 42) { semanasGestacao = 42; diasSemana = 0; }
   var semanasRestantes = Math.round(diffDias / 7);
-  var semanasGestacao = 40 - semanasRestantes;
-  if (semanasGestacao < 0) semanasGestacao = 0;
-  if (semanasGestacao > 42) semanasGestacao = 42;
-  return { semana: semanasGestacao, faltam: Math.max(0, semanasRestantes), dias: Math.max(0, diffDias), progresso: Math.min(100, Math.round((semanasGestacao/42)*100)) };
+  return { semana: semanasGestacao, diasSemana: diasSemana, faltam: Math.max(0, semanasRestantes), dias: Math.max(0, diffDias), progresso: Math.min(100, Math.round((semanasGestacao/42)*100)) };
+}
+
+function semStrFull(semana, diasSemana) {
+  if (!semana && semana !== 0) return '—';
+  return semana + '+' + (diasSemana || 0);
 }
 
 function atualizarDashboardGestante(dpp) {
@@ -10987,8 +11004,9 @@ function atualizarDashboardGestante(dpp) {
   document.getElementById('dpp-input').value = dpp;
   var info = calcularSemana(dpp);
 
+  window._currentDiasSemana = info.diasSemana;
   // Update dashboard semana
-  try { document.getElementById('g-semanas-num').innerHTML = info.semana + ' <span>' + t('dash.semanas.label') + '</span>'; } catch(e) {}
+  try { document.getElementById('g-semanas-num').innerHTML = semStrFull(info.semana, info.diasSemana) + ' <span>' + t('dash.semanas.label') + '</span>'; } catch(e) {}
 
   // Mensagem de semanas restantes com suporte emocional para 40+ semanas
   try {
@@ -11096,13 +11114,13 @@ function atualizarDashboardGestante(dpp) {
 
   window._currentSemana = info.semana;
   // Gestante greeting sub
-  try { document.getElementById('gestante-dash-sub').textContent = t('dash.semana.sub').replace('{n}', info.semana); } catch(e) {}
+  try { document.getElementById('gestante-dash-sub').textContent = t('dash.semana.sub').replace('{n}', semStrFull(info.semana, info.diasSemana)); } catch(e) {}
   // Update frase do dia
   try { document.getElementById('frase-texto').textContent = getFraseSemana(info.semana); } catch(e) {}
   // Update frase sub
   try {
     var fraseSub = document.getElementById('frase-sub');
-    if (fraseSub) fraseSub.textContent = t('dash.frase.sub').replace('{n}', info.semana);
+    if (fraseSub) fraseSub.textContent = t('dash.frase.sub').replace('{n}', semStrFull(info.semana, info.diasSemana));
   } catch(e) {}
   try { atualizarSintomas(info.semana); } catch(e) {}
   try { atualizarTarefas(info.semana); } catch(e) {}
@@ -12629,6 +12647,16 @@ function populateClienteSelects(solicitacoes, externos) {
   });
 }
 
+var _clientesOrdemDpp = null;
+function ordenarClientes(ordem) {
+  _clientesOrdemDpp = ordem === 'cadastro' ? null : ordem;
+  ['cadastro','asc','desc'].forEach(function(o) {
+    var btn = document.getElementById('ord-' + o);
+    if (btn) btn.classList.toggle('ord-dpp-ativo', o === ordem);
+  });
+  carregarClientesDoula();
+}
+
 async function carregarClientesDoula() {
   if (!db || !currentUserId) return;
   var tbody = document.getElementById('clientes-tbody');
@@ -12687,49 +12715,73 @@ async function carregarClientesDoula() {
         '</div>';
       }).join('') : '<div class="empty-state-small">Nenhum parto previsto este mês</div>';
     }
+    // Sincroniza estado visual dos botões de ordenação
+    ['cadastro','asc','desc'].forEach(function(o) {
+      var btn = document.getElementById('ord-' + o);
+      if (btn) btn.classList.toggle('ord-dpp-ativo', (_clientesOrdemDpp === null ? 'cadastro' : _clientesOrdemDpp) === o);
+    });
     if (!total) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">' + t('doula.clients.empty') + '</div><div style="font-size:13px;color:var(--earth-light);">' + t('doula.clients.empty.sub') + '</div></td></tr>';
     } else {
-      var linhasSol = solicitacoes.map(function(g) {
-        var dpp = dppMapSol[g.gestante_id] || null;
-        var dppStr = dpp ? new Date(dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
-        var semStr = '—';
-        if (dpp) {
-          var diasRest = (new Date(dpp + 'T12:00:00') - new Date()) / 86400000;
-          var sem = Math.round(40 - diasRest / 7);
-          if (sem >= 1 && sem <= 45) semStr = sem + ' sem';
+      // Lista unificada para permitir ordenação por DPP entre internas e externas
+      var todosClientes = solicitacoes.map(function(g) {
+        return { tipo: 'sol', dpp: dppMapSol[g.gestante_id] || null, _g: g };
+      }).concat(externos.map(function(c) {
+        return { tipo: 'ext', dpp: c.dpp || null, _c: c };
+      }));
+      if (_clientesOrdemDpp === 'asc' || _clientesOrdemDpp === 'desc') {
+        var dir = _clientesOrdemDpp === 'asc' ? 1 : -1;
+        todosClientes.sort(function(a, b) {
+          if (!a.dpp && !b.dpp) return 0;
+          if (!a.dpp) return 1;
+          if (!b.dpp) return -1;
+          return dir * (new Date(a.dpp) - new Date(b.dpp));
+        });
+      }
+      var linhas = todosClientes.map(function(item) {
+        if (item.tipo === 'sol') {
+          var g = item._g;
+          var dpp = dppMapSol[g.gestante_id] || null;
+          var dppStr = dpp ? new Date(dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+          var semStr = '—';
+          if (dpp) {
+            var _si = calcularSemana(dpp);
+            if (_si.semana >= 1 && _si.semana <= 45) semStr = semStrFull(_si.semana, _si.diasSemana);
+          }
+          var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
+          var nome = (g.gestante_nome||'').replace(/'/g,'');
+          return '<tr>' +
+            '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')">' + g.gestante_nome + ' <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (hospitalMapSol[g.gestante_id] || '—') + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
+            '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
+            '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
+            '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
+            '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
+            '</td></tr>';
+        } else {
+          var c = item._c;
+          var dppStr = c.dpp ? new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+          var semStr = '—';
+          if (c.dpp) { var _sie = calcularSemana(c.dpp); if (_sie.semana >= 1 && _sie.semana <= 45) semStr = semStrFull(_sie.semana, _sie.diasSemana); }
+          else if (c.semanas_gestacional) { semStr = c.semanas_gestacional + ' sem'; }
+          return '<tr>' +
+            '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + c.id + '\',\'ext\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span> <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (c.hospital || '—') + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
+            '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td>' +
+            '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+            '<button onclick="abrirEditarCliente(\'' + c.id + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button>' +
+            '<button onclick="excluirClienteExterno(\'' + c.id + '\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">🗑️</button>' +
+            '</div></td></tr>';
         }
-        var data = new Date(g.criado_em).toLocaleDateString('pt-BR');
-        var nome = (g.gestante_nome||'').replace(/'/g,'');
-        return '<tr>' +
-          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')">' + g.gestante_nome + ' <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (hospitalMapSol[g.gestante_id] || '—') + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
-          '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
-          '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
-          '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
-          '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
-          '</td></tr>';
       });
-      var linhasExt = externos.map(function(c) {
-        var dppStr = c.dpp ? new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
-        var semStr = c.semanas_gestacional ? c.semanas_gestacional + ' sem' : '—';
-        return '<tr>' +
-          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + c.id + '\',\'ext\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span> <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + semStr + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dppStr + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + (c.hospital || '—') + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
-          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td>' +
-          '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
-          '<button onclick="abrirEditarCliente(\'' + c.id + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button>' +
-          '<button onclick="excluirClienteExterno(\'' + c.id + '\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">🗑️</button>' +
-          '</div></td></tr>';
-      });
-      tbody.innerHTML = linhasSol.concat(linhasExt).join('');
+      tbody.innerHTML = linhas.join('');
     }
     var sidebarList = document.getElementById('sidebar-clientes-list');
     if (sidebarList) {
@@ -12920,8 +12972,8 @@ async function _pcliResumo(el, id, tipo, campo) {
         var _dppStr = _dppEfetiva ? new Date(_dppEfetiva + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
         var _dppFonte = _cDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(definida por você)</span>' : (_uDpp ? ' <span style="font-size:10px;color:var(--earth-light);">(informada pela gestante)</span>' : '');
         var _semStr = '';
-        if (cli && cli.semanas_gestacional) { _semStr = cli.semanas_gestacional + ' semanas'; }
-        else if (_dppEfetiva) { var _dr = (new Date(_dppEfetiva + 'T12:00:00') - new Date()) / 86400000; var _sc = Math.round(40 - _dr / 7); if (_sc >= 1 && _sc <= 45) _semStr = _sc + ' semanas'; }
+        if (_dppEfetiva) { var _si2 = calcularSemana(_dppEfetiva); if (_si2.semana >= 1 && _si2.semana <= 45) _semStr = semStrFull(_si2.semana, _si2.diasSemana) + ' semanas'; }
+        else if (cli && cli.semanas_gestacional) { _semStr = cli.semanas_gestacional + ' sem'; }
         s += '<div class="card" style="margin-bottom:16px;">';
         s += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">';
         s += '<div class="card-title" style="margin:0;">Dados da gestante</div>';
@@ -16087,14 +16139,20 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- BOTÃO FLUTUANTE DE ATUALIZAÇÕES -->
-<button id="fab-changelog" onclick="abrirChangelog()" style="position:fixed;bottom:130px;right:18px;z-index:8500;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:10px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);align-items:center;gap:6px;transition:opacity 0.2s;">
-  ✦ Atualizações
-  <span class="cl-novo-dot" id="cl-badge-dot"></span>
-</button>
-
-<!-- BOTÃO FLUTUANTE DE FEEDBACK -->
-<button id="fab-feedback" onclick="abrirFeedbackGlobal()" style="display:none;position:fixed;bottom:80px;right:18px;z-index:8500;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:10px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px;transition:opacity 0.2s;" data-i18n="feedback.btn">⚑ Reportar</button>
+<!-- SPEED-DIAL FAB -->
+<div id="fab-speed-dial" style="display:none;position:fixed;bottom:80px;right:18px;z-index:8500;flex-direction:column;align-items:flex-end;gap:10px;">
+  <div id="fab-sd-menu" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity 0.2s ease,transform 0.2s ease;">
+    <button id="fab-changelog" onclick="abrirChangelog();fecharSpeedDial()" style="position:relative;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:9px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px;white-space:nowrap;">
+      ✦ Atualizações
+      <span class="cl-novo-dot" id="cl-badge-dot"></span>
+    </button>
+    <button id="fab-feedback" onclick="abrirFeedbackGlobal();fecharSpeedDial()" style="background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);border-radius:50px;padding:9px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;gap:6px;" data-i18n="feedback.btn">⚑ Reportar</button>
+  </div>
+  <button id="fab-sd-trigger" onclick="toggleSpeedDial(event)" style="width:40px;height:40px;border-radius:50%;background:var(--dark);border:1px solid rgba(201,137,122,0.35);color:var(--rose-light);font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;position:relative;transition:transform 0.25s ease;flex-shrink:0;">
+    ✦
+    <span id="fab-trigger-dot" style="display:none;width:9px;height:9px;background:#e74c3c;border-radius:50%;position:absolute;top:-2px;right:-2px;border:1.5px solid #0d0805;animation:cl-pulse 1.5s ease-in-out infinite;"></span>
+  </button>
+</div>
 
 <!-- MODAL FEEDBACK GLOBAL -->
 <div id="modal-feedback-global" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;">
@@ -16177,16 +16235,13 @@ if ('serviceWorker' in navigator) {
 </div>
 
 <style>
-#fab-feedback { display:none; }
-#fab-feedback.fb-visible { display:flex !important; }
-@media (max-width:768px) { #fab-feedback { bottom:72px; } }
+#fab-speed-dial { display:none; }
+#fab-speed-dial.fb-visible { display:flex !important; }
+@media (max-width:768px) { #fab-speed-dial { bottom:72px; } }
 .fb-tipo-btn.active { background:rgba(201,137,122,0.2) !important; border-color:rgba(201,137,122,0.5) !important; color:#E8C5BC !important; }
-#fab-changelog { display:none; position:relative; }
-#fab-changelog.fb-visible { display:flex !important; }
-#fab-changelog .cl-novo-dot { display:none; width:9px;height:9px;background:#e74c3c;border-radius:50%;position:absolute;top:-3px;right:-3px;border:1.5px solid #0d0805;animation:cl-pulse 1.5s ease-in-out infinite; }
-#fab-changelog .cl-novo-dot.show { display:block; }
+.cl-novo-dot { display:none; width:9px;height:9px;background:#e74c3c;border-radius:50%;position:absolute;top:-3px;right:-3px;border:1.5px solid #0d0805;animation:cl-pulse 1.5s ease-in-out infinite; }
+.cl-novo-dot.show { display:block; }
 @keyframes cl-pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.3);opacity:0.7} }
-@media (max-width:768px) { #fab-feedback { bottom:72px; } #fab-changelog { bottom:120px; } }
 .cl-entry { border-bottom:1px solid rgba(255,255,255,0.06);padding:14px 0; }
 .cl-entry:last-child { border-bottom:none; }
 .cl-entry-header { display:flex;align-items:center;gap:8px;margin-bottom:5px; }
@@ -16259,15 +16314,43 @@ async function enviarFeedbackGlobal() {
 }
 
 function _fbMostrarBotao(show) {
-  var btn = document.getElementById('fab-feedback');
-  if (!btn) return;
-  if (show) btn.classList.add('fb-visible');
-  else btn.classList.remove('fb-visible');
-  var cl = document.getElementById('fab-changelog');
-  if (!cl) return;
-  if (show) { cl.classList.add('fb-visible'); _clAtualizarBadge(); }
-  else cl.classList.remove('fb-visible');
+  var sd = document.getElementById('fab-speed-dial');
+  if (!sd) return;
+  if (show) { sd.classList.add('fb-visible'); _clAtualizarBadge(); }
+  else { sd.classList.remove('fb-visible'); fecharSpeedDial(); }
 }
+
+// ─── SPEED-DIAL ───
+var _sdOpen = false;
+function toggleSpeedDial(e) {
+  if (e) e.stopPropagation();
+  _sdOpen = !_sdOpen;
+  var menu = document.getElementById('fab-sd-menu');
+  var trigger = document.getElementById('fab-sd-trigger');
+  if (_sdOpen) {
+    menu.style.opacity = '1';
+    menu.style.pointerEvents = 'auto';
+    menu.style.transform = 'translateY(0)';
+    if (trigger) trigger.style.transform = 'scale(1.12)';
+  } else {
+    menu.style.opacity = '0';
+    menu.style.pointerEvents = 'none';
+    menu.style.transform = 'translateY(10px)';
+    if (trigger) trigger.style.transform = '';
+  }
+}
+function fecharSpeedDial() {
+  _sdOpen = false;
+  var menu = document.getElementById('fab-sd-menu');
+  var trigger = document.getElementById('fab-sd-trigger');
+  if (menu) { menu.style.opacity = '0'; menu.style.pointerEvents = 'none'; menu.style.transform = 'translateY(10px)'; }
+  if (trigger) trigger.style.transform = '';
+}
+document.addEventListener('click', function(e) {
+  if (!_sdOpen) return;
+  var sd = document.getElementById('fab-speed-dial');
+  if (sd && !sd.contains(e.target)) fecharSpeedDial();
+});
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
@@ -16313,6 +16396,8 @@ function _clAtualizarBadge() {
   var maisRecente = _changelog[0] ? _changelog[0].data : null;
   if (maisRecente && (!ultima || ultima < maisRecente)) badge.classList.add('show');
   else badge.classList.remove('show');
+  var triggerDot = document.getElementById('fab-trigger-dot');
+  if (triggerDot) triggerDot.style.display = badge.classList.contains('show') ? 'block' : 'none';
 }
 
 function abrirChangelog() {
