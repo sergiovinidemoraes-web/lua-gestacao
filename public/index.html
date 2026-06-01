@@ -155,10 +155,10 @@ header { padding-top: env(safe-area-inset-top, 0); }
 .admin-del-btn { background:rgba(224,90,90,0.1); border:1px solid rgba(224,90,90,0.2); color:#ff8a8a; padding:6px 16px; border-radius:20px; font-size:11px; cursor:pointer; font-family:'DM Sans',sans-serif; transition: all 0.2s; }
 .admin-del-btn:hover { background: rgba(224,90,90,0.2); transform: scale(1.05); }
 @media(max-width:768px) {
-  #admin-panel > div:last-child { grid-template-columns:1fr !important; }
-  #admin-panel > div:last-child > div:first-child { display:none; }
+  #admin-body-grid { grid-template-columns:1fr !important; }
+  #admin-sidebar-desktop { display:none !important; }
   #admin-bottom-nav { display: block !important; }
-  #admin-panel > div:last-child > div:last-child { padding-bottom: 80px !important; }
+  #admin-body-grid > div:last-child { padding-bottom: 80px !important; }
 }
 
 
@@ -858,7 +858,7 @@ tr:hover td { background:var(--rose-pale); }
   .g-nav-item { flex-shrink: 0; padding: 8px 14px !important; border-left: none !important; border-radius: 20px; font-size: 13px; white-space: nowrap; }
   .g-nav-item.active { background: var(--rose-pale); color: var(--rose); }
   .g-doula-card { display: none; }
-  .g-main { padding: 16px !important; }
+  .g-main { padding: 16px 16px 80px !important; }
 
   /* Doula layout */
   .doula-layout { grid-template-columns: 1fr !important; }
@@ -871,7 +871,7 @@ tr:hover td { background:var(--rose-pale); }
   .d-nav-item { flex-shrink: 0; padding: 8px 14px !important; border-left: none !important; border-radius: 20px; font-size: 13px; white-space: nowrap; }
   .d-nav-item.active { background: rgba(201,137,122,0.15); color: var(--rose-light); }
   .d-sidebar-clients { display: none; }
-  .d-main { padding: 16px !important; }
+  .d-main { padding: 16px 16px 80px !important; }
   #d-mensagens.active { margin:-16px; }
   .msgs-layout { height:auto; min-height:calc(100vh - 160px); flex-direction:column; margin:0; border-radius:12px; }
   .msgs-sidebar { width:100%; border-right:none; border-bottom:1px solid rgba(0,0,0,0.07); overflow:visible; flex-shrink:0; }
@@ -1094,7 +1094,8 @@ tr:hover td { background:var(--rose-pale); }
         <div class="g-profile">
           <div class="g-avatar" id="g-avatar-img" onclick="trocarFotoPerfil()" style="cursor:pointer;overflow:hidden;" title="Clique para alterar foto">A</div>
         <input type="file" id="foto-perfil-input" accept="image/*" style="display:none" onchange="salvarFotoPerfil(this)">
-          <div class="g-name" id="g-profile-name">—</div>
+          <div class="g-name" id="g-profile-name" onclick="abrirEditarNomeGestante()" style="cursor:pointer;" title="Editar nome">—</div>
+          <div onclick="abrirEditarNomeGestante()" style="font-size:11px;color:var(--earth-light);cursor:pointer;margin-top:3px;">✏️ editar nome</div>
           <div class="g-week" id="g-semana-info"><span data-i18n="dash.sub">Bem-vinda ao Lua</span> 🌙</div>
         </div>
         <nav class="g-nav">
@@ -1247,6 +1248,8 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
           </div>
+
+          <button onclick="abrirEditarNomeGestante()" style="background:none;border:none;font-size:12px;color:var(--earth-light);cursor:pointer;font-family:inherit;padding:14px 0 0;width:100%;text-align:left;">✏️ Editar meu nome</button>
 
         </div>
 
@@ -2180,6 +2183,23 @@ tr:hover td { background:var(--rose-pale); }
 
       </main>
     </div>
+
+    <!-- MODAL EDITAR NOME GESTANTE -->
+    <div id="modal-editar-nome-gestante" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(45,31,26,0.55);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+      <div style="background:var(--white);border-radius:20px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(45,31,26,0.15);">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--dark);margin-bottom:6px;">✏️ Editar meu nome</div>
+        <div style="font-size:13px;color:var(--earth-light);margin-bottom:20px;">Seu nome aparece para sua doula e no seu perfil.</div>
+        <div class="form-group">
+          <label class="form-label">Nome completo</label>
+          <input id="meng-nome" class="form-input" type="text" placeholder="Seu nome completo" onkeydown="if(event.key==='Enter')salvarNomeGestante()">
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button onclick="salvarNomeGestante()" style="flex:1;background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">Salvar</button>
+          <button onclick="document.getElementById('modal-editar-nome-gestante').style.display='none'" style="flex:1;background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ══════ DOULA VIEW ══════ -->
@@ -3358,6 +3378,7 @@ tr:hover td { background:var(--rose-pale); }
                 <div class="card-title" style="margin-bottom:0;" data-i18n="pos.doula.market.title">Doulas Pós-Parto disponíveis</div>
                 <button onclick="posToggleDoulaPos()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--earth-light);padding:0;">✕</button>
               </div>
+              <input id="pos-doula-pos-busca" type="text" placeholder="Buscar por nome..." oninput="posFiltrarDoulasPos(this.value)" style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);border-radius:20px;padding:8px 14px;font-size:13px;font-family:inherit;color:var(--dark);background:var(--cream);outline:none;margin-bottom:12px;">
               <div id="pos-doula-pos-lista" style="font-size:13px;color:var(--earth-light);" data-i18n="loading">Carregando...</div>
             </div>
           </div>
@@ -9719,24 +9740,43 @@ async function posCarregarDoulaPosDashboard() {
   } catch(e) { statusEl.textContent = 'Toque para encontrar uma doula pós-parto.'; }
 }
 
+var _posDoulasPosList = [];
+
+function posFiltrarDoulasPos(termo) {
+  var lista = document.getElementById('pos-doula-pos-lista');
+  if (!lista) return;
+  var filtradas = termo ? _posDoulasPosList.filter(function(d) {
+    return d.nome.toLowerCase().includes(termo.toLowerCase());
+  }) : _posDoulasPosList;
+  if (!filtradas.length) {
+    lista.innerHTML = '<div style="padding:12px 0;font-size:13px;color:var(--earth-light);">Nenhuma doula encontrada com esse nome.</div>';
+    return;
+  }
+  lista.innerHTML = filtradas.map(function(d) {
+    return '<div style="padding:12px 0;border-bottom:1px solid rgba(122,100,85,0.08);display:flex;justify-content:space-between;align-items:center;">'
+      + '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">💜 ' + d.nome + '</div>'
+      + (d.cidade ? '<div style="font-size:12px;color:var(--earth-light);">' + d.cidade + '</div>' : '') + '</div>'
+      + '<button onclick="posEnviarSolicitacaoDoulaPos(\'' + d.id + '\',\'' + d.nome.replace(/'/g,'') + '\')" style="background:#9B7BB8;color:white;border:none;border-radius:20px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;">' + t('pos.doula.market.vincular') + '</button>'
+      + '</div>';
+  }).join('');
+}
+
 async function posCarregarMercadoDoulaPos() {
   if (!db) return;
   var lista = document.getElementById('pos-doula-pos-lista');
   if (!lista) return;
+  var buscaEl = document.getElementById('pos-doula-pos-busca');
+  if (buscaEl) buscaEl.value = '';
   lista.innerHTML = '<div style="padding:16px;text-align:center;color:var(--earth-light);">' + t('pos.doula.market.loading') + '</div>';
   try {
     var res = await db.from('usuarios').select('id,nome,cidade,bio').eq('tipo', 'pos_doula');
     if (!res.data || !res.data.length) {
+      _posDoulasPosList = [];
       lista.innerHTML = '<div style="padding:16px;text-align:center;font-size:13px;color:var(--earth-light);">' + t('pos.doula.market.empty') + '</div>';
       return;
     }
-    lista.innerHTML = res.data.map(function(d) {
-      return '<div style="padding:12px 0;border-bottom:1px solid rgba(122,100,85,0.08);display:flex;justify-content:space-between;align-items:center;">'
-        + '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">💜 ' + d.nome + '</div>'
-        + (d.cidade ? '<div style="font-size:12px;color:var(--earth-light);">' + d.cidade + '</div>' : '') + '</div>'
-        + '<button onclick="posEnviarSolicitacaoDoulaPos(\'' + d.id + '\',\'' + d.nome.replace(/'/g,'') + '\')" style="background:#9B7BB8;color:white;border:none;border-radius:20px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:inherit;flex-shrink:0;">' + t('pos.doula.market.vincular') + '</button>'
-        + '</div>';
-    }).join('');
+    _posDoulasPosList = res.data;
+    posFiltrarDoulasPos('');
   } catch(e) { lista.innerHTML = '<div style="font-size:13px;color:var(--earth-light);">' + t('pos.doula.market.error') + '</div>'; }
 }
 
@@ -14243,6 +14283,38 @@ function aplicarFotoPerfil(dataUrl) {
   }
 }
 
+function abrirEditarNomeGestante() {
+  var input = document.getElementById('meng-nome');
+  if (input) input.value = currentNome || '';
+  document.getElementById('modal-editar-nome-gestante').style.display = 'flex';
+  if (input) setTimeout(function() { input.focus(); input.select(); }, 50);
+}
+
+async function salvarNomeGestante() {
+  var input = document.getElementById('meng-nome');
+  var novoNome = (input ? input.value : '').trim();
+  if (!novoNome) { mostrarToast('Informe um nome.'); return; }
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('usuarios').update({ nome: novoNome }).eq('id', currentUserId);
+    if (res.error) throw res.error;
+    currentNome = novoNome;
+    var primeiroNome = novoNome.split(' ')[0];
+    var gpEl = document.getElementById('g-profile-name');
+    if (gpEl) gpEl.textContent = primeiroNome;
+    var hnEl = document.getElementById('header-user-name');
+    if (hnEl) hnEl.textContent = novoNome;
+    var hora = new Date().getHours();
+    var saud = hora < 12 ? t('dash.bom.dia') : hora < 18 ? t('dash.boa.tarde') : t('dash.boa.noite');
+    var gEl = document.getElementById('gestante-greeting');
+    if (gEl) gEl.textContent = saud + ', ' + primeiroNome + '! 🌸';
+    document.getElementById('modal-editar-nome-gestante').style.display = 'none';
+    mostrarToast('Nome atualizado! 💛');
+  } catch(e) {
+    mostrarToast('Erro ao salvar: ' + e.message);
+  }
+}
+
 function carregarFotoPerfil() {
   var uid = currentUserId;
   try {
@@ -15488,9 +15560,9 @@ function mostrarToast(msg) {
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 60px);">
+  <div id="admin-body-grid" style="display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 60px);">
     <!-- Admin Sidebar -->
-    <div style="background:#150c08;border-right:1px solid rgba(201,137,122,0.1);padding:20px 0;">
+    <div id="admin-sidebar-desktop" style="background:#150c08;border-right:1px solid rgba(201,137,122,0.1);padding:20px 0;">
       <div id="admin-nav">
         <div class="admin-nav-item active" onclick="adminNav(this,'admin-usuarios')">👥 Usuários</div>
         <div class="admin-nav-item" onclick="adminNav(this,'admin-biblioteca')">📚 Biblioteca</div>
@@ -16354,6 +16426,9 @@ document.addEventListener('click', function(e) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-06-01', titulo:'Gestante pode editar o próprio nome', descricao:'A gestante agora pode alterar seu nome diretamente no app. No desktop, o nome na sidebar é clicável com um link "✏️ editar nome" logo abaixo. No mobile, um botão discreto "✏️ Editar meu nome" aparece ao final do dashboard. Ambos abrem um modal com o nome atual pré-preenchido — é só digitar e salvar. A alteração é salva no banco e refletida imediatamente no sidebar, no cabeçalho e na saudação do dashboard.' },
+  { data:'2026-06-01', titulo:'Busca por nome no marketplace de doulas pós-parto', descricao:'O marketplace de doulas pós-parto (acessado pela gestante pós-parto no dashboard) agora tem um campo de busca por nome. A lista é filtrada em tempo real conforme a usuária digita, facilitando encontrar uma doula específica. Se nenhuma doula corresponder ao termo buscado, uma mensagem clara é exibida.' },
+  { data:'2026-06-01', titulo:'Correção: última linha da tabela de clientes cortada no mobile', descricao:'No mobile, a barra de navegação inferior (position:fixed) cobria a última linha da tabela de clientes da doula e o último item de qualquer painel da gestante. Corrigido adicionando padding-bottom de 80px nos containers principais (.d-main e .g-main) na media query mobile, garantindo que todo o conteúdo fique acessível acima da barra.' },
   { data:'2026-05-28', titulo:'Semana gestacional no formato semanas+dias', descricao:'A semana gestacional agora é exibida no formato obstétrico completo — por exemplo, 38+4 (38 semanas e 4 dias). O cálculo foi refinado para usar Math.floor, que é mais preciso do que o arredondamento anterior. O formato aparece na tabela de clientes da doula, no perfil de cada cliente, no dashboard da gestante e no painel do acompanhante.' },
   { data:'2026-05-28', titulo:'Ordenação por DPP na tabela de clientes', descricao:'A doula agora pode ordenar a tabela de clientes pela Data Provável do Parto. Três opções disponíveis no cabeçalho da tabela: Padrão (ordem de cadastro), ↑ Próxima (DPP mais próxima primeiro) e ↓ Distante (DPP mais distante primeiro). A ordenação funciona para clientes internas e externas juntas.' },
   { data:'2026-05-28', titulo:'Botões flutuantes unificados em speed-dial', descricao:'Os botões "Atualizações" e "Reportar", que ficavam empilhados no canto inferior direito e atrapalhavam o acesso aos botões de editar e excluir, foram unificados em um único ícone ✦ discreto. Ao clicar, as duas opções aparecem com animação suave. Clicar fora ou escolher uma opção fecha o menu automaticamente.' },
