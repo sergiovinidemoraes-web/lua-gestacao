@@ -608,6 +608,8 @@ header {
 /* ─ Stats ─ */
 .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
 .stat-card { background:var(--white); border-radius:16px; padding:20px; box-shadow:0 2px 12px rgba(45,31,26,0.05); }
+.stat-card-link { cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; }
+.stat-card-link:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(45,31,26,0.12); }
 .stat-icon { font-size:24px; margin-bottom:12px; }
 .stat-val { font-size:32px; font-family:'Cormorant Garamond',serif; color:var(--dark); line-height:1; margin-bottom:4px; }
 .stat-label { font-size:12px; color:var(--earth-light); text-transform:uppercase; letter-spacing:1px; }
@@ -2281,10 +2283,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="doula-dash-sub" data-i18n="doula.dash.sub">Bem-vinda ao seu painel</div>
 
           <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon">👩‍👶</div><div class="stat-val" id="stat-clientes">0</div><div class="stat-label" data-i18n="doula.stat.clients">Clientes ativas</div></div>
-            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label" data-i18n="doula.stat.births">Partos este mês</div></div>
-            <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-consultas">0</div><div class="stat-label" data-i18n="doula.stat.appts">Consultas hoje</div></div>
-            <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val" id="stat-msgs">0</div><div class="stat-label" data-i18n="doula.stat.msgs">Msgs não lidas</div></div>
+            <div class="stat-card stat-card-link" onclick="irParaClientesDoula()"><div class="stat-icon">👩‍👶</div><div class="stat-val" id="stat-clientes">0</div><div class="stat-label" data-i18n="doula.stat.clients">Clientes ativas</div></div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label" data-i18n="doula.stat.births">Partos este mês</div></div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()"><div class="stat-icon">📅</div><div class="stat-val" id="stat-consultas">0</div><div class="stat-label" data-i18n="doula.stat.appts">Consultas hoje</div></div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.getElementById('nav-mensagens-doula'),'d-mensagens')"><div class="stat-icon">💬</div><div class="stat-val" id="stat-msgs">0</div><div class="stat-label" data-i18n="doula.stat.msgs">Msgs não lidas</div></div>
           </div>
 
           <!-- Banner de solicitações pendentes -->
@@ -16426,6 +16428,7 @@ document.addEventListener('click', function(e) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-06-01', titulo:'Cards de estatísticas clicáveis no dashboard da doula', descricao:'Os 4 cards de resumo no dashboard da doula (Clientes Ativas, Partos Este Mês, Consultas Hoje, Msgs Não Lidas) agora são clicáveis. Ao clicar, o usuário é levado diretamente para a seção correspondente: Clientes Ativas → aba Clientes; Partos Este Mês e Consultas Hoje → aba Agenda; Msgs Não Lidas → aba Mensagens. Os cards exibem cursor pointer e um leve efeito de elevação no hover.' },
   { data:'2026-06-01', titulo:'Gestante pode editar o próprio nome', descricao:'A gestante agora pode alterar seu nome diretamente no app. No desktop, o nome na sidebar é clicável com um link "✏️ editar nome" logo abaixo. No mobile, um botão discreto "✏️ Editar meu nome" aparece ao final do dashboard. Ambos abrem um modal com o nome atual pré-preenchido — é só digitar e salvar. A alteração é salva no banco e refletida imediatamente no sidebar, no cabeçalho e na saudação do dashboard.' },
   { data:'2026-06-01', titulo:'Busca por nome no marketplace de doulas pós-parto', descricao:'O marketplace de doulas pós-parto (acessado pela gestante pós-parto no dashboard) agora tem um campo de busca por nome. A lista é filtrada em tempo real conforme a usuária digita, facilitando encontrar uma doula específica. Se nenhuma doula corresponder ao termo buscado, uma mensagem clara é exibida.' },
   { data:'2026-06-01', titulo:'Correção: última linha da tabela de clientes cortada no mobile', descricao:'No mobile, a barra de navegação inferior (position:fixed) cobria a última linha da tabela de clientes da doula e o último item de qualquer painel da gestante. Corrigido adicionando padding-bottom de 80px nos containers principais (.d-main e .g-main) na media query mobile, garantindo que todo o conteúdo fique acessível acima da barra.' },
