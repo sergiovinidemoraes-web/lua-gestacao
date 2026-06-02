@@ -17022,7 +17022,7 @@ async function carregarEstatisticasDoula() {
 }
 
 // ── Notificações / Alertas ──
-function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
+async function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
   var container = document.getElementById('alertas-container');
   if (!container) return;
   var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
@@ -17031,12 +17031,12 @@ function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
     var dpp = dppMapSol[g.gestante_id];
     if (!dpp) return;
     var dias = Math.round((new Date(dpp + 'T12:00:00') - hoje) / 86400000);
-    alertas.push({ nome: g.gestante_nome, dpp: dpp, dias: dias });
+    alertas.push({ nome: g.gestante_nome, dpp: dpp, dias: dias, tipo: 'sol', id: g.gestante_id });
   });
   externos.forEach(function(c) {
     if (!c.dpp) return;
     var dias = Math.round((new Date(c.dpp + 'T12:00:00') - hoje) / 86400000);
-    alertas.push({ nome: c.nome, dpp: c.dpp, dias: dias });
+    alertas.push({ nome: c.nome, dpp: c.dpp, dias: dias, tipo: 'ext', id: c.id });
   });
 
   // ── Agenda: partos próximos (≤30 dias) ──
@@ -17067,15 +17067,41 @@ function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
     }).join('');
   }
 
-  var relevantes = alertas.filter(function(a) { return a.dias >= -14 && a.dias <= 60; });
+  // Busca status trabalho de parto / parto realizado nos últimos 120 dias
+  var statusMap = {};
+  if (db && currentUserId && alertas.length) {
+    try {
+      var limite = new Date(); limite.setDate(limite.getDate() - 120);
+      var stRes = await db.from('registros_atendimento')
+        .select('tipo, gestante_id, cliente_externo_id')
+        .eq('doula_id', currentUserId)
+        .in('tipo', ['Trabalho de parto', 'Parto realizado'])
+        .gte('criado_em', limite.toISOString())
+        .order('criado_em', { ascending: false });
+      (stRes.data || []).forEach(function(r) {
+        var chave = r.gestante_id ? 'sol:' + r.gestante_id : r.cliente_externo_id ? 'ext:' + r.cliente_externo_id : null;
+        if (chave && !statusMap[chave]) statusMap[chave] = r.tipo;
+      });
+    } catch(e) {}
+  }
+
+  var relevantes = alertas.filter(function(a) {
+    if (a.dias < -14 || a.dias > 60) return false;
+    return statusMap[a.tipo + ':' + a.id] !== 'Parto realizado';
+  });
   if (!relevantes.length) {
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div><div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
     return;
   }
   relevantes.sort(function(a, b) { return a.dias - b.dias; });
   container.innerHTML = relevantes.map(function(a) {
+    var chave = a.tipo + ':' + a.id;
+    var emTrabalho = statusMap[chave] === 'Trabalho de parto';
     var icon, bg, cor, texto;
-    if (a.dias < 0) {
+    if (emTrabalho) {
+      icon = '🤱'; bg = '#fffbeb'; cor = '#d97706';
+      texto = 'Em trabalho de parto';
+    } else if (a.dias < 0) {
       icon = '🍼'; bg = '#f0fdf4'; cor = '#16a34a';
       texto = 'Parto previsto há ' + Math.abs(a.dias) + ' dia' + (Math.abs(a.dias) !== 1 ? 's' : '') + ' — acompanhe o pós-parto';
     } else if (a.dias === 0) {
@@ -17092,13 +17118,95 @@ function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
       texto = 'DPP em ' + a.dias + ' dias';
     }
     var dppStr = new Date(a.dpp + 'T12:00:00').toLocaleDateString('pt-BR');
-    return '<div style="background:' + bg + ';border-left:4px solid ' + cor + ';border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">' +
-      '<div style="font-size:22px;flex-shrink:0;">' + icon + '</div>' +
-      '<div><div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
-      '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + '</div>' +
-      '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">DPP: ' + dppStr + '</div></div>' +
+    var cardId = 'alc-' + a.tipo + '-' + a.id;
+    var idEsc = a.id.replace(/'/g, '');
+    var nomeEsc = (a.nome || '').replace(/'/g, '');
+    var btns = emTrabalho
+      ? '<button onclick="alertaPartoRealizadoAcao(\'' + a.tipo + '\',\'' + idEsc + '\',\'' + nomeEsc + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-top:8px;">👶 Já pariu</button>'
+      : '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">' +
+          '<button onclick="alertaTrabalhoPartoAcao(\'' + a.tipo + '\',\'' + idEsc + '\',\'' + nomeEsc + '\',\'' + cardId + '\')" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">🤱 Em trabalho de parto</button>' +
+          '<button onclick="alertaPartoRealizadoAcao(\'' + a.tipo + '\',\'' + idEsc + '\',\'' + nomeEsc + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">👶 Já pariu</button>' +
+        '</div>';
+    return '<div id="' + cardId + '" style="background:' + bg + ';border-left:4px solid ' + cor + ';border-radius:12px;padding:14px 16px;margin-bottom:10px;">' +
+      '<div style="display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="font-size:22px;flex-shrink:0;">' + icon + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
+          '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">DPP: ' + dppStr + '</div>' +
+          btns +
+        '</div>' +
+      '</div>' +
     '</div>';
   }).join('');
+}
+
+async function alertaTrabalhoPartoAcao(tipo, id, nome, cardId) {
+  if (!db || !currentUserId) return;
+  try {
+    var hoje = new Date().toISOString().slice(0, 10);
+    var res = await db.from('registros_atendimento').insert({
+      doula_id: currentUserId,
+      cliente_nome: nome,
+      gestante_id: tipo === 'sol' ? id : null,
+      cliente_externo_id: tipo === 'ext' ? id : null,
+      data: hoje,
+      tipo: 'Trabalho de parto',
+      anotacoes: 'Registrado via alerta automático do dashboard'
+    });
+    if (res.error) throw res.error;
+    var card = document.getElementById(cardId);
+    if (card) {
+      card.style.background = '#fffbeb';
+      card.style.borderLeftColor = '#d97706';
+      card.innerHTML = '<div style="display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="font-size:22px;flex-shrink:0;">🤱</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + nome + '</div>' +
+          '<div style="font-size:12px;color:#d97706;margin-top:2px;">Em trabalho de parto</div>' +
+          '<button onclick="alertaPartoRealizadoAcao(\'' + tipo + '\',\'' + id + '\',\'' + nome + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-top:8px;">👶 Já pariu</button>' +
+        '</div>' +
+      '</div>';
+    }
+    mostrarToast('🤱 ' + nome + ' em trabalho de parto — registrado!');
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function alertaPartoRealizadoAcao(tipo, id, nome, cardId) {
+  if (!db || !currentUserId) return;
+  try {
+    var hoje = new Date().toISOString().slice(0, 10);
+    var results = await Promise.all([
+      db.from('registros_atendimento').insert({
+        doula_id: currentUserId,
+        cliente_nome: nome,
+        gestante_id: tipo === 'sol' ? id : null,
+        cliente_externo_id: tipo === 'ext' ? id : null,
+        data: hoje,
+        tipo: 'Parto realizado',
+        anotacoes: 'Registrado via alerta automático do dashboard'
+      }),
+      db.from('registros_posparto').insert({
+        doula_id: currentUserId,
+        cliente_nome: nome,
+        gestante_id: tipo === 'sol' ? id : null,
+        cliente_externo_id: tipo === 'ext' ? id : null,
+        data_visita: hoje,
+        dias_posparto: 0,
+        evolucao: 'Parto confirmado via dashboard'
+      })
+    ]);
+    if (results[0].error) throw results[0].error;
+    if (results[1].error) throw results[1].error;
+    var card = document.getElementById(cardId);
+    if (card) card.remove();
+    var container = document.getElementById('alertas-container');
+    if (container && !container.querySelector('[id^="alc-"]')) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">Nenhum alerta por enquanto</div><div class="empty-sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
+    }
+    carregarPosParto();
+    mostrarToast('👶 Parabéns! Parto de ' + nome + ' confirmado. Acompanhamento pós-parto iniciado!');
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
 async function verificarLembreteAvaliacao() {
