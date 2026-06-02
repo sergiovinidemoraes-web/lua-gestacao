@@ -12947,13 +12947,14 @@ async function pcliSalvarDpp(gestanteId) {
   try {
     var diasRest = (new Date(val + 'T12:00:00') - new Date()) / 86400000;
     var sem = Math.round(40 - diasRest / 7);
-    await db.from('clientes_doula').upsert({
+    var res = await db.from('clientes_doula').upsert({
       doula_id: currentUserId,
       gestante_id: gestanteId,
       nome: _pcliAtual ? _pcliAtual.nome : '',
       dpp: val,
       semanas_gestacional: (sem >= 1 && sem <= 45) ? sem : null
     }, { onConflict: 'doula_id,gestante_id' });
+    if (res.error) throw res.error;
     mostrarToast('DPP salva!');
     var dppStr = new Date(val + 'T12:00:00').toLocaleDateString('pt-BR');
     var valEl = document.getElementById('pcli-dpp-val');
@@ -13077,8 +13078,15 @@ async function _pcliRegistros(el, id, campo) {
     if (!dados.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-title">Nenhum registro de atendimento</div></div>'; return; }
     el.innerHTML = dados.map(function(r) {
       var dataStr = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      var rJson = encodeURIComponent(JSON.stringify(r));
       return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
-        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div style="font-size:13px;font-weight:600;color:var(--rose);">' + (r.tipo || '') + '</div><div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div></div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--rose);">' + (r.tipo || '') + '</div>' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="font-size:12px;color:var(--earth-light);">' + dataStr + '</div>' +
+            '<button onclick=\'editarRegistroDoPerfil(JSON.parse(decodeURIComponent("' + rJson + '")))\' style="background:transparent;border:1px solid rgba(201,137,122,0.4);color:var(--rose);border-radius:16px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">✏️ Editar</button>' +
+          '</div>' +
+        '</div>' +
         (r.anotacoes ? '<div style="font-size:13px;color:var(--mid);margin-bottom:6px;line-height:1.5;">' + r.anotacoes + '</div>' : '') +
         (r.evolucao ? '<div style="font-size:12px;color:var(--earth-light);font-style:italic;border-top:1px solid var(--cream);padding-top:8px;margin-top:6px;">' + r.evolucao + '</div>' : '') + '</div>';
     }).join('');
@@ -13858,6 +13866,12 @@ async function salvarRegistro() {
     }
     carregarRegistros();
   } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
+}
+
+function editarRegistroDoPerfil(r) {
+  editarRegistro(r);
+  var navBtn = document.querySelector('.d-nav-item[onclick*="d-registros"]');
+  dNav(navBtn, 'd-registros');
 }
 
 function editarRegistro(r) {
