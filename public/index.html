@@ -7945,33 +7945,47 @@ async function carregarReportesAdmin() {
   } catch(e) { lista.innerHTML = '<div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Erro: ' + e.message + '</div>'; }
 }
 
+async function _adminUpdateReporte(id, payload) {
+  var body = Object.assign({ token: _adminToken }, payload);
+  if (id) body.id = id;
+  var r = await fetch('/api/admin-update-reporte', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { var e = await r.json().catch(function(){return{};}); throw new Error(e.error || 'Erro'); }
+}
+
 async function enviarRespostaReporte(id, waTel) {
   var txt = ((document.getElementById('rep-txt-' + id) || {}).value || '').trim();
   if (!txt) { mostrarToast('Escreva a resposta antes de enviar'); return; }
-  if (!db || !id) return;
+  if (!id) return;
   try {
-    await db.from('reportes').update({ resposta: txt, lido: true }).eq('id', id);
+    await _adminUpdateReporte(id, { resposta: txt, lido: true });
     mostrarToast('✅ Resposta salva!');
     if (waTel) {
       var msg = encodeURIComponent('Olá! Recebemos seu feedback no Lua Gestação e gostaríamos de responder:\n\n' + txt);
       window.open('https://wa.me/' + waTel + '?text=' + msg, '_blank');
     }
     carregarReportesAdmin();
-  } catch(e) { mostrarToast('Erro ao salvar resposta'); }
+  } catch(e) { mostrarToast('Erro ao salvar resposta: ' + e.message); }
 }
 
 async function marcarRepLido(id) {
-  if (!db || !id) return;
+  if (!id) return;
   try {
-    await db.from('reportes').update({ lido: true }).eq('id', id);
+    await _adminUpdateReporte(id, { lido: true });
     mostrarToast('✓ Marcado como lido');
     carregarReportesAdmin();
-  } catch(e) { mostrarToast('Erro ao marcar como lido'); }
+  } catch(e) { mostrarToast('Erro ao marcar como lido: ' + e.message); }
 }
 
 async function marcarTodosLidos() {
-  if (!db) return;
-  try { await db.from('reportes').update({ lido: true }).eq('lido', false); mostrarToast('✓ Todos marcados como lidos'); carregarReportesAdmin(); } catch(e) {}
+  try {
+    await _adminUpdateReporte(null, { markAll: true });
+    mostrarToast('✓ Todos marcados como lidos');
+    carregarReportesAdmin();
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
 // ─── Avaliação de Doula ───
