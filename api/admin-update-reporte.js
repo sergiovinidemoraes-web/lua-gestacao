@@ -50,6 +50,7 @@ export default async function handler(req, res) {
           'apikey': SERVICE_KEY,
           'Authorization': `Bearer ${SERVICE_KEY}`,
           'Content-Type': 'application/json',
+          'Content-Profile': 'public',
           'Prefer': 'return=minimal'
         },
         body: JSON.stringify({ lido: true })
