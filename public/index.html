@@ -2367,9 +2367,9 @@ tr:hover td { background:var(--rose-pale); }
             <div class="card-title" data-i18n="doula.myperfil.infotitle">Informações do perfil</div>
             <div style="display:grid;gap:12px;margin-top:4px;">
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">País</div>
+                <div data-i18n="doula.myperfil.pais" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">País</div>
                 <select id="doula-pais" class="form-input form-select" onchange="onDoulaCountryChange()">
-                  <option value="">Selecione o país...</option>
+                  <option value="" data-i18n="doula.myperfil.pais.sel">Selecione o país...</option>
                   <option value="BR">🇧🇷 Brasil (+55)</option>
                   <option value="US">🇺🇸 Estados Unidos (+1)</option>
                   <option value="PT">🇵🇹 Portugal (+351)</option>
@@ -2384,20 +2384,20 @@ tr:hover td { background:var(--rose-pale); }
                 </select>
               </div>
               <div>
-                <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">WhatsApp</div>
+                <div data-i18n="doula.myperfil.wpp" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">WhatsApp</div>
                 <div style="display:flex;">
                   <div id="doula-wpp-codigo" style="flex-shrink:0;border:1.5px solid var(--border);border-right:none;border-radius:10px 0 0 10px;padding:0 12px;background:var(--cream);color:var(--dark);font-size:13px;font-weight:500;display:flex;align-items:center;height:44px;min-width:52px;justify-content:center;">+</div>
-                  <input id="doula-whatsapp" class="form-input" type="tel" placeholder="Selecione o país primeiro" style="border-radius:0 10px 10px 0;flex:1;">
+                  <input id="doula-whatsapp" class="form-input" type="tel" data-i18n-ph="doula.myperfil.wpp.ph" placeholder="Selecione o país primeiro" style="border-radius:0 10px 10px 0;flex:1;">
                 </div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                 <div>
-                  <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Estado / Região</div>
-                  <input id="doula-estado" class="form-input" type="text" placeholder="Ex: São Paulo">
+                  <div data-i18n="doula.myperfil.estado" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Estado / Região</div>
+                  <input id="doula-estado" class="form-input" type="text" data-i18n-ph="doula.myperfil.estado.ph" placeholder="Ex: São Paulo">
                 </div>
                 <div>
-                  <div style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Cidade</div>
-                  <input id="doula-cidade" class="form-input" type="text" placeholder="Ex: Campinas">
+                  <div data-i18n="doula.myperfil.cidade.label" style="font-size:12px;color:var(--earth-light);margin-bottom:4px;font-weight:500;">Cidade</div>
+                  <input id="doula-cidade" class="form-input" type="text" data-i18n-ph="doula.myperfil.cidade.ph" placeholder="Ex: Campinas">
                 </div>
               </div>
               <div>
@@ -2468,7 +2468,7 @@ tr:hover td { background:var(--rose-pale); }
                 </div>
                 <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="nc-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp()"></div>
                 <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="nc-semanas" class="form-input" type="number" placeholder="Calculada pela DPP"></div>
-                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto normal</option><option>Cesárea humanizada</option><option>Parto na água</option><option>Parto domiciliar</option></select></div>
+                <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="nc-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option></select></div>
                 <div class="form-group"><label class="form-label">Local do parto</label><select id="nc-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Casa de parto</option><option>Domiciliar</option></select></div>
                 <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="nc-hospital" class="form-input" type="text" placeholder="Nome da instituição"></div>
                 <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="nc-medico" class="form-input" type="text" placeholder="Nome do/da médico(a)"></div>
@@ -4816,6 +4816,13 @@ pt: {
   'doula.myperfil.valores.ph':'Ex: Pré-natal R$200/sessão · Parto completo R$2.500',
   'doula.myperfil.save':'Salvar perfil',
   'doula.myperfil.limite.ph':'Ex: 5 (vazio = ilimitado)',
+  'doula.myperfil.pais':'País',
+  'doula.myperfil.pais.sel':'Selecione o país...',
+  'doula.myperfil.wpp.ph':'Selecione o país primeiro',
+  'doula.myperfil.estado':'Estado / Região',
+  'doula.myperfil.estado.ph':'Ex: São Paulo',
+  'doula.myperfil.cidade.label':'Cidade',
+  'doula.myperfil.cidade.ph':'Ex: Campinas',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Nenhuma consulta agendada ainda',
   'doula.births.title':'Partos do mês','doula.births.empty':'Nenhum parto registrado este mês',
   'doula.clients.title':'Minhas Clientes','doula.clients.sub':'Gerencie e acompanhe todas as suas gestantes',
@@ -5519,6 +5526,13 @@ en: {
   'doula.myperfil.valores.ph':'E.g.: Prenatal R$200/session · Full birth R$2,500',
   'doula.myperfil.save':'Save profile',
   'doula.myperfil.limite.ph':'E.g.: 5 (blank = unlimited)',
+  'doula.myperfil.pais':'Country',
+  'doula.myperfil.pais.sel':'Select country...',
+  'doula.myperfil.wpp.ph':'Select country first',
+  'doula.myperfil.estado':'State / Region',
+  'doula.myperfil.estado.ph':'E.g.: New York',
+  'doula.myperfil.cidade.label':'City',
+  'doula.myperfil.cidade.ph':'E.g.: Miami',
   'doula.appts.title':'Upcoming appointments','doula.appts.empty':'No appointments scheduled yet',
   'doula.births.title':'Births this month','doula.births.empty':'No births recorded this month',
   'doula.clients.title':'My Clients','doula.clients.sub':'Manage and follow all your pregnant clients',
@@ -6221,6 +6235,13 @@ es: {
   'doula.myperfil.valores.ph':'Ej: Prenatal R$200/sesión · Parto completo R$2.500',
   'doula.myperfil.save':'Guardar perfil',
   'doula.myperfil.limite.ph':'Ej: 5 (vacío = ilimitado)',
+  'doula.myperfil.pais':'País',
+  'doula.myperfil.pais.sel':'Selecciona el país...',
+  'doula.myperfil.wpp.ph':'Selecciona el país primero',
+  'doula.myperfil.estado':'Estado / Región',
+  'doula.myperfil.estado.ph':'Ej: Buenos Aires',
+  'doula.myperfil.cidade.label':'Ciudad',
+  'doula.myperfil.cidade.ph':'Ej: Montevideo',
   'doula.appts.title':'Próximas consultas','doula.appts.empty':'Sin consultas agendadas aún',
   'doula.births.title':'Partos del mes','doula.births.empty':'Ningún parto registrado este mes',
   'doula.clients.title':'Mis Clientas','doula.clients.sub':'Gestiona y acompáña a todas tus gestantes',
@@ -16201,7 +16222,7 @@ function mostrarToast(msg) {
       </div>
       <div class="form-group"><label class="form-label">Data provável do parto (DPP)</label><input id="ec-dpp" class="form-input" type="date" oninput="calcSemanasFromDpp('ec-dpp','ec-semanas')"></div>
       <div class="form-group"><label class="form-label">Semana gestacional atual</label><input id="ec-semanas" class="form-input" type="number" placeholder="Ex: 28"></div>
-      <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="ec-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option><option>Humanizado</option></select></div>
+      <div class="form-group"><label class="form-label">Tipo de parto desejado</label><select id="ec-tipo-parto" class="form-input form-select"><option>Parto Vaginal</option><option>Cesária</option></select></div>
       <div class="form-group"><label class="form-label">Local do parto</label><select id="ec-local-parto" class="form-input form-select"><option>Hospitalar</option><option>Domiciliar</option></select></div>
       <div class="form-group"><label class="form-label">Hospital / Maternidade</label><input id="ec-hospital" class="form-input" type="text"></div>
       <div class="form-group"><label class="form-label">Médico(a) obstetra</label><input id="ec-medico" class="form-input" type="text"></div>
