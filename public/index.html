@@ -2567,6 +2567,11 @@ tr:hover td { background:var(--rose-pale); }
                   <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;"><input id="backup-perm-ficha" type="checkbox" style="accent-color:var(--rose);width:16px;height:16px;"> Acesso à ficha das clientes</label>
                 </div>
               </div>
+              <div id="backup-clientes-section" style="display:none;">
+                <label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--earth-light);display:block;margin-bottom:6px;">Clientes com acesso</label>
+                <div style="font-size:12px;color:var(--earth-light);margin-bottom:10px;line-height:1.5;">Selecione quais clientes a backup pode ver. Deixar todas marcadas dá acesso a todas.</div>
+                <div id="backup-clientes-lista" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding:2px 0;"></div>
+              </div>
               <button onclick="salvarBackupDoula()" id="btn-salvar-backup" style="background:var(--rose);color:white;border:none;padding:12px;border-radius:14px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:4px;" data-i18n="doula.backup.btn.save">✅ Salvar e verificar</button>
             </div>
             <div id="backup-resultado" style="display:none;margin-top:20px;"></div>
@@ -8040,6 +8045,9 @@ async function salvarBackupDoula() {
   if (btn) { btn.textContent = 'Verificando...'; btn.disabled = true; }
   if (resultDiv) resultDiv.style.display = 'none';
 
+  var allCliChecks = document.querySelectorAll('.backup-cli-check');
+  var checkedCli = Array.from(document.querySelectorAll('.backup-cli-check:checked')).map(function(cb) { return cb.value; });
+  var clientesPermitidos = (allCliChecks.length > 0 && checkedCli.length > 0 && checkedCli.length < allCliChecks.length) ? checkedCli : null;
   var payload = {
     doula_id: currentUserId,
     backup_email: newEmail,
@@ -8048,6 +8056,7 @@ async function salvarBackupDoula() {
     perm_registros: !!(document.getElementById('backup-perm-registros') || {}).checked,
     perm_historico: !!(document.getElementById('backup-perm-historico') || {}).checked,
     perm_ficha: !!(document.getElementById('backup-perm-ficha') || {}).checked,
+    clientes_permitidos: clientesPermitidos,
     status: 'pendente',
     backup_user_id: null
   };
@@ -8116,14 +8125,28 @@ async function carregarBackupDoula() {
   if (!db || !currentUserId) return;
   try {
     var res = await db.from('backup_doulas').select('*').eq('doula_id', currentUserId).maybeSingle();
-    if (!res.data) return;
-    var el = document.getElementById('backup-doula-email');
-    if (el) el.value = res.data.backup_email || '';
-    var pa = document.getElementById('backup-perm-agenda'); if (pa) pa.checked = !!res.data.perm_agenda;
-    var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
-    var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
-    var ph = document.getElementById('backup-perm-historico'); if (ph) ph.checked = !!res.data.perm_historico;
-    var pf = document.getElementById('backup-perm-ficha'); if (pf) pf.checked = !!res.data.perm_ficha;
+    if (res.data) {
+      var el = document.getElementById('backup-doula-email');
+      if (el) el.value = res.data.backup_email || '';
+      var pa = document.getElementById('backup-perm-agenda'); if (pa) pa.checked = !!res.data.perm_agenda;
+      var pc = document.getElementById('backup-perm-chat'); if (pc) pc.checked = !!res.data.perm_chat;
+      var pr = document.getElementById('backup-perm-registros'); if (pr) pr.checked = !!res.data.perm_registros;
+      var ph = document.getElementById('backup-perm-historico'); if (ph) ph.checked = !!res.data.perm_historico;
+      var pf = document.getElementById('backup-perm-ficha'); if (pf) pf.checked = !!res.data.perm_ficha;
+    }
+    var permitidos = (res.data && res.data.clientes_permitidos) ? res.data.clientes_permitidos : null;
+    var cliRes = await db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita');
+    var section = document.getElementById('backup-clientes-section');
+    var lista = document.getElementById('backup-clientes-lista');
+    if (lista && cliRes.data && cliRes.data.length > 0) {
+      if (section) section.style.display = '';
+      lista.innerHTML = cliRes.data.map(function(s) {
+        var marcada = !permitidos || permitidos.includes(s.gestante_id);
+        return '<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;">' +
+          '<input type="checkbox" class="backup-cli-check" value="' + s.gestante_id + '"' + (marcada ? ' checked' : '') + ' style="accent-color:var(--rose);width:16px;height:16px;"> ' +
+          s.gestante_nome + '</label>';
+      }).join('');
+    }
   } catch(e) {}
 }
 
@@ -8159,6 +8182,12 @@ function bkNav(el, panelId) {
   if (panelId === 'bk-registros') carregarRegistrosBackup();
 }
 
+function _filtrarPorPermissao(lista, campo) {
+  var p = currentBackupPerms && currentBackupPerms.clientesPermitidos;
+  if (!p || !p.length) return lista;
+  return lista.filter(function(item) { return p.includes(item[campo]); });
+}
+
 async function carregarClientesBackup() {
   if (!db || !currentBackupDoulaId) return;
   var el = document.getElementById('bk-clientes-lista');
@@ -8166,7 +8195,9 @@ async function carregarClientesBackup() {
   try {
     var res = await db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentBackupDoulaId).eq('status', 'aceita');
     if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhuma cliente ativa.</div>'; return; }
-    el.innerHTML = res.data.map(function(s) {
+    var dados = _filtrarPorPermissao(res.data, 'gestante_id');
+    if (!dados.length) { el.innerHTML = '<div class="empty-state-small">Nenhuma cliente ativa.</div>'; return; }
+    el.innerHTML = dados.map(function(s) {
       var data = new Date(s.criado_em).toLocaleDateString('pt-BR');
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
         '<div><div style="font-size:14px;font-weight:500;color:var(--dark);">' + s.gestante_nome + '</div>' +
@@ -8185,7 +8216,9 @@ async function carregarAgendaBackup() {
   try {
     var res = await db.from('consultas_doula').select('*').eq('doula_id', currentBackupDoulaId).order('data_hora', { ascending: true }).limit(30);
     if (!res.data || !res.data.length) { el.innerHTML = '<div class="empty-state-small">Nenhum agendamento.</div>'; return; }
-    el.innerHTML = res.data.map(function(c) {
+    var dados = _filtrarPorPermissao(res.data, 'gestante_id');
+    if (!dados.length) { el.innerHTML = '<div class="empty-state-small">Nenhum agendamento.</div>'; return; }
+    el.innerHTML = dados.map(function(c) {
       var dt = new Date(c.data_hora);
       var dataStr = dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
@@ -8208,8 +8241,10 @@ async function carregarListaChatBackup() {
   try {
     var res = await db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentBackupDoulaId).eq('status', 'aceita');
     if (!res.data || !res.data.length) { lista.innerHTML = '<div class="empty-state-small">Nenhuma cliente para conversar.</div>'; return; }
+    var dados = _filtrarPorPermissao(res.data, 'gestante_id');
+    if (!dados.length) { lista.innerHTML = '<div class="empty-state-small">Nenhuma cliente para conversar.</div>'; return; }
     lista.innerHTML = '<div class="panel-sub" style="margin-bottom:12px;">Selecione uma cliente:</div>' +
-      res.data.map(function(s) {
+      dados.map(function(s) {
         return '<div onclick="abrirChatBackup(\'' + s.gestante_id + '\',\'' + s.gestante_nome.replace(/'/g,'') + '\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--white);margin-bottom:8px;cursor:pointer;box-shadow:0 1px 6px rgba(45,31,26,0.05);">' +
           '<div style="width:40px;height:40px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">' + s.gestante_nome[0].toUpperCase() + '</div>' +
           '<div style="font-size:14px;font-weight:500;color:var(--dark);">' + s.gestante_nome + '</div>' +
@@ -8270,8 +8305,13 @@ async function carregarRegistrosBackup() {
       el.innerHTML = '<div class="empty-state-small">' + (currentBackupPerms.historico ? 'Nenhum registro encontrado.' : 'Nenhum registro para hoje.') + '</div>';
       return;
     }
+    var dados = _filtrarPorPermissao(res.data, 'gestante_id');
+    if (!dados.length) {
+      el.innerHTML = '<div class="empty-state-small">' + (currentBackupPerms.historico ? 'Nenhum registro encontrado.' : 'Nenhum registro para hoje.') + '</div>';
+      return;
+    }
     if (!currentBackupPerms.historico) {
-      el.innerHTML = res.data.map(function(r) {
+      el.innerHTML = dados.map(function(r) {
         return '<div style="padding:12px 8px;border-bottom:1px solid rgba(122,100,85,0.08);">' +
           '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + r.cliente_nome + '</div>' +
           '<div style="font-size:11px;color:var(--earth-light);">' + (r.tipo || '') + '</div>' +
@@ -8280,7 +8320,7 @@ async function carregarRegistrosBackup() {
       }).join('');
     } else {
       var porDia = {};
-      res.data.forEach(function(r) { var d = r.data || 'Sem data'; if (!porDia[d]) porDia[d] = []; porDia[d].push(r); });
+      dados.forEach(function(r) { var d = r.data || 'Sem data'; if (!porDia[d]) porDia[d] = []; porDia[d].push(r); });
       el.innerHTML = Object.keys(porDia).map(function(dia) {
         var dataFmt = dia !== 'Sem data' ? new Date(dia + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }) : 'Sem data';
         var itens = porDia[dia].map(function(r) {
@@ -8820,7 +8860,8 @@ async function carregarUsuario(user) {
             chat: !!bkRes.data.perm_chat,
             registros: !!bkRes.data.perm_registros,
             historico: !!bkRes.data.perm_historico,
-            ficha: !!bkRes.data.perm_ficha
+            ficha: !!bkRes.data.perm_ficha,
+            clientesPermitidos: bkRes.data.clientes_permitidos || null
           };
           window.hasBackupAccess = true;
         } else if (tipo === 'doula_backup') {
@@ -16477,6 +16518,7 @@ document.addEventListener('click', function(e) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-06-05', titulo:'Doula backup: seleção de clientes com acesso', descricao:'Na configuração de doula backup, a doula principal agora pode escolher quais clientes a backup pode acessar. Uma nova seção "Clientes com acesso" exibe checkboxes com todas as clientes ativas — todas marcadas por padrão (acesso total). Desmarcando algumas, o acesso da backup fica restrito apenas às clientes selecionadas. O filtro se aplica à lista de clientes, chat, agenda e registros no painel da backup.' },
   { data:'2026-06-02', titulo:'Botões de ação rápida nos alertas de DPP', descricao:'Cada alerta de DPP no dashboard da doula agora tem dois botões: 🤱 Em trabalho de parto muda o card para cor âmbar, registra o evento e persiste o status no banco — na próxima vez que o dashboard carregar, o card continua mostrando o estado correto. 👶 Já pariu remove o alerta da lista, registra o parto e cria automaticamente a primeira entrada de acompanhamento pós-parto (dia 0), iniciando o acompanhamento sem nenhum passo extra.' },
   { data:'2026-06-02', titulo:'Editar registro de atendimento pelo perfil da cliente', descricao:'A aba Registros dentro do perfil de cada cliente agora exibe o botão ✏️ Editar em cada card. Ao clicar, o app navega automaticamente para o painel de Registros com o formulário já pré-preenchido com os dados do registro selecionado.' },
   { data:'2026-06-02', titulo:'Correção: salvamento silencioso da DPP da gestante', descricao:'O botão Salvar DPP no perfil de uma gestante vinculada retornava "DPP salva!" mesmo quando o banco rejeitava a operação silenciosamente. Corrigido: o resultado do upsert é agora verificado antes de exibir o toast de sucesso; se houver erro, a mensagem real é exibida para diagnóstico.' },
