@@ -964,7 +964,7 @@ tr:hover td { background:var(--rose-pale); }
   <div class="login-title">LUA</div>
   <div class="login-sub">Acompanhamento de gestação</div>
   <div class="login-box">
-    <div class="login-tabs">
+    <div class="login-tabs" id="login-tabs">
       <button class="login-tab active" id="tab-entrar" onclick="loginTab('entrar')">Entrar</button>
       <button class="login-tab" id="tab-cadastrar" onclick="loginTab('cadastrar')">Criar conta</button>
     </div>
@@ -980,6 +980,9 @@ tr:hover td { background:var(--rose-pale); }
         <input class="login-input" type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()">
       </div>
       <div class="login-erro" id="login-erro"></div>
+      <div style="text-align:right;margin-top:-4px;margin-bottom:8px;">
+        <button onclick="loginTab('recuperar')" style="background:none;border:none;color:rgba(201,137,122,0.6);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;">Esqueci minha senha</button>
+      </div>
       <button class="login-btn" id="btn-login" onclick="fazerLogin()">Entrar</button>
       
       
@@ -1047,6 +1050,54 @@ tr:hover td { background:var(--rose-pale); }
       <button onclick="reenviarEmail()" style="background:none;border:none;color:rgba(201,137,122,0.6);font-size:12px;cursor:pointer;margin-top:8px;font-family:inherit;text-decoration:underline;">
         Reenviar e-mail
       </button>
+    </div>
+
+    <!-- RECUPERAR SENHA -->
+    <div id="form-recuperar" class="login-form" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:36px;margin-bottom:10px;">🔑</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:300;color:#E8C5BC;margin-bottom:8px;">Recuperar senha</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Digite seu e-mail e enviaremos um link para criar uma nova senha.</div>
+      </div>
+      <div>
+        <label class="login-label">E-mail</label>
+        <input class="login-input" type="email" id="rec-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')enviarRecuperacaoSenha()">
+      </div>
+      <div class="login-erro" id="rec-erro"></div>
+      <button class="login-btn" id="btn-recuperar" onclick="enviarRecuperacaoSenha()">Enviar link</button>
+      <div class="login-divider">ou</div>
+      <button class="login-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);" onclick="loginTab('entrar')">Voltar para login</button>
+    </div>
+
+    <!-- RECUPERAR SENHA — E-MAIL ENVIADO -->
+    <div id="form-recuperar-ok" style="display:none;text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">📬</div>
+      <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:300;color:#E8C5BC;margin-bottom:10px;">E-mail enviado!</div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:8px;">Enviamos um link de recuperação para</div>
+      <div style="font-size:14px;color:#C9897A;font-weight:500;margin-bottom:20px;" id="rec-email-display"></div>
+      <div style="background:rgba(201,137,122,0.1);border:1px solid rgba(201,137,122,0.2);border-radius:14px;padding:16px;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:24px;">
+        📌 Abra seu e-mail, clique no link e crie uma nova senha. Verifique também a pasta de spam 📁
+      </div>
+      <button class="login-btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);" onclick="loginTab('entrar')">Voltar para login</button>
+    </div>
+
+    <!-- NOVA SENHA (após clicar no link do e-mail) -->
+    <div id="form-nova-senha" class="login-form" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:36px;margin-bottom:10px;">🔐</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:300;color:#E8C5BC;margin-bottom:8px;">Criar nova senha</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Escolha uma nova senha para sua conta.</div>
+      </div>
+      <div>
+        <label class="login-label">Nova senha</label>
+        <input class="login-input" type="password" id="nova-senha-input" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div>
+        <label class="login-label">Confirmar nova senha</label>
+        <input class="login-input" type="password" id="nova-senha-confirmar" placeholder="Repita a senha" onkeydown="if(event.key==='Enter')atualizarSenha()">
+      </div>
+      <div class="login-erro" id="nova-senha-erro"></div>
+      <button class="login-btn" id="btn-nova-senha" onclick="atualizarSenha()">Salvar nova senha</button>
     </div>
   </div>
 </div>
@@ -7287,7 +7338,7 @@ function renderContracoesLog(lista, containerId) {
   el.innerHTML = concluidas.map(function(c) {
     var d = Math.round(c.duracao_ms / 1000);
     var dur = Math.floor(d/60) + ':' + String(d%60).padStart(2,'0');
-    var intv = c.intervalo_ms ? (Math.floor(c.intervalo_ms/60000) + 'min ' + Math.round((c.intervalo_ms%60000)/1000) + 's') : '—';
+    var intv = c.intervalo_ms ? (Math.round(c.intervalo_ms/60000) + ' min') : 'Primeira';
     var hora = new Date(c.inicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
     return '<div class="contraction-row"><div class="cont-time">' + hora + '</div><div class="cont-duration">' + dur + '</div><div class="cont-interval">Intervalo: ' + intv + '</div></div>';
   }).join('');
@@ -7404,16 +7455,16 @@ function renderContractions() {
   const log = document.getElementById('contractions-log');
   log.innerHTML = contractions.map(c => {
     const d = Math.round(c.duration / 1000);
-    const intv = c.interval ? (Math.floor(c.interval/60000) + 'min ' + Math.round((c.interval%60000)/1000) + 's') : '—';
+    const intv = c.interval ? (Math.round(c.interval/60000) + ' min') : 'Primeira';
     return `<div class="contraction-row"><div class="cont-time">${c.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div><div class="cont-duration">${Math.floor(d/60)}:${String(d%60).padStart(2,'0')}</div><div class="cont-interval">${t('timer.interval.label')} ${intv}</div></div>`;
   }).join('');
   if (contractions.length > 1) {
     const avgs = Math.round(contractions.slice(0,-1).reduce((a,c)=>a+(c.interval||0),0)/(contractions.length-1)/1000);
-    document.getElementById('avg-display').textContent = `${t('timer.avg.label')} ${Math.floor(avgs/60)}min ${avgs%60}s`;
+    document.getElementById('avg-display').textContent = `${t('timer.avg.label')} ${Math.round(avgs/60)} min`;
   }
   if (contractions[0]?.interval) {
     const ms = contractions[0].interval;
-    document.getElementById('interval-display').textContent = `${Math.floor(ms/60000)}min ${Math.round((ms%60000)/1000)}s`;
+    document.getElementById('interval-display').textContent = `${Math.round(ms/60000)} min`;
   }
 }
 function iniciarFluxoTP() {
@@ -8544,6 +8595,7 @@ async function carregarRegistrosBackup() {
 var SUPA_URL = 'https://mmjrcusivcjiqjelyjyu.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tanJjdXNpdmNqaXFqZWx5anl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDQxOTgsImV4cCI6MjA5MDU4MDE5OH0.13GBrRbUPqz5x3fruc8JyPbDVa3rg5aSK5S6u89hrh4';
 var db = null;
+var _recoveryMode = (function() { try { return new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery'; } catch(e) { return false; } })();
 function esc(str) {
   if (str == null) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
@@ -8560,6 +8612,15 @@ window.addEventListener('load', function() {
   try {
     db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     console.log('✅ Supabase OK');
+
+    db.auth.onAuthStateChange(function(event) {
+      if (event === 'PASSWORD_RECOVERY') {
+        _recoveryMode = true;
+        document.getElementById('app').classList.remove('visible');
+        document.getElementById('login-screen').classList.remove('hidden');
+        mostrarFormNovaSenha();
+      }
+    });
 
     verificarSessao();
   } catch(e) {
@@ -8614,6 +8675,14 @@ function loginTab(tab) {
   document.getElementById('form-cadastrar').style.display = tab === 'cadastrar' ? 'flex' : 'none';
   var conf = document.getElementById('form-confirmacao');
   if (conf) conf.style.display = 'none';
+  var rec = document.getElementById('form-recuperar');
+  if (rec) rec.style.display = tab === 'recuperar' ? 'flex' : 'none';
+  var recOk = document.getElementById('form-recuperar-ok');
+  if (recOk) recOk.style.display = 'none';
+  var novaSenha = document.getElementById('form-nova-senha');
+  if (novaSenha) novaSenha.style.display = 'none';
+  var tabs = document.getElementById('login-tabs');
+  if (tabs) tabs.style.display = tab === 'recuperar' ? 'none' : '';
 }
 
 function selecionarTipo(tipo) {
@@ -10888,7 +10957,7 @@ function renderContracoesDoula(lista) {
   el.innerHTML = concluidas.map(function(c) {
     var d = Math.round(c.duracao_ms / 1000);
     var dur = Math.floor(d/60) + ':' + String(d%60).padStart(2,'0');
-    var intv = c.intervalo_ms ? (Math.floor(c.intervalo_ms/60000) + 'min ' + Math.round((c.intervalo_ms%60000)/1000) + 's') : '—';
+    var intv = c.intervalo_ms ? (Math.round(c.intervalo_ms/60000) + ' min') : 'Primeira';
     var hora = new Date(c.inicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
     return '<div class="contraction-row"><div class="cont-time">' + hora + '</div><div class="cont-duration">' + dur + '</div><div class="cont-interval">Intervalo: ' + intv + '</div></div>';
   }).join('');
@@ -13184,11 +13253,12 @@ async function _pcliContracoes(el, id, tipo) {
         var dataStr = inicio.toLocaleDateString('pt-BR', {day:'2-digit',month:'short'});
         var horaStr = inicio.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
         var durSeg = c.duracao_ms ? Math.round(c.duracao_ms / 1000) : null;
-        var intSeg = c.intervalo_ms ? Math.round(c.intervalo_ms / 1000) : null;
+        var intMin = c.intervalo_ms ? Math.round(c.intervalo_ms / 60000) : null;
+        var durFmt = durSeg ? (Math.floor(durSeg/60) + ':' + String(durSeg%60).padStart(2,'0')) : null;
         return '<div style="background:var(--white);border-radius:12px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(45,31,26,0.05);">' +
           '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + dataStr + ' · ' + horaStr + '</div>' +
-          (intSeg ? '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Intervalo: ' + intSeg + 's</div>' : '') + '</div>' +
-          (durSeg ? '<div style="font-size:13px;font-weight:600;color:var(--rose);">' + durSeg + 's</div>' : '') + '</div>';
+          (intMin !== null ? '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">Intervalo: ' + intMin + ' min</div>' : '') + '</div>' +
+          (durFmt ? '<div style="font-size:13px;font-weight:600;color:var(--rose);">' + durFmt + '</div>' : '') + '</div>';
       }).join('');
   } catch(e) { el.innerHTML = '<div style="color:var(--rose);font-size:13px;">Erro ao carregar.</div>'; }
 }
@@ -14489,10 +14559,79 @@ function ligarParaDoula() {
 // ── VERIFICAR SESSÃO ──
 async function verificarSessao() {
   if (!db) return;
+  if (_recoveryMode) return;
   try {
     var res = await db.auth.getSession();
     if (res.data.session) carregarUsuario(res.data.session.user);
   } catch(e) {}
+}
+
+function mostrarFormNovaSenha() {
+  ['form-entrar','form-cadastrar','form-confirmacao','form-recuperar','form-recuperar-ok'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  var el = document.getElementById('form-nova-senha');
+  if (el) el.style.display = 'flex';
+  var tabs = document.getElementById('login-tabs');
+  if (tabs) tabs.style.display = 'none';
+}
+
+async function enviarRecuperacaoSenha() {
+  var erroEl = document.getElementById('rec-erro');
+  if (erroEl) erroEl.classList.remove('visible');
+  var email = (document.getElementById('rec-email').value || '').trim();
+  if (!email) {
+    if (erroEl) { erroEl.textContent = 'Informe seu e-mail.'; erroEl.classList.add('visible'); }
+    return;
+  }
+  var btn = document.getElementById('btn-recuperar');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  try {
+    var res = await db.auth.resetPasswordForEmail(email, { redirectTo: 'https://luamaterna.com' });
+    btn.textContent = 'Enviar link'; btn.disabled = false;
+    if (res.error) {
+      if (erroEl) { erroEl.textContent = 'Erro ao enviar. Verifique o e-mail.'; erroEl.classList.add('visible'); }
+      return;
+    }
+    var recEl = document.getElementById('form-recuperar');
+    if (recEl) recEl.style.display = 'none';
+    var okEl = document.getElementById('form-recuperar-ok');
+    if (okEl) { document.getElementById('rec-email-display').textContent = email; okEl.style.display = 'block'; }
+  } catch(e) {
+    btn.textContent = 'Enviar link'; btn.disabled = false;
+    if (erroEl) { erroEl.textContent = 'Erro de conexão.'; erroEl.classList.add('visible'); }
+  }
+}
+
+async function atualizarSenha() {
+  var erroEl = document.getElementById('nova-senha-erro');
+  if (erroEl) erroEl.classList.remove('visible');
+  var nova = document.getElementById('nova-senha-input').value;
+  var confirma = document.getElementById('nova-senha-confirmar').value;
+  if (!nova || nova.length < 6) {
+    if (erroEl) { erroEl.textContent = 'A senha deve ter pelo menos 6 caracteres.'; erroEl.classList.add('visible'); }
+    return;
+  }
+  if (nova !== confirma) {
+    if (erroEl) { erroEl.textContent = 'As senhas não coincidem.'; erroEl.classList.add('visible'); }
+    return;
+  }
+  var btn = document.getElementById('btn-nova-senha');
+  btn.textContent = 'Salvando...'; btn.disabled = true;
+  try {
+    var res = await db.auth.updateUser({ password: nova });
+    btn.textContent = 'Salvar nova senha'; btn.disabled = false;
+    if (res.error) {
+      if (erroEl) { erroEl.textContent = 'Erro ao salvar: ' + res.error.message; erroEl.classList.add('visible'); }
+      return;
+    }
+    _recoveryMode = false;
+    mostrarToast('Senha atualizada! Entrando... 🌙');
+    carregarUsuario(res.data.user);
+  } catch(e) {
+    btn.textContent = 'Salvar nova senha'; btn.disabled = false;
+    if (erroEl) { erroEl.textContent = 'Erro de conexão.'; erroEl.classList.add('visible'); }
+  }
 }
 
 // ══════════════════════════════
