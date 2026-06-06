@@ -980,7 +980,11 @@ tr:hover td { background:var(--rose-pale); }
         <input class="login-input" type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()">
       </div>
       <div class="login-erro" id="login-erro"></div>
-      <div style="text-align:right;margin-top:-4px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:-4px;margin-bottom:8px;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input type="checkbox" id="login-lembrar" checked style="accent-color:var(--rose);cursor:pointer;width:14px;height:14px;">
+          <span style="font-size:12px;color:rgba(255,255,255,0.5);">Lembrar de mim</span>
+        </label>
         <button onclick="loginTab('recuperar')" style="background:none;border:none;color:rgba(201,137,122,0.6);font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0;">Esqueci minha senha</button>
       </div>
       <button class="login-btn" id="btn-login" onclick="fazerLogin()">Entrar</button>
@@ -8712,6 +8716,8 @@ async function fazerLogin() {
     if (erroEl) { erroEl.textContent = 'Preencha e-mail e senha.'; erroEl.classList.add('visible'); }
     return;
   }
+  var lembrarEl = document.getElementById('login-lembrar');
+  localStorage.setItem('lua_lembrar', (!lembrarEl || lembrarEl.checked) ? 'true' : 'false');
   var btn = document.getElementById('btn-login');
   btn.textContent = 'Entrando...'; btn.disabled = true;
   try {
@@ -9018,17 +9024,25 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
     setTimeout(function() { try { carregarProximasConsultasDashboard(); } catch(e) {} }, 950);
     setTimeout(function() {
-      if (db && currentUserId) {
-        db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita').limit(1)
-          .then(function(res) {
-            if (res.data && res.data.length) {
-              var gestante = res.data[0];
-              var status = document.getElementById('contracoes-realtime-status');
-              if (status) status.textContent = t('doula.realtime.monitoring') + ' ' + gestante.gestante_nome;
-              iniciarRealtimeDoula(gestante.gestante_id);
-            }
-          });
-      }
+      if (!db || !currentUserId) return;
+      db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita')
+        .then(function(solRes) {
+          if (!solRes.data || !solRes.data.length) return;
+          var gestantes = solRes.data;
+          var ids = gestantes.map(function(g) { return g.gestante_id; });
+          var doisHAtras = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+          db.from('contracoes').select('gestante_id').in('gestante_id', ids).gte('inicio', doisHAtras).order('inicio', { ascending: false }).limit(1)
+            .then(function(cRes) {
+              var alvo;
+              if (cRes.data && cRes.data.length) {
+                var ativaId = cRes.data[0].gestante_id;
+                alvo = gestantes.find(function(g) { return g.gestante_id === ativaId; }) || gestantes[0];
+              } else {
+                alvo = gestantes[0];
+              }
+              iniciarRealtimeDoula(alvo.gestante_id, alvo.gestante_nome);
+            });
+        });
     }, 800);
   }
   if (tipo === 'pai') {
@@ -10890,17 +10904,24 @@ async function posDCarregarFraldas() {
 var doulaTimerInterval = null;
 var doulaContraAtiva = null;
 
-function iniciarRealtimeDoula(gestanteId) {
+function iniciarRealtimeDoula(gestanteId, gestanteNome) {
   if (!db || !gestanteId) return;
   if (realtimeChannel) db.removeChannel(realtimeChannel);
 
-  // Carrega histórico recente
+  // Carrega histórico das últimas 2 horas
+  var doisHAtras = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
   db.from('contracoes').select('*')
     .eq('gestante_id', gestanteId)
+    .gte('inicio', doisHAtras)
     .order('inicio', { ascending: false })
     .limit(10)
     .then(function(res) {
-      if (res.data) renderContracoesDoula(res.data);
+      if (res.data && res.data.length) {
+        var status = document.getElementById('contracoes-realtime-status');
+        if (status) { status.textContent = t('doula.realtime.monitoring') + ' ' + (gestanteNome || ''); status.style.color = ''; }
+        renderContracoesDoula(res.data);
+      }
+      // Sem contrações recentes: mantém "Aguardando gestante iniciar o timer..."
     });
 
   // Assina atualizações em tempo real
@@ -10935,9 +10956,11 @@ function iniciarRealtimeDoula(gestanteId) {
         document.getElementById('contracoes-realtime-status').style.color = 'var(--earth-light)';
         document.getElementById('contracoes-realtime-timer').style.display = 'none';
         document.getElementById('doula-timer-display').textContent = '00:00';
-        // Recarrega lista
+        // Recarrega lista das últimas 2 horas
+        var doisHAtras2 = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
         db.from('contracoes').select('*')
           .eq('gestante_id', gestanteId)
+          .gte('inicio', doisHAtras2)
           .order('inicio', { ascending: false })
           .limit(10)
           .then(function(res) { if (res.data) renderContracoesDoula(res.data); });
@@ -10969,6 +10992,7 @@ async function fazerLogout() {
   try { if (db) await db.auth.signOut(); } catch(e) {}
   try { _fbMostrarBotao(false); } catch(e) {}
   try { _atualizarBotoesAdmin(false); } catch(e) {}
+  localStorage.removeItem('lua_lembrar');
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
   mostrarToast('Até logo! 🌙');
@@ -12945,7 +12969,7 @@ async function carregarClientesDoula() {
             '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
             '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
             '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
-            '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
+            '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\',\'' + nome + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
             '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
             '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
             '</td></tr>';
@@ -14560,6 +14584,7 @@ function ligarParaDoula() {
 async function verificarSessao() {
   if (!db) return;
   if (_recoveryMode) return;
+  if (localStorage.getItem('lua_lembrar') === 'false') return;
   try {
     var res = await db.auth.getSession();
     if (res.data.session) carregarUsuario(res.data.session.user);
