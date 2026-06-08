@@ -2559,10 +2559,14 @@ tr:hover td { background:var(--rose-pale); }
             <div id="historico-container" style="display:none;"></div>
           </div>
 
+          <div style="display:flex;gap:8px;margin-bottom:14px;">
+            <button id="subtab-ativas" onclick="mudarSubtabClientes('ativas')" style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid var(--rose);background:var(--rose);color:white;transition:all .2s;">Gestantes ativas</button>
+            <button id="subtab-paridas" onclick="mudarSubtabClientes('paridas')" style="padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid var(--border);background:transparent;color:var(--earth);transition:all .2s;">Paridas</button>
+          </div>
           <div class="clients-table">
             <div class="table-header">
-              <div class="table-title" data-i18n="doula.clients.all">Todas as clientes</div>
-              <div style="display:flex;align-items:center;gap:4px;">
+              <div class="table-title" id="clientes-table-title" data-i18n="doula.clients.all">Gestantes ativas</div>
+              <div id="clientes-sort-controls" style="display:flex;align-items:center;gap:4px;">
                 <span style="font-size:11px;color:var(--earth-light);white-space:nowrap;">DPP:</span>
                 <button id="ord-cadastro" onclick="ordenarClientes('cadastro')" class="ord-dpp-btn ord-dpp-ativo" title="Ordem de cadastro">Padrão</button>
                 <button id="ord-asc" onclick="ordenarClientes('asc')" class="ord-dpp-btn" title="Mais próxima primeiro">↑ Próxima</button>
@@ -2571,7 +2575,7 @@ tr:hover td { background:var(--rose-pale); }
               <button class="table-add" onclick="document.getElementById('nova-cliente-form').style.display=document.getElementById('nova-cliente-form').style.display==='none'?'block':'none'" data-i18n="doula.clients.new">+ Nova cliente</button>
             </div>
             <table>
-              <thead><tr><th data-i18n="doula.col.name">Nome</th><th data-i18n="doula.col.week">Semana</th><th data-i18n="doula.col.dpp">DPP</th><th data-i18n="doula.col.hospital">Hospital</th><th data-i18n="doula.col.phase">Fase</th><th data-i18n="doula.col.last">Última consulta</th><th></th></tr></thead>
+              <thead><tr id="clientes-thead-row"><th data-i18n="doula.col.name">Nome</th><th data-i18n="doula.col.week">Semana</th><th data-i18n="doula.col.dpp">DPP</th><th data-i18n="doula.col.hospital">Hospital</th><th data-i18n="doula.col.phase">Fase</th><th data-i18n="doula.col.last">Última consulta</th><th></th></tr></thead>
               <tbody id="clientes-tbody">
                 <tr><td colspan="7" style="text-align:center;padding:32px;">
                   <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma cliente cadastrada ainda</div>
@@ -12864,6 +12868,9 @@ function populateClienteSelects(solicitacoes, externos) {
 }
 
 var _clientesOrdemDpp = null;
+var _clientesSubtab = 'ativas';
+var _clientesDados = null;
+
 function ordenarClientes(ordem) {
   _clientesOrdemDpp = ordem === 'cadastro' ? null : ordem;
   ['cadastro','asc','desc'].forEach(function(o) {
@@ -12873,65 +12880,61 @@ function ordenarClientes(ordem) {
   carregarClientesDoula();
 }
 
-async function carregarClientesDoula() {
-  if (!db || !currentUserId) return;
+function mudarSubtabClientes(tab) {
+  _clientesSubtab = tab;
+  var btnAtivas = document.getElementById('subtab-ativas');
+  var btnParidas = document.getElementById('subtab-paridas');
+  if (btnAtivas) { btnAtivas.style.background = tab === 'ativas' ? 'var(--rose)' : 'transparent'; btnAtivas.style.color = tab === 'ativas' ? 'white' : 'var(--earth)'; btnAtivas.style.borderColor = tab === 'ativas' ? 'var(--rose)' : 'var(--border)'; }
+  if (btnParidas) { btnParidas.style.background = tab === 'paridas' ? 'var(--rose)' : 'transparent'; btnParidas.style.color = tab === 'paridas' ? 'white' : 'var(--earth)'; btnParidas.style.borderColor = tab === 'paridas' ? 'var(--rose)' : 'var(--border)'; }
+  if (_clientesDados) _renderizarTabelaClientes();
+  else carregarClientesDoula();
+}
+
+function _renderizarTabelaClientes() {
   var tbody = document.getElementById('clientes-tbody');
-  if (!tbody) return;
-  try {
-    var results = await Promise.all([
-      db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentUserId).eq('status', 'aceita'),
-      db.from('clientes_doula').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false })
-    ]);
-    var solicitacoes = results[0].data || [];
-    var externos = results[1].data || [];
-    // Busca DPP das gestantes internas direto de usuarios
-    var dppMapSol = {};
-    var fotoMapSol = {};
-    var hospitalMapSol = {};
-    if (solicitacoes.length) {
-      var idsGest = solicitacoes.map(function(g) { return g.gestante_id; });
-      var resDppSol = await db.from('usuarios').select('id,dpp,foto_perfil,hospital').in('id', idsGest);
-      (resDppSol.data || []).forEach(function(u) {
-        if (u.dpp) dppMapSol[u.id] = u.dpp;
-        if (u.foto_perfil) fotoMapSol[u.id] = u.foto_perfil;
-        if (u.hospital) hospitalMapSol[u.id] = u.hospital;
-      });
-      // DPP definida pela doula em clientes_doula sobrepõe a da gestante
-      var resDppCli = await db.from('clientes_doula').select('gestante_id,dpp').in('gestante_id', idsGest).eq('doula_id', currentUserId).not('dpp', 'is', null);
-      (resDppCli.data || []).forEach(function(c) { if (c.dpp && c.gestante_id) dppMapSol[c.gestante_id] = c.dpp; });
+  var theadRow = document.getElementById('clientes-thead-row');
+  var titleEl = document.getElementById('clientes-table-title');
+  var sortControls = document.getElementById('clientes-sort-controls');
+  if (!tbody || !_clientesDados) return;
+  var d = _clientesDados;
+  if (_clientesSubtab === 'paridas') {
+    if (sortControls) sortControls.style.visibility = 'hidden';
+    if (titleEl) titleEl.textContent = 'Paridas 👶';
+    if (theadRow) theadRow.innerHTML = '<th>Nome</th><th>Parto em</th><th colspan="4"></th><th></th>';
+    var paridasSol = d.paridasSol, paridasExt = d.paridasExt, partosDataMap = d.partosDataMap;
+    if (!paridasSol.length && !paridasExt.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">Nenhuma parida ainda</div><div style="font-size:13px;color:var(--earth-light);">Clientes que já pariram aparecerão aqui</div></td></tr>';
+    } else {
+      var linhasP = paridasSol.map(function(g) {
+        var dataPartoStr = partosDataMap[g.gestante_id] ? new Date(partosDataMap[g.gestante_id] + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        var nome = (g.gestante_nome||'').replace(/'/g,'');
+        return '<tr>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')">' + g.gestante_nome + ' <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dataPartoStr + '</td>' +
+          '<td colspan="4" style="padding:14px;"><span style="font-size:11px;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;">👶 Parida</span></td>' +
+          '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+          '<button onclick="verHistoricoCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Histórico</button>' +
+          '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">💬 Mensagens</button>' +
+          '</div></td></tr>';
+      }).concat(paridasExt.map(function(c) {
+        var dataPartoStr = partosDataMap[c.id] ? new Date(partosDataMap[c.id] + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+        var nomeEsc = (c.nome||'').replace(/'/g,'\\\'');
+        return '<tr>' +
+          '<td style="padding:14px 20px;font-size:14px;font-weight:500;cursor:pointer;color:var(--rose);" onclick="abrirPerfilCliente(\'' + c.id + '\',\'ext\',\'' + nomeEsc + '\')">' + c.nome + ' <span style="font-size:10px;background:var(--cream);color:var(--earth-light);padding:2px 6px;border-radius:10px;margin-left:4px;">externo</span> <span style="font-size:10px;color:var(--earth-light);">ver perfil →</span></td>' +
+          '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + dataPartoStr + '</td>' +
+          '<td colspan="4" style="padding:14px;"><span style="font-size:11px;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;">👶 Parida</span></td>' +
+          '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+          '<button onclick="verHistoricoCliente(\'' + c.id + '\',\'ext\',\'' + nomeEsc + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Histórico</button>' +
+          '</div></td></tr>';
+      }));
+      tbody.innerHTML = linhasP.join('');
     }
-    populateClienteSelects(solicitacoes, externos);
-    var total = solicitacoes.length + externos.length;
-    var statEl = document.getElementById('stat-clientes');
-    if (statEl) statEl.textContent = total;
-    var agoraDpp = new Date();
-    var mesAtual = agoraDpp.getMonth(), anoAtual = agoraDpp.getFullYear();
-    var comDppMesExt = externos.filter(function(c) {
-      if (!c.dpp) return false;
-      var d = new Date(c.dpp + 'T12:00:00');
-      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
-    }).map(function(c) { return { nome: c.nome, dpp: c.dpp }; });
-    var comDppMesInt = solicitacoes.filter(function(g) {
-      var dpp = dppMapSol[g.gestante_id];
-      if (!dpp) return false;
-      var d = new Date(dpp + 'T12:00:00');
-      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
-    }).map(function(g) { return { nome: g.gestante_nome, dpp: dppMapSol[g.gestante_id] }; });
-    var comDppMes = comDppMesExt.concat(comDppMesInt);
-    var statPartos = document.getElementById('stat-partos');
-    if (statPartos) statPartos.textContent = comDppMes.length;
-    var partosMesEl = document.getElementById('partos-mes');
-    if (partosMesEl) {
-      partosMesEl.innerHTML = comDppMes.length ? comDppMes.map(function(c) {
-        var dppStr = new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short'});
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
-          '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.nome + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);">DPP: ' + dppStr + '</div></div>' +
-          '<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:10px;flex-shrink:0;">Previsto</span>' +
-        '</div>';
-      }).join('') : '<div class="empty-state-small">Nenhum parto previsto este mês</div>';
-    }
-    // Sincroniza estado visual dos botões de ordenação
+  } else {
+    if (sortControls) sortControls.style.visibility = 'visible';
+    if (titleEl) titleEl.textContent = 'Gestantes ativas';
+    if (theadRow) theadRow.innerHTML = '<th>Nome</th><th>Semana</th><th>DPP</th><th>Hospital</th><th>Fase</th><th>Última consulta</th><th></th>';
+    var ativasSol = d.ativasSol, ativasExt = d.ativasExt, dppMapSol = d.dppMapSol, fotoMapSol = d.fotoMapSol, hospitalMapSol = d.hospitalMapSol;
+    var total = ativasSol.length + ativasExt.length;
     ['cadastro','asc','desc'].forEach(function(o) {
       var btn = document.getElementById('ord-' + o);
       if (btn) btn.classList.toggle('ord-dpp-ativo', (_clientesOrdemDpp === null ? 'cadastro' : _clientesOrdemDpp) === o);
@@ -12939,10 +12942,9 @@ async function carregarClientesDoula() {
     if (!total) {
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;"><div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:6px;">' + t('doula.clients.empty') + '</div><div style="font-size:13px;color:var(--earth-light);">' + t('doula.clients.empty.sub') + '</div></td></tr>';
     } else {
-      // Lista unificada para permitir ordenação por DPP entre internas e externas
-      var todosClientes = solicitacoes.map(function(g) {
+      var todosClientes = ativasSol.map(function(g) {
         return { tipo: 'sol', dpp: dppMapSol[g.gestante_id] || null, _g: g };
-      }).concat(externos.map(function(c) {
+      }).concat(ativasExt.map(function(c) {
         return { tipo: 'ext', dpp: c.dpp || null, _c: c };
       }));
       if (_clientesOrdemDpp === 'asc' || _clientesOrdemDpp === 'desc') {
@@ -12999,6 +13001,106 @@ async function carregarClientesDoula() {
       });
       tbody.innerHTML = linhas.join('');
     }
+  }
+  // Atualiza badge da aba Paridas
+  var numParidas = (d.paridasSol || []).length + (d.paridasExt || []).length;
+  var btnParidas2 = document.getElementById('subtab-paridas');
+  if (btnParidas2) {
+    btnParidas2.innerHTML = numParidas > 0
+      ? 'Paridas <span style="background:rgba(201,137,122,0.18);border-radius:10px;padding:1px 7px;font-size:10px;margin-left:2px;">' + numParidas + '</span>'
+      : 'Paridas';
+  }
+}
+
+async function carregarClientesDoula() {
+  if (!db || !currentUserId) return;
+  var tbody = document.getElementById('clientes-tbody');
+  if (!tbody) return;
+  try {
+    var results = await Promise.all([
+      db.from('solicitacoes').select('gestante_id,gestante_nome,criado_em').eq('doula_id', currentUserId).eq('status', 'aceita'),
+      db.from('clientes_doula').select('*').eq('doula_id', currentUserId).order('criado_em', { ascending: false }),
+      db.from('registros_atendimento').select('gestante_id,cliente_externo_id,data').eq('doula_id', currentUserId).eq('tipo', 'Parto realizado')
+    ]);
+    var solicitacoes = results[0].data || [];
+    var externos = results[1].data || [];
+    var partosRealizados = results[2].data || [];
+    // Busca DPP das gestantes internas direto de usuarios
+    var dppMapSol = {};
+    var fotoMapSol = {};
+    var hospitalMapSol = {};
+    if (solicitacoes.length) {
+      var idsGest = solicitacoes.map(function(g) { return g.gestante_id; });
+      var resDppSol = await db.from('usuarios').select('id,dpp,foto_perfil,hospital').in('id', idsGest);
+      (resDppSol.data || []).forEach(function(u) {
+        if (u.dpp) dppMapSol[u.id] = u.dpp;
+        if (u.foto_perfil) fotoMapSol[u.id] = u.foto_perfil;
+        if (u.hospital) hospitalMapSol[u.id] = u.hospital;
+      });
+      // DPP definida pela doula em clientes_doula sobrepõe a da gestante
+      var resDppCli = await db.from('clientes_doula').select('gestante_id,dpp').in('gestante_id', idsGest).eq('doula_id', currentUserId).not('dpp', 'is', null);
+      (resDppCli.data || []).forEach(function(c) { if (c.dpp && c.gestante_id) dppMapSol[c.gestante_id] = c.dpp; });
+    }
+    var partosSolSet = new Set(), partosExtSet = new Set(), partosDataMap = {};
+    partosRealizados.forEach(function(r) {
+      if (r.gestante_id) { partosSolSet.add(r.gestante_id); if (!partosDataMap[r.gestante_id]) partosDataMap[r.gestante_id] = r.data; }
+      if (r.cliente_externo_id) { partosExtSet.add(r.cliente_externo_id); if (!partosDataMap[r.cliente_externo_id]) partosDataMap[r.cliente_externo_id] = r.data; }
+    });
+    var ativasSolC = solicitacoes.filter(function(g) { return !partosSolSet.has(g.gestante_id); });
+    var paridasSolC = solicitacoes.filter(function(g) { return partosSolSet.has(g.gestante_id); });
+    var ativasExtC = externos.filter(function(c) { return !partosExtSet.has(c.id); });
+    var paridasExtC = externos.filter(function(c) { return partosExtSet.has(c.id); });
+    _clientesDados = { ativasSol: ativasSolC, paridasSol: paridasSolC, ativasExt: ativasExtC, paridasExt: paridasExtC, dppMapSol: dppMapSol, fotoMapSol: fotoMapSol, hospitalMapSol: hospitalMapSol, partosDataMap: partosDataMap };
+    populateClienteSelects(solicitacoes, externos);
+    var total = ativasSolC.length + ativasExtC.length;
+    var statEl = document.getElementById('stat-clientes');
+    if (statEl) statEl.textContent = total;
+    var agoraDpp = new Date();
+    var mesAtual = agoraDpp.getMonth(), anoAtual = agoraDpp.getFullYear();
+    var comDppMesExt = ativasExtC.filter(function(c) {
+      if (!c.dpp) return false;
+      var d = new Date(c.dpp + 'T12:00:00');
+      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    }).map(function(c) { return { nome: c.nome, dpp: c.dpp }; });
+    var comDppMesInt = ativasSolC.filter(function(g) {
+      var dpp = dppMapSol[g.gestante_id];
+      if (!dpp) return false;
+      var d = new Date(dpp + 'T12:00:00');
+      return d.getMonth() === mesAtual && d.getFullYear() === anoAtual;
+    }).map(function(g) { return { nome: g.gestante_nome, dpp: dppMapSol[g.gestante_id] }; });
+    var comDppMes = comDppMesExt.concat(comDppMesInt);
+    var statPartos = document.getElementById('stat-partos');
+    if (statPartos) statPartos.textContent = comDppMes.length;
+    var partosMesEl = document.getElementById('partos-mes');
+    if (partosMesEl) {
+      if (!comDppMes.length) {
+        partosMesEl.innerHTML = '<div class="empty-state-small">Nenhum parto previsto este mês</div>';
+      } else {
+        var hojePartos = new Date(); hojePartos.setHours(0, 0, 0, 0);
+        var porVir = comDppMes.filter(function(c) { return new Date(c.dpp + 'T12:00:00') >= hojePartos; });
+        var jaPassados = comDppMes.filter(function(c) { return new Date(c.dpp + 'T12:00:00') < hojePartos; });
+        porVir.sort(function(a, b) { return new Date(a.dpp) - new Date(b.dpp); });
+        jaPassados.sort(function(a, b) { return new Date(b.dpp) - new Date(a.dpp); });
+        function renderLinhaPartoMes(c, badge) {
+          var dppStr = new Date(c.dpp + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short'});
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);">' +
+            '<div><div style="font-size:13px;font-weight:500;color:var(--dark);">' + c.nome + '</div>' +
+            '<div style="font-size:11px;color:var(--earth-light);">DPP: ' + dppStr + '</div></div>' +
+            badge + '</div>';
+        }
+        var html = '';
+        if (porVir.length) {
+          if (jaPassados.length) html += '<div style="font-size:10px;font-weight:700;color:var(--earth-light);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Por vir</div>';
+          html += porVir.map(function(c) { return renderLinhaPartoMes(c, '<span style="font-size:10px;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:10px;flex-shrink:0;">Previsto</span>'); }).join('');
+        }
+        if (jaPassados.length) {
+          if (porVir.length) html += '<div style="font-size:10px;font-weight:700;color:var(--earth-light);text-transform:uppercase;letter-spacing:0.6px;margin-top:12px;margin-bottom:4px;">Já passados</div>';
+          html += jaPassados.map(function(c) { return renderLinhaPartoMes(c, '<span style="font-size:10px;background:rgba(0,0,0,0.05);color:var(--earth-light);padding:2px 8px;border-radius:10px;flex-shrink:0;">DPP passou</span>'); }).join('');
+        }
+        partosMesEl.innerHTML = html;
+      }
+    }
+    _renderizarTabelaClientes();
     var sidebarList = document.getElementById('sidebar-clientes-list');
     if (sidebarList) {
       var todosSidebar = solicitacoes.map(function(g) { return { nome: g.gestante_nome, tipo: 'sol', id: g.gestante_id, foto: fotoMapSol[g.gestante_id] || null }; })
@@ -16687,6 +16789,8 @@ document.addEventListener('click', function(e) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-06-08', titulo:'Partos do mês separados por "Por vir" e "Já passados"', descricao:'O card "Partos do mês" no dashboard da doula agora divide os partos previstos em duas seções: "Por vir" (DPP a partir de hoje, badge laranja Previsto) e "Já passados" (DPP que já passou mas o parto ainda não foi confirmado no app, badge cinza). As seções só aparecem quando há clientes em cada grupo. Clientes já marcadas como Já Pariu não aparecem mais aqui — ficam na aba Paridas.' },
+  { data:'2026-06-08', titulo:'Aba "Paridas" na lista de clientes', descricao:'A seção Clientes da doula agora tem duas abas: "Gestantes ativas" e "Paridas". Quando uma cliente é marcada como 👶 Já pariu (via alerta do dashboard), ela sai automaticamente da lista de ativas e passa para a aba Paridas, que exibe a data do parto e atalhos para histórico e mensagens. O contador de clientes ativas no dashboard também é atualizado para refletir somente as gestações em andamento.' },
   { data:'2026-06-05', titulo:'Doula backup: seleção de clientes com acesso', descricao:'Na configuração de doula backup, a doula principal agora pode escolher quais clientes a backup pode acessar. Uma nova seção "Clientes com acesso" exibe checkboxes com todas as clientes ativas — todas marcadas por padrão (acesso total). Desmarcando algumas, o acesso da backup fica restrito apenas às clientes selecionadas. O filtro se aplica à lista de clientes, chat, agenda e registros no painel da backup.' },
   { data:'2026-06-02', titulo:'Botões de ação rápida nos alertas de DPP', descricao:'Cada alerta de DPP no dashboard da doula agora tem dois botões: 🤱 Em trabalho de parto muda o card para cor âmbar, registra o evento e persiste o status no banco — na próxima vez que o dashboard carregar, o card continua mostrando o estado correto. 👶 Já pariu remove o alerta da lista, registra o parto e cria automaticamente a primeira entrada de acompanhamento pós-parto (dia 0), iniciando o acompanhamento sem nenhum passo extra.' },
   { data:'2026-06-02', titulo:'Editar registro de atendimento pelo perfil da cliente', descricao:'A aba Registros dentro do perfil de cada cliente agora exibe o botão ✏️ Editar em cada card. Ao clicar, o app navega automaticamente para o painel de Registros com o formulário já pré-preenchido com os dados do registro selecionado.' },
@@ -17454,6 +17558,7 @@ async function alertaPartoRealizadoAcao(tipo, id, nome, cardId) {
       container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">Nenhum alerta por enquanto</div><div class="empty-sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
     }
     carregarPosParto();
+    carregarClientesDoula();
     mostrarToast('👶 Parabéns! Parto de ' + nome + ' confirmado. Acompanhamento pós-parto iniciado!');
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
