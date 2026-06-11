@@ -120,9 +120,11 @@ header { padding-top: env(safe-area-inset-top, 0); }
 .bib-tipo-tab.active { background:rgba(201,137,122,0.15); border-color:rgba(201,137,122,0.4); color:#E8C5BC; }
 
 /* ── ADMIN ── */
-.admin-nav-item { padding:11px 20px; font-size:13px; color:rgba(201,137,122,0.5); cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; }
+.admin-nav-item { display:flex; align-items:center; gap:10px; padding:11px 20px; font-size:13px; color:rgba(201,137,122,0.5); cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; }
 .admin-nav-item:hover { color:#C9897A; background:rgba(201,137,122,0.05); }
 .admin-nav-item.active { color:#E8C5BC; border-left-color:#C9897A; background:rgba(201,137,122,0.08); }
+.admin-nav-icon { width:14px; height:14px; flex-shrink:0; opacity:0.5; transition:opacity 0.2s; }
+.admin-nav-item:hover .admin-nav-icon, .admin-nav-item.active .admin-nav-icon { opacity:1; }
 .admin-panel-section { display:none; }
 .admin-panel-section.active { display:block; animation:fadeIn 0.3s ease; }
 .admin-stat { 
@@ -142,7 +144,7 @@ header { padding-top: env(safe-area-inset-top, 0); }
 }
 .admin-stat-val { font-family:'Cormorant Garamond',serif; font-size:42px; color:#C9897A; margin-bottom:4px; font-weight: 300; }
 .admin-stat-label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(176,154,140,0.4); font-weight: 600; }
-.admin-stat-icon { position: absolute; top: 18px; right: 18px; font-size: 20px; opacity: 0.3; }
+.admin-stat-icon { position: absolute; top: 18px; right: 18px; width: 18px; height: 18px; opacity: 0.3; color: #C9897A; }
 .admin-label { font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(201,137,122,0.6); display:block; margin-bottom:6px; }
 .admin-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px 16px; font-size:13px; color:rgba(255,255,255,0.8); font-family:'DM Sans',sans-serif; outline:none; transition:all 0.2s; }
 .admin-input:focus { border-color:rgba(201,137,122,0.4); background: rgba(255,255,255,0.06); }
@@ -16128,14 +16130,14 @@ function mostrarToast(msg) {
     <!-- Admin Sidebar -->
     <div id="admin-sidebar-desktop" style="background:#150c08;border-right:1px solid rgba(201,137,122,0.1);padding:20px 0;">
       <div id="admin-nav">
-        <div class="admin-nav-item active" onclick="adminNav(this,'admin-usuarios')">👥 Usuários</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-biblioteca')">📚 Biblioteca</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-conteudo')">📝 Conteúdos</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-faq')">❓ FAQ</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-reportes');carregarReportesAdmin()">⚑ Reportes <span id="badge-reportes" style="display:none;background:var(--rose);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px;"></span></div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-estatisticas')">📊 Estatísticas</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-config')">⚙️ Configurações</div>
-        <div class="admin-nav-item" onclick="adminNav(this,'admin-simulacao')">👁 Simular Perfil</div>
+        <div class="admin-nav-item active" onclick="adminNav(this,'admin-usuarios')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuários</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-biblioteca')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Biblioteca</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-conteudo')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Conteúdos</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-faq')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>FAQ</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-reportes');carregarReportesAdmin()"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>Reportes <span id="badge-reportes" style="display:none;background:var(--rose);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:4px;"></span></div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-estatisticas')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Estatísticas</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-config')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</div>
+        <div class="admin-nav-item" onclick="adminNav(this,'admin-simulacao')"><svg class="admin-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Simular Perfil</div>
       </div>
     </div>
 
@@ -16165,7 +16167,7 @@ function mostrarToast(msg) {
         </div>
 
         <div style="background:#1a0f0a;border-radius:14px;padding:20px;margin-top:20px;border:1px solid rgba(201,137,122,0.1);">
-          <div style="font-size:14px;font-weight:500;color:#E8C5BC;margin-bottom:6px;">✉️ Confirmar email manualmente</div>
+          <div style="font-size:14px;font-weight:500;color:#E8C5BC;margin-bottom:6px;">Confirmar email manualmente</div>
           <div style="font-size:12px;color:rgba(176,154,140,0.5);margin-bottom:14px;">Use quando o usuário cadastrou mas não recebeu o email de confirmação.</div>
           <div style="display:flex;gap:10px;">
             <input id="admin-confirm-email-input" type="email" placeholder="email@exemplo.com" style="flex:1;background:rgba(201,137,122,0.06);border:1px solid rgba(201,137,122,0.2);border-radius:10px;padding:9px 14px;color:#E8C5BC;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;">
@@ -16181,13 +16183,13 @@ function mostrarToast(msg) {
 
         <!-- Formulário adicionar material -->
         <div style="background:#1a0f0a;border-radius:14px;padding:22px;margin-bottom:24px;border:1px solid rgba(201,137,122,0.1);">
-          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">➕ Adicionar novo material</div>
+          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">Adicionar novo material</div>
 
           <!-- Tipo selector tabs -->
           <div style="display:flex;gap:8px;margin-bottom:20px;">
-            <button class="bib-tipo-tab active" id="tab-pdf" onclick="setBibTipo('pdf')">📄 PDF / Arquivo</button>
-            <button class="bib-tipo-tab" id="tab-video" onclick="setBibTipo('video')">🎬 Vídeo YouTube</button>
-            <button class="bib-tipo-tab" id="tab-link" onclick="setBibTipo('link')">🔗 Link externo</button>
+            <button class="bib-tipo-tab active" id="tab-pdf" onclick="setBibTipo('pdf')">PDF / Arquivo</button>
+            <button class="bib-tipo-tab" id="tab-video" onclick="setBibTipo('video')">Vídeo YouTube</button>
+            <button class="bib-tipo-tab" id="tab-link" onclick="setBibTipo('link')">Link externo</button>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -16278,7 +16280,7 @@ function mostrarToast(msg) {
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Conteúdos por fase</div>
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Gerencie os conteúdos exibidos para as gestantes em cada fase</div>
         <div style="background:#1a0f0a;border-radius:14px;padding:22px;margin-bottom:20px;border:1px solid rgba(201,137,122,0.1);">
-          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">➕ Adicionar conteúdo</div>
+          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">Adicionar conteúdo</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
             <div>
               <label class="admin-label">Título</label>
@@ -16318,7 +16320,7 @@ function mostrarToast(msg) {
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Guia Prático / FAQ</div>
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Adicione perguntas e respostas para o guia das doulas</div>
         <div style="background:#1a0f0a;border-radius:14px;padding:22px;margin-bottom:20px;border:1px solid rgba(201,137,122,0.1);">
-          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">➕ Nova pergunta</div>
+          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:16px;">Nova pergunta</div>
           <div style="margin-bottom:14px;">
             <label class="admin-label">Pergunta</label>
             <input class="admin-input" type="text" id="faq-pergunta" placeholder="Ex: Como identificar trabalho de parto real?">
@@ -16336,12 +16338,12 @@ function mostrarToast(msg) {
 
       <!-- REPORTES -->
       <div class="admin-panel-section" id="admin-reportes">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">⚑ Reportes</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Reportes</div>
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:16px;">Reportes enviados por gestantes, doulas e acompanhantes</div>
         <!-- Abas -->
         <div style="display:flex;gap:8px;margin-bottom:16px;">
-          <button id="raba-recebidos" onclick="setAbaReporte('recebidos')" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">📥 Recebidos</button>
-          <button id="raba-historico" onclick="setAbaReporte('historico')" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Lidos e Respondidos</button>
+          <button id="raba-recebidos" onclick="setAbaReporte('recebidos')" style="background:var(--rose);color:white;border:none;padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Recebidos</button>
+          <button id="raba-historico" onclick="setAbaReporte('historico')" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">Lidos e Respondidos</button>
         </div>
         <!-- Filtro por tipo -->
         <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
@@ -16349,7 +16351,7 @@ function mostrarToast(msg) {
           <button onclick="setFiltroReporte('gestante',this)" id="rfiltro-gestante" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Gestante</button>
           <button onclick="setFiltroReporte('doula',this)" id="rfiltro-doula" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Doula</button>
           <button onclick="setFiltroReporte('pai',this)" id="rfiltro-pai" style="background:rgba(255,255,255,0.06);color:rgba(176,154,140,0.7);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Acompanhante</button>
-          <button onclick="carregarReportesAdmin()" style="background:rgba(255,255,255,0.04);color:rgba(176,154,140,0.5);border:1px solid rgba(255,255,255,0.06);padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄</button>
+          <button onclick="carregarReportesAdmin()" style="background:rgba(255,255,255,0.04);color:rgba(176,154,140,0.5);border:1px solid rgba(255,255,255,0.06);padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↻</button>
         </div>
         <div id="admin-reportes-lista" style="background:#1a0f0a;border-radius:14px;padding:16px;border:1px solid rgba(201,137,122,0.1);">
           <div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Carregando reportes...</div>
@@ -16364,22 +16366,22 @@ function mostrarToast(msg) {
         <!-- Cards rápidos -->
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
           <div class="admin-stat">
-            <div class="admin-stat-icon">👥</div>
+            <div class="admin-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             <div class="admin-stat-val" id="stat-total-cad">—</div>
             <div class="admin-stat-label">Total cadastrados</div>
           </div>
           <div class="admin-stat">
-            <div class="admin-stat-icon">✨</div>
+            <div class="admin-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
             <div class="admin-stat-val" id="stat-hoje">—</div>
             <div class="admin-stat-label">Cadastros hoje</div>
           </div>
           <div class="admin-stat">
-            <div class="admin-stat-icon">⏱️</div>
+            <div class="admin-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <div class="admin-stat-val" id="stat-sessoes-total">—</div>
             <div class="admin-stat-label">Sessões (30 dias)</div>
           </div>
           <div class="admin-stat">
-            <div class="admin-stat-icon">🔥</div>
+            <div class="admin-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
             <div class="admin-stat-val" id="stat-dau">—</div>
             <div class="admin-stat-label">Usuários ativos (30d)</div>
           </div>
@@ -16418,7 +16420,7 @@ function mostrarToast(msg) {
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
             <div style="font-size:13px;font-weight:500;color:#E8C5BC;">Log de acessos (individual)</div>
             <div style="position:relative;">
-              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.4;font-size:12px;">🔍</span>
+              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.4;font-size:12px;">⌕</span>
               <input id="stat-busca-usuario" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarLogAcessos(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:8px 14px 8px 34px;font-size:12px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;outline:none;width:260px;transition:all 0.2s;">
             </div>
           </div>
@@ -16434,38 +16436,38 @@ function mostrarToast(msg) {
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Veja o app como cada tipo de usuário — sem precisar criar uma conta separada.</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
           <button onclick="adminSimularPerfil('gestante')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">🤰</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Gestante</div>
-            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Contações, bebê, plano de parto</div>
+            <div style="font-size:11px;color:rgba(176,154,140,0.5);">Contrações, bebê, plano de parto</div>
           </button>
           <button onclick="adminSimularPerfil('doula')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">🌙</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Clientes, agenda, registros</div>
           </button>
           <button onclick="adminSimularPerfil('pos')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">🌸</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Mãe Pós-Parto</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Bebê, rotina, amamentação</div>
           </button>
           <button onclick="adminSimularPerfil('pos_doula')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">💜</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula Pós</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Clientes pós-parto, rotina</div>
           </button>
           <button onclick="adminSimularPerfil('pai')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">❤️</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Acompanhante</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Diário, contrações ao vivo</div>
           </button>
           <button onclick="adminSimularPerfil('doula_backup')" style="background:#1a0f0a;border:1px solid rgba(201,137,122,0.2);border-radius:16px;padding:22px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;" onmouseover="this.style.borderColor='#C9897A'" onmouseout="this.style.borderColor='rgba(201,137,122,0.2)'">
-            <div style="font-size:28px;margin-bottom:8px;">🛡️</div>
+            <div style="margin-bottom:10px;display:flex;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9897A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
             <div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Doula Backup</div>
             <div style="font-size:11px;color:rgba(176,154,140,0.5);">Todas as permissões ativas</div>
           </button>
         </div>
         <div style="background:rgba(201,137,122,0.05);border:1px solid rgba(201,137,122,0.12);border-radius:12px;padding:14px 18px;font-size:12px;color:rgba(176,154,140,0.45);line-height:1.6;">
-          ℹ️ A simulação mostra a interface de cada perfil. Dados reais só carregam se você tiver uma conta Supabase vinculada. Um botão flutuante "🔙 Admin" ficará visível para voltar a qualquer momento.
+          A simulação mostra a interface de cada perfil. Dados reais só carregam se você tiver uma conta Supabase vinculada. Um botão flutuante "🔙 Admin" ficará visível para voltar a qualquer momento.
         </div>
       </div>
 
@@ -16474,7 +16476,7 @@ function mostrarToast(msg) {
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#E8C5BC;margin-bottom:6px;">Configurações</div>
         <div style="font-size:13px;color:rgba(176,154,140,0.6);margin-bottom:24px;">Ajustes gerais do app</div>
         <div style="background:#1a0f0a;border-radius:14px;padding:22px;border:1px solid rgba(201,137,122,0.1);">
-          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:20px;">🔐 Alterar senha do admin</div>
+          <div style="font-size:15px;font-weight:500;color:#E8C5BC;margin-bottom:20px;">Alterar senha do admin</div>
           <div style="margin-bottom:14px;">
             <label class="admin-label">Nova senha</label>
             <input class="admin-input" type="password" id="nova-senha-admin" placeholder="Mínimo 8 caracteres">
