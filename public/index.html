@@ -224,10 +224,11 @@ header {
 .pos-role { font-size:13px; color:var(--rose); margin-top:2px; font-weight:500; }
 .pos-profile { padding:0 24px 28px; border-bottom:1px solid rgba(201,137,122,0.1); text-align:center; }
 .pos-nav { padding:16px 0; flex:1; }
-.pos-nav-item { display:flex; align-items:center; gap:12px; padding:12px 24px; cursor:pointer; font-size:14px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
+.pos-nav-item { display:flex; align-items:center; gap:12px; padding:10px 24px; cursor:pointer; font-size:13px; letter-spacing:0.2px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
 .pos-nav-item:hover { background:var(--rose-pale); color:var(--rose); }
 .pos-nav-item.active { background:var(--rose-pale); color:var(--rose); border-left-color:var(--rose); font-weight:500; }
-.pos-nav-icon { font-size:18px; width:22px; text-align:center; }
+.pos-nav-icon { width:15px; height:15px; flex-shrink:0; opacity:0.45; transition:opacity 0.2s; }
+.pos-nav-item:hover .pos-nav-icon, .pos-nav-item.active .pos-nav-icon { opacity:1; }
 .pos-panel { display:none; }
 .pos-panel.active { display:block; animation:fadeIn 0.3s ease; }
 .pos-lado-btn { background:var(--rose-pale); color:var(--mid); border:1.5px solid rgba(201,137,122,0.2); border-radius:20px; padding:8px 20px; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
@@ -2298,7 +2299,7 @@ tr:hover td { background:var(--rose-pale); }
           <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n="doula.nav.perfil">Meu Perfil</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
-          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">Acessar Backup</div>
         </div>
         <div class="d-sidebar-clients">
           <div class="d-clients-title">Clientes Ativas</div>
@@ -3368,11 +3369,11 @@ tr:hover td { background:var(--rose-pale); }
           <div class="pos-role" data-i18n="hdr.role.pos">Mãe Pós-Parto</div>
         </div>
         <nav class="pos-nav">
-          <div class="pos-nav-item active" onclick="posNav(this,'pos-dashboard')"><span class="pos-nav-icon">🏠</span><span data-i18n="pos.nav.inicio">Início</span></div>
-          <div class="pos-nav-item" onclick="posNav(this,'pos-amamentacao')"><span class="pos-nav-icon">🤱</span><span data-i18n="pos.nav.amamentacao">Amamentação</span></div>
-          <div class="pos-nav-item" onclick="posNav(this,'pos-rotina')"><span class="pos-nav-icon">🌙</span><span data-i18n="pos.nav.rotina">Rotina</span></div>
-          <div class="pos-nav-item" onclick="posNav(this,'pos-bebe')"><span class="pos-nav-icon">👶</span><span data-i18n="pos.nav.bebe">Bebê</span></div>
-          <div class="pos-nav-item" onclick="posNav(this,'pos-mensagens');carregarPosMensagens()"><span class="pos-nav-icon">💬</span><span data-i18n="pos.nav.mensagens">Mensagens</span></div>
+          <div class="pos-nav-item active" onclick="posNav(this,'pos-dashboard')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span data-i18n="pos.nav.inicio">Início</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-amamentacao')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-i18n="pos.nav.amamentacao">Amamentação</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-rotina')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="pos.nav.rotina">Rotina</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-bebe')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span data-i18n="pos.nav.bebe">Bebê</span></div>
+          <div class="pos-nav-item" onclick="posNav(this,'pos-mensagens');carregarPosMensagens()"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="pos.nav.mensagens">Mensagens</span></div>
         </nav>
         <div style="margin:auto 16px 16px;padding:16px;background:linear-gradient(135deg,var(--rose-pale),var(--rose-light));border-radius:14px;text-align:center;">
           <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:4px;">Bebê</div>
@@ -3410,51 +3411,51 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- INÍCIO -->
         <div class="pos-panel active" id="pos-dashboard">
-          <div class="panel-title" id="pos-greeting">Olá, Mamãe 🌸</div>
+          <div class="panel-title" id="pos-greeting">Olá, Mamãe</div>
           <div class="panel-sub" id="pos-dias-puerperio" data-i18n="loading">Carregando...</div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
             <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
-              <div class="stat-icon">🤱</div>
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
               <div class="stat-val" id="pos-stat-mamada">—</div>
               <div class="stat-label" data-i18n="pos.stat.mamadas">mamadas hoje</div>
             </div>
             <div class="stat-card" style="cursor:pointer;" onclick="posAbrirFralda()">
-              <div class="stat-icon">💧</div>
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
               <div class="stat-val" id="pos-stat-fralda">—</div>
               <div class="stat-label" data-i18n="pos.stat.fraldas">fraldas hoje</div>
             </div>
             <div class="stat-card" style="cursor:pointer;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
-              <div class="stat-icon">🌙</div>
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
               <div class="stat-val" id="pos-stat-sono">—</div>
               <div class="stat-label" data-i18n="pos.stat.sono">sono hoje</div>
             </div>
           </div>
           <div style="background:var(--white);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 8px rgba(45,31,26,0.05);margin-bottom:20px;">
-            <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.stat.intervalo">⏱ Intervalo entre mamadas</div>
+            <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.stat.intervalo">Intervalo entre mamadas</div>
             <div style="font-size:14px;font-weight:600;color:var(--rose);" id="pos-stat-intervalo">—</div>
           </div>
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,var(--rose-pale),#fff0ec);border:1.5px solid rgba(201,137,122,0.2);" onclick="posNav(document.getElementById('pos-nav-amamentacao'),'pos-amamentacao')">
-            <div class="card-title" data-i18n="pos.reg.mamada.title">🤱 Registrar Mamada</div>
+            <div class="card-title" data-i18n="pos.reg.mamada.title">Registrar Mamada</div>
             <div style="font-size:13px;color:var(--earth-light);" data-i18n="pos.reg.mamada.sub">Mama, bomba ou mamadeira — inicie o timer ou registre o volume.</div>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posAbrirFralda()">
-              <div style="font-size:28px;margin-bottom:10px;">💧</div>
+              <div style="margin-bottom:10px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
               <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="pos.reg.fralda.title">Troca de Fralda</div>
               <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.reg.now">Registrar agora</div>
             </div>
             <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="posNav(document.getElementById('pos-nav-rotina'),'pos-rotina')">
-              <div style="font-size:28px;margin-bottom:10px;">🌙</div>
+              <div style="margin-bottom:10px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
               <div style="font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;" data-i18n="pos.reg.sono.title">Sono do Bebê</div>
               <div style="font-size:12px;color:var(--earth-light);" data-i18n="pos.reg.sono.sub">Soneca ou noturno</div>
             </div>
           </div>
 
           <div class="card" style="cursor:pointer;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);margin-top:4px;" onclick="posToggleDoulaPos()">
-            <div class="card-title" style="color:#9B7BB8;" data-i18n="pos.doula.title">💜 Minha Doula Pós-Parto</div>
+            <div class="card-title" style="color:#9B7BB8;" data-i18n="pos.doula.title">Minha Doula Pós-Parto</div>
             <div id="pos-doula-pos-status" style="font-size:13px;color:var(--earth-light);" data-i18n="loading">Carregando...</div>
           </div>
           <div id="pos-doula-escolha" style="display:none;margin-top:4px;">
@@ -3499,7 +3500,7 @@ tr:hover td { background:var(--rose-pale); }
           </div>
 
           <div class="card">
-            <div class="card-title" data-i18n="pos.amam.bomba.title">🫙 Bomba / Mamadeira</div>
+            <div class="card-title" data-i18n="pos.amam.bomba.title">Bomba / Mamadeira</div>
             <div style="margin-bottom:16px;">
               <label class="form-label" data-i18n="pos.amam.tipo.label">Tipo</label>
               <select id="pos-bomba-tipo" class="form-input" onchange="posToggleBombaFields()">
@@ -3544,9 +3545,9 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" data-i18n="pos.rot.panel.sub">Sono e fraldas</div>
 
           <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-            <button class="pos-tab-btn active" id="pos-tab-sono-btn" onclick="posRotTab('sono')" style="font-size:12px;" data-i18n="pos.tab.sono">🌙 Sono</button>
-            <button class="pos-tab-btn" id="pos-tab-fralda-btn" onclick="posRotTab('fralda')" style="font-size:12px;" data-i18n="pos.tab.fralda">💧 Fraldas</button>
-            <button class="pos-tab-btn" id="pos-tab-plan-btn" onclick="posRotTab('planejamento')" style="font-size:12px;" data-i18n="pos.tab.plan">📈 Plan.</button>
+            <button class="pos-tab-btn active" id="pos-tab-sono-btn" onclick="posRotTab('sono')" style="font-size:12px;" data-i18n="pos.tab.sono">Sono</button>
+            <button class="pos-tab-btn" id="pos-tab-fralda-btn" onclick="posRotTab('fralda')" style="font-size:12px;" data-i18n="pos.tab.fralda">Fraldas</button>
+            <button class="pos-tab-btn" id="pos-tab-plan-btn" onclick="posRotTab('planejamento')" style="font-size:12px;" data-i18n="pos.tab.plan">Plan.</button>
           </div>
 
           <div id="pos-painel-sono">
@@ -3561,8 +3562,8 @@ tr:hover td { background:var(--rose-pale); }
             <div id="pos-sono-iniciar-card" class="card">
               <div class="card-title" data-i18n="pos.rot.novo.sono">Novo sono</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-                <button class="pos-tipo-btn" id="pos-sono-dia-btn" onclick="posSelecionarSono('dia')" style="padding:16px 8px;">☀️<br><span style="font-size:12px;margin-top:4px;display:block;" data-i18n="pos.rot.soneca.dia">Soneca (Dia)</span></button>
-                <button class="pos-tipo-btn" id="pos-sono-noite-btn" onclick="posSelecionarSono('noite')" style="padding:16px 8px;">🌙<br><span style="font-size:12px;margin-top:4px;display:block;" data-i18n="pos.rot.sono.noturno">Sono Noturno</span></button>
+                <button class="pos-tipo-btn" id="pos-sono-dia-btn" onclick="posSelecionarSono('dia')" style="padding:16px 8px;"><span style="font-size:12px;display:block;" data-i18n="pos.rot.soneca.dia">Soneca (Dia)</span></button>
+                <button class="pos-tipo-btn" id="pos-sono-noite-btn" onclick="posSelecionarSono('noite')" style="padding:16px 8px;"><span style="font-size:12px;display:block;" data-i18n="pos.rot.sono.noturno">Sono Noturno</span></button>
               </div>
               <div style="margin-bottom:16px;">
                 <label class="form-label" data-i18n="posd.sono.qualidade.label">Qualidade</label>
@@ -3587,8 +3588,8 @@ tr:hover td { background:var(--rose-pale); }
                 <label class="form-label" data-i18n="pos.rot.fralda.tipo.label">Tipo de fralda</label>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
                   <button class="pos-tipo-btn" id="pos-fr-seca" onclick="posSelecionarFralda('seca')" data-i18n="posd.fralda.seca">✓ Seca</button>
-                  <button class="pos-tipo-btn" id="pos-fr-xixi" onclick="posSelecionarFralda('xixi')" data-i18n="posd.fralda.xixi">💧 Molhada</button>
-                  <button class="pos-tipo-btn" id="pos-fr-coco" onclick="posSelecionarFralda('coco')" data-i18n="posd.fralda.coco">💩 Com fezes</button>
+                  <button class="pos-tipo-btn" id="pos-fr-xixi" onclick="posSelecionarFralda('xixi')" data-i18n="posd.fralda.xixi">Molhada</button>
+                  <button class="pos-tipo-btn" id="pos-fr-coco" onclick="posSelecionarFralda('coco')" data-i18n="posd.fralda.coco">Com fezes</button>
                   <button class="pos-tipo-btn" id="pos-fr-ambos" onclick="posSelecionarFralda('ambos')" data-i18n="posd.fralda.ambos">Combinada</button>
                 </div>
               </div>
@@ -3625,12 +3626,12 @@ tr:hover td { background:var(--rose-pale); }
           <!-- PLANEJAMENTO (mãe) -->
           <div id="pos-painel-planejamento" style="display:none;">
             <div class="card" style="background:linear-gradient(135deg,#eef0ff,#f4eeff);border:1.5px solid rgba(102,102,204,0.15);">
-              <div class="card-title">🌙 Dream Feed</div>
+              <div class="card-title">Dream Feed</div>
               <div id="pos-dream-feed-info"><div style="font-size:13px;color:var(--earth-light);" data-i18n="posd.plan.dreamfeed.sub">Registre mamadas para calcular o horário ideal.</div></div>
             </div>
             <div class="card" style="margin-top:4px;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <div class="card-title" style="margin-bottom:0;" data-i18n="posd.plan.ingestao.title">🍼 Ingestão hoje</div>
+                <div class="card-title" style="margin-bottom:0;" data-i18n="posd.plan.ingestao.title">Ingestão hoje</div>
                 <div id="pos-ingestao-hoje" style="font-size:18px;font-weight:700;color:var(--sage);font-family:'Cormorant Garamond',serif;">—</div>
               </div>
               <div style="background:rgba(122,100,85,0.08);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;">
@@ -3642,7 +3643,7 @@ tr:hover td { background:var(--rose-pale); }
               </div>
             </div>
             <div class="card" style="margin-top:4px;">
-              <div class="card-title" data-i18n="posd.7dias.title">📊 Últimos 7 dias</div>
+              <div class="card-title" data-i18n="posd.7dias.title">Últimos 7 dias</div>
               <div style="font-size:11px;color:var(--earth-light);margin-bottom:12px;" data-i18n="posd.plan.7dias.sub">Ingestão estimada vs. sono total</div>
               <div id="pos-grafico-planejamento"><div style="font-size:12px;color:var(--earth-light);">Nenhum dado.</div></div>
               <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
@@ -3659,7 +3660,7 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- BEBÊ: Dentição + Desenvolvimento -->
         <div class="pos-panel" id="pos-bebe">
-          <div class="panel-title" data-i18n="pos.bebe.panel.title">👶 Bebê</div>
+          <div class="panel-title" data-i18n="pos.bebe.panel.title">Bebê</div>
 
           <!-- Card de cadastro / info do bebê -->
           <div id="pos-bebe-cadastro-card" class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);">
@@ -3688,8 +3689,8 @@ tr:hover td { background:var(--rose-pale); }
 
           <!-- Abas internas -->
           <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-            <button class="pos-tab-btn active" id="pos-tab-denticao-btn" onclick="posBebebTab('denticao')" style="flex:1;" data-i18n="posd.tab.denticao">🦷 Dentição</button>
-            <button class="pos-tab-btn" id="pos-tab-dev-btn" onclick="posBebebTab('desenvolvimento')" style="flex:1;" data-i18n="posd.tab.dev">🌱 Desenvolvimento</button>
+            <button class="pos-tab-btn active" id="pos-tab-denticao-btn" onclick="posBebebTab('denticao')" style="flex:1;" data-i18n="posd.tab.denticao">Dentição</button>
+            <button class="pos-tab-btn" id="pos-tab-dev-btn" onclick="posBebebTab('desenvolvimento')" style="flex:1;" data-i18n="posd.tab.dev">Desenvolvimento</button>
           </div>
 
           <!-- ABA: DENTIÇÃO -->
@@ -3713,7 +3714,7 @@ tr:hover td { background:var(--rose-pale); }
 
             <!-- Orientações por fase -->
             <div class="card">
-              <div class="card-title" data-i18n="posd.denticao.orientacoes.title">📋 Orientações por fase</div>
+              <div class="card-title" data-i18n="posd.denticao.orientacoes.title">Orientações por fase</div>
               <div id="pos-denticao-orientacoes" style="font-size:13px;color:var(--earth-light);line-height:1.7;" data-i18n="pos.denticao.calculando">Calculando fase...</div>
             </div>
 
@@ -3737,20 +3738,20 @@ tr:hover td { background:var(--rose-pale); }
 
             <!-- Marcos do mês -->
             <div class="card">
-              <div class="card-title" data-i18n="posd.dev.marcos.title">✨ Marcos esperados</div>
+              <div class="card-title" data-i18n="posd.dev.marcos.title">Marcos esperados</div>
               <div style="font-size:12px;color:var(--earth-light);margin-bottom:14px;" data-i18n="posd.dev.marcos.sub">Marque os que o bebê já conquistou</div>
               <div id="pos-dev-marcos-lista"></div>
             </div>
 
             <!-- Mês a mês accordion -->
             <div class="card">
-              <div class="card-title" data-i18n="posd.dev.timeline.title">📅 Mês a mês</div>
+              <div class="card-title" data-i18n="posd.dev.timeline.title">Mês a mês</div>
               <div id="pos-dev-timeline"></div>
             </div>
           </div>
         <!-- MENSAGENS MÃE PÓS ↔ DOULA PÓS -->
         <div class="pos-panel" id="pos-mensagens">
-          <div class="panel-title" data-i18n="pos.msg.panel.title">💬 Mensagens</div>
+          <div class="panel-title" data-i18n="pos.msg.panel.title">Mensagens</div>
           <div id="pos-msg-doula-info" style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="loading">Carregando...</div>
           <div class="card" id="pos-msg-card" style="display:none;">
             <div id="pos-msgs-container" style="height:350px;overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;background:var(--cream);border-radius:12px;margin-bottom:12px;"></div>
@@ -3776,12 +3777,12 @@ tr:hover td { background:var(--rose-pale); }
           <div class="pos-role" style="color:#9B7BB8;" data-i18n="hdr.role.pos_doula">Doula Pós Parto</div>
         </div>
         <nav class="pos-nav">
-          <div class="pos-nav-item active" onclick="posDNav(this,'posd-dashboard')"><span class="pos-nav-icon">🏠</span><span data-i18n="posd.nav.inicio">Início</span></div>
-          <div class="pos-nav-item" onclick="posDNav(this,'posd-clientes')"><span class="pos-nav-icon">👶</span><span data-i18n="posd.nav.clientes">Clientes</span></div>
-          <div class="pos-nav-item" onclick="posDNav(this,'posd-registros')"><span class="pos-nav-icon">📋</span><span data-i18n="posd.nav.registros">Registros</span></div>
+          <div class="pos-nav-item active" onclick="posDNav(this,'posd-dashboard')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span data-i18n="posd.nav.inicio">Início</span></div>
+          <div class="pos-nav-item" onclick="posDNav(this,'posd-clientes')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="posd.nav.clientes">Clientes</span></div>
+          <div class="pos-nav-item" onclick="posDNav(this,'posd-registros')"><svg class="pos-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span data-i18n="posd.nav.registros">Registros</span></div>
         </nav>
         <div id="btn-switch-to-backup-pos" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
-          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;">Acessar Backup</div>
         </div>
       </aside>
 
@@ -3806,16 +3807,16 @@ tr:hover td { background:var(--rose-pale); }
 
         <!-- DASHBOARD -->
         <div class="pos-panel active" id="posd-dashboard">
-          <div class="panel-title" id="pos-doula-greeting">Olá, Doula 💜</div>
+          <div class="panel-title" id="pos-doula-greeting">Olá, Doula</div>
           <div class="panel-sub" data-i18n="posd.dash.sub">Seu espaço de atendimento pós-parto</div>
 
           <div class="card" style="background:linear-gradient(135deg,#f5f0ff,#ede5ff);border:1.5px solid rgba(155,123,184,0.2);cursor:pointer;" onclick="posDNav(document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item')[1],'posd-clientes')">
-            <div class="card-title" data-i18n="posd.clientes.title">👶 Clientes Pós Parto</div>
+            <div class="card-title" data-i18n="posd.clientes.title">Clientes Pós Parto</div>
             <div style="font-size:13px;color:var(--earth-light);" data-i18n="posd.clientes.sub">Acompanhe suas mães no puerpério — veja registros de amamentação, sono e fraldas.</div>
           </div>
 
           <div class="card">
-            <div class="card-title" data-i18n="posd.registros.title">📋 Registros de Visita</div>
+            <div class="card-title" data-i18n="posd.registros.title">Registros de Visita</div>
             <div style="font-size:13px;color:var(--earth-light);margin-bottom:16px;" data-i18n="posd.registros.sub">Registre suas visitas e anotações pós-parto.</div>
             <button onclick="posDNav(document.querySelectorAll('#pos-doula-bottom-nav .mob-nav-item')[2],'posd-registros')" class="login-btn" style="background:#9B7BB8;" data-i18n="posd.registros.btn">Novo Registro</button>
           </div>
@@ -3828,7 +3829,7 @@ tr:hover td { background:var(--rose-pale); }
           <div id="posd-clientes-view">
             <div class="panel-title" data-i18n="posd.clientes.panel.title">Clientes Pós Parto</div>
             <div class="card" id="posd-sol-card" style="display:none;">
-              <div class="card-title" data-i18n="posd.sol.title">⏳ Solicitações pendentes</div>
+              <div class="card-title" data-i18n="posd.sol.title">Solicitações pendentes</div>
               <div id="posd-sol-lista"></div>
             </div>
             <div class="card">
@@ -3843,10 +3844,10 @@ tr:hover td { background:var(--rose-pale); }
             <div class="panel-title" id="posd-detalhe-nome" style="margin-bottom:4px;">—</div>
 
             <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-              <button class="pos-tab-btn active" id="posd-tab-resumo-btn" onclick="posDDetalheTab('resumo')" style="flex:1;font-size:12px;" data-i18n="posd.tab.resumo">📋 Resumo</button>
-              <button class="pos-tab-btn" id="posd-tab-bebe-btn" onclick="posDDetalheTab('bebe')" style="flex:1;font-size:12px;" data-i18n="posd.tab.bebe">👶 Bebê</button>
-              <button class="pos-tab-btn" id="posd-tab-rotina-btn" onclick="posDDetalheTab('rotina')" style="flex:1;font-size:12px;" data-i18n="posd.tab.rotina">🌙 Rotina</button>
-              <button class="pos-tab-btn" id="posd-tab-chat-btn" onclick="posDDetalheTab('chat')" style="flex:1;font-size:12px;" data-i18n="posd.tab.chat">💬 Chat</button>
+              <button class="pos-tab-btn active" id="posd-tab-resumo-btn" onclick="posDDetalheTab('resumo')" style="flex:1;font-size:12px;" data-i18n="posd.tab.resumo">Resumo</button>
+              <button class="pos-tab-btn" id="posd-tab-bebe-btn" onclick="posDDetalheTab('bebe')" style="flex:1;font-size:12px;" data-i18n="posd.tab.bebe">Bebê</button>
+              <button class="pos-tab-btn" id="posd-tab-rotina-btn" onclick="posDDetalheTab('rotina')" style="flex:1;font-size:12px;" data-i18n="posd.tab.rotina">Rotina</button>
+              <button class="pos-tab-btn" id="posd-tab-chat-btn" onclick="posDDetalheTab('chat')" style="flex:1;font-size:12px;" data-i18n="posd.tab.chat">Chat</button>
             </div>
 
             <!-- RESUMO -->
@@ -3892,8 +3893,8 @@ tr:hover td { background:var(--rose-pale); }
               <div id="posd-bebe-dados" style="display:none;">
 
                 <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-                  <button class="pos-tab-btn active" id="posd-tab-denticao-btn" onclick="posDBebeTab('denticao')" style="flex:1;" data-i18n="posd.tab.denticao">🦷 Dentição</button>
-                  <button class="pos-tab-btn" id="posd-tab-dev-btn" onclick="posDBebeTab('desenvolvimento')" style="flex:1;" data-i18n="posd.tab.dev">🌱 Desenvolvimento</button>
+                  <button class="pos-tab-btn active" id="posd-tab-denticao-btn" onclick="posDBebeTab('denticao')" style="flex:1;" data-i18n="posd.tab.denticao">Dentição</button>
+                  <button class="pos-tab-btn" id="posd-tab-dev-btn" onclick="posDBebeTab('desenvolvimento')" style="flex:1;" data-i18n="posd.tab.dev">Desenvolvimento</button>
                 </div>
 
                 <!-- DENTIÇÃO -->
@@ -3912,7 +3913,7 @@ tr:hover td { background:var(--rose-pale); }
                     </div>
                   </div>
                   <div class="card">
-                    <div class="card-title" data-i18n="posd.denticao.orientacoes.title">📋 Orientações por fase</div>
+                    <div class="card-title" data-i18n="posd.denticao.orientacoes.title">Orientações por fase</div>
                     <div id="posd-denticao-orientacoes" style="font-size:13px;color:var(--earth-light);line-height:1.7;" data-i18n="pos.denticao.calculando">Calculando fase...</div>
                   </div>
                   <div class="card">
@@ -3930,12 +3931,12 @@ tr:hover td { background:var(--rose-pale); }
                     <div style="font-size:13px;color:var(--earth-light);line-height:1.6;" id="posd-dev-salto-desc">—</div>
                   </div>
                   <div class="card">
-                    <div class="card-title" data-i18n="posd.dev.marcos.title">✨ Marcos esperados</div>
+                    <div class="card-title" data-i18n="posd.dev.marcos.title">Marcos esperados</div>
                     <div style="font-size:12px;color:var(--earth-light);margin-bottom:14px;" data-i18n="posd.dev.marcos.sub">Marque os que o bebê já conquistou</div>
                     <div id="posd-dev-marcos-lista"></div>
                   </div>
                   <div class="card">
-                    <div class="card-title" data-i18n="posd.dev.timeline.title">📅 Mês a mês</div>
+                    <div class="card-title" data-i18n="posd.dev.timeline.title">Mês a mês</div>
                     <div id="posd-dev-timeline"></div>
                   </div>
                 </div>
@@ -3946,10 +3947,10 @@ tr:hover td { background:var(--rose-pale); }
             <!-- ROTINA -->
             <div id="posd-painel-rotina" style="display:none;">
               <div style="display:flex;background:var(--white);border-radius:16px;padding:4px;gap:4px;box-shadow:0 2px 12px rgba(45,31,26,0.05);margin-bottom:24px;">
-                <button class="pos-tab-btn active" id="posd-rtab-mamada-btn" onclick="posDRotinaTab('mamada')" style="flex:1;font-size:12px;" data-i18n="posd.tab.mamada">🤱 Mama</button>
-                <button class="pos-tab-btn" id="posd-rtab-sono-btn" onclick="posDRotinaTab('sono')" style="flex:1;font-size:12px;" data-i18n="posd.tab.sono">🌙 Sono</button>
-                <button class="pos-tab-btn" id="posd-rtab-fralda-btn" onclick="posDRotinaTab('fralda')" style="flex:1;font-size:12px;" data-i18n="posd.tab.fralda">💧 Fraldas</button>
-                <button class="pos-tab-btn" id="posd-rtab-plan-btn" onclick="posDRotinaTab('planejamento')" style="flex:1;font-size:12px;" data-i18n="posd.tab.plan">📈 Plan.</button>
+                <button class="pos-tab-btn active" id="posd-rtab-mamada-btn" onclick="posDRotinaTab('mamada')" style="flex:1;font-size:12px;" data-i18n="posd.tab.mamada">Mama</button>
+                <button class="pos-tab-btn" id="posd-rtab-sono-btn" onclick="posDRotinaTab('sono')" style="flex:1;font-size:12px;" data-i18n="posd.tab.sono">Sono</button>
+                <button class="pos-tab-btn" id="posd-rtab-fralda-btn" onclick="posDRotinaTab('fralda')" style="flex:1;font-size:12px;" data-i18n="posd.tab.fralda">Fraldas</button>
+                <button class="pos-tab-btn" id="posd-rtab-plan-btn" onclick="posDRotinaTab('planejamento')" style="flex:1;font-size:12px;" data-i18n="posd.tab.plan">Plan.</button>
               </div>
 
               <!-- MAMADAS -->
@@ -3969,7 +3970,7 @@ tr:hover td { background:var(--rose-pale); }
                     </div>
                   </div>
                   <div style="border-top:1px solid rgba(122,100,85,0.1);padding-top:16px;margin-top:4px;">
-                    <div class="card-title" style="margin-bottom:12px;" data-i18n="posd.mamada.bomba.title">🫙 Bomba / Mamadeira</div>
+                    <div class="card-title" style="margin-bottom:12px;" data-i18n="posd.mamada.bomba.title">Bomba / Mamadeira</div>
                     <div style="margin-bottom:12px;">
                       <select id="posd-mam-bomba-tipo" class="form-input">
                         <option value="mamadeira_lm">Mamadeira (LM)</option>
@@ -4014,8 +4015,8 @@ tr:hover td { background:var(--rose-pale); }
                 <div id="posd-sono-iniciar-card" class="card">
                   <div class="card-title" data-i18n="posd.sono.iniciar.title">Iniciar sono</div>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-                    <button class="pos-tipo-btn" id="posd-sono-dia-btn" onclick="posDSelecionarSono('dia')" style="padding:16px 8px;">☀️<br><span style="font-size:12px;margin-top:4px;display:block;" data-i18n="posd.sono.soneca">Soneca</span></button>
-                    <button class="pos-tipo-btn" id="posd-sono-noite-btn" onclick="posDSelecionarSono('noite')" style="padding:16px 8px;">🌙<br><span style="font-size:12px;margin-top:4px;display:block;" data-i18n="posd.sono.noturno">Noturno</span></button>
+                    <button class="pos-tipo-btn" id="posd-sono-dia-btn" onclick="posDSelecionarSono('dia')" style="padding:16px 8px;"><span style="font-size:12px;display:block;" data-i18n="posd.sono.soneca">Soneca</span></button>
+                    <button class="pos-tipo-btn" id="posd-sono-noite-btn" onclick="posDSelecionarSono('noite')" style="padding:16px 8px;"><span style="font-size:12px;display:block;" data-i18n="posd.sono.noturno">Noturno</span></button>
                   </div>
                   <div style="margin-bottom:16px;">
                     <label class="form-label" data-i18n="posd.sono.qualidade.label">Qualidade</label>
@@ -4039,8 +4040,8 @@ tr:hover td { background:var(--rose-pale); }
                   <div class="card-title" data-i18n="posd.fralda.nova.title">Nova troca</div>
                   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
                     <button class="pos-tipo-btn" id="posd-fr-seca" onclick="posDSelecionarFralda('seca')" data-i18n="posd.fralda.seca">✓ Seca</button>
-                    <button class="pos-tipo-btn" id="posd-fr-xixi" onclick="posDSelecionarFralda('xixi')" data-i18n="posd.fralda.xixi">💧 Molhada</button>
-                    <button class="pos-tipo-btn" id="posd-fr-coco" onclick="posDSelecionarFralda('coco')" data-i18n="posd.fralda.coco">💩 Com fezes</button>
+                    <button class="pos-tipo-btn" id="posd-fr-xixi" onclick="posDSelecionarFralda('xixi')" data-i18n="posd.fralda.xixi">Molhada</button>
+                    <button class="pos-tipo-btn" id="posd-fr-coco" onclick="posDSelecionarFralda('coco')" data-i18n="posd.fralda.coco">Com fezes</button>
                     <button class="pos-tipo-btn" id="posd-fr-ambos" onclick="posDSelecionarFralda('ambos')" data-i18n="posd.fralda.ambos">Combinada</button>
                   </div>
                   <div id="posd-fr-fezes-campos" style="display:none;margin-top:12px;">
@@ -4076,12 +4077,12 @@ tr:hover td { background:var(--rose-pale); }
               <!-- PLANEJAMENTO -->
               <div id="posd-rot-planejamento" style="display:none;">
                 <div class="card" style="background:linear-gradient(135deg,#eef0ff,#f4eeff);border:1.5px solid rgba(102,102,204,0.15);">
-                  <div class="card-title">🌙 Dream Feed</div>
+                  <div class="card-title">Dream Feed</div>
                   <div id="posd-dream-feed-info"><div style="font-size:13px;color:var(--earth-light);" data-i18n="posd.plan.dreamfeed.sub">Registre mamadas para calcular o horário ideal.</div></div>
                 </div>
                 <div class="card" style="margin-top:4px;">
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <div class="card-title" style="margin-bottom:0;" data-i18n="posd.plan.ingestao.title">🍼 Ingestão hoje</div>
+                    <div class="card-title" style="margin-bottom:0;" data-i18n="posd.plan.ingestao.title">Ingestão hoje</div>
                     <div id="posd-ingestao-hoje" style="font-size:18px;font-weight:700;color:var(--sage);font-family:'Cormorant Garamond',serif;">—</div>
                   </div>
                   <div style="background:rgba(122,100,85,0.08);border-radius:8px;height:8px;overflow:hidden;margin-bottom:6px;">
@@ -4093,7 +4094,7 @@ tr:hover td { background:var(--rose-pale); }
                   </div>
                 </div>
                 <div class="card" style="margin-top:4px;">
-                  <div class="card-title" data-i18n="posd.7dias.title">📊 Últimos 7 dias</div>
+                  <div class="card-title" data-i18n="posd.7dias.title">Últimos 7 dias</div>
                   <div style="font-size:11px;color:var(--earth-light);margin-bottom:12px;" data-i18n="posd.plan.7dias.sub">Ingestão estimada vs. sono total</div>
                   <div id="posd-grafico-planejamento"><div style="font-size:12px;color:var(--earth-light);">Nenhum dado.</div></div>
                   <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
@@ -4165,18 +4166,18 @@ tr:hover td { background:var(--rose-pale); }
   <div class="view" id="view-doula-backup">
     <div class="doula-layout">
       <aside class="d-sidebar">
-        <div class="d-sidebar-title" data-i18n="bk.sidebar.title">🔄 Doula Backup</div>
+        <div class="d-sidebar-title" data-i18n="bk.sidebar.title">Doula Backup</div>
         <div style="margin:0 16px 14px;padding:10px 14px;background:rgba(201,137,122,0.1);border-radius:12px;font-size:12px;color:var(--earth-light);text-align:center;line-height:1.5;">
           <span data-i18n="bk.covering">Cobrindo</span><br><strong id="bk-doula-nome" style="color:var(--rose);font-size:13px;">—</strong>
         </div>
         <div id="btn-switch-to-main" style="display:none; margin:0 16px 14px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp(window.currentRoleOriginal || 'doula', currentNome)">
-          <div style="font-size:13px; color:var(--rose-light); font-weight:500;" data-i18n="bk.back.panel">⬅️ Voltar ao Meu Painel</div>
+          <div style="font-size:13px; color:var(--rose-light); font-weight:500;" data-i18n="bk.back.panel">← Voltar ao Meu Painel</div>
         </div>
         <nav>
-          <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><span class="d-nav-icon">👩</span><span data-i18n="bk.nav.clients">Clientes</span></div>
-          <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><span class="d-nav-icon">📅</span><span data-i18n="bk.nav.schedule">Agenda</span></div>
-          <div class="d-nav-item" id="bk-nav-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;"><span class="d-nav-icon">💬</span><span data-i18n="bk.nav.messages">Mensagens</span></div>
-          <div class="d-nav-item" id="bk-nav-registros" onclick="bkNav(this,'bk-registros')" style="display:none;"><span class="d-nav-icon">📝</span><span data-i18n="bk.nav.records">Registros</span></div>
+          <div class="d-nav-item active" id="bk-nav-clientes" onclick="bkNav(this,'bk-clientes')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="bk.nav.clients">Clientes</span></div>
+          <div class="d-nav-item" id="bk-nav-agenda" onclick="bkNav(this,'bk-agenda')" style="display:none;"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span data-i18n="bk.nav.schedule">Agenda</span></div>
+          <div class="d-nav-item" id="bk-nav-mensagens" onclick="bkNav(this,'bk-mensagens')" style="display:none;"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="bk.nav.messages">Mensagens</span></div>
+          <div class="d-nav-item" id="bk-nav-registros" onclick="bkNav(this,'bk-registros')" style="display:none;"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg><span data-i18n="bk.nav.records">Registros</span></div>
         </nav>
       </aside>
 
@@ -6597,7 +6598,7 @@ function setLang(lang) {
     var dGreetEl = document.getElementById('doula-greeting');
     if (dGreetEl && primeiroNome) { var em2 = hora < 12 ? '☀️' : hora < 18 ? '🌤️' : '🌙'; dGreetEl.textContent = saud + ', ' + primeiroNome + '! ' + em2; }
     var pdGreetEl = document.getElementById('pos-doula-greeting');
-    if (pdGreetEl && primeiroNome) pdGreetEl.textContent = saud + ', ' + primeiroNome + '! 💜';
+    if (pdGreetEl && primeiroNome) pdGreetEl.textContent = saud + ', ' + primeiroNome + '!';
     ['select-cliente-agenda','select-cliente-registros','select-cliente-posparto','select-cliente-financeiro'].forEach(function(id) {
       var sel = document.getElementById(id);
       if (sel && sel.options[0] && sel.options[0].value === '') sel.options[0].textContent = t('doula.clients.select');
@@ -9135,7 +9136,7 @@ function entrarNoApp(tipo, nome) {
   }
   if (tipo === 'pos') {
     var gPos = document.getElementById('pos-greeting');
-    if (gPos) gPos.textContent = saudacao + ', ' + primeiroNome + '! 🌸';
+    if (gPos) gPos.textContent = saudacao + ', ' + primeiroNome + '!';
     var posNome = document.getElementById('pos-profile-name');
     if (posNome) posNome.textContent = primeiroNome;
     var posAvatar = document.getElementById('pos-avatar');
@@ -9150,7 +9151,7 @@ function entrarNoApp(tipo, nome) {
   }
   if (tipo === 'pos_doula') {
     var gPosD = document.getElementById('pos-doula-greeting');
-    if (gPosD) gPosD.textContent = saudacao + ', ' + primeiroNome + '! 💜';
+    if (gPosD) gPosD.textContent = saudacao + ', ' + primeiroNome + '!';
     var posDNome = document.getElementById('pos-doula-profile-name');
     if (posDNome) posDNome.textContent = primeiroNome;
     var posDAvatar = document.getElementById('pos-doula-avatar');
