@@ -167,7 +167,8 @@ header { padding-top: env(safe-area-inset-top, 0); }
   background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
   margin-bottom: 24px; position: relative; overflow: hidden;
 }
-.baby-fruit-emoji { font-size: 80px; margin-bottom: 16px; display: block; line-height: 1; }
+.baby-fruit-emoji { font-size: 80px; margin-bottom: 16px; display: block; line-height: 1; min-height: 80px; }
+.baby-fruit-emoji img { display: block; margin: 0 auto; }
 .baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
 .baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
 
@@ -569,11 +570,12 @@ header {
 ══════════════════════════════ */
 .doula-layout { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 64px); }
 .d-sidebar { background:var(--dark); padding:28px 0; display:flex; flex-direction:column; position:sticky; top:64px; height:calc(100vh - 64px); overflow-y:auto; }
-.d-sidebar-title { font-family:'Cormorant Garamond',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--earth-light); padding:0 24px 20px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:16px; }
-.d-nav-item { display:flex; align-items:center; gap:12px; padding:11px 24px; cursor:pointer; font-size:14px; color:rgba(255,255,255,0.5); transition:all 0.2s; border-left:3px solid transparent; }
-.d-nav-item:hover { color:var(--rose-light); background:rgba(201,137,122,0.05); }
-.d-nav-item.active { color:var(--rose-light); border-left-color:var(--rose); background:rgba(201,137,122,0.08); }
-.d-nav-icon { font-size:17px; width:20px; text-align:center; }
+.d-sidebar-title { font-family:'Cormorant Garamond',serif; font-size:12px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.25); padding:0 24px 20px; border-bottom:1px solid rgba(255,255,255,0.04); margin-bottom:16px; }
+.d-nav-item { display:flex; align-items:center; gap:12px; padding:10px 24px; cursor:pointer; font-size:13px; letter-spacing:0.2px; color:rgba(255,255,255,0.4); transition:all 0.2s; border-left:3px solid transparent; }
+.d-nav-item:hover { color:rgba(255,255,255,0.75); background:rgba(255,255,255,0.03); }
+.d-nav-item.active { color:var(--rose-light); border-left-color:var(--rose); background:rgba(201,137,122,0.08); font-weight:500; }
+.d-nav-icon { width:15px; height:15px; flex-shrink:0; opacity:0.5; transition:opacity 0.2s; }
+.d-nav-item:hover .d-nav-icon, .d-nav-item.active .d-nav-icon { opacity:1; }
 .d-sidebar-clients { margin-top:28px; padding:0 16px; }
 .d-clients-title { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:12px; padding:0 8px; }
 .d-client-item { display:flex; align-items:center; gap:10px; padding:10px 8px; border-radius:10px; cursor:pointer; transition:background 0.2s; }
@@ -610,9 +612,9 @@ header {
 .stat-card { background:var(--white); border-radius:16px; padding:20px; box-shadow:0 2px 12px rgba(45,31,26,0.05); }
 .stat-card-link { cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; }
 .stat-card-link:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(45,31,26,0.12); }
-.stat-icon { font-size:24px; margin-bottom:12px; }
-.stat-val { font-size:32px; font-family:'Cormorant Garamond',serif; color:var(--dark); line-height:1; margin-bottom:4px; }
-.stat-label { font-size:12px; color:var(--earth-light); text-transform:uppercase; letter-spacing:1px; }
+.stat-icon { width:18px; height:18px; margin-bottom:14px; display:block; color:var(--rose); opacity:0.7; }
+.stat-val { font-size:34px; font-family:'Cormorant Garamond',serif; color:var(--dark); line-height:1; margin-bottom:6px; font-weight:400; }
+.stat-label { font-size:10px; color:var(--earth-light); text-transform:uppercase; letter-spacing:1.5px; }
 
 /* ─ Alertas doula ─ */
 .alert-card { border-radius:14px; padding:16px; margin-bottom:12px; display:flex; gap:14px; align-items:flex-start; }
@@ -1485,7 +1487,6 @@ tr:hover td { background:var(--rose-pale); }
               <div class="plan-tipo-btns">
                 <button class="plan-tipo-btn selected" id="btn-tipo-vaginal" onclick="toggleTipoParto(this,'vaginal')" data-i18n="plano.tipo.vaginal">🌸 Parto Vaginal</button>
                 <button class="plan-tipo-btn" id="btn-tipo-cesariana" onclick="toggleTipoParto(this,'cesariana')" data-i18n="plano.tipo.cesariana">🏥 Cesária</button>
-                <button class="plan-tipo-btn" id="btn-tipo-humanizado" onclick="toggleTipoParto(this,'humanizado')" data-i18n="plano.tipo.humanizado">🌿 Humanizado</button>
               </div>
             </div>
           </div>
@@ -2279,20 +2280,20 @@ tr:hover td { background:var(--rose-pale); }
       <aside class="d-sidebar">
         <div class="d-sidebar-title" data-i18n="doula.nav.title">Painel da Doula</div>
         <nav>
-          <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><span class="d-nav-icon">📊</span><span data-i18n="doula.nav.dashboard">Dashboard</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><span class="d-nav-icon">👩</span><span data-i18n="doula.nav.clients">Clientes</span><span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-convite');carregarConviteDoula()"><span class="d-nav-icon">🔗</span><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-backup');carregarBackupDoula()"><span class="d-nav-icon">🛡️</span><span data-i18n="doula.nav.backup">Minha Backup</span></div>
-          <div class="d-nav-item" id="nav-mensagens-doula" onclick="dNav(this,'d-mensagens')"><span class="d-nav-icon">💬</span><span data-i18n="doula.nav.messages">Mensagens</span><span id="badge-msgs" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-agenda');carregarAgenda()"><span class="d-nav-icon">📅</span><span data-i18n="doula.nav.schedule">Agenda</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-registros')"><span class="d-nav-icon">📝</span><span data-i18n="doula.nav.records">Registros</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-posparto')"><span class="d-nav-icon">👶</span><span data-i18n="doula.nav.postpartum">Pós-Parto</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula()"><span class="d-nav-icon">📄</span><span>Documentos</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><span class="d-nav-icon">📚</span><span data-i18n="doula.nav.library">Biblioteca</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-faq')"><span class="d-nav-icon">📖</span><span data-i18n="doula.nav.guide">Guia Prático</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><span class="d-nav-icon">💰</span><span data-i18n="doula.nav.financial">Financeiro</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><span class="d-nav-icon">📈</span><span data-i18n="doula.nav.stats">Estatísticas</span></div>
-          <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><span class="d-nav-icon">👤</span><span data-i18n="doula.nav.perfil">Meu Perfil</span></div>
+          <div class="d-nav-item active" onclick="dNav(this,'d-dashboard')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="doula.nav.dashboard">Dashboard</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-clientes')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="doula.nav.clients">Clientes</span><span id="badge-solicitacoes" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-convite');carregarConviteDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-backup');carregarBackupDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="doula.nav.backup">Minha Backup</span></div>
+          <div class="d-nav-item" id="nav-mensagens-doula" onclick="dNav(this,'d-mensagens')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="doula.nav.messages">Mensagens</span><span id="badge-msgs" style="display:none;background:var(--rose);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:6px;"></span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-agenda');carregarAgenda()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span data-i18n="doula.nav.schedule">Agenda</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-registros')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span data-i18n="doula.nav.records">Registros</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-posparto')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-i18n="doula.nav.postpartum">Pós-Parto</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg><span>Documentos</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-biblioteca')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="doula.nav.library">Biblioteca</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-faq')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span data-i18n="doula.nav.guide">Guia Prático</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-financeiro')"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span data-i18n="doula.nav.financial">Financeiro</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-estatisticas');carregarEstatisticasDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span data-i18n="doula.nav.stats">Estatísticas</span></div>
+          <div class="d-nav-item" onclick="dNav(this,'d-meuperfil');carregarPerfilDoula()"><svg class="d-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n="doula.nav.perfil">Meu Perfil</span></div>
         </nav>
         <div id="btn-switch-to-backup-doula" style="display:none; margin:16px; padding:10px; background:rgba(201,137,122,0.1); border:1px solid rgba(201,137,122,0.3); border-radius:12px; text-align:center; cursor:pointer;" onclick="entrarNoApp('doula_backup', currentNome)">
           <div style="font-size:13px; color:var(--rose-light); font-weight:500;">🛡️ Acessar Backup</div>
@@ -2333,15 +2334,15 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more">
-        <div class="mob-more-item" onclick="dNav(this,'d-convite');carregarConviteDoula();fecharMobMore()"><span>🔗 </span><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span>🛡️ </span><span data-i18n="doula.nav.backup">Minha Backup</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-registros');fecharMobMore()"><span>📋 Registros</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula();fecharMobMore()"><span>📄 Documentos</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>📚 Biblioteca</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-faq');fecharMobMore()"><span>💡 Guia Prático</span></div>
-        <div class="mob-more-item" onclick="dNav(this,'d-financeiro');fecharMobMore()"><span>💰 Financeiro</span></div>
-        <div class="mob-more-item" id="mob-more-backup" style="display:none;" onclick="entrarNoApp('doula_backup', currentNome);fecharMobMore()"><span>🛡️ Painel Backup</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-convite');carregarConviteDoula();fecharMobMore()"><span data-i18n="doula.nav.convite">Enviar Convite</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-backup');carregarBackupDoula();fecharMobMore()"><span data-i18n="doula.nav.backup">Minha Backup</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-registros');fecharMobMore()"><span>Registros</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-posparto');fecharMobMore()"><span>Pós-Parto</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-documentos');carregarDocumentosDoula();fecharMobMore()"><span>Documentos</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-biblioteca');fecharMobMore()"><span>Biblioteca</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-faq');fecharMobMore()"><span>Guia Prático</span></div>
+        <div class="mob-more-item" onclick="dNav(this,'d-financeiro');fecharMobMore()"><span>Financeiro</span></div>
+        <div class="mob-more-item" id="mob-more-backup" style="display:none;" onclick="entrarNoApp('doula_backup', currentNome);fecharMobMore()"><span>Painel Backup</span></div>
       </div>
 
       <main class="d-main">
@@ -2352,17 +2353,29 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="doula-dash-sub" data-i18n="doula.dash.sub">Bem-vinda ao seu painel</div>
 
           <div class="stats-grid">
-            <div class="stat-card stat-card-link" onclick="irParaClientesDoula()"><div class="stat-icon">👩‍👶</div><div class="stat-val" id="stat-clientes">0</div><div class="stat-label" data-i18n="doula.stat.clients">Clientes ativas</div></div>
-            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()"><div class="stat-icon">🍼</div><div class="stat-val" id="stat-partos">0</div><div class="stat-label" data-i18n="doula.stat.births">Partos este mês</div></div>
-            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()"><div class="stat-icon">📅</div><div class="stat-val" id="stat-consultas">0</div><div class="stat-label" data-i18n="doula.stat.appts">Consultas hoje</div></div>
-            <div class="stat-card stat-card-link" onclick="dNav(document.getElementById('nav-mensagens-doula'),'d-mensagens')"><div class="stat-icon">💬</div><div class="stat-val" id="stat-msgs">0</div><div class="stat-label" data-i18n="doula.stat.msgs">Msgs não lidas</div></div>
+            <div class="stat-card stat-card-link" onclick="irParaClientesDoula()">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <div class="stat-val" id="stat-clientes">0</div><div class="stat-label" data-i18n="doula.stat.clients">Clientes ativas</div>
+            </div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <div class="stat-val" id="stat-partos">0</div><div class="stat-label" data-i18n="doula.stat.births">Partos este mês</div>
+            </div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.querySelector('.d-nav-item[onclick*=\'d-agenda\']'),'d-agenda');carregarAgenda()">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <div class="stat-val" id="stat-consultas">0</div><div class="stat-label" data-i18n="doula.stat.appts">Consultas hoje</div>
+            </div>
+            <div class="stat-card stat-card-link" onclick="dNav(document.getElementById('nav-mensagens-doula'),'d-mensagens')">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <div class="stat-val" id="stat-msgs">0</div><div class="stat-label" data-i18n="doula.stat.msgs">Msgs não lidas</div>
+            </div>
           </div>
 
           <!-- Banner de solicitações pendentes -->
           <div id="banner-solicitacoes" style="display:none;background:linear-gradient(135deg,var(--rose-pale),#fce8e0);border:1.5px solid var(--rose-light);border-radius:16px;padding:16px 20px;margin-bottom:20px;cursor:pointer;" onclick="irParaClientesDoula()">
             <div style="display:flex;align-items:center;justify-content:space-between;">
               <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:36px;height:36px;background:var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">✉️</div>
+                <div style="width:36px;height:36px;background:var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
                 <div>
                   <div style="font-size:14px;font-weight:600;color:var(--dark);" id="banner-sol-texto" data-i18n="doula.banner.sol">Nova solicitação pendente</div>
                   <div style="font-size:12px;color:var(--earth-light);margin-top:2px;" data-i18n="doula.banner.tap">Toque para ver e responder</div>
@@ -2375,15 +2388,14 @@ tr:hover td { background:var(--rose-pale); }
           <div style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:16px;" data-i18n="doula.alerts.title">Alertas automáticos</div>
           <div id="alertas-container">
             <div class="empty-state">
-              <div class="empty-icon">🔔</div>
-              <div class="empty-title" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div>
+              <div class="empty-title" style="font-weight:400;color:var(--earth-light);" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div>
               <div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div>
             </div>
           </div>
 
           <!-- Monitor de contrações em tempo real -->
           <div class="card" style="margin-top:24px;" id="card-contracoes-doula">
-            <div class="card-title" data-i18n="doula.realtime.title">⏱ Contrações em tempo real</div>
+            <div class="card-title" data-i18n="doula.realtime.title">Contrações em tempo real</div>
             <div id="contracoes-realtime-status" style="font-size:13px;color:var(--earth-light);margin-bottom:12px;" data-i18n="doula.realtime.waiting">Aguardando gestante iniciar o timer...</div>
             <div id="contracoes-realtime-timer" style="display:none;text-align:center;padding:16px;background:var(--dark);border-radius:16px;margin-bottom:12px;">
               <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;" data-i18n="doula.realtime.active">Contração ativa</div>
@@ -2692,10 +2704,11 @@ tr:hover td { background:var(--rose-pale); }
         <div class="d-panel" id="d-cliente-perfil">
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
             <button onclick="irParaClientesDoula()" style="background:var(--cream);border:none;padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;color:var(--dark);font-family:inherit;flex-shrink:0;">← Voltar</button>
-            <div>
+            <div style="flex:1;min-width:0;">
               <div class="panel-title" id="perfil-cli-nome" style="margin:0;line-height:1.2;">—</div>
               <div id="perfil-cli-sub" style="font-size:12px;color:var(--earth-light);margin-top:3px;"></div>
             </div>
+            <button onclick="abrirEditarPerfil()" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:8px 16px;border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0;">✏️ Editar</button>
           </div>
           <div style="display:flex;gap:6px;overflow-x:auto;padding:4px 0 20px;scrollbar-width:none;-ms-overflow-style:none;">
             <button class="pcli-tab active" onclick="pcliTab(this,'pcli-resumo')">Resumo</button>
@@ -3030,10 +3043,10 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" data-i18n="doula.stat.sub">Seu desempenho e impacto como doula</div>
 
           <div class="stats-grid" style="margin-bottom:28px;">
-            <div class="stat-card"><div class="stat-icon">🍼</div><div class="stat-val" id="estat-partos">—</div><div class="stat-label" data-i18n="doula.stat.births">Partos acompanhados</div></div>
-            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="estat-nota">—</div><div class="stat-label" data-i18n="doula.stat.rating">Média de avaliações</div></div>
-            <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-val" id="estat-taxa">—</div><div class="stat-label" data-i18n="doula.stat.response.rate">Taxa de resposta</div></div>
-            <div class="stat-card"><div class="stat-icon">⏱</div><div class="stat-val" id="estat-tempo">—</div><div class="stat-label" data-i18n="doula.stat.response.time">Tempo médio de resposta</div></div>
+            <div class="stat-card"><div class="stat-icon" style="font-size:18px;width:auto;height:auto;">🍼</div><div class="stat-val" id="estat-partos">—</div><div class="stat-label" data-i18n="doula.stat.births">Partos acompanhados</div></div>
+            <div class="stat-card"><div class="stat-icon" style="font-size:18px;width:auto;height:auto;">⭐</div><div class="stat-val" id="estat-nota">—</div><div class="stat-label" data-i18n="doula.stat.rating">Média de avaliações</div></div>
+            <div class="stat-card"><div class="stat-icon" style="font-size:18px;width:auto;height:auto;">📨</div><div class="stat-val" id="estat-taxa">—</div><div class="stat-label" data-i18n="doula.stat.response.rate">Taxa de resposta</div></div>
+            <div class="stat-card"><div class="stat-icon" style="font-size:18px;width:auto;height:auto;">⏱</div><div class="stat-val" id="estat-tempo">—</div><div class="stat-label" data-i18n="doula.stat.response.time">Tempo médio de resposta</div></div>
           </div>
 
           <div class="card" style="margin-bottom:20px;">
@@ -6629,12 +6642,10 @@ function toggleCheck(item) {
 function toggleTipoParto(btn, tipo) {
   document.getElementById('btn-tipo-vaginal').classList.remove('selected');
   document.getElementById('btn-tipo-cesariana').classList.remove('selected');
-  var bH = document.getElementById('btn-tipo-humanizado');
-  if (bH) bH.classList.remove('selected');
   btn.classList.add('selected');
   var bV = document.getElementById('bloco-vaginal');
   var bC = document.getElementById('bloco-cesariana');
-  if (tipo === 'vaginal' || tipo === 'humanizado') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
+  if (tipo === 'vaginal') { if(bV) bV.classList.add('visible'); if(bC) bC.classList.remove('visible'); }
   else { if(bC) bC.classList.add('visible'); if(bV) bV.classList.remove('visible'); }
   clearTimeout(window._planoTimer);
   window._planoTimer = setTimeout(salvarPlanoParto, 800);
@@ -9058,6 +9069,8 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     setTimeout(function() { try { carregarMinhaDoula(); } catch(e) {} }, 900);
     setTimeout(function() { try { carregarMinhaDoulaPos(); } catch(e) {} }, 1100);
+    setTimeout(function() { try { carregarProximaConsultaGestante(); } catch(e) {} }, 1050);
+    setTimeout(function() { try { iniciarLembretes('gestante'); } catch(e) {} }, 1300);
     setTimeout(function() {
       try {
         if (currentSolicitacaoPendente && !currentDoulaId) {
@@ -9075,14 +9088,14 @@ function entrarNoApp(tipo, nome) {
     setTimeout(function() { try { carregarConteudos(); } catch(e) {} }, 500);
     setTimeout(function() { try { carregarMarketplace(); } catch(e) {} }, 800);
     var g2 = document.getElementById('doula-greeting');
-    var emoji2 = hora < 12 ? '☀️' : hora < 18 ? '🌤️' : '🌙';
-    if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '! ' + emoji2;
+    if (g2) g2.textContent = saudacao + ', ' + primeiroNome + '.';
     // Carrega clientes, solicitações e busca gestante vinculada para realtime
     setTimeout(function() { try { carregarBackupDoula(); } catch(e) {} }, 750);
     setTimeout(function() { try { carregarSolicitacoesDoula(); } catch(e) {} }, 850);
     setTimeout(function() { try { iniciarRealtimeSolicitacoesDoula(); } catch(e) {} }, 1000);
     setTimeout(function() { try { carregarClientesDoula(); } catch(e) {} }, 900);
     setTimeout(function() { try { carregarProximasConsultasDashboard(); } catch(e) {} }, 950);
+    setTimeout(function() { try { iniciarLembretes('doula'); } catch(e) {} }, 1300);
     setTimeout(function() {
       if (!db || !currentUserId) return;
       db.from('solicitacoes').select('gestante_id,gestante_nome').eq('doula_id', currentUserId).eq('status', 'aceita')
@@ -13027,6 +13040,7 @@ function _renderizarTabelaClientes() {
             '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + t('doula.client.active') + '</td>' +
             '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + data + '</td>' +
             '<td style="padding:14px;display:flex;gap:6px;flex-wrap:wrap;">' +
+            '<button onclick="abrirAnamnese(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button>' +
             '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\',\'' + nome + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
             '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
             '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
@@ -13230,6 +13244,15 @@ async function verHistoricoCliente(id, tipo, nome) {
 
 var _pcliAtual = null;
 
+function abrirEditarPerfil() {
+  if (!_pcliAtual) return;
+  if (_pcliAtual.tipo === 'ext') {
+    abrirEditarCliente(_pcliAtual.id);
+  } else {
+    abrirAnamnese(_pcliAtual.id, _pcliAtual.nome);
+  }
+}
+
 function abrirPerfilCliente(id, tipo, nome) {
   _pcliAtual = { id: id, tipo: tipo, nome: nome };
   document.getElementById('perfil-cli-nome').textContent = nome;
@@ -13344,26 +13367,32 @@ async function _pcliResumo(el, id, tipo, campo) {
         var _semStr = '';
         if (_dppEfetiva) { var _si2 = calcularSemana(_dppEfetiva); if (_si2.semana >= 1 && _si2.semana <= 45) _semStr = semStrFull(_si2.semana, _si2.diasSemana) + ' semanas'; }
         else if (cli && cli.semanas_gestacional) { _semStr = cli.semanas_gestacional + ' sem'; }
+        var _hosp = usr.hospital || (cli && cli.hospital) || '';
+        // ── Dados básicos da gestante ──────────────────────────────
+        var _temBasicos = usr.whatsapp || usr.cidade || (cli && cli.telefone) || (cli && cli.nome_acompanhante);
+        if (_temBasicos) {
+          s += '<div class="card" style="margin-bottom:16px;"><div class="card-title" style="margin-bottom:12px;">Dados da gestante</div><div style="display:grid;gap:10px;">';
+          if (usr.whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + usr.whatsapp + '</span></div>';
+          if (usr.cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + usr.cidade + '</span></div>';
+          if (cli && cli.telefone) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Telefone</span><span style="color:var(--dark);font-weight:500;">' + cli.telefone + '</span></div>';
+          if (cli && cli.historico_gestacional) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Histórico</span><span style="color:var(--dark);font-weight:500;">' + cli.historico_gestacional + '</span></div>';
+          if (cli && cli.nome_acompanhante) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Acompanhante</span><span style="color:var(--dark);font-weight:500;">' + cli.nome_acompanhante + '</span></div>';
+          s += '</div></div>';
+        }
+        // ── Dados do parto (sempre visível) ───────────────────────
+        var _dash = '<span style="color:var(--earth-light);font-weight:400;">—</span>';
         s += '<div class="card" style="margin-bottom:16px;">';
         s += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">';
-        s += '<div class="card-title" style="margin:0;">Dados da gestante</div>';
-        s += '<button onclick="abrirAnamnese(\'' + id + '\',\'' + nome.replace(/'/g,'') + '\')" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">✏️ Editar anamnese</button>';
+        s += '<div class="card-title" style="margin:0;">🍼 Dados do parto</div>';
+        s += '<button onclick="abrirAnamnese(\'' + id + '\',\'' + nome.replace(/'/g,'') + '\')" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;">✏️ Editar</button>';
         s += '</div><div style="display:grid;gap:10px;">';
-        s += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:13px;color:var(--earth-light);min-width:140px;">DPP</span><span id="pcli-dpp-val" style="font-size:13px;color:var(--dark);font-weight:500;">' + _dppStr + _dppFonte + '</span><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'block\'" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">Editar</button></div>';
+        s += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><span style="font-size:13px;color:var(--earth-light);min-width:140px;">Data prev. do parto</span><span id="pcli-dpp-val" style="font-size:13px;color:var(--dark);font-weight:500;">' + _dppStr + _dppFonte + '</span><button onclick="document.getElementById(\'pcli-dpp-form\').style.display=\'block\'" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid var(--rose-light);padding:3px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">Editar</button></div>';
         if (_semStr) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Semana gestacional</span><span style="color:var(--dark);font-weight:500;">' + _semStr + '</span></div>';
-        if (usr.whatsapp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">WhatsApp</span><span style="color:var(--dark);font-weight:500;">' + usr.whatsapp + '</span></div>';
-        if (usr.cidade) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Cidade</span><span style="color:var(--dark);font-weight:500;">' + usr.cidade + '</span></div>';
-        var _hosp = usr.hospital || (cli && cli.hospital) || '';
-        if (_hosp) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Hospital</span><span style="color:var(--dark);font-weight:500;">' + _hosp + '</span></div>';
-        if (cli) {
-          if (cli.telefone) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Telefone</span><span style="color:var(--dark);font-weight:500;">' + cli.telefone + '</span></div>';
-          if (cli.tipo_parto) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Tipo de parto</span><span style="color:var(--dark);font-weight:500;">' + cli.tipo_parto + '</span></div>';
-          if (cli.local_parto) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Local do parto</span><span style="color:var(--dark);font-weight:500;">' + cli.local_parto + '</span></div>';
-          if (cli.medico) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Médico(a)</span><span style="color:var(--dark);font-weight:500;">' + cli.medico + '</span></div>';
-          if (cli.historico_gestacional) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Histórico</span><span style="color:var(--dark);font-weight:500;">' + cli.historico_gestacional + '</span></div>';
-          if (cli.nome_bebe) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Nome do bebê</span><span style="color:var(--dark);font-weight:500;">' + cli.nome_bebe + '</span></div>';
-          if (cli.nome_acompanhante) s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Acompanhante</span><span style="color:var(--dark);font-weight:500;">' + cli.nome_acompanhante + '</span></div>';
-        }
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Tipo de parto</span><span style="color:var(--dark);font-weight:500;">' + ((cli && cli.tipo_parto) || _dash) + '</span></div>';
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Local do parto</span><span style="color:var(--dark);font-weight:500;">' + ((cli && cli.local_parto) || _dash) + '</span></div>';
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Hospital/Maternidade</span><span style="color:var(--dark);font-weight:500;">' + (_hosp || _dash) + '</span></div>';
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Médico(a)</span><span style="color:var(--dark);font-weight:500;">' + ((cli && cli.medico) || _dash) + '</span></div>';
+        s += '<div style="display:flex;gap:8px;font-size:13px;"><span style="color:var(--earth-light);min-width:140px;">Nome do bebê</span><span style="color:var(--dark);font-weight:500;">' + ((cli && cli.nome_bebe) || _dash) + '</span></div>';
         s += '</div>';
         s += '<div id="pcli-dpp-form" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">';
         s += '<div style="font-size:12px;color:var(--earth-light);margin-bottom:8px;">Isso não altera o perfil da gestante no app.</div>';
@@ -13916,13 +13945,20 @@ function agendaFiltrarDia(dia, mes, ano) {
   container.innerHTML = filtradas.length ? filtradas.map(function(c) {
     var dt = new Date(c.data_hora);
     var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-    return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+    var cJson = encodeURIComponent(JSON.stringify(c));
+    return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid ' + (c.confirmado ? '#4caf50' : 'var(--rose)') + ';box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
-        '<div><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
+        '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + (c.confirmado ? ' <span style="font-size:11px;background:#e8f5e9;color:#2e7d32;border-radius:20px;padding:2px 8px;font-weight:500;">✅ Confirmada</span>' : '') + '</div>' +
         '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
         (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">📍 ' + c.local + '</div>' : '') +
         (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
-        '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div></div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">' +
+          '<div style="text-align:right;"><div style="font-size:13px;font-weight:500;color:var(--rose);">' + horaStr + '</div></div>' +
+          '<div style="display:flex;gap:6px;">' +
+            '<button onclick="editarConsulta(decodeConsulta(\'' + cJson + '\'))" style="background:var(--rose-pale);color:var(--rose);border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:500;">✏️ Editar</button>' +
+            '<button onclick="excluirConsulta(\'' + c.id + '\')" style="background:#fff0ee;color:#c0392b;border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:500;">🗑️ Excluir</button>' +
+          '</div>' +
+        '</div>' +
       '</div></div>';
   }).join('') : '<div style="text-align:center;padding:24px;color:var(--earth-light);font-size:13px;">Nenhuma consulta neste dia</div>';
 }
@@ -14038,6 +14074,17 @@ async function agendarConsultaModal() {
       if (res.error) throw res.error;
       mostrarToast('Consulta agendada! 📅');
     }
+    if (payload.gestante_id) {
+      var dtConsulta = new Date(payload.data_hora);
+      var dataFmt = dtConsulta.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long' });
+      var horaFmt = dtConsulta.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      var tipoConsulta = payload.tipo || 'Consulta';
+      var localFmt = payload.local ? ' (' + payload.local + ')' : '';
+      var textoMsg = _consultaEditandoId
+        ? '📅 Agendamento atualizado: ' + tipoConsulta + localFmt + ' — ' + dataFmt + ' às ' + horaFmt + '. Abra o app para confirmar sua presença.'
+        : '📅 Nova consulta agendada: ' + tipoConsulta + localFmt + ' — ' + dataFmt + ' às ' + horaFmt + '. Abra o app para confirmar sua presença.';
+      try { await db.from('mensagens').insert({ gestante_id: payload.gestante_id, doula_id: currentUserId, remetente_tipo: 'doula', texto: textoMsg }); } catch(e) {}
+    }
     fecharModalAgendamento();
     carregarAgenda();
   } catch(e) { mostrarToast('Erro ao salvar: ' + e.message); }
@@ -14067,6 +14114,95 @@ async function carregarProximasConsultasDashboard() {
   try {
     var res = await db.from('consultas_doula').select('*').eq('doula_id', currentUserId).order('data_hora', { ascending: true });
     _renderProximasConsultas(res.data || []);
+  } catch(e) {}
+}
+
+async function carregarProximaConsultaGestante() {
+  if (!db || !currentUserId) return;
+  var card = document.getElementById('proxima-consulta-card');
+  if (!card) return;
+  try {
+    var agora = new Date().toISOString();
+    var res = await db.from('consultas_doula').select('*').eq('gestante_id', currentUserId).gte('data_hora', agora).order('data_hora', { ascending: true }).limit(1);
+    var c = res.data && res.data[0];
+    if (!c) {
+      card.innerHTML = '<div class="consulta-data">PRÓXIMA CONSULTA</div>' +
+        '<div class="consulta-tema" style="color:var(--earth-light);font-size:14px;">Nenhuma consulta agendada ainda</div>' +
+        '<div style="font-size:13px;color:var(--earth-light);margin-bottom:12px;">Sua doula irá agendar em breve</div>';
+      return;
+    }
+    var dt = new Date(c.data_hora);
+    var dataFmt = dt.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long' });
+    var horaFmt = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    card.innerHTML = '<div class="consulta-data">PRÓXIMA CONSULTA</div>' +
+      '<div class="consulta-tema">' + (c.tipo || 'Consulta') + (c.local ? ' · 📍 ' + c.local : '') + '</div>' +
+      '<div style="font-size:13px;color:var(--rose);font-weight:500;margin-bottom:4px;">' + horaFmt + '</div>' +
+      '<div style="font-size:12px;color:var(--earth-light);margin-bottom:14px;">' + dataFmt + '</div>' +
+      (c.confirmado
+        ? '<div style="display:inline-flex;align-items:center;gap:6px;background:#e8f5e9;color:#2e7d32;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:500;">✅ Presença confirmada</div>'
+        : '<button onclick="confirmarConsulta(\'' + c.id + '\')" style="background:var(--rose);color:white;border:none;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;">✅ Confirmar presença</button>');
+  } catch(e) {}
+}
+
+async function confirmarConsulta(id) {
+  if (!db || !currentUserId) return;
+  try {
+    var res = await db.from('consultas_doula').update({ confirmado: true }).eq('id', id).eq('gestante_id', currentUserId);
+    if (res.error) throw res.error;
+    mostrarToast('✅ Presença confirmada!');
+    carregarProximaConsultaGestante();
+    var consulta = await db.from('consultas_doula').select('doula_id,tipo,data_hora').eq('id', id).maybeSingle();
+    if (consulta.data && consulta.data.doula_id) {
+      var dt = new Date(consulta.data.data_hora);
+      var horaFmt = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      var dataFmt = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'long' });
+      await db.from('mensagens').insert({
+        gestante_id: currentUserId,
+        doula_id: consulta.data.doula_id,
+        remetente_tipo: 'gestante',
+        texto: '✅ Confirmei minha presença na consulta de ' + (consulta.data.tipo || 'Consulta') + ' — ' + dataFmt + ' às ' + horaFmt + '.'
+      });
+    }
+  } catch(e) { mostrarToast('Erro ao confirmar: ' + e.message); }
+}
+
+async function iniciarLembretes(tipo) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'denied') return;
+  if (Notification.permission === 'default') {
+    var perm = await Notification.requestPermission();
+    if (perm !== 'granted') return;
+  }
+  try {
+    var agora = new Date();
+    var em24h = new Date(agora.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    var query;
+    if (tipo === 'gestante') {
+      query = db.from('consultas_doula').select('id,tipo,data_hora,local,cliente_nome').eq('gestante_id', currentUserId).gte('data_hora', agora.toISOString()).lte('data_hora', em24h).order('data_hora', { ascending: true });
+    } else {
+      query = db.from('consultas_doula').select('id,tipo,data_hora,local,cliente_nome').eq('doula_id', currentUserId).gte('data_hora', agora.toISOString()).lte('data_hora', em24h).order('data_hora', { ascending: true });
+    }
+    var res = await query;
+    var consultas = res.data || [];
+    consultas.forEach(function(c) {
+      var dtConsulta = new Date(c.data_hora);
+      var msAteConsulta = dtConsulta.getTime() - Date.now();
+      var msAte1hAntes = msAteConsulta - 60 * 60 * 1000;
+      var descricao = (c.tipo || 'Consulta') + (c.local ? ' · ' + c.local : '');
+      var nomeOutra = tipo === 'gestante' ? '' : ' com ' + c.cliente_nome;
+      var horaFmt = dtConsulta.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      var dispararNotificacao = function() {
+        new Notification('🌙 Lua Gestação — Lembrete', {
+          body: 'Você tem uma consulta em 1 hora: ' + descricao + nomeOutra + ' às ' + horaFmt,
+          icon: '/icon-192.png'
+        });
+      };
+      if (msAte1hAntes <= 0 && msAteConsulta > 0) {
+        dispararNotificacao();
+      } else if (msAte1hAntes > 0) {
+        setTimeout(dispararNotificacao, msAte1hAntes);
+      }
+    });
   } catch(e) {}
 }
 
@@ -14100,9 +14236,9 @@ async function carregarAgenda() {
       var dataStr = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
       var horaStr = dt.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
       var cJson = encodeURIComponent(JSON.stringify(c));
-      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid var(--rose);box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
+      return '<div style="background:var(--white);border-radius:14px;padding:16px 20px;margin-bottom:12px;border-left:4px solid ' + (c.confirmado ? '#4caf50' : 'var(--rose)') + ';box-shadow:0 2px 8px rgba(45,31,26,0.05);">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
-          '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + '</div>' +
+          '<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:var(--dark);">' + c.cliente_nome + (c.confirmado ? ' <span style="font-size:11px;background:#e8f5e9;color:#2e7d32;border-radius:20px;padding:2px 8px;font-weight:500;">✅ Confirmada</span>' : '') + '</div>' +
           '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">' + (c.tipo || 'Consulta') + '</div>' +
           (c.local ? '<div style="font-size:12px;color:var(--earth-light);margin-top:2px;">📍 ' + c.local + '</div>' : '') +
           (c.observacoes ? '<div style="font-size:12px;color:var(--mid);margin-top:4px;">' + c.observacoes + '</div>' : '') + '</div>' +
@@ -15038,6 +15174,17 @@ async function carregarUsuariosAdmin() {
       })(data[i]);
     }
   } catch(e) { console.error('[Admin] exceção inesperada:', e); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro: ' + e.message + '</div>'; }
+}
+
+function filtrarUsuariosAdmin(q) {
+  var lista = document.getElementById('admin-usuarios-lista');
+  if (!lista || !_adminUsuarios) return;
+  var termo = (q || '').toLowerCase().trim();
+  var rows = lista.querySelectorAll('.admin-item-row');
+  rows.forEach(function(row) {
+    var texto = row.textContent.toLowerCase();
+    row.style.display = (!termo || texto.indexOf(termo) !== -1) ? '' : 'none';
+  });
 }
 
 async function adminConfirmarEmail() {
@@ -16002,9 +16149,12 @@ function mostrarToast(msg) {
           <div class="admin-stat"><div class="admin-stat-val" id="total-gestantes">—</div><div class="admin-stat-label">Gestantes</div></div>
         </div>
         <div style="background:#1a0f0a;border-radius:14px;overflow:hidden;border:1px solid rgba(201,137,122,0.1);">
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(201,137,122,0.08);display:flex;justify-content:space-between;align-items:center;">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(201,137,122,0.08);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
             <span style="font-size:14px;font-weight:500;color:#E8C5BC;">Lista de usuários</span>
-            <button onclick="carregarUsuariosAdmin()" style="background:rgba(201,137,122,0.1);border:1px solid rgba(201,137,122,0.2);color:#C9897A;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↻ Atualizar</button>
+            <div style="display:flex;gap:8px;align-items:center;flex:1;min-width:160px;max-width:320px;">
+              <input id="admin-busca-usuario" type="text" placeholder="Buscar por nome ou email…" oninput="filtrarUsuariosAdmin(this.value)" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(201,137,122,0.2);border-radius:20px;padding:6px 14px;font-size:12px;color:#E8C5BC;font-family:'DM Sans',sans-serif;outline:none;">
+            </div>
+            <button onclick="carregarUsuariosAdmin()" style="background:rgba(201,137,122,0.1);border:1px solid rgba(201,137,122,0.2);color:#C9897A;padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;">↻ Atualizar</button>
           </div>
           <div id="admin-usuarios-lista" style="padding:16px;">
             <div style="text-align:center;color:rgba(176,154,140,0.4);font-size:13px;padding:20px;">Clique em Atualizar para carregar</div>
@@ -17306,7 +17456,8 @@ function atualizarVisualBebe(semana) {
     if (s > 42) s = 42;
     var fruta = _frutas[s] || _frutas[4];
 
-    emojiEl.textContent = fruta.e;
+    var imgSrc = s <= 9 ? 'frutas/week-' + s + '.png' : s <= 25 ? 'frutas/week-' + s + '.svg' : _twUrl(fruta.e);
+    emojiEl.innerHTML = '<img src="' + imgSrc + '" width="80" height="80" style="object-fit:contain;" alt="' + fruta.n + '" onerror="this.parentNode.textContent=\'' + fruta.e + '\'">';
 
     document.getElementById('baby-fruit-name').textContent = fruta.n;
     var nome = localStorage.getItem('lua_baby_nome') || t('bebe.default.nome');
@@ -17457,15 +17608,15 @@ async function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
       var urgente = a.dias <= 7, alerta = a.dias <= 14;
       var bg    = urgente ? '#fff0f0'                  : alerta ? '#fff8f0'                  : 'rgba(201,137,122,0.07)';
       var cor   = urgente ? '#dc2626'                  : alerta ? '#ea580c'                  : 'var(--rose)';
-      var icon  = urgente ? '🚨'                       : alerta ? '⏰'                        : '📅';
+      var dotAgenda = urgente ? '#dc2626' : alerta ? '#ea580c' : 'var(--rose)';
       var dppFmt = new Date(a.dpp + 'T12:00:00').toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
       var texto = a.dias === 0
         ? 'DPP é <strong>HOJE</strong>'
         : 'DPP em <strong>' + a.dias + ' dia' + (a.dias !== 1 ? 's' : '') + '</strong>';
-      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:' + bg + ';border-left:3px solid ' + cor + ';border-radius:10px;margin-bottom:8px;">' +
-        '<div style="font-size:20px;flex-shrink:0;">' + icon + '</div>' +
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:' + bg + ';border-left:3px solid ' + cor + ';border-radius:10px;margin-bottom:8px;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:' + dotAgenda + ';flex-shrink:0;"></div>' +
         '<div style="flex:1;">' +
-          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
+          '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + a.nome + '</div>' +
           '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + ' &nbsp;·&nbsp; ' + dppFmt + '</div>' +
         '</div>' +
       '</div>';
@@ -17495,31 +17646,31 @@ async function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
     return statusMap[a.tipo + ':' + a.id] !== 'Parto realizado';
   });
   if (!relevantes.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div><div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-title" style="font-weight:400;color:var(--earth-light);" data-i18n="doula.alerts.empty">Nenhum alerta por enquanto</div><div class="empty-sub" data-i18n="doula.alerts.sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
     return;
   }
   relevantes.sort(function(a, b) { return a.dias - b.dias; });
   container.innerHTML = relevantes.map(function(a) {
     var chave = a.tipo + ':' + a.id;
     var emTrabalho = statusMap[chave] === 'Trabalho de parto';
-    var icon, bg, cor, texto;
+    var dot, bg, cor, texto;
     if (emTrabalho) {
-      icon = '🤱'; bg = '#fffbeb'; cor = '#d97706';
+      dot = '#d97706'; bg = '#fffbeb'; cor = '#d97706';
       texto = 'Em trabalho de parto';
     } else if (a.dias < 0) {
-      icon = '🍼'; bg = '#f0fdf4'; cor = '#16a34a';
+      dot = '#16a34a'; bg = '#f0fdf4'; cor = '#16a34a';
       texto = 'Parto previsto há ' + Math.abs(a.dias) + ' dia' + (Math.abs(a.dias) !== 1 ? 's' : '') + ' — acompanhe o pós-parto';
     } else if (a.dias === 0) {
-      icon = '🚨'; bg = '#fff0f0'; cor = '#dc2626';
+      dot = '#dc2626'; bg = '#fff0f0'; cor = '#dc2626';
       texto = 'DPP é HOJE — esteja disponível!';
     } else if (a.dias <= 7) {
-      icon = '🚨'; bg = '#fff0f0'; cor = '#dc2626';
+      dot = '#dc2626'; bg = '#fff0f0'; cor = '#dc2626';
       texto = 'DPP em ' + a.dias + ' dia' + (a.dias !== 1 ? 's' : '') + ' — alerta máximo!';
     } else if (a.dias <= 30) {
-      icon = '⏰'; bg = '#fff8f0'; cor = '#ea580c';
+      dot = '#ea580c'; bg = '#fff8f0'; cor = '#ea580c';
       texto = 'DPP em ' + a.dias + ' dias — prepare-se!';
     } else {
-      icon = '📅'; bg = '#f9f9f9'; cor = 'var(--earth-light)';
+      dot = 'var(--earth-light)'; bg = '#f9f9f9'; cor = 'var(--earth-light)';
       texto = 'DPP em ' + a.dias + ' dias';
     }
     var dppStr = new Date(a.dpp + 'T12:00:00').toLocaleDateString('pt-BR');
@@ -17532,13 +17683,13 @@ async function carregarAlertasDoula(solicitacoes, externos, dppMapSol) {
           '<button onclick="alertaTrabalhoPartoAcao(\'' + a.tipo + '\',\'' + idEsc + '\',\'' + nomeEsc + '\',\'' + cardId + '\')" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">🤱 Em trabalho de parto</button>' +
           '<button onclick="alertaPartoRealizadoAcao(\'' + a.tipo + '\',\'' + idEsc + '\',\'' + nomeEsc + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">👶 Já pariu</button>' +
         '</div>';
-    return '<div id="' + cardId + '" style="background:' + bg + ';border-left:4px solid ' + cor + ';border-radius:12px;padding:14px 16px;margin-bottom:10px;">' +
-      '<div style="display:flex;align-items:flex-start;gap:12px;">' +
-        '<div style="font-size:22px;flex-shrink:0;">' + icon + '</div>' +
+    return '<div id="' + cardId + '" style="background:' + bg + ';border-left:3px solid ' + cor + ';border-radius:10px;padding:12px 16px;margin-bottom:8px;">' +
+      '<div style="display:flex;align-items:flex-start;gap:10px;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:5px;"></div>' +
         '<div style="flex:1;">' +
-          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + a.nome + '</div>' +
+          '<div style="font-size:13px;font-weight:500;color:var(--dark);letter-spacing:0.1px;">' + a.nome + '</div>' +
           '<div style="font-size:12px;color:' + cor + ';margin-top:2px;">' + texto + '</div>' +
-          '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;">DPP: ' + dppStr + '</div>' +
+          '<div style="font-size:11px;color:var(--earth-light);margin-top:2px;letter-spacing:0.3px;">DPP: ' + dppStr + '</div>' +
           btns +
         '</div>' +
       '</div>' +
@@ -17564,12 +17715,12 @@ async function alertaTrabalhoPartoAcao(tipo, id, nome, cardId) {
     if (card) {
       card.style.background = '#fffbeb';
       card.style.borderLeftColor = '#d97706';
-      card.innerHTML = '<div style="display:flex;align-items:flex-start;gap:12px;">' +
-        '<div style="font-size:22px;flex-shrink:0;">🤱</div>' +
+      card.innerHTML = '<div style="display:flex;align-items:flex-start;gap:10px;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:#d97706;flex-shrink:0;margin-top:5px;"></div>' +
         '<div style="flex:1;">' +
-          '<div style="font-size:13px;font-weight:600;color:var(--dark);">' + nome + '</div>' +
+          '<div style="font-size:13px;font-weight:500;color:var(--dark);">' + nome + '</div>' +
           '<div style="font-size:12px;color:#d97706;margin-top:2px;">Em trabalho de parto</div>' +
-          '<button onclick="alertaPartoRealizadoAcao(\'' + tipo + '\',\'' + id + '\',\'' + nome + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-top:8px;">👶 Já pariu</button>' +
+          '<button onclick="alertaPartoRealizadoAcao(\'' + tipo + '\',\'' + id + '\',\'' + nome + '\',\'' + cardId + '\')" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;border-radius:16px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;margin-top:8px;">Já pariu</button>' +
         '</div>' +
       '</div>';
     }
@@ -17607,7 +17758,7 @@ async function alertaPartoRealizadoAcao(tipo, id, nome, cardId) {
     if (card) card.remove();
     var container = document.getElementById('alertas-container');
     if (container && !container.querySelector('[id^="alc-"]')) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">Nenhum alerta por enquanto</div><div class="empty-sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-title" style="font-weight:400;color:var(--earth-light);">Nenhum alerta por enquanto</div><div class="empty-sub">Os alertas aparecerão aqui conforme você cadastrar clientes</div></div>';
     }
     carregarPosParto();
     carregarClientesDoula();
