@@ -165,14 +165,30 @@ header { padding-top: env(safe-area-inset-top, 0); }
 
 
 /* ─── MEU BEBÊ ─── */
-.baby-fruit-card {
-  background: var(--rose-pale); border-radius: 20px; padding: 32px 24px; text-align: center;
-  margin-bottom: 24px; position: relative; overflow: hidden;
-}
-.baby-fruit-emoji { font-size: 80px; margin-bottom: 16px; display: block; line-height: 1; min-height: 80px; }
-.baby-fruit-emoji img { display: block; margin: 0 auto; }
-.baby-fruit-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--rose); margin-bottom: 8px; }
-.baby-fruit-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
+@keyframes floatIn { from { opacity:0; transform:translateY(16px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+.baby-fruit-card { background:var(--rose-pale); border-radius:20px; padding:24px 20px 20px; text-align:center; margin-bottom:24px; position:relative; overflow:hidden; }
+.baby-week-badge { display:inline-block; background:rgba(201,137,122,0.18); color:var(--rose); font-size:11px; font-weight:600; letter-spacing:0.5px; padding:4px 14px; border-radius:20px; margin-bottom:16px; }
+.baby-fruit-emoji { font-size:80px; display:block; line-height:1; min-height:80px; margin:0 auto 4px; }
+.baby-fruit-emoji img { display:block; margin:0 auto; animation:floatIn 0.5s ease both, float 3.5s ease-in-out 0.6s infinite; filter:drop-shadow(0 10px 18px rgba(201,137,122,0.28)); }
+.baby-fruit-name { font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--rose); margin-bottom:6px; }
+.baby-fruit-desc { display:none; }
+.baby-milestone { font-size:13px; color:var(--mid); line-height:1.55; margin-bottom:18px; font-style:italic; }
+.baby-medidas { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.baby-medida-card { background:var(--white); border-radius:12px; padding:12px 8px; text-align:center; box-shadow:0 1px 6px rgba(45,31,26,0.05); }
+.baby-medida-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--earth-light); margin-bottom:4px; }
+.baby-medida-val { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; color:var(--rose); line-height:1; }
+.baby-medida-unit { font-size:11px; color:var(--earth-light); margin-top:2px; }
+.baby-progress-wrap { margin-bottom:14px; }
+.baby-progress-label { display:flex; justify-content:space-between; font-size:11px; color:var(--earth-light); margin-bottom:6px; }
+.baby-progress-bar { height:5px; background:rgba(201,137,122,0.15); border-radius:20px; overflow:hidden; }
+.baby-progress-fill { height:100%; background:linear-gradient(90deg,var(--rose-light),var(--rose)); border-radius:20px; transition:width 0.6s ease; }
+.baby-timeline { display:flex; gap:8px; justify-content:center; padding:6px 0 2px; }
+.baby-tl-item { display:flex; flex-direction:column; align-items:center; gap:4px; width:50px; flex-shrink:0; }
+.baby-tl-img { width:36px; height:36px; border-radius:50%; background:rgba(201,137,122,0.1); display:flex; align-items:center; justify-content:center; transition:all 0.2s; overflow:hidden; }
+.baby-tl-item.active .baby-tl-img { background:var(--rose); box-shadow:0 2px 8px rgba(201,137,122,0.35); transform:scale(1.15); }
+.baby-tl-week { font-size:10px; color:var(--earth-light); font-weight:500; }
+.baby-tl-item.active .baby-tl-week { color:var(--rose); font-weight:700; }
 
 .baby-form-group { margin-bottom: 20px; }
 .baby-form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--earth-light); margin-bottom: 8px; display: block; }
@@ -1407,9 +1423,27 @@ tr:hover td { background:var(--rose-pale); }
           <div class="panel-sub" id="g-bebe-sub" data-i18n="bebe.sub">Acompanhe o crescimento semana a semana</div>
 
           <div class="baby-fruit-card">
-            <span class="baby-fruit-emoji" id="baby-emoji">🌸</span>
-            <div class="baby-fruit-name" id="baby-fruit-name" data-i18n="bebe.cfg.dpp">Configure sua DPP</div>
-            <p class="baby-fruit-desc" id="baby-fruit-desc" data-i18n="bebe.cfg.dpp.desc">Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.</p>
+            <div class="baby-week-badge" id="baby-week-badge">Configure sua DPP</div>
+            <span class="baby-fruit-emoji" id="baby-emoji"></span>
+            <div class="baby-fruit-name" id="baby-fruit-name">Configure sua DPP</div>
+            <p class="baby-milestone" id="baby-milestone">Informe sua data prevista de parto no Início para ver o tamanho do seu bebê esta semana.</p>
+            <div class="baby-medidas" id="baby-medidas" style="display:none">
+              <div class="baby-medida-card">
+                <div class="baby-medida-label">Comprimento</div>
+                <div class="baby-medida-val" id="baby-comprimento">—</div>
+                <div class="baby-medida-unit">cm</div>
+              </div>
+              <div class="baby-medida-card">
+                <div class="baby-medida-label">Peso aprox.</div>
+                <div class="baby-medida-val" id="baby-peso">—</div>
+                <div class="baby-medida-unit">g</div>
+              </div>
+            </div>
+            <div class="baby-progress-wrap" id="baby-progress-wrap" style="display:none">
+              <div class="baby-progress-label"><span id="baby-prog-sem">Semana 0</span><span>de 42</span></div>
+              <div class="baby-progress-bar"><div class="baby-progress-fill" id="baby-prog-fill" style="width:0%"></div></div>
+            </div>
+            <div class="baby-timeline" id="baby-timeline" style="display:none"></div>
           </div>
 
           <div class="card">
@@ -11402,6 +11436,7 @@ function atualizarDashboardGestante(dpp) {
   try { document.getElementById('g-acomp-sub').textContent = t('dash.acomp.sub').replace('{n}', info.semana).replace('{tri}', tri); } catch(e) {}
 
   window._currentSemana = info.semana;
+  window._currentDiasSemana = info.diasSemana;
   // Gestante greeting sub
   try { document.getElementById('gestante-dash-sub').textContent = t('dash.semana.sub').replace('{n}', semStrFull(info.semana, info.diasSemana)); } catch(e) {}
   // Update frase do dia
@@ -17285,6 +17320,9 @@ function _doulaAvatarColor(nome) {
 
 // ─── ABA LATERAL DO BEBÊ ───
 var _babyFrutas = {
+  1:  { n: 'Sementinha', e: '🌱', d: 'O ciclo começa. Seu corpo se prepara para a grande jornada.' },
+  2:  { n: 'Sementinha', e: '🌱', d: 'A ovulação se aproxima. A vida está prestes a começar!' },
+  3:  { n: 'Célula', e: '🫐', d: 'A fecundação aconteceu! Uma nova vida começa a se formar.' },
   4:  { n: 'Semente de Papoula', e: '🌱', d: 'Seu bebê é minúsculo, como uma sementinha, mas já está se acomodando!' },
   5:  { n: 'Vagem', e: '🫛', d: 'O coração do bebê começa a bater esta semana. Que emoção!' },
   6:  { n: 'Mirtilo', e: '🫐', d: 'O bebê dobrou de tamanho desde a semana passada!' },
@@ -17326,6 +17364,9 @@ var _babyFrutas = {
   42: { n: 'Melão', e: '🍈', d: 'Você foi incrível! O bebê logo estará em seus braços.' }
 };
 var _babyFrutasEn = {
+  1:  { n: 'Little Seed', e: '🌱', d: 'The cycle begins. Your body is preparing for the big journey.' },
+  2:  { n: 'Little Seed', e: '🌱', d: 'Ovulation is approaching. Life is about to begin!' },
+  3:  { n: 'Cell', e: '🫐', d: 'Fertilization happened! A new life is starting to form.' },
   4:  { n: 'Poppy Seed', e: '🌱', d: 'Your baby is tiny, like a little seed, but already settling in!' },
   5:  { n: 'Pod', e: '🫛', d: 'Baby\'s heart starts beating this week. How exciting!' },
   6:  { n: 'Blueberry', e: '🫐', d: 'The baby has doubled in size since last week!' },
@@ -17367,6 +17408,9 @@ var _babyFrutasEn = {
   42: { n: 'Melon', e: '🍈', d: 'You were amazing! The baby will soon be in your arms.' }
 };
 var _babyFrutasEs = {
+  1:  { n: 'Semillita', e: '🌱', d: 'El ciclo comienza. Tu cuerpo se prepara para el gran viaje.' },
+  2:  { n: 'Semillita', e: '🌱', d: '¡La ovulación se acerca. La vida está a punto de comenzar!' },
+  3:  { n: 'Célula', e: '🫐', d: '¡La fecundación ocurrió! Una nueva vida comienza a formarse.' },
   4:  { n: 'Semilla de Amapola', e: '🌱', d: '¡Tu bebé es diminuto, como una semillita, pero ya se está acomodando!' },
   5:  { n: 'Vaina', e: '🫛', d: '¡El corazón del bebé comienza a latir esta semana. Qué emoción!' },
   6:  { n: 'Arándano', e: '🫐', d: '¡El bebé duplicó su tamaño desde la semana pasada!' },
@@ -17408,6 +17452,51 @@ var _babyFrutasEs = {
   42: { n: 'Melón', e: '🍈', d: '¡Fuiste increíble! El bebé pronto estará en tus brazos.' }
 };
 
+var _babyMedidas = {
+  1:  { c: '—',    p: '—'   },
+  2:  { c: '—',    p: '—'   },
+  3:  { c: '0.1',  p: '<1'  },
+  4:  { c: '0.4',  p: '<1'  },
+  5:  { c: '0.6',  p: '<1'  },
+  6:  { c: '0.9',  p: '1'   },
+  7:  { c: '1.3',  p: '1'   },
+  8:  { c: '1.9',  p: '2'   },
+  9:  { c: '2.3',  p: '3'   },
+  10: { c: '3.1',  p: '4'   },
+  11: { c: '4.1',  p: '7'   },
+  12: { c: '5.4',  p: '14'  },
+  13: { c: '7.4',  p: '23'  },
+  14: { c: '8.7',  p: '43'  },
+  15: { c: '10.1', p: '70'  },
+  16: { c: '11.6', p: '100' },
+  17: { c: '13.0', p: '140' },
+  18: { c: '14.2', p: '190' },
+  19: { c: '15.3', p: '240' },
+  20: { c: '25.6', p: '300' },
+  21: { c: '26.7', p: '360' },
+  22: { c: '27.8', p: '430' },
+  23: { c: '28.9', p: '500' },
+  24: { c: '30.0', p: '600' },
+  25: { c: '34.6', p: '660' },
+  26: { c: '35.6', p: '760' },
+  27: { c: '36.6', p: '875' },
+  28: { c: '37.6', p: '1005'},
+  29: { c: '38.6', p: '1153'},
+  30: { c: '39.9', p: '1319'},
+  31: { c: '41.1', p: '1502'},
+  32: { c: '42.4', p: '1702'},
+  33: { c: '43.7', p: '1918'},
+  34: { c: '45.0', p: '2146'},
+  35: { c: '46.2', p: '2383'},
+  36: { c: '47.4', p: '2622'},
+  37: { c: '48.6', p: '2859'},
+  38: { c: '49.8', p: '3083'},
+  39: { c: '50.7', p: '3288'},
+  40: { c: '51.2', p: '3462'},
+  41: { c: '51.7', p: '3597'},
+  42: { c: '51.7', p: '3685'}
+};
+
 function carregarSecaoBebe() {
   var nome = localStorage.getItem('lua_baby_nome') || '';
   var sexo = localStorage.getItem('lua_baby_sexo') || '';
@@ -17445,29 +17534,73 @@ function _twUrl(emoji) {
     if (code !== 0xFE0F) cp.push(code.toString(16));
     i += code > 0xFFFF ? 2 : 1;
   }
-  return 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.0.1/img/apple/128/' + cp.join('-') + '.png';
+  return 'https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/72x72/' + cp.join('-') + '.png';
 }
 
 function atualizarVisualBebe(semana) {
   var s = parseInt(semana) || 0;
   var emojiEl = document.getElementById('baby-emoji');
+  var badgeEl = document.getElementById('baby-week-badge');
+  var nameEl = document.getElementById('baby-fruit-name');
+  var milestoneEl = document.getElementById('baby-milestone');
+  var medidasEl = document.getElementById('baby-medidas');
+  var progressEl = document.getElementById('baby-progress-wrap');
+  var timelineEl = document.getElementById('baby-timeline');
   var _fm = {'pt': _babyFrutas, 'en': _babyFrutasEn, 'es': _babyFrutasEs};
   var _frutas = _fm[_lang] || _babyFrutas;
+
   if (s <= 0) {
-    emojiEl.textContent = '🌸';
-    document.getElementById('baby-fruit-name').textContent = t('bebe.cfg.dpp');
-    document.getElementById('baby-fruit-desc').textContent = t('bebe.cfg.dpp.desc');
-  } else {
-    if (s < 4) s = 4;
-    if (s > 42) s = 42;
-    var fruta = _frutas[s] || _frutas[4];
+    if (emojiEl) emojiEl.innerHTML = '<img src="' + _twUrl('🌸') + '" width="80" height="80" style="object-fit:contain;" alt="flor">';
+    if (badgeEl) badgeEl.textContent = t('bebe.cfg.dpp');
+    if (nameEl) nameEl.textContent = t('bebe.cfg.dpp');
+    if (milestoneEl) milestoneEl.textContent = t('bebe.cfg.dpp.desc');
+    if (medidasEl) medidasEl.style.display = 'none';
+    if (progressEl) progressEl.style.display = 'none';
+    if (timelineEl) timelineEl.style.display = 'none';
+    return;
+  }
 
-    var imgSrc = s <= 9 ? 'frutas/week-' + s + '.png' : s <= 25 ? 'frutas/week-' + s + '.svg' : _twUrl(fruta.e);
-    emojiEl.innerHTML = '<img src="' + imgSrc + '" width="80" height="80" style="object-fit:contain;" alt="' + fruta.n + '" onerror="this.parentNode.textContent=\'' + fruta.e + '\'">';
+  var sc = Math.max(1, Math.min(42, s));
+  var fruta = _frutas[sc] || _babyFrutas[sc] || _babyFrutas[4];
+  var medidas = _babyMedidas[sc] || {};
+  var diasSemana = window._currentDiasSemana || 0;
+  var diasTotal = sc * 7 + diasSemana;
 
-    document.getElementById('baby-fruit-name').textContent = fruta.n;
-    var nome = localStorage.getItem('lua_baby_nome') || t('bebe.default.nome');
-    document.getElementById('baby-fruit-desc').innerHTML = '<strong>' + nome + '</strong> ' + t('bebe.tamanho').replace('{fruta}', '<strong>' + fruta.n + '</strong>') + '<br><br>' + fruta.d;
+  if (badgeEl) badgeEl.textContent = 'Semana ' + sc + '+' + diasSemana + ' · ' + diasTotal + ' dias';
+  if (emojiEl) emojiEl.innerHTML = '<img src="' + _twUrl(fruta.e) + '" width="80" height="80" style="object-fit:contain;" alt="' + fruta.n + '" onerror="this.parentNode.innerHTML=\'' + fruta.e + '\'">';
+  if (nameEl) nameEl.textContent = fruta.n;
+  if (milestoneEl) milestoneEl.textContent = fruta.d;
+
+  if (medidasEl) {
+    medidasEl.style.display = 'grid';
+    var compEl = document.getElementById('baby-comprimento');
+    var pesoEl = document.getElementById('baby-peso');
+    if (compEl) compEl.textContent = medidas.c || '—';
+    if (pesoEl) pesoEl.textContent = medidas.p || '—';
+  }
+
+  if (progressEl) {
+    progressEl.style.display = 'block';
+    var pct = Math.min(100, Math.round((sc / 42) * 100));
+    var progFill = document.getElementById('baby-prog-fill');
+    var progSem = document.getElementById('baby-prog-sem');
+    if (progFill) progFill.style.width = pct + '%';
+    if (progSem) progSem.textContent = 'Semana ' + sc;
+  }
+
+  if (timelineEl) {
+    timelineEl.style.display = 'flex';
+    var html = '';
+    for (var w = sc - 2; w <= sc + 2; w++) {
+      if (w < 1 || w > 42) continue;
+      var tf = _frutas[w] || _babyFrutas[w] || _babyFrutas[4];
+      var isActive = w === sc;
+      html += '<div class="baby-tl-item' + (isActive ? ' active' : '') + '">' +
+        '<div class="baby-tl-img"><img src="' + _twUrl(tf.e) + '" width="24" height="24" style="object-fit:contain;" alt=""></div>' +
+        '<div class="baby-tl-week">Sem ' + w + '</div>' +
+        '</div>';
+    }
+    timelineEl.innerHTML = html;
   }
 }
 
