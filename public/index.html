@@ -255,10 +255,11 @@ header {
 .g-name { font-size:16px; font-weight:500; color:var(--dark); }
 .g-week { font-size:13px; color:var(--earth-light); margin-top:2px; }
 .g-week span { color:var(--rose); font-weight:500; }
-.g-nav-item { display:flex; align-items:center; gap:12px; padding:12px 24px; cursor:pointer; font-size:14px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
+.g-nav-item { display:flex; align-items:center; gap:12px; padding:10px 24px; cursor:pointer; font-size:13px; letter-spacing:0.2px; color:var(--mid); transition:all 0.2s; border-left:3px solid transparent; }
 .g-nav-item:hover { background:var(--rose-pale); color:var(--rose); }
 .g-nav-item.active { background:var(--rose-pale); color:var(--rose); border-left-color:var(--rose); font-weight:500; }
-.g-nav-icon { font-size:18px; width:22px; text-align:center; }
+.g-nav-icon { width:15px; height:15px; flex-shrink:0; opacity:0.45; transition:opacity 0.2s; }
+.g-nav-item:hover .g-nav-icon, .g-nav-item.active .g-nav-icon { opacity:1; }
 
 /* ── Mobile Bottom Nav ── */
 .mobile-bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--dark); border-top:1px solid rgba(201,137,122,0.15); z-index:1000; padding:8px 0 max(8px, env(safe-area-inset-bottom)); }
@@ -1168,25 +1169,25 @@ tr:hover td { background:var(--rose-pale); }
           <div class="g-avatar" id="g-avatar-img" onclick="trocarFotoPerfil()" style="cursor:pointer;overflow:hidden;" title="Clique para alterar foto">A</div>
         <input type="file" id="foto-perfil-input" accept="image/*" style="display:none" onchange="salvarFotoPerfil(this)">
           <div class="g-name" id="g-profile-name" onclick="abrirEditarNomeGestante()" style="cursor:pointer;" title="Editar nome">—</div>
-          <div onclick="abrirEditarNomeGestante()" style="font-size:11px;color:var(--earth-light);cursor:pointer;margin-top:3px;">✏️ editar nome</div>
-          <div class="g-week" id="g-semana-info"><span data-i18n="dash.sub">Bem-vinda ao Lua</span> 🌙</div>
+          <div onclick="abrirEditarNomeGestante()" style="font-size:11px;color:var(--earth-light);cursor:pointer;margin-top:3px;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>editar nome</div>
+          <div class="g-week" id="g-semana-info"><span data-i18n="dash.sub">Bem-vinda ao Lua</span></div>
         </div>
         <nav class="g-nav">
-          <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><span class="g-nav-icon">🏠</span><span data-i18n="nav.inicio">Início</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><span class="g-nav-icon">🌱</span><span data-i18n="nav.gestacao">Minha Gestação</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-bebe')"><span class="g-nav-icon">👶</span><span data-i18n="nav.bebe">Meu Bebê</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><span class="g-nav-icon">✅</span><span data-i18n="nav.tarefas">Tarefas por Fase</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-plano')"><span class="g-nav-icon">📋</span><span data-i18n="nav.plano">Plano de Parto</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><span class="g-nav-icon">🚨</span><span data-i18n="nav.contracoes">Contrações</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-conteudo')"><span class="g-nav-icon">📚</span><span data-i18n="nav.conteudo">Conteúdo</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-extras')"><span class="g-nav-icon">🎧</span><span data-i18n="nav.extras">Extras</span></div>
-          <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><span class="g-nav-icon">🔍</span><span data-i18n="nav.encontrar">Encontrar Doula</span></div>
-          <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><span class="g-nav-icon">💜</span><span data-i18n="nav.minha.doula">Minha Doula</span></div>
-          <div class="g-nav-item" id="nav-minha-doula-pos" style="display:none;" onclick="gNav(this,'g-minha-doula-pos')"><span class="g-nav-icon">💜</span><span>Minha Doula Pós</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><span class="g-nav-icon">👶</span><span data-i18n="nav.posparto">Pós-Parto</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-diario')"><span class="g-nav-icon">📓</span><span data-i18n="nav.diario">Diário</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><span class="g-nav-icon">❤️</span><span data-i18n="nav.parceiro">Acompanhante</span></div>
-          <div class="g-nav-item" onclick="gNav(this,'g-chat')"><span class="g-nav-icon">🌙</span><span data-i18n="nav.chat">Conversar com a Lua</span></div>
+          <div class="g-nav-item active" onclick="gNav(this,'g-dashboard')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span data-i18n="nav.inicio">Início</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-acomp')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span data-i18n="nav.gestacao">Minha Gestação</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-bebe')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-i18n="nav.bebe">Meu Bebê</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-tarefas')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="nav.tarefas">Tarefas por Fase</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-plano')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg><span data-i18n="nav.plano">Plano de Parto</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-emergencia')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span data-i18n="nav.contracoes">Contrações</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-conteudo')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="nav.conteudo">Conteúdo</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-extras')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg><span data-i18n="nav.extras">Extras</span></div>
+          <div class="g-nav-item" id="nav-encontrar-doula" onclick="gNav(this,'g-marketplace')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span data-i18n="nav.encontrar">Encontrar Doula</span></div>
+          <div class="g-nav-item" id="nav-minha-doula" style="display:none;" onclick="gNav(this,'g-minha-doula')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav.minha.doula">Minha Doula</span></div>
+          <div class="g-nav-item" id="nav-minha-doula-pos" style="display:none;" onclick="gNav(this,'g-minha-doula-pos')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Minha Doula Pós</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-posparto')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-i18n="nav.posparto">Pós-Parto</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-diario')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span data-i18n="nav.diario">Diário</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-parceiro')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span data-i18n="nav.parceiro">Acompanhante</span></div>
+          <div class="g-nav-item" onclick="gNav(this,'g-chat')"><svg class="g-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="nav.chat">Conversar com a Lua</span></div>
         </nav>
         <div class="g-doula-card" id="g-doula-card-sidebar" style="display:none;">
           <div class="g-doula-card-title" data-i18n="dash.doula.label">Sua Doula</div>
@@ -1223,17 +1224,17 @@ tr:hover td { background:var(--rose-pale); }
 
       <div class="mob-more-overlay" id="mob-more-overlay" onclick="fecharMobMore()"></div>
       <div class="mob-nav-more" id="mob-nav-more">
-        <div class="mob-more-item" onclick="gNavById('g-bebe');fecharMobMore()"><span data-i18n="nav.bebe">👶 Meu Bebê</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-tarefas');fecharMobMore()"><span>✅ Tarefas</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-plano');fecharMobMore()"><span>📋 Plano de Parto</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-conteudo');fecharMobMore()"><span>📚 Conteúdo</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-extras');fecharMobMore()"><span>🎧 Extras</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-marketplace');fecharMobMore()"><span>🔍 Encontrar Doula</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula');fecharMobMore()" id="mob-more-minha-doula" style="display:none;"><span>💜 Minha Doula</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula-pos');fecharMobMore()" id="mob-more-minha-doula-pos" style="display:none;"><span>💜 Minha Doula Pós</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-posparto');fecharMobMore()"><span>👶 Pós-Parto</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-parceiro');fecharMobMore()"><span data-i18n="mob.more.parceiro">❤️ Acompanhante</span></div>
-        <div class="mob-more-item" onclick="gNav(this,'g-chat');fecharMobMore()"><span>🌙 Conversar</span></div>
+        <div class="mob-more-item" onclick="gNavById('g-bebe');fecharMobMore()"><span data-i18n="nav.bebe">Meu Bebê</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-tarefas');fecharMobMore()"><span>Tarefas</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-plano');fecharMobMore()"><span>Plano de Parto</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-conteudo');fecharMobMore()"><span>Conteúdo</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-extras');fecharMobMore()"><span>Extras</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-marketplace');fecharMobMore()"><span>Encontrar Doula</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula');fecharMobMore()" id="mob-more-minha-doula" style="display:none;"><span>Minha Doula</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-minha-doula-pos');fecharMobMore()" id="mob-more-minha-doula-pos" style="display:none;"><span>Minha Doula Pós</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-posparto');fecharMobMore()"><span>Pós-Parto</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-parceiro');fecharMobMore()"><span data-i18n="mob.more.parceiro">Acompanhante</span></div>
+        <div class="mob-more-item" onclick="gNav(this,'g-chat');fecharMobMore()"><span>Conversar com a Lua</span></div>
       </div>
 
       <main class="g-main">
