@@ -9234,6 +9234,7 @@ function entrarNoApp(tipo, nome) {
   mostrarToast('Bem-vind' + (tipo === 'pai' ? 'o' : 'a') + ', ' + primeiroNome + '!');
   setTimeout(function() { try { initMobileNav(tipo); } catch(e) { console.error('initMobileNav erro:', e); } }, 500);
   registrarInicioSessao(tipo);
+  setTimeout(function() { try { iniciarPushNotifications(); } catch(e) {} }, 4000);
 }
 
 // ══════════════════════════════
@@ -11838,6 +11839,7 @@ async function aceitarSolicitacao(solId, gestanteId, gestanteNome) {
     carregarSolicitacoesDoula();
     carregarClientesDoula();
     try { gerarContratoAuto(gestanteId, gestanteNome); } catch(e2) {}
+    _enviarPush(gestanteId, '✨ Solicitação aceita!', (currentNome || 'Sua doula') + ' aceitou seu pedido de acompanhamento.', '/');
   } catch(e) {
     mostrarToast('Erro: ' + e.message);
   }
@@ -12010,6 +12012,8 @@ async function enviarMensagemParaDoula() {
     if (res.error) {
       console.error('Erro ao enviar mensagem:', res.error);
       mostrarToast('Erro ao enviar mensagem: ' + res.error.message);
+    } else {
+      _enviarPush(chatDoulaId, '💬 ' + (currentNome || 'Gestante'), texto.slice(0, 80), '/');
     }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
@@ -12025,6 +12029,8 @@ async function enviarMensagemParaGestante() {
     if (res.error) {
       console.error('Erro ao enviar mensagem:', res.error);
       mostrarToast('Erro ao enviar mensagem: ' + res.error.message);
+    } else {
+      _enviarPush(chatGestanteIdDoula, '💬 ' + (currentNome || 'Sua doula'), texto.slice(0, 80), '/');
     }
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
@@ -16923,6 +16929,122 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
     .then(reg => console.log('🚀 SW OK'))
     .catch(err => console.log('❌ SW Erro:', err));
+}
+</script>
+
+<!-- Push Notifications -->
+<script>
+var _pushVapidKey = null;
+
+function _urlBase64ToUint8Array(b64) {
+  var pad = '='.repeat((4 - b64.length % 4) % 4);
+  var base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+  var raw = atob(base64);
+  var arr = new Uint8Array(raw.length);
+  for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+
+async function iniciarPushNotifications() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
+  if (localStorage.getItem('push-recusado')) return;
+  try {
+    var reg = await navigator.serviceWorker.ready;
+    var existing = await reg.pushManager.getSubscription();
+    if (existing) {
+      await _salvarPushSub(existing);
+      return;
+    }
+    if (Notification.permission === 'denied') return;
+    if (Notification.permission === 'granted') {
+      await _subscribePush(reg);
+      return;
+    }
+    // permissão pendente — mostrar prompt customizado após 3s
+    setTimeout(_mostrarPromptPush, 3000);
+  } catch (e) {
+    console.warn('[Push]', e);
+  }
+}
+
+async function _subscribePush(reg) {
+  try {
+    if (!_pushVapidKey) {
+      var kRes = await fetch('/api/vapid-public-key');
+      var kData = await kRes.json();
+      _pushVapidKey = kData.publicKey;
+    }
+    var sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: _urlBase64ToUint8Array(_pushVapidKey)
+    });
+    await _salvarPushSub(sub);
+    console.log('[Push] inscrito');
+  } catch (e) {
+    console.warn('[Push] subscribe:', e);
+  }
+}
+
+async function _salvarPushSub(sub) {
+  if (!db || !currentUserId || !sub) return;
+  try {
+    await db.from('push_subscriptions').upsert(
+      { user_id: currentUserId, subscription: sub.toJSON() },
+      { onConflict: 'user_id' }
+    );
+  } catch (e) {
+    console.warn('[Push] salvar sub:', e);
+  }
+}
+
+function _mostrarPromptPush() {
+  if (document.getElementById('push-prompt')) return;
+  var el = document.createElement('div');
+  el.id = 'push-prompt';
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2d1f1a;border:1px solid rgba(201,137,122,0.3);border-radius:16px;padding:16px 20px 16px 16px;z-index:9500;max-width:340px;width:calc(100% - 32px);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:flex;align-items:flex-start;gap:12px;animation:fadeInUp 0.3s ease;';
+  el.innerHTML =
+    '<div style="font-size:26px;flex-shrink:0;margin-top:2px;">🔔</div>' +
+    '<div style="flex:1;">' +
+      '<div style="font-size:14px;font-weight:600;color:#E8C5BC;margin-bottom:4px;">Ativar notificações?</div>' +
+      '<div style="font-size:12px;color:rgba(176,154,140,0.7);line-height:1.5;margin-bottom:12px;">Receba avisos de mensagens e atualizações mesmo com o app fechado.</div>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button onclick="_aceitarPush()" style="flex:1;background:rgba(201,137,122,0.2);border:1px solid rgba(201,137,122,0.4);color:#C9897A;padding:8px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Ativar</button>' +
+        '<button onclick="_recusarPush()" style="background:transparent;border:none;color:rgba(176,154,140,0.45);padding:8px 12px;font-size:12px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Agora não</button>' +
+      '</div>' +
+    '</div>' +
+    '<button onclick="document.getElementById(\'push-prompt\').remove()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(176,154,140,0.35);font-size:20px;line-height:1;cursor:pointer;">×</button>';
+  document.body.appendChild(el);
+}
+
+async function _aceitarPush() {
+  var el = document.getElementById('push-prompt');
+  if (el) el.remove();
+  var perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    var reg = await navigator.serviceWorker.ready;
+    await _subscribePush(reg);
+    mostrarToast('🔔 Notificações ativadas!');
+  }
+}
+
+function _recusarPush() {
+  var el = document.getElementById('push-prompt');
+  if (el) el.remove();
+  localStorage.setItem('push-recusado', '1');
+}
+
+async function _enviarPush(targetUserId, title, body, url) {
+  if (!targetUserId || !currentUserId) return;
+  try {
+    var s = await db.auth.getSession();
+    var jwt = s.data && s.data.session ? s.data.session.access_token : null;
+    if (!jwt) return;
+    fetch('/api/send-push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetUserId: targetUserId, title: title, body: body, url: url || '/', jwt: jwt })
+    }).catch(function() {});
+  } catch (e) {}
 }
 </script>
 
