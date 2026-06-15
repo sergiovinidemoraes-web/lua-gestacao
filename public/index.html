@@ -15164,6 +15164,25 @@ async function carregarUsuariosAdmin() {
     var data = json.users || [];
     console.log('[Admin] usuários retornados:', data.length);
     _adminUsuarios = data;
+    try {
+      if (db) {
+        var sesRes = await db.from('sessoes').select('user_id,inicio').order('inicio', { ascending: false });
+        if (!sesRes.error && sesRes.data) {
+          var sesMap = {};
+          sesRes.data.forEach(function(s) {
+            if (!s.user_id) return;
+            if (!sesMap[s.user_id]) sesMap[s.user_id] = { count: 0, ultimo: null };
+            sesMap[s.user_id].count++;
+            if (!sesMap[s.user_id].ultimo || s.inicio > sesMap[s.user_id].ultimo) sesMap[s.user_id].ultimo = s.inicio;
+          });
+          _adminUsuarios.forEach(function(u) {
+            var se = sesMap[u.id];
+            u._acessos = se ? se.count : 0;
+            u._ultimo_acesso = se ? se.ultimo : null;
+          });
+        }
+      }
+    } catch(eS) { console.warn('[Admin] sessões:', eS); }
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante' || u.tipo === 'pos'; });
     try { document.getElementById('total-usuarios').textContent = data.length; } catch(e) {}
@@ -15177,43 +15196,7 @@ async function carregarUsuariosAdmin() {
     try { document.getElementById('stat-hoje').textContent = hojeCount; } catch(e) {}
     if (!lista) return;
     if (!data.length) { lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(176,154,140,0.4);">Nenhum usuário ainda</div>'; return; }
-    lista.innerHTML = '';
-    var tipoLabel = { gestante:'Gestante', doula:'Doula', pos:'Mãe Pós-Parto', pos_doula:'Doula Pós', pai:'Acompanhante', doula_backup:'Backup' };
-    for (var i = 0; i < data.length; i++) {
-      (function(u) {
-        var tipo = tipoLabel[u.tipo] || u.tipo || '—';
-        var row = document.createElement('div');
-        row.className = 'admin-item-row';
-        var verificadaIndicator = (u.tipo === 'doula' && u.verificada) ? ' <span style="font-size:10px;background:#2a4a2c;color:#7ec482;padding:2px 7px;border-radius:10px;font-weight:600;">✓ Verificada</span>' : '';
-        var info = document.createElement('div');
-        info.innerHTML =
-          '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + (u.nome || '—') + verificadaIndicator + '</div>' +
-          '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + (u.email || '—') + ' · ' + tipo + (u.cidade ? ' · ' + u.cidade : '') + '</div>';
-        var btns = document.createElement('div');
-        btns.style.cssText = 'display:flex;gap:8px;align-items:center;';
-        if (u.tipo === 'doula') {
-          var btnVerif = document.createElement('button');
-          btnVerif.style.cssText = 'padding:6px 14px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;transition:all 0.2s;border:1px solid;';
-          if (u.verificada) {
-            btnVerif.textContent = '✓ Verificada';
-            btnVerif.style.cssText += 'background:rgba(90,138,92,0.15);border-color:rgba(90,138,92,0.4);color:#7ec482;';
-          } else {
-            btnVerif.textContent = 'Verificar';
-            btnVerif.style.cssText += 'background:rgba(201,137,122,0.1);border-color:rgba(201,137,122,0.3);color:#C9897A;';
-          }
-          btnVerif.addEventListener('click', function() { verificarDoula(u.id, u.nome, u.verificada); });
-          btns.appendChild(btnVerif);
-        }
-        var btn = document.createElement('button');
-        btn.className = 'admin-del-btn';
-        btn.textContent = 'Remover';
-        btn.addEventListener('click', function() { deletarUsuario(u.id, u.nome); });
-        btns.appendChild(btn);
-        row.appendChild(info);
-        row.appendChild(btns);
-        lista.appendChild(row);
-      })(data[i]);
-    }
+    renderAdminUsuarios();
   } catch(e) { console.error('[Admin] exceção inesperada:', e); if (lista) lista.innerHTML = '<div style="text-align:center;padding:20px;font-size:13px;color:rgba(224,90,90,0.8);">Erro: ' + e.message + '</div>'; }
 }
 
@@ -15226,6 +15209,131 @@ function filtrarUsuariosAdmin(q) {
     var texto = row.textContent.toLowerCase();
     row.style.display = (!termo || texto.indexOf(termo) !== -1) ? '' : 'none';
   });
+}
+
+function adminSortBy(col) {
+  if (_adminSortCol === col) {
+    _adminSortDir = _adminSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    _adminSortCol = col;
+    _adminSortDir = (col === 'nome' || col === 'tipo') ? 'asc' : 'desc';
+  }
+  renderAdminUsuarios();
+}
+
+function renderAdminUsuarios() {
+  var lista = document.getElementById('admin-usuarios-lista');
+  if (!lista || !_adminUsuarios.length) return;
+  lista.innerHTML = '';
+  var GRID = 'minmax(160px,1fr) 110px 80px 152px auto';
+  var cols = [
+    { key:'nome', label:'Nome' },
+    { key:'tipo', label:'Tipo' },
+    { key:'acessos', label:'Acessos' },
+    { key:'ultimo_acesso', label:'Último acesso' }
+  ];
+  var tipoLabel = { gestante:'Gestante', doula:'Doula', pos:'Mãe Pós-Parto', pos_doula:'Doula Pós', pai:'Acompanhante', doula_backup:'Backup' };
+
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'overflow-x:auto;';
+  var inner = document.createElement('div');
+  inner.style.cssText = 'min-width:580px;';
+
+  // cabeçalho com colunas ordenáveis
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'display:grid;grid-template-columns:' + GRID + ';gap:12px;padding:8px 0 10px;border-bottom:1px solid rgba(201,137,122,0.15);margin-bottom:2px;';
+  cols.forEach(function(c) {
+    var th = document.createElement('div');
+    var isActive = _adminSortCol === c.key;
+    th.style.cssText = 'font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer;display:flex;align-items:center;gap:3px;user-select:none;color:' + (isActive ? '#C9897A' : 'rgba(176,154,140,0.45)') + ';transition:color 0.2s;';
+    th.textContent = c.label;
+    if (isActive) {
+      var arrow = document.createElement('span');
+      arrow.textContent = _adminSortDir === 'asc' ? '↑' : '↓';
+      th.appendChild(arrow);
+    }
+    th.addEventListener('mouseenter', function() { if (_adminSortCol !== c.key) th.style.color = 'rgba(201,137,122,0.75)'; });
+    th.addEventListener('mouseleave', function() { if (_adminSortCol !== c.key) th.style.color = 'rgba(176,154,140,0.45)'; });
+    (function(key) { th.addEventListener('click', function() { adminSortBy(key); }); })(c.key);
+    hdr.appendChild(th);
+  });
+  hdr.appendChild(document.createElement('div'));
+  inner.appendChild(hdr);
+
+  // ordenar dados
+  var data = _adminUsuarios.slice().sort(function(a, b) {
+    if (_adminSortCol === 'nome') {
+      var av = (a.nome || '').toLowerCase(), bv = (b.nome || '').toLowerCase();
+      return _adminSortDir === 'asc' ? av.localeCompare(bv, 'pt') : bv.localeCompare(av, 'pt');
+    }
+    if (_adminSortCol === 'tipo') {
+      var av = (tipoLabel[a.tipo] || a.tipo || ''), bv = (tipoLabel[b.tipo] || b.tipo || '');
+      return _adminSortDir === 'asc' ? av.localeCompare(bv, 'pt') : bv.localeCompare(av, 'pt');
+    }
+    if (_adminSortCol === 'acessos') {
+      var av = a._acessos || 0, bv = b._acessos || 0;
+      return _adminSortDir === 'asc' ? av - bv : bv - av;
+    }
+    // ultimo_acesso (default)
+    var av = a._ultimo_acesso ? new Date(a._ultimo_acesso).getTime() : 0;
+    var bv = b._ultimo_acesso ? new Date(b._ultimo_acesso).getTime() : 0;
+    return _adminSortDir === 'asc' ? av - bv : bv - av;
+  });
+
+  data.forEach(function(u) {
+    var tipo = tipoLabel[u.tipo] || u.tipo || '—';
+    var row = document.createElement('div');
+    row.className = 'admin-item-row';
+    row.style.cssText = 'display:grid;grid-template-columns:' + GRID + ';gap:12px;align-items:center;padding:10px 0;';
+
+    var verificadaIndicator = (u.tipo === 'doula' && u.verificada) ? ' <span style="font-size:10px;background:#2a4a2c;color:#7ec482;padding:2px 7px;border-radius:10px;font-weight:600;">✓ Verificada</span>' : '';
+    var nameDiv = document.createElement('div');
+    nameDiv.innerHTML = '<div style="font-size:14px;color:#E8C5BC;font-weight:500;">' + esc(u.nome || '—') + verificadaIndicator + '</div>' +
+      '<div style="font-size:12px;color:rgba(176,154,140,0.5);">' + esc(u.email || '—') + (u.cidade ? ' · ' + esc(u.cidade) : '') + '</div>';
+
+    var tipoDiv = document.createElement('div');
+    tipoDiv.style.cssText = 'font-size:12px;color:rgba(176,154,140,0.65);';
+    tipoDiv.textContent = tipo;
+
+    var acessosDiv = document.createElement('div');
+    acessosDiv.style.cssText = 'font-size:13px;color:rgba(176,154,140,0.7);';
+    acessosDiv.textContent = (u._acessos != null && u._acessos > 0) ? u._acessos : '—';
+
+    var ultimoDiv = document.createElement('div');
+    ultimoDiv.style.cssText = 'font-size:12px;color:rgba(176,154,140,0.6);';
+    ultimoDiv.textContent = u._ultimo_acesso ? new Date(u._ultimo_acesso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+
+    var btns = document.createElement('div');
+    btns.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:flex-end;';
+    if (u.tipo === 'doula') {
+      var btnVerif = document.createElement('button');
+      btnVerif.style.cssText = 'padding:6px 14px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;transition:all 0.2s;border:1px solid;';
+      if (u.verificada) {
+        btnVerif.textContent = '✓ Verificada';
+        btnVerif.style.cssText += 'background:rgba(90,138,92,0.15);border-color:rgba(90,138,92,0.4);color:#7ec482;';
+      } else {
+        btnVerif.textContent = 'Verificar';
+        btnVerif.style.cssText += 'background:rgba(201,137,122,0.1);border-color:rgba(201,137,122,0.3);color:#C9897A;';
+      }
+      (function(id, nome, verif) { btnVerif.addEventListener('click', function() { verificarDoula(id, nome, verif); }); })(u.id, u.nome, u.verificada);
+      btns.appendChild(btnVerif);
+    }
+    var btn = document.createElement('button');
+    btn.className = 'admin-del-btn';
+    btn.textContent = 'Remover';
+    (function(id, nome) { btn.addEventListener('click', function() { deletarUsuario(id, nome); }); })(u.id, u.nome);
+    btns.appendChild(btn);
+
+    row.appendChild(nameDiv);
+    row.appendChild(tipoDiv);
+    row.appendChild(acessosDiv);
+    row.appendChild(ultimoDiv);
+    row.appendChild(btns);
+    inner.appendChild(row);
+  });
+
+  wrap.appendChild(inner);
+  lista.appendChild(wrap);
 }
 
 async function adminConfirmarEmail() {
@@ -15571,6 +15679,8 @@ function deletarFAQ(id) {
 var _adminCharts = {};
 var _adminUsuarios = [];
 var _adminSessoesLog = [];
+var _adminSortCol = 'ultimo_acesso';
+var _adminSortDir = 'desc';
 
 async function carregarEstatisticas() {
   await carregarUsuariosAdmin();
