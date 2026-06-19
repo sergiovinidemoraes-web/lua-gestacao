@@ -13344,13 +13344,13 @@ async function pcliSalvarDpp(gestanteId) {
   try {
     var diasRest = (new Date(val + 'T12:00:00') - new Date()) / 86400000;
     var sem = Math.round(40 - diasRest / 7);
-    var res = await db.from('clientes_doula').upsert({
-      doula_id: currentUserId,
-      gestante_id: gestanteId,
-      nome: _pcliAtual ? _pcliAtual.nome : '',
-      dpp: val,
-      semanas_gestacional: (sem >= 1 && sem <= 45) ? sem : null
-    }, { onConflict: 'doula_id,gestante_id' });
+    var existingDpp = await db.from('clientes_doula').select('id').eq('doula_id', currentUserId).eq('gestante_id', gestanteId).maybeSingle();
+    var res;
+    if (existingDpp.data) {
+      res = await db.from('clientes_doula').update({ dpp: val, semanas_gestacional: (sem >= 1 && sem <= 45) ? sem : null }).eq('id', existingDpp.data.id).eq('doula_id', currentUserId);
+    } else {
+      res = await db.from('clientes_doula').insert({ doula_id: currentUserId, gestante_id: gestanteId, nome: _pcliAtual ? _pcliAtual.nome : '', dpp: val, semanas_gestacional: (sem >= 1 && sem <= 45) ? sem : null });
+    }
     if (res.error) throw res.error;
     mostrarToast('DPP salva!');
     var dppStr = new Date(val + 'T12:00:00').toLocaleDateString('pt-BR');
@@ -13883,7 +13883,13 @@ async function salvarEdicaoCliente() {
     } else {
       payload.doula_id = currentUserId;
       payload.gestante_id = _editandoGestanteId;
-      var res = await db.from('clientes_doula').upsert(payload, { onConflict: 'doula_id,gestante_id' });
+      var existing = await db.from('clientes_doula').select('id').eq('doula_id', currentUserId).eq('gestante_id', _editandoGestanteId).maybeSingle();
+      var res;
+      if (existing.data) {
+        res = await db.from('clientes_doula').update(payload).eq('id', existing.data.id).eq('doula_id', currentUserId);
+      } else {
+        res = await db.from('clientes_doula').insert(payload);
+      }
       if (res.error) throw res.error;
       // Reload profile tab after saving
       if (_pcliAtual) { delete document.getElementById('pcli-resumo').dataset.loaded; _pcliCarregar('pcli-resumo', _pcliAtual.id, _pcliAtual.tipo); }
