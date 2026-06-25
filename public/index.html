@@ -15199,6 +15199,18 @@ async function carregarUsuariosAdmin() {
         }
       }
     } catch(eS) { console.warn('[Admin] sessões:', eS); }
+    try {
+      if (db) {
+        var cliResults = await Promise.all([
+          db.from('solicitacoes').select('doula_id').eq('status', 'aceita'),
+          db.from('clientes_doula').select('doula_id')
+        ]);
+        var clientesMap = {};
+        (cliResults[0].data || []).forEach(function(r) { if (r.doula_id) clientesMap[r.doula_id] = (clientesMap[r.doula_id] || 0) + 1; });
+        (cliResults[1].data || []).forEach(function(r) { if (r.doula_id) clientesMap[r.doula_id] = (clientesMap[r.doula_id] || 0) + 1; });
+        _adminUsuarios.forEach(function(u) { u._clientes = clientesMap[u.id] || 0; });
+      }
+    } catch(eC) { console.warn('[Admin] clientes:', eC); }
     var doulas = data.filter(function(u) { return u.tipo === 'doula'; });
     var gestantes = data.filter(function(u) { return u.tipo === 'gestante' || u.tipo === 'pos'; });
     try { document.getElementById('total-usuarios').textContent = data.length; } catch(e) {}
@@ -15241,10 +15253,11 @@ function renderAdminUsuarios() {
   var lista = document.getElementById('admin-usuarios-lista');
   if (!lista || !_adminUsuarios.length) return;
   lista.innerHTML = '';
-  var GRID = 'minmax(160px,1fr) 110px 80px 152px auto';
+  var GRID = 'minmax(160px,1fr) 110px 70px 80px 152px auto';
   var cols = [
     { key:'nome', label:'Nome' },
     { key:'tipo', label:'Tipo' },
+    { key:'clientes', label:'Clientes' },
     { key:'acessos', label:'Acessos' },
     { key:'ultimo_acesso', label:'Último acesso' }
   ];
@@ -15311,6 +15324,10 @@ function renderAdminUsuarios() {
     tipoDiv.style.cssText = 'font-size:12px;color:rgba(176,154,140,0.65);';
     tipoDiv.textContent = tipo;
 
+    var clientesDiv = document.createElement('div');
+    clientesDiv.style.cssText = 'font-size:13px;color:rgba(176,154,140,0.7);';
+    clientesDiv.textContent = (u.tipo === 'doula' || u.tipo === 'pos_doula') ? (u._clientes > 0 ? u._clientes : '0') : '—';
+
     var acessosDiv = document.createElement('div');
     acessosDiv.style.cssText = 'font-size:13px;color:rgba(176,154,140,0.7);';
     acessosDiv.textContent = (u._acessos != null && u._acessos > 0) ? u._acessos : '—';
@@ -15342,6 +15359,7 @@ function renderAdminUsuarios() {
 
     row.appendChild(nameDiv);
     row.appendChild(tipoDiv);
+    row.appendChild(clientesDiv);
     row.appendChild(acessosDiv);
     row.appendChild(ultimoDiv);
     row.appendChild(btns);
