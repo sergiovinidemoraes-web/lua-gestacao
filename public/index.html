@@ -13026,6 +13026,7 @@ function _renderizarTabelaClientes() {
           '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
           '<button onclick="verHistoricoCliente(\'' + g.gestante_id + '\',\'sol\',\'' + nome + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Histórico</button>' +
           '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">💬 Mensagens</button>' +
+          '<button onclick="desfazerParto(\'sol\',\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">↩️ Desfazer</button>' +
           '</div></td></tr>';
       }).concat(paridasExt.map(function(c) {
         var dataPartoStr = partosDataMap[c.id] ? new Date(partosDataMap[c.id] + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
@@ -13036,6 +13037,7 @@ function _renderizarTabelaClientes() {
           '<td colspan="4" style="padding:14px;"><span style="font-size:11px;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;">👶 Parida</span></td>' +
           '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
           '<button onclick="verHistoricoCliente(\'' + c.id + '\',\'ext\',\'' + nomeEsc + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Histórico</button>' +
+          '<button onclick="desfazerParto(\'ext\',\'' + c.id + '\',\'' + nomeEsc + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">↩️ Desfazer</button>' +
           '</div></td></tr>';
       }));
       tbody.innerHTML = linhasP.join('');
@@ -18145,6 +18147,22 @@ async function alertaPartoRealizadoAcao(tipo, id, nome, cardId) {
     carregarPosParto();
     carregarClientesDoula();
     mostrarToast('👶 Parabéns! Parto de ' + nome + ' confirmado. Acompanhamento pós-parto iniciado!');
+  } catch(e) { mostrarToast('Erro: ' + e.message); }
+}
+
+async function desfazerParto(tipo, id, nome) {
+  if (!db || !currentUserId) return;
+  if (!confirm('Desfazer o parto de ' + nome + '? Ela voltará para Gestantes ativas.')) return;
+  try {
+    var campo = tipo === 'sol' ? 'gestante_id' : 'cliente_externo_id';
+    var res = await db.from('registros_atendimento')
+      .delete()
+      .eq('doula_id', currentUserId)
+      .eq(campo, id)
+      .eq('tipo', 'Parto realizado');
+    if (res.error) throw res.error;
+    carregarClientesDoula();
+    mostrarToast('↩️ Parto de ' + nome + ' desfeito. Cliente voltou para Gestantes ativas.');
   } catch(e) { mostrarToast('Erro: ' + e.message); }
 }
 
