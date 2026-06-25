@@ -13091,6 +13091,7 @@ function _renderizarTabelaClientes() {
             '<button onclick="iniciarRealtimeDoula(\'' + g.gestante_id + '\',\'' + nome + '\');dNav(document.querySelector(\'.d-nav-item\'),\'d-dashboard\')" style="background:var(--rose-pale);color:var(--rose);border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.contractions') + '</button>' +
             '<button onclick="abrirChatComGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f4e8;color:#4a7c4a;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">' + t('doula.btn.messages') + '</button>' +
             '<button onclick="verPlanoPartoGestante(\'' + g.gestante_id + '\',\'' + nome + '\')" style="background:#e8f0fc;color:#3a5cc5;border:none;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">📋 Plano de Parto</button>' +
+            '<button onclick="alertaPartoRealizadoAcao(\'sol\',\'' + g.gestante_id + '\',\'' + nome + '\',null)" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">👶 Já pariu</button>' +
             '</td></tr>';
         } else {
           var c = item._c;
@@ -13107,6 +13108,7 @@ function _renderizarTabelaClientes() {
             '<td style="padding:14px;font-size:13px;color:var(--earth-light);">' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td>' +
             '<td style="padding:14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">' +
             '<button onclick="abrirEditarCliente(\'' + c.id + '\')" style="background:var(--cream);color:var(--earth);border:1.5px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">✏️ Editar</button>' +
+            '<button onclick="alertaPartoRealizadoAcao(\'ext\',\'' + c.id + '\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\',null)" style="background:#dcfce7;color:#16a34a;border:1px solid #bbf7d0;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">👶 Já pariu</button>' +
             '<button onclick="excluirClienteExterno(\'' + c.id + '\',\'' + (c.nome||'').replace(/'/g,'\\\'') + '\')" style="background:rgba(255,80,80,0.08);color:#c0392b;border:1.5px solid rgba(192,57,43,0.2);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;font-family:inherit;">🗑️</button>' +
             '</div></td></tr>';
         }
@@ -17269,6 +17271,7 @@ document.addEventListener('click', function(e) {
 
 // ─── CHANGELOG / ATUALIZAÇÕES ───
 var _changelog = [
+  { data:'2026-06-24', titulo:'Botão "Já pariu" em Minhas Clientes', descricao:'O botão 👶 Já pariu agora aparece diretamente na lista de Gestantes ativas em Minhas Clientes, tanto para gestantes internas quanto para clientes externas. Ao clicar, o parto é registrado no banco e a cliente é movida automaticamente para a aba Paridas — mesmo comportamento do botão nos alertas do dashboard.' },
   { data:'2026-06-15', titulo:'Notificações push nativas', descricao:'O app agora envia notificações push mesmo com a tela fechada. Após o login, um prompt customizado convida o usuário a ativar as notificações. Os eventos que disparam notificação são: doula aceita solicitação de acompanhamento (notifica a gestante) e nova mensagem no chat (notifica o destinatário). Funciona em Android e em dispositivos que adicionaram o site à home screen no iOS 16.4+.' },
   { data:'2026-06-10', titulo:'Modernização visual de todas as views', descricao:'Interface do app atualizada em todos os perfis: Doula, Gestante, Acompanhante, Mãe Pós-Parto, Doula Pós-Parto, Doula Backup e Admin. Emojis de navegação substituídos por ícones SVG outline (estilo Feather Icons), saudações e títulos limpos, tipografia mais leve. Menu lateral de cada view ganhou destaque vertical colorido no item ativo. Visual consistente em toda a aplicação sem alteração de cores ou funcionalidades.' },
   { data:'2026-06-08', titulo:'Link de convite da doula mostra perfil antes do cadastro', descricao:'Quando uma gestante abre o link de convite da doula (?convite=CODIGO), ela agora vê uma tela com o perfil completo da doula (foto, nome, cidade, especialidades e bio) antes de criar a conta. Dois botões: "Criar minha conta" segue para o formulário já vinculado à doula, e "Já tenho conta — fazer login" abre a tela de login diretamente.' },
